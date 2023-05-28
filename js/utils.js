@@ -91,3 +91,66 @@ export async function  login(usr, pass) {
 
     return resultado;
 }
+
+
+
+//TODO: minificar, ofuscar
+//TODO: Crear funcion para mostrar mensajes, pasar solo el texto como parametro
+//TODO: Poner animacion mientras no se reciban los datos
+//TODO: Poner el maximo de records a pedir desde el api al lado del boton Refresh Data en un ComboBox
+
+//-------------------------------------------------------------------------------
+//  getDatosTR
+//-------------------------------------------------------------------------------
+export async function getTrData(containerId) {
+
+  //leer token desde local storage
+  const accessToken = window.localStorage.getItem('accessToken');
+
+
+
+  var data = JSON.stringify({
+    "filter": {
+      "status": "queued"
+    }
+  });
+
+  var config = {
+    method: 'get',
+    url: `${base_url}/api/private/transactions?skip=0&limit=100`,
+    headers: { 
+      'authorization': `Bearer ${accessToken}`,
+      'x-api-key': x_api_key, 
+      'Content-Type': 'application/json', 
+    },
+    data : data
+  }
+
+
+let datos = null;
+
+await axios(config).then(function (response) {
+
+  //console.log(JSON.stringify(response.data));
+
+  // console.log(response.data.data);
+
+  // new gridjs.Grid({
+  //   pagination: true,
+  //   search: true,
+  //   columns: ["Transaction Amount", "Transaction Status", "Currency", "Type", "Concept", "Transaction ID", "Id"],
+  //   data: response.data.data
+  // }).render(document.getElementById(containerId));
+  datos = response.data.data;
+  
+  
+}).catch(function (error) {
+  console.log(error);
+  
+});
+
+return datos;
+
+
+
+}

@@ -1,0 +1,22 @@
+
+.other-btn {
+    border: none;
+    padding: 0.3rem 1rem;
+    border-radius: 8px;
+    /* display: block; */
+    margin: auto;
+    background: #f7ebeb;
+    border: 1px solid #583672;
+    
+    /* background: #583672;
+    color: #fff; */
+    font-weight: bold;
+    -webkit-box-shadow: 0px 9px 15px -11px rgba(88,54,114,1);
+    -moz-box-shadow: 0px 9px 15px -11px rgba(88,54,114,1);
+    box-shadow: 0px 9px 15px -11px rgba(88,54,114,1);
+  }
+  
+
+  .tx-container {
+    height: 10rem;
+  }
