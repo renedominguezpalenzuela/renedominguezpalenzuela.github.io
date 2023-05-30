@@ -37,21 +37,34 @@ class Root extends Component {
 
 
     async get_data_btn() {
-        this.get_data().then((datos_saldos) => {
+        this.get_data(true).then((datos_saldos) => {
             console.log(JSON.stringify(datos_saldos));
             this.balance.saldos = datos_saldos;
-            this.render();
+            // this.render();
         });
     }
 
-    async get_data() {
-        const datos = await getBalance();
+    async get_data(update) {
+        let datos = await getBalance();
+        if (update) {
+            datos.balance.map((unDato, i)=>{
+
+                if (unDato.currency=="USD") {
+                    datos.balance[i].amount=1000;
+
+                }
+               
+
+            })
+        }
+
+        console.log(datos.balance);
         return datos.balance;
     }
 
     setup() {
         onWillStart(async () => {
-            this.balance.saldos = await this.get_data();
+            this.balance.saldos = await this.get_data(false);
             console.log(JSON.stringify(this.balance));
         });
     }
