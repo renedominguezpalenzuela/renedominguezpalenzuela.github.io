@@ -46,19 +46,19 @@ class Root extends Component {
 
     async get_data(update) {
         let datos = await getBalance();
-        if (update) {
-            datos.balance.map((unDato, i)=>{
+        // if (update) {
+        //     datos.balance.map((unDato, i)=>{
 
-                if (unDato.currency=="USD") {
-                    datos.balance[i].amount=1000;
+        //         if (unDato.currency=="USD") {
+        //             datos.balance[i].amount=1000;
 
-                }
+        //         }
                
 
-            })
-        }
+        //     })
+        // }
 
-        console.log(datos.balance);
+       // console.log(datos.balance);
         return datos.balance;
     }
 
