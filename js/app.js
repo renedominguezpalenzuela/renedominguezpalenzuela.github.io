@@ -2,7 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import useStore from "./store";
 
-import { getAPIStatus, login } from "./utils";
+import { getAPIStatus, login, getUsrInfo } from "./utils";
 
 
 class Root extends Component {
@@ -97,9 +97,15 @@ class Root extends Component {
   async login_btn() {
     console.log("Login...");
     const va = await login(this.inputUsr.el.value, this.inputPass.el.value);
-    console.log("Resultado de login "+va);
+   // console.log("Resultado de login "+va);
 
-    if (va) window.location.assign("listatr.html");
+    const userInfo = await getUsrInfo();
+   // console.log("User Info "+JSON.stringify(userInfo.user._id));
+
+   // if (va) window.location.assign("listatr.html");
+
+    if (userInfo) window.location.assign("userdata.html");
+   
   }
 
   setTest_data() {

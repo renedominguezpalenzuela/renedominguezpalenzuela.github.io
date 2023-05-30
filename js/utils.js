@@ -43,7 +43,7 @@ export function getAPIStatus() {
 //  Login
 //-------------------------------------------------------------------------------
 
-export async function  login(usr, pass) {
+export async function login(usr, pass) {
   const config = {
     headers: {
       "x-api-key": x_api_key,
@@ -86,10 +86,10 @@ export async function  login(usr, pass) {
           footer: '<h5> Inspect console for details </h5>'
         })
       }
-      
+
     });
 
-    return resultado;
+  return resultado;
 }
 
 
@@ -102,12 +102,9 @@ export async function  login(usr, pass) {
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
-export async function getTrData(containerId) {
-
+export async function getTrData() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
-
-
 
   var data = JSON.stringify({
     "filter": {
@@ -118,39 +115,104 @@ export async function getTrData(containerId) {
   var config = {
     method: 'get',
     url: `${base_url}/api/private/transactions?skip=0&limit=100`,
-    headers: { 
+    headers: {
       'authorization': `Bearer ${accessToken}`,
-      'x-api-key': x_api_key, 
-      'Content-Type': 'application/json', 
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
     },
-    data : data
+    data: data
   }
 
+  let datos = null;
+  await axios(config).then(function (response) {
+    datos = response.data.data;
+  }).catch(function (error) {
+    console.log(error);
+  });
 
-let datos = null;
-
-await axios(config).then(function (response) {
-
-  //console.log(JSON.stringify(response.data));
-
-  // console.log(response.data.data);
-
-  // new gridjs.Grid({
-  //   pagination: true,
-  //   search: true,
-  //   columns: ["Transaction Amount", "Transaction Status", "Currency", "Type", "Concept", "Transaction ID", "Id"],
-  //   data: response.data.data
-  // }).render(document.getElementById(containerId));
-  datos = response.data.data;
-  
-  
-}).catch(function (error) {
-  console.log(error);
-  
-});
-
-return datos;
-
-
-
+  return datos;
 }
+
+
+//-------------------------------------------------------------------------------
+//  getDatosTR
+//-------------------------------------------------------------------------------
+export async function getUsrInfo() {
+  //leer token desde local storage
+  const accessToken = window.localStorage.getItem('accessToken');
+
+  var data = JSON.stringify({
+    "filter": {
+      "status": "queued"
+    }
+  });
+
+  var config = {
+    method: 'get',
+    url: `${base_url}/api/private/users`,
+    headers: {
+      'authorization': `Bearer ${accessToken}`,
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    },
+    data: data
+  }
+
+  let datos = null;
+  await axios(config).then(function (response) {
+    datos = response.data;
+
+    if (datos.user._id) {
+      window.localStorage.setItem('userId', datos.user._id)
+    }
+
+    if (datos.user.walletAddress) {
+      window.localStorage.setItem('walletAddress', datos.user.walletAddress)
+    }
+
+  }).catch(function (error) {
+    console.log(error);
+  });
+
+  return datos;
+}
+
+
+
+//-------------------------------------------------------------------------------
+//  getDatosTR
+//-------------------------------------------------------------------------------
+export async function getBalance() {
+  //leer token desde local storage
+  const accessToken = window.localStorage.getItem('accessToken');
+  const walletAddress = window.localStorage.getItem('walletAddress');
+
+  console.log(walletAddress);
+
+  var body = JSON.stringify({
+    "walletAddress": walletAddress
+  });
+  
+  var config = {
+    method: 'post',
+    url: `${base_url}/api/private/users/get-balance`,
+    headers: {
+      'authorization': `Bearer ${accessToken}`,
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    },
+    data: body
+  }
+
+  let datos = null;
+  await axios(config).then(function (response) {
+    datos = response.data;
+   // console.log(JSON.stringify(datos));  
+  }).catch(function (error) {
+    console.log(error);
+  });
+
+  return datos;
+}
+
+
