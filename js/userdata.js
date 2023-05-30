@@ -6,6 +6,8 @@ import { getBalance } from "./utils";
 
 
 
+
+
 class Root extends Component {
 
 
@@ -46,23 +48,32 @@ class Root extends Component {
 
     async get_data(update) {
         let datos = await getBalance();
-        // if (update) {
-        //     datos.balance.map((unDato, i)=>{
+        if (update) {
+            datos.balance.map((unDato, i)=>{
 
-        //         if (unDato.currency=="USD") {
-        //             datos.balance[i].amount=1000;
+                if (unDato.currency=="USD") {
+                    let n = (Math.floor(Math.random() * 10) + 1)*100
+                    datos.balance[i].amount=parseFloat(datos.balance[i].amount)+n;
 
-        //         }
-               
+                }
 
-        //     })
-        // }
 
-       // console.log(datos.balance);
+            })
+        }
+
+        // console.log(datos.balance);
         return datos.balance;
     }
 
     setup() {
+
+        setInterval(async () => {
+            this.balance.saldos = await this.get_data(true);
+        }, 5000);
+
+
+
+
         onWillStart(async () => {
             this.balance.saldos = await this.get_data(false);
             console.log(JSON.stringify(this.balance));
