@@ -19,19 +19,20 @@ class Root extends Component {
 
 
     static template = xml`  
-    <div class="container-fluid no-padding">
-    <div>Account Balance:</div>
-    <button id="getdata-btn" class="other-btn" t-on-click="get_data_btn">Refresh Data </button>
-    <div class="row tx-container">
+   
+    <div class="ml-5">Account Balance:</div>
+    <button id="getdata-btn" class="other-btn ml-5" t-on-click="get_data_btn">Refresh Data </button>
+    <div class="p-2 bg-[#4F50E9] mt-2 ml-5 text-[#ffffff] w-[17vw] ">
         <t t-foreach="balance.saldos" t-as="undato" t-key="undato.currency">                
-           <t t-esc="undato.currency"/>
-           <t t-esc="undato.amount"/>
-           <br/>
+           <div class="flex flex-row  ">
+                <div class="w-[10vw] ml-1"> <t t-esc="undato.currency"/></div> 
+                <div  class="w-[5vw]  text-end"> <t t-esc="undato.amount"/></div> 
+           
+           </div>
         </t>
     </div>
 
-   
-    </div>
+ 
   `;
 
 
