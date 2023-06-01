@@ -11,7 +11,9 @@ const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
 
- export const baseSocketURL = "wss://backend.ducapp.net/";
+ export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+//export const baseSocketURL = "https://backend.ducwallet.com"; //Produccion
+
 
 
 //-------------------------------------------------------------------------------
