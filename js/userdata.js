@@ -83,8 +83,15 @@ class Root extends Component {
 
         const accessToken = window.localStorage.getItem('accessToken');
         const walletAddress = window.localStorage.getItem('walletAddress');
+        //TRANSACTION_0x0F673BAF2C67eb6165CC526df5386032d653fbB5
+        const userId = window.localStorage.getItem('userId');
         const subscriptionPath = "/api/subscription";
-        const roomName = `TRANSACTION_${walletAddress}`;
+        // const roomName = `TRANSACTION_${walletAddress}`;
+        //const roomName = {entity: `TRANSACTION_${walletAddress}`};
+        const roomName = {entity: `TRANSACTION_${userId}`};
+       // const roomName = { entity: 'TRANSACTIONS'};
+
+        console.log(roomName);
         const query = {
             token: accessToken,
              roomName: roomName,
@@ -103,6 +110,8 @@ class Root extends Component {
 
 
             //this.socket.join(roomName);
+
+            this.socket.emit("subscribe", roomName);
 
             this.socket.on('TRANSACTION_CREATED', async function (datos_servidor) {
                 console.log('TRANSACTION_CREATED datos servidor1', datos_servidor);
