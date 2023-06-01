@@ -1,7 +1,12 @@
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
 
 import useStore from "./store";
-import { getBalance } from "./utils";
+import { getBalance, baseSocketURL } from "./utils";
+
+
+
+
+
 
 
 
@@ -15,6 +20,11 @@ class Root extends Component {
     balance = useState({
         saldos: []
     });
+
+    socket = null;
+    subscriptionPath = "/api/subscription";
+    // transports: ['websocket'],
+    // transport:'polling'
 
 
 
@@ -49,11 +59,11 @@ class Root extends Component {
     async get_data(update) {
         let datos = await getBalance();
         if (update) {
-            datos.balance.map((unDato, i)=>{
+            datos.balance.map((unDato, i) => {
 
-                if (unDato.currency=="USD") {
-                    let n = (Math.floor(Math.random() * 10) + 1)*100
-                    datos.balance[i].amount=parseFloat(datos.balance[i].amount)+n;
+                if (unDato.currency == "USD") {
+                    let n = (Math.floor(Math.random() * 10) + 1) * 100
+                    datos.balance[i].amount = parseFloat(datos.balance[i].amount) + n;
 
                 }
 
@@ -67,9 +77,58 @@ class Root extends Component {
 
     setup() {
 
-        setInterval(async () => {
-            this.balance.saldos = await this.get_data(true);
-        }, 5000);
+        // setInterval(async () => {
+        //     this.balance.saldos = await this.get_data(true);
+        // }, 5000);
+
+        const accessToken = window.localStorage.getItem('accessToken');
+        const walletAddress = window.localStorage.getItem('walletAddress');
+        const subscriptionPath = "/api/subscription";
+        const roomName = `TRANSACTION_${walletAddress}`;
+        const query = {
+            token: accessToken,
+             roomName: roomName,
+        }
+
+        //inicializando el socket
+        this.socket = io(baseSocketURL, {
+            path: subscriptionPath,
+            query: query,
+        });
+
+
+        this.socket.on("connect", () => {
+            console.log("Socket conectado correctamente");
+            console.log("socket id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
+
+
+            //this.socket.join(roomName);
+
+            this.socket.on('TRANSACTION_CREATED', async function (datos_servidor) {
+                console.log('TRANSACTION_CREATED datos servidor1', datos_servidor);
+                this.balance.saldos = await this.get_data(false);
+                console.log(JSON.stringify(this.balance));
+            });
+
+            this.socket.on('TRANSACTION_UPDATE', async function (datos_servidor) {
+                console.log('TRANSACTION_UPDATE datos servidor1', datos_servidor);
+                this.balance.saldos = await this.get_data(false);
+                console.log(JSON.stringify(this.balance));
+            });
+
+            //cualquier usario que se conecte al servidor es detectado por este evento
+            this.socket.on('USER-CONNECTED', function (datos_servidor) {
+                console.log('USER-CONNECTED datos servidor1', datos_servidor);
+            });
+
+        });
+
+
+        this.socket.on('reconnect', () => {
+            //Your Code Here
+            console.log('Socket RE conectado ', this.socket.connected);
+        });
+
 
 
 
@@ -77,8 +136,15 @@ class Root extends Component {
         onWillStart(async () => {
             this.balance.saldos = await this.get_data(false);
             console.log(JSON.stringify(this.balance));
+
+           
+
+
+            
         });
     }
+
+
 
 }
 
