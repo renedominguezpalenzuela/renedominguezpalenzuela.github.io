@@ -1,7 +1,7 @@
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
 
-import useStore from "./store";
-import { getBalance, baseSocketURL } from "./utils";
+import useStore from "./store.js";
+import { getBalance, baseSocketURL } from "./utils.js";
 
 class Root extends Component {
 

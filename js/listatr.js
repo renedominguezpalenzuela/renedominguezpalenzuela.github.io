@@ -1,7 +1,8 @@
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
 
-import useStore from "./store";
-import { getTrData } from "./utils";
+
+import useStore from "./store.js";
+import { getTrData } from "./utils.js";
 
 
 
