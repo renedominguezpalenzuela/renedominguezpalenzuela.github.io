@@ -26,7 +26,7 @@ class Root extends Component {
    
 
       <div class="main-back grid place-items-center h-screen ">
-        <div class="d-sm-none ">
+        <div class="sm:hidden ">
             <img src="img/logo.png" alt="" class="img-size"/>
         </div>
 

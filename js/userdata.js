@@ -2,6 +2,9 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import useStore from "./store.js";
 import { getBalance, baseSocketURL } from "./utils.js";
+import { Menu } from "./components/menu.js";
+
+
 
 class Root extends Component {
 
@@ -12,7 +15,10 @@ class Root extends Component {
     socket = null;
     subscriptionPath = "/api/subscription";
 
+    static components = { Menu };
+
     static template = xml`  
+    <Menu/>
     <div class="ml-5">Account Balance:</div>
     <button id="getdata-btn" class="other-btn ml-5" t-on-click="get_data_btn">Refresh Data </button>
     <div class="p-2 bg-[#4F50E9] mt-2 ml-5 text-[#ffffff] w-[17vw] ">

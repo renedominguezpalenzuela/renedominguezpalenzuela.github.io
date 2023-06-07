@@ -3,16 +3,19 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import useStore from "./store.js";
 import { getTrData } from "./utils.js";
+import { Menu } from "./components/menu.js";
 
 
 
 
 class Root extends Component {
+  static components = { Menu };
 
   datos = null;
   grid = null;
 
   static template = xml`  
+    <Menu/>
     <div class="container-fluid no-padding">
     <div>TX List:</div>
     <button id="getdata-btn" class="other-btn" t-on-click="get_data">Refresh Data </button>
