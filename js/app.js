@@ -58,28 +58,17 @@ class Root extends Component {
 
 
 
-  async loadData2() {
-    let a = 0;
-    for (let index = 0; index < 1000000000; index++) {
-      a = a + 1;
-    }
-    console.log('fin' + a)
-    this.state.nombre = "Pedro";
-  }
-
 
   setup() {
     this.store = useStore();
 
-    this.state = useState({ nombre: "juan" });
+   
 
     onMounted(async () => {
-      // do something here
+   
 
       console.log('www')
-      //Cargar datos
-      // this.data = await this.loadData2()
-
+     
     });
 
 
@@ -87,9 +76,9 @@ class Root extends Component {
 
 
     onRendered(async () => {
-      // do something
+
       console.log('xxx')
-      //this.data = await this.loadData2()
+      
     });
 
 
@@ -103,11 +92,12 @@ class Root extends Component {
    // console.log("Resultado de login "+va);
 
     const userInfo = await getUsrInfo();
-   // console.log("User Info "+JSON.stringify(userInfo.user._id));
+    // console.log("User Info "+JSON.stringify(userInfo.user._id));
 
    // if (va) window.location.assign("listatr.html");
 
-    if (userInfo) window.location.assign("userdata.html");
+   // if (userInfo) window.location.assign("userdata.html");
+   if (userInfo) window.location.assign("main.html");
    
   }
 
