@@ -13,8 +13,8 @@ class MenuItemCollapsable extends Component {
         </div>
 
         <div class="collapse-content"> 
-            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2" >
-                 <t t-esc="unitem.name"/>
+            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2 cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id)">
+                 <t t-esc="unitem.name"  />
             </div>
         </div>
         
@@ -41,11 +41,13 @@ class MenuItemCollapsable extends Component {
 </div>
 */
 
+//() => toggleTodo(todo.isCompleted)
+    //t-on-click="props.leftMenuController"
 class MenuItemSingle extends Component {
     static  template=xml`
     
-        <div class="pl-4 ">
-             <t t-esc="props.name"/>
+        <div class="pl-4 cursor-pointer" t-on-click="()=>props.leftMenuController(props.id)">
+             <t t-esc="props.name"/><t t-esc="props.id"/>
         </div>
 
         
@@ -69,10 +71,10 @@ export class LeftMenu extends Component {
 
                 <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" >
                    <t t-if="unitem.type === 1">                       
-                      <MenuItemCollapsable  name="unitem.name" items="unitem.subitems"/>                         
+                      <MenuItemCollapsable  name="unitem.name" items="unitem.subitems" leftMenuController="props.leftMenuController"/>                         
                    </t>
                    <t t-if="unitem.type === 2">                       
-                     <MenuItemSingle  name="unitem.name" />                         
+                     <MenuItemSingle  name="unitem.name" id="unitem.id" leftMenuController="props.leftMenuController"/>                         
                    </t>
                 </div>
                

@@ -6,9 +6,20 @@ import { LeftMenu } from "./components/leftmenu.js";
 
 
 
+class ComponenteA extends Component {
+  static  template=xml`
+    <div>Este es el componente A</div>   
+  `;
+}
+
+class ComponenteB extends Component {
+  static  template=xml`
+  <div>Este es el componente B</div>
+  `;
+}
 
 class Root extends Component {
-  static components = { Menu, LeftMenu };
+  static components = { Menu, LeftMenu, ComponenteA,  ComponenteB};
 
 
   leftmenuItems = [
@@ -17,14 +28,14 @@ class Root extends Component {
     {
       id: 3, name: "Send Money", type: 1, subitems: [
         { id: 4, name: "Send Money To Cuba" },
-        { id: 4, name: "Send Money To Mexico" },
+        { id: 5, name: "Send Money To Mexico" },
       ]
     },
 
     {
-      id: 4, name: "Send Money 2", type: 1, subitems: [
-        { id: 5, name: "Send Money To Cuba 2" },
-        { id: 6, name: "Send Money To Mexico 2" },
+      id: 6, name: "Send Money 2", type: 1, subitems: [
+        { id: 7, name: "Send Money To Cuba 2" },
+        { id: 8, name: "Send Money To Mexico 2" },
       ]
     },
   ];
@@ -33,15 +44,14 @@ class Root extends Component {
 
     <div class="grid  grid-cols-[15%_85%]   w-full bg-[#F1F2F7] h-screen">
       <div class="p-2">
-       <LeftMenu  items="leftmenuItems"/>
+       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
       </div>
       <div class="p-2 h-full ">
       <Menu/>
-        <main class="flex items-center justify-center h-[80%] rounded-lg ">
-        
-        <div class="p-3 bg-[#FFFFFF] rounded-lg w-[90vw] h-full ">
-        
+        <main class="flex items-center justify-center h-[80%] rounded-lg ">       
+        <div class="p-3 bg-[#FFFFFF] rounded-lg w-[90vw] h-full ">       
           Contenido principal
+          <ComponenteA/>
         </div>
         </main>
         
@@ -58,7 +68,7 @@ class Root extends Component {
     const userId = window.localStorage.getItem('userId');
 
 
-
+   // this.leftMenuController = this.leftMenuController.bind(this);
 
 
     onWillStart(() => {
@@ -75,6 +85,14 @@ class Root extends Component {
     });
 
   }
+
+
+
+  leftMenuController(menuId) {
+    console.log("Menu controller ");
+    console.log(menuId);
+  }
+
 
 
 
