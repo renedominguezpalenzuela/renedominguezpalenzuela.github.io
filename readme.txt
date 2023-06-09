@@ -9,3 +9,7 @@ npm install lite-server -g
 4) http://localhost:3000/
 
 
+DOC:
+https://apidoc.ducapp.com/
+
+
