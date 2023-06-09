@@ -27,7 +27,7 @@ class MenuItemSingle extends Component {
     static  template=xml`
     
         <div class="pl-4 cursor-pointer" t-on-click="()=>props.leftMenuController(props.id)">
-             <t t-esc="props.name"/><t t-esc="props.id"/>
+             <t t-esc="props.name"/><t />
         </div>
 
         
