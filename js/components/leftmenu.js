@@ -23,26 +23,6 @@ class MenuItemCollapsable extends Component {
 }
 
 
-
-/*
-<div class="collapse collapse-arrow ">
-<input type="radio" name="my-accordion-2" checked="checked" /> 
-
-<div class="collapse-title ">
-     <t t-esc="props.name"/>
-</div>
-
-<div class="collapse-content"> 
-    <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" >
-        <t t-esc="unitem.name"/>
-    </div>
-    
-</div>
-</div>
-*/
-
-//() => toggleTodo(todo.isCompleted)
-    //t-on-click="props.leftMenuController"
 class MenuItemSingle extends Component {
     static  template=xml`
     
@@ -86,7 +66,7 @@ export class LeftMenu extends Component {
     setup() {
        
     
-       console.log(this.props)
+      
     }
 }
 

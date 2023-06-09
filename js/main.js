@@ -8,19 +8,21 @@ import { LeftMenu } from "./components/leftmenu.js";
 
 class ComponenteA extends Component {
   static  template=xml`
-    <div>Este es el componente A</div>   
+    <div>This is the profile component</div>   
   `;
 }
 
 class ComponenteB extends Component {
   static  template=xml`
-  <div>Este es el componente B</div>
+  <div>This is the receivers component</div>
   `;
 }
 
 class Root extends Component {
   static components = { Menu, LeftMenu, ComponenteA,  ComponenteB};
 
+  state = useState({menuId: 1});
+   
 
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
@@ -51,7 +53,19 @@ class Root extends Component {
         <main class="flex items-center justify-center h-[80%] rounded-lg ">       
         <div class="p-3 bg-[#FFFFFF] rounded-lg w-[90vw] h-full ">       
           Contenido principal
-          <ComponenteA/>
+    
+
+          <t t-if="this.state.menuId === 1">
+             <ComponenteA/>
+          </t>
+          <t t-elif="this.state.menuId === 2">
+             <ComponenteB/>
+          </t>
+          <t t-else="">
+             <div>No component defined for this menu option yet</div>
+          </t>
+            
+          
         </div>
         </main>
         
@@ -91,6 +105,9 @@ class Root extends Component {
   leftMenuController(menuId) {
     console.log("Menu controller ");
     console.log(menuId);
+
+    this.state.menuId = menuId;
+   
   }
 
 
