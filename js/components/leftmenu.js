@@ -43,13 +43,13 @@ export class LeftMenu extends Component {
 
 
     static template=xml`       
-            <div class="bg-[#009AFF] rounded-lg text-white text-[1rem] h-full">            
+            <div class="bg-[#009AFF] rounded-lg text-white text-[1rem] sm:h-[100%] pb-5">            
 
                 <a class="flex items-center justify-center p-3" href="/userdata.html">
-                    <img src="../img/logo-white.png" height="16px"  alt="Logo" loading="lazy"  class="img-logo"  />
+                    <img src="../img/logo-white.png" height="1.6rem"  alt="Logo" loading="lazy"  class="img-logo"  />
                 </a>
 
-                <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" >
+                <div t-foreach="props.items" t-as="unitem" t-key="unitem.id"  >
                    <t t-if="unitem.type === 1">                       
                       <MenuItemCollapsable  name="unitem.name" items="unitem.subitems" leftMenuController="props.leftMenuController"/>                         
                    </t>

@@ -30,16 +30,14 @@ export class Menu extends Component {
     static template=xml`
 
 
-            <div class="navbar  ">
-                <div class="navbar-start">
+            <div class="navbar hidden sm:flex ">
+                <div class="navbar-start ">
                     
-                       <!-- <a class="navbar-brand me-2" href="/userdata.html">
-                            <img src="../img/logo.png" height="16px"  alt="Logo" loading="lazy"  class="img-logo"  />
-                        </a>-->
+        
                         
                               
                 </div>
-                <div class="navbar-center hidden lg:flex">
+                <div class="navbar-center ">
                     
                 </div>
                 <div class="navbar-end">
