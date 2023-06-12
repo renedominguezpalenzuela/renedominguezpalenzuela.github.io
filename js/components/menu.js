@@ -33,7 +33,9 @@ export class Menu extends Component {
             <div class="navbar hidden sm:flex ">
                 <div class="navbar-start ">
                     
-        
+                <div class="text-[1.5rem]  font-[600] pl-1 ">
+                    <t t-esc="props.title"/>
+                </div>
                         
                               
                 </div>
@@ -63,6 +65,28 @@ export class Menu extends Component {
 
     
     `;
+
+
+    
+  setup() {
+  
+
+
+    onWillStart(() => {
+        // console.logs(props)
+
+    });
+
+    onMounted(() => {
+      
+    });
+
+
+    onRendered(() => {
+      
+    });
+
+  }
 }
 
 

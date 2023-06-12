@@ -13,7 +13,7 @@ class MenuItemCollapsable extends Component {
         </div>
 
         <div class="collapse-content"> 
-            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2 cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id)">
+            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2 cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id, unitem.name)">
                  <t t-esc="unitem.name"  />
             </div>
         </div>
@@ -26,7 +26,7 @@ class MenuItemCollapsable extends Component {
 class MenuItemSingle extends Component {
     static  template=xml`
     
-        <div class="pl-4 cursor-pointer" t-on-click="()=>props.leftMenuController(props.id)">
+        <div class="pl-4 cursor-pointer" t-on-click="()=>props.leftMenuController(props.id, props.name)">
              <t t-esc="props.name"/><t />
         </div>
 
