@@ -45,7 +45,10 @@ export class Menu extends Component {
                 <div class="navbar-end">
                     <ul class="menu menu-horizontal px-1">
                     
-                        <li><a class="dropdown-item" href="/listatr.html">TX List</a></li>
+                        <li>
+                            <a class="dropdown-item" href="/listatr.html">TX List</a>
+                        </li>
+
                         <li tabindex="0">
                             <details>
                                 <summary>Send Money</summary>
@@ -56,7 +59,10 @@ export class Menu extends Component {
                                 </ul>
                             </details>
                         </li>
-                        <li><a class="dropdown-item" href="/userdata.html">User Balance</a></li>
+
+                        <li>
+                            <a class="dropdown-item" href="/userdata.html">User Balance</a>
+                        </li>
                     </ul>
                   
                 </div>

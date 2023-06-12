@@ -89,10 +89,10 @@ export class Profile extends Component {
 
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
         <div class="card-title flex flex-col rounded-lg">
-           HHH
+           Other Data
         </div>
         <div class="card-body items-center ">
-           sss
+           more data
         </div>
       </div>
     </div>
