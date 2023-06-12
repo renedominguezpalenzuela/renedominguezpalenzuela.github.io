@@ -3,24 +3,13 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { Menu } from "./components/menu.js";
 import { LeftMenu } from "./components/leftmenu.js";
 import { Profile } from "./components/profile.js";
+import { SendMoney } from "./components/sendmoney.js";
 
-
-class ComponenteA extends Component {
-  static  template=xml`
-    <div>This is the profile component</div>   
-  `;
-}
-
-class ComponenteB extends Component {
-  static  template=xml`
-  <div>This is the receivers component</div>
-  `;
-}
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, ComponenteA,  ComponenteB, Profile};
+  static components = { Menu, LeftMenu, Profile, SendMoney};
 
-  state = useState({menuId: 1, title:'Profile'});
+  state = useState({menuId: 4, title:'Send Money To Cuba'});
    
 
   leftmenuItems = [
@@ -60,8 +49,8 @@ class Root extends Component {
             <Profile/>
           </t>
 
-          <t t-elif="this.state.menuId === 2">
-            <ComponenteB/>
+          <t t-elif="this.state.menuId === 4">
+            <SendMoney/>
           </t>
 
           <t t-else="">

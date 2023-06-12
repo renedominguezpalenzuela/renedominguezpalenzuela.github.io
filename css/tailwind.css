@@ -1890,6 +1890,20 @@ html {
   border-color: hsl(var(--b1) / var(--tw-border-opacity));
 }
 
+.badge-secondary {
+  --tw-border-opacity: 1;
+  border-color: hsl(var(--s) / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--s) / var(--tw-bg-opacity));
+  --tw-text-opacity: 1;
+  color: hsl(var(--sc) / var(--tw-text-opacity));
+}
+
+.badge-outline.badge-secondary {
+  --tw-text-opacity: 1;
+  color: hsl(var(--s) / var(--tw-text-opacity));
+}
+
 .btm-nav > *:where(.active) {
   border-top-width: 2px;
   --tw-bg-opacity: 1;
@@ -2353,6 +2367,13 @@ details.collapse summary::-webkit-details-marker {
   color: hsl(var(--bc) / var(--tw-text-opacity));
 }
 
+.label-text-alt {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  --tw-text-opacity: 1;
+  color: hsl(var(--bc) / var(--tw-text-opacity));
+}
+
 .input[list]::-webkit-calendar-picker-indicator {
   line-height: 1em;
 }
@@ -2395,6 +2416,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 0px;
   margin-bottom: 0px;
   margin-left: -1px;
+}
+
+.join-item:focus {
+  isolation: isolate;
 }
 
 .link:focus {
@@ -2671,6 +2696,10 @@ details.collapse summary::-webkit-details-marker {
   100% {
     transform: translateY(0);
   }
+}
+
+.select-bordered {
+  --tw-border-opacity: 0.2;
 }
 
 .select:focus {
@@ -3582,6 +3611,10 @@ details.collapse summary::-webkit-details-marker {
   position: sticky;
 }
 
+.row-start-2 {
+  grid-row-start: 2;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -3718,6 +3751,10 @@ details.collapse summary::-webkit-details-marker {
 
 .w-\[3vw\] {
   width: 3vw;
+}
+
+.w-\[30\%\] {
+  width: 30%;
 }
 
 .max-w-xs {
@@ -3906,6 +3943,10 @@ details.collapse summary::-webkit-details-marker {
 
 .pt-10 {
   padding-top: 2.5rem;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .text-end {
