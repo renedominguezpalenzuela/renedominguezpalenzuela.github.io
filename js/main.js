@@ -44,16 +44,16 @@ class Root extends Component {
   static template = xml` 
 
   
-<div class="grid  sm:grid-cols-[15%_85%]   w-full bg-[#F1F2F7] sm:h-screen">
+<div class="grid  sm:grid-cols-[15%_85%]   w-full bg-[#F1F2F7] h-screen">
     <div class="p-2 sm:h-screen ">
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
     </div>
 
     <div class="p-2 sm:h-screen  ">
       <div class="sm:h-[10%]">
-      <Menu title="this.state.title"/>
+         <Menu title="this.state.title"/>
       </div>
-      <main class="flex  justify-center  rounded-lg  sm:h-[90%]  h-[30rem] ">       
+      <main class="flex  justify-center  rounded-lg  sm:h-[90%]  h-full ">       
         <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full  ">       
         
           <t t-if="this.state.menuId === 1">

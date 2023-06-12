@@ -24,8 +24,8 @@ export class Profile extends Component {
   })
 
   static template = xml`    
-    <div>
-      <div class="card sm:w-[30vw] w-full bg-base-100 shadow-xl rounded-lg">
+    <div class="grid sm:grid-cols-[34%_64%] gap-2">
+      <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
         <div class="card-title flex flex-col rounded-lg">
             <div class="px-10 pt-10 ">
                 <t t-if="this.state.avatar">
@@ -82,6 +82,17 @@ export class Profile extends Component {
           <div class="card-actions">
             <button class="btn btn-primary" t-on-click="onSafeAllData">Save</button>
           </div>
+        </div>
+      </div>
+
+
+
+      <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
+        <div class="card-title flex flex-col rounded-lg">
+           HHH
+        </div>
+        <div class="card-body items-center ">
+           sss
         </div>
       </div>
     </div>

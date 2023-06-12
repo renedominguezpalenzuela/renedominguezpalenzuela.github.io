@@ -3604,6 +3604,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 0.5rem;
 }
 
+.ml-4 {
+  margin-left: 1rem;
+}
+
 .block {
   display: block;
 }
@@ -3770,6 +3774,18 @@ details.collapse summary::-webkit-details-marker {
 
 .justify-between {
   justify-content: space-between;
+}
+
+.gap-10 {
+  gap: 2.5rem;
+}
+
+.gap-1 {
+  gap: 0.25rem;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .rounded {
@@ -4050,6 +4066,10 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 640px) {
+  .sm\:ml-4 {
+    margin-left: 1rem;
+  }
+
   .sm\:block {
     display: block;
   }
@@ -4094,8 +4114,32 @@ details.collapse summary::-webkit-details-marker {
     width: 30vw;
   }
 
+  .sm\:w-\[60vw\] {
+    width: 60vw;
+  }
+
   .sm\:grid-cols-\[15\%_85\%\] {
     grid-template-columns: 15% 85%;
+  }
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sm\:grid-cols-\[20\%_30\%\] {
+    grid-template-columns: 20% 30%;
+  }
+
+  .sm\:grid-cols-\[20\%_60\%\] {
+    grid-template-columns: 20% 60%;
+  }
+
+  .sm\:grid-cols-\[34\%_64\%\] {
+    grid-template-columns: 34% 64%;
+  }
+
+  .sm\:flex-row {
+    flex-direction: row;
   }
 }
 
