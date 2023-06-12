@@ -2,7 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import { Menu } from "./components/menu.js";
 import { LeftMenu } from "./components/leftmenu.js";
-import { Profile } from "./profile.js";
+import { Profile } from "./components/profile.js";
 
 
 class ComponenteA extends Component {
