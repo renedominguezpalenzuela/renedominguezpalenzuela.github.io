@@ -67,7 +67,7 @@ class Root extends Component {
     onMounted(async () => {
    
 
-      console.log('www')
+      
      
     });
 
@@ -77,7 +77,7 @@ class Root extends Component {
 
     onRendered(async () => {
 
-      console.log('xxx')
+     
       
     });
 

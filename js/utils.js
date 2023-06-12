@@ -11,8 +11,54 @@ const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
 
- export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //export const baseSocketURL = "https://backend.ducwallet.com"; //Produccion
+
+//-------------------------------------------------------------------------------------------
+//  Clase global para llamado al API
+//-------------------------------------------------------------------------------------------
+export class API {
+
+
+  constructor(accessToken) {
+
+    this.base_url = 'https://backend.ducapp.net';
+    this.x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
+
+    this.baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+    //this.baseSocketURL = "https://backend.ducwallet.com"; //Produccion
+
+
+    this.headers = {
+      'authorization': `Bearer ${accessToken}`,
+      'x-api-key': this.x_api_key,
+      'Content-Type': 'application/json',
+    }
+  }
+
+
+  // Obtiene datos del usuario
+  async getUserProfile() {
+
+    var config = {
+      method: 'get',
+      url: `${this.base_url}/api/private/users`,
+      headers: this.headers,
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data.user;
+    }).catch(function (error) {
+      console.log(error);
+      return null;
+    });
+
+    return datos;
+
+  }
+}
+
 
 
 
@@ -197,7 +243,7 @@ export async function getBalance() {
   var body = JSON.stringify({
     "walletAddress": walletAddress
   });
-  
+
   var config = {
     method: 'post',
     url: `${base_url}/api/private/users/get-balance`,
@@ -212,7 +258,7 @@ export async function getBalance() {
   let datos = null;
   await axios(config).then(function (response) {
     datos = response.data;
-   // console.log(JSON.stringify(datos));  
+    // console.log(JSON.stringify(datos));  
   }).catch(function (error) {
     console.log(error);
   });

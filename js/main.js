@@ -2,8 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import { Menu } from "./components/menu.js";
 import { LeftMenu } from "./components/leftmenu.js";
-
-
+import { Profile } from "./profile.js";
 
 
 class ComponenteA extends Component {
@@ -19,7 +18,7 @@ class ComponenteB extends Component {
 }
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, ComponenteA,  ComponenteB};
+  static components = { Menu, LeftMenu, ComponenteA,  ComponenteB, Profile};
 
   state = useState({menuId: 1});
    
@@ -56,15 +55,15 @@ class Root extends Component {
       </div>
       <main class="flex  justify-center  rounded-lg  sm:h-[90%]  h-[30rem] ">       
         <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full  ">       
-          Contenido principal
-
-
+        
           <t t-if="this.state.menuId === 1">
-            <ComponenteA/>
+            <Profile/>
           </t>
+
           <t t-elif="this.state.menuId === 2">
             <ComponenteB/>
           </t>
+
           <t t-else="">
             <div>No component defined for this menu option yet</div>
           </t>
@@ -100,16 +99,16 @@ class Root extends Component {
 
 
     onWillStart(() => {
-      console.log("1) WillStart");
+  
     });
 
     onMounted(() => {
-      console.log("2) Mounted");
+      
     });
 
 
     onRendered(() => {
-      console.log("3) Rendered");
+      
     });
 
   }
