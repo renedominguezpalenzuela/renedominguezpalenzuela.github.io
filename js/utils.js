@@ -57,6 +57,63 @@ export class API {
     return datos;
 
   }
+
+
+  // Obtiene el fee a aplicar
+  async getFee() {
+
+    var config = {
+      method: 'get',
+      url: `${this.base_url}/api/private/users`,
+      headers: this.headers,
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data.user;
+    }).catch(function (error) {
+      console.log(error);
+      return null;
+    });
+
+    return datos;
+
+  }
+
+   // Obtiene todos los tipos de cambio
+   async getExchangeRate(moneda_base) {
+    
+    var config = {
+      method: 'get',
+      url: `${this.base_url}/api/private/rates?base=${moneda_base}`,
+      headers: this.headers,
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data.rates;
+
+      return datos;
+
+
+
+    }).catch(function (error) {
+      console.log(error);
+      return null;
+    });
+
+    return datos;
+
+  }
+
+//https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
+//TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
+  static roundDec(nbr){
+    //var mult = Math.pow(10,dec_places);
+    //return Math.round(nbr * mult) / mult;
+    Number(Math.round(nbr + 'e2') + 'e-2').toFixed(2)
+   }
+
 }
 
 
