@@ -14,26 +14,22 @@ class Root extends Component {
 
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
-    { id: 2, name: "Receivers", type: 2 },
+    { id: 2, name: "Beneficiaries", type: 2 },
     {
-      id: 3, name: "Send Money", type: 1, subitems: [
-        { id: 4, name: "Send Money To Cuba" },
-        { id: 5, name: "Send Money To Mexico" },
+      id: 3, name: "Send Money To Cuba", type: 1, subitems: [
+        { id: 4, name: "To Credit Card" },
+        { id: 5, name: "Home Delivery" },
+    
       ]
     },
 
-    {
-      id: 6, name: "Send Money 2", type: 1, subitems: [
-        { id: 7, name: "Send Money To Cuba 2" },
-        { id: 8, name: "Send Money To Mexico 2" },
-      ]
-    },
+   
   ];
 
   static template = xml` 
 
   
-<div class="grid  sm:grid-cols-[15%_85%]   w-full bg-[#F1F2F7] h-screen">
+<div class="grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7] h-screen">
     <div class="p-2 sm:h-screen ">
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
     </div>
