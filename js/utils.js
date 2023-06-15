@@ -60,17 +60,20 @@ export class API {
 
 
   // Obtiene el fee a aplicar
-  async getFee() {
+  // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
+  // zone: Provincias | Habana
+  // amount: Total a enviar
+  async getFee(service, zone, amount) {
 
     var config = {
       method: 'get',
-      url: `${this.base_url}/api/private/users`,
+      url: `${this.base_url}/api/private/fees/cu/${service}/${zone}?amount=${amount}`,
       headers: this.headers,
     }
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data.user;
+      datos = response.data;
     }).catch(function (error) {
       console.log(error);
       return null;
