@@ -259,56 +259,31 @@ export class SendMoney extends Component {
 
     if (this.changingReceiveAmount) { return; }
 
-   
-
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
-    console.log("Cambio: Enviado");
+   
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    console.log(service);
     const zone = "Habana"; //TODO: obtener de datos
-
-    
 
     const sendAmount = this.inputSendRef.el.value;
     const conversionRate = this.conversionRate.value;
 
-    console.log(`Receive Amount ${sendAmount}`);
-
-
-    console.log(`Conversion Rate ${conversionRate}`)
-
-
-   
-
-   
     this.getFee(service, zone, sendAmount).then((feeData) => {
-      console.log("fee Data ");
-      console.log(feeData);
-
 
       const fee = feeData.fee;
-      console.log(`Fee ${fee}`)
-
-     
-     
+    
       //const receiveAmount = (sendAmount * conversionRate);
       // this.inputReceiveRef.el.value = (this.conversionRate.value * (this.inputSendRef.el.value - this.fee.value));
- 
-     //console.log(`Receive Amount sin fee ${receiveAmount}`)
-   
+      //console.log(`Receive Amount sin fee ${receiveAmount}`)
 
-      this.inputReceiveRef.el.value = ((sendAmount - fee)*conversionRate).toFixed(2);
-      console.log(`Receive Amount + Fee ${this.inputReceiveRef.el.value}`)
-
-   
-
+      const receiveAmount = ((sendAmount - fee) * conversionRate).toFixed(2);
+      if (receiveAmount>0) this.inputReceiveRef.el.value =receiveAmount;
+      
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
       const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
       this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
 
       this.changingSendAmount = false;
       this.changingReceiveAmount = false;
@@ -320,7 +295,7 @@ export class SendMoney extends Component {
 
 
 
-  
+
   onChangeReceiveInput = this.debounce(async () => {
 
     if (this.changingSendAmount) { return; }
@@ -328,49 +303,29 @@ export class SendMoney extends Component {
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-    console.log("Cambio: Recibido");
+  
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    console.log(service);
+   
     const zone = "Habana"; //TODO: obtener de datos
-
-    
 
     const receiveAmount = this.inputReceiveRef.el.value;
     const conversionRate = this.conversionRate.value;
 
-    console.log(`Receive Amount ${receiveAmount}`);
-
-
-    console.log(`Conversion Rate ${conversionRate}`)
-
 
     const sendAmount = (receiveAmount / conversionRate);
-    console.log(`Send Amount ${sendAmount}`)
+  
 
-   
     this.getFee(service, zone, sendAmount).then((feeData) => {
-      console.log("fee Data ");
-      console.log(feeData);
 
 
       const fee = feeData.fee;
-      console.log(`Fee ${fee}`)
-
-     
-     
-
-   
 
       this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
-      console.log(`Send Amount + Fee ${this.inputSendRef.el.value}`)
-
-   
-
+     
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
       const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
       this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
 
       this.changingSendAmount = false;
       this.changingReceiveAmount = false;
@@ -379,12 +334,6 @@ export class SendMoney extends Component {
     );
 
   }, this.tiempoDebounce);
-
-
-
-
-
-
 
 
 }
