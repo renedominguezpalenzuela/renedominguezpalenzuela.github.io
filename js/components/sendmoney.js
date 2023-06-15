@@ -5,7 +5,7 @@ import { LeftMenu } from "./leftmenu.js";
 import { API } from "../utils.js";
 
 
-
+//TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 
 export class SendMoney extends Component {
 
