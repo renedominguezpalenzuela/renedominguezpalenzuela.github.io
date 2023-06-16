@@ -11,13 +11,13 @@ const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
 
- const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //export const baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
 //-------------------------------------------------------------------------------------------
 //  Clase global para llamado al API
 //-------------------------------------------------------------------------------------------
- export class API {
+export class API {
 
 
   constructor(accessToken) {
@@ -111,10 +111,16 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
 //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
 //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
-  static roundDec(nbr){
+  static roundDec(numero, dec_places){
     //var mult = Math.pow(10,dec_places);
     //return Math.round(nbr * mult) / mult;
-    return Number(Math.round(nbr + 'e2') + 'e-2').toFixed(2)
+
+    let negativo = 1;
+
+    if (numero<0) negativo = -1;
+    const resultado = Number(Math.round(Math.abs(numero) + 'e'+dec_places) + 'e-'+dec_places)
+
+    return (resultado * negativo).toFixed(dec_places);
    }
 
 }
@@ -125,7 +131,7 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 //-------------------------------------------------------------------------------
 //  Solicitar estado del API
 //-------------------------------------------------------------------------------
- function getAPIStatus() {
+export function getAPIStatus() {
   axios.get(`${base_url}/api/health`)
     .then(response => {
       const api_status = response.data.status;
@@ -154,7 +160,7 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 //  Login
 //-------------------------------------------------------------------------------
 
- async function login(usr, pass) {
+export async function login(usr, pass) {
   const config = {
     headers: {
       "x-api-key": x_api_key,
@@ -213,7 +219,7 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
- async function getTrData() {
+export async function getTrData() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
 
@@ -248,7 +254,7 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
- async function getUsrInfo() {
+export async function getUsrInfo() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
 
@@ -293,7 +299,7 @@ const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
- async function getBalance() {
+export async function getBalance() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
   const walletAddress = window.localStorage.getItem('walletAddress');

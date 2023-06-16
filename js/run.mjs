@@ -6,7 +6,7 @@ let jasmine = new Jasmine();
 
 jasmine.loadConfig({
   
-    "spec_dir": "spec",
+    "spec_dir": "js",
     "spec_files": [
       "**/*[sS]pec.?(m)js"
       
