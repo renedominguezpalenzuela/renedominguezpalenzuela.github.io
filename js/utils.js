@@ -11,13 +11,13 @@ const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
 
-export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+ const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //export const baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
 //-------------------------------------------------------------------------------------------
 //  Clase global para llamado al API
 //-------------------------------------------------------------------------------------------
-export class API {
+ export class API {
 
 
   constructor(accessToken) {
@@ -114,7 +114,7 @@ export class API {
   static roundDec(nbr){
     //var mult = Math.pow(10,dec_places);
     //return Math.round(nbr * mult) / mult;
-    Number(Math.round(nbr + 'e2') + 'e-2').toFixed(2)
+    return Number(Math.round(nbr + 'e2') + 'e-2').toFixed(2)
    }
 
 }
@@ -125,7 +125,7 @@ export class API {
 //-------------------------------------------------------------------------------
 //  Solicitar estado del API
 //-------------------------------------------------------------------------------
-export function getAPIStatus() {
+ function getAPIStatus() {
   axios.get(`${base_url}/api/health`)
     .then(response => {
       const api_status = response.data.status;
@@ -154,7 +154,7 @@ export function getAPIStatus() {
 //  Login
 //-------------------------------------------------------------------------------
 
-export async function login(usr, pass) {
+ async function login(usr, pass) {
   const config = {
     headers: {
       "x-api-key": x_api_key,
@@ -213,7 +213,7 @@ export async function login(usr, pass) {
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
-export async function getTrData() {
+ async function getTrData() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
 
@@ -248,7 +248,7 @@ export async function getTrData() {
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
-export async function getUsrInfo() {
+ async function getUsrInfo() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
 
@@ -293,7 +293,7 @@ export async function getUsrInfo() {
 //-------------------------------------------------------------------------------
 //  getDatosTR
 //-------------------------------------------------------------------------------
-export async function getBalance() {
+ async function getBalance() {
   //leer token desde local storage
   const accessToken = window.localStorage.getItem('accessToken');
   const walletAddress = window.localStorage.getItem('walletAddress');
