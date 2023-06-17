@@ -83,9 +83,9 @@ export class API {
 
   }
 
-   // Obtiene todos los tipos de cambio
-   async getExchangeRate(moneda_base) {
-    
+  // Obtiene todos los tipos de cambio
+  async getExchangeRate(moneda_base) {
+
     var config = {
       method: 'get',
       url: `${this.base_url}/api/private/rates?base=${moneda_base}`,
@@ -109,24 +109,74 @@ export class API {
 
   }
 
-//https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
-//TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
-  static roundDec(numero, dec_places){
+  //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
+  //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
+  static roundDec(numero, dec_places) {
     let negativo = 1;
-    if (numero<0) negativo = -1;
-    const resultado = Number(Math.round(Math.abs(numero) + 'e'+dec_places) + 'e-'+dec_places)
+    if (numero < 0) negativo = -1;
+    const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
     return (resultado * negativo).toFixed(dec_places);
-   }
+  }
 
-   static roundNumber = (number, decimals = 2) => {
+  static roundNumber = (number, decimals = 2) => {
     try {
-        if (!number) return 0;
-        let modifier = Math.pow(10, decimals);
-        return ( Math.round(Number(number) * modifier) / modifier ).toFixed(decimals);
+      if (!number) return 0;
+      let modifier = Math.pow(10, decimals);
+      return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
     } catch (e) {
-        return -1;
+      return -1;
     }
-};
+  };
+
+  // Obtiene el fee a aplicar
+  // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
+  // zone: Provincias | Habana
+  // amount: Total a enviar
+  async getBeneficiarios() {
+
+    // var config = {
+    //   method: 'get',
+    //   url: `${this.base_url}/api/private/beneficiaries`,
+    //   headers: this.headers,
+    // }
+
+    // let datos = null;
+    // await axios(config).then(function (response) {
+    //   datos = response.data;
+    // }).catch(function (error) {
+    //   console.log(error);
+    //   return null;
+    // });
+
+    const datos = [
+      {
+        "cardNumber": "9225 1299 7929 0027",
+        "cardHolderName": "Deicy Johana Morales Cadavid",
+        "bankName": "BPA",
+        "contactPhone": "005353129327",
+        "deliveryAddress": "Cll 48A #103BB31 23 , ESMERALDA, CAMAGUEY, Cuba",
+        "deliveryCountry": "Cuba",
+        "deliveryCountryCode": "CU",
+        "receiverCity": "ESMERALDA",
+        "receiverCountry": "CUB",
+      },
+      {
+        "cardNumber": "9225 1299 4560 3450",
+        "cardHolderName": "Maria Gonzalez Riera",
+        "bankName": "BPA",
+        "contactPhone": "005467223445",
+        "deliveryAddress": "Cll 49A #103BB31 23 , VERTIENTES, CAMAGUEY, Cuba",
+        "deliveryCountry": "Cuba",
+        "deliveryCountryCode": "CU",
+        "receiverCity": "VERTIENTES",
+        "receiverCountry": "CUB",
+      }
+
+    ]
+
+    return datos;
+
+  }
 
 }
 
