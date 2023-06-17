@@ -178,6 +178,19 @@ export class API {
 
   }
 
+
+  static tiempoDebounce = 1000; //milisegundos
+
+  static debounce = (callback, wait) => {
+    let timeoutId = null;
+    return (...args) => {
+      window.clearTimeout(timeoutId);
+      timeoutId = window.setTimeout(() => {
+        callback.apply(null, args);
+      }, wait);
+    };
+  }
+
 }
 
 

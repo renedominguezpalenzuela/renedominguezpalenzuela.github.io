@@ -8,7 +8,7 @@ class MenuItemCollapsable extends Component {
     <div class="collapse  collapse-arrow ">
         <input type="checkbox" class="peer" /> 
         
-        <div class="collapse-title pl-4 pr-3">
+        <div class="collapse-title ">
              <t t-esc="props.name"/>
         </div>
 

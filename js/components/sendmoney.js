@@ -10,9 +10,9 @@ import { Beneficiarios } from "./beneficiarios.js";
 
 export class SendMoney extends Component {
 
-  static components = { Beneficiarios};
+  static components = { Beneficiarios };
 
-  tiempoDebounce = 1000; //milisegundos
+  
 
   inputAvatar = useRef("inputAvatar");
 
@@ -42,8 +42,8 @@ export class SendMoney extends Component {
 
 
   beneficiarios = useState({
-  
-   
+
+
   })
 
   userProfile = useState({
@@ -149,9 +149,9 @@ export class SendMoney extends Component {
     </div>
 
 
-    <Beneficiarios/>
+    <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" />
 
-      <button class="btn btn-primary mt-2 row-start-2 w-[30%]" t-on-click="onSaveAllData">Send</button>
+      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSaveAllData">Send</button>
 
 
 
@@ -168,6 +168,14 @@ export class SendMoney extends Component {
     
 
   `;
+
+
+  onChangeDatosBeneficiarios(datosBeneficiario) {
+
+
+    console.log(datosBeneficiario);
+    Swal.fire('Not implemented yet,  more details about data is needed');
+  }
 
 
 
@@ -199,7 +207,7 @@ export class SendMoney extends Component {
       // console.log(this.conversionRateSTR.value);
 
       // const accessToken = window.localStorage.getItem('accessToken');
-      
+
       const userProfileData = await api.getUserProfile();
       this.userProfile = { ...userProfileData };
 
@@ -222,23 +230,34 @@ export class SendMoney extends Component {
       // this.inputSendRef.el.value = 0;
       // this.inputReceiveRef.el.value = 0;
     })
+
+    
+
+
+
   }
 
+  
 
 
-  debounce = (callback, wait) => {
-    let timeoutId = null;
-    return (...args) => {
-      window.clearTimeout(timeoutId);
-      timeoutId = window.setTimeout(() => {
-        callback.apply(null, args);
-      }, wait);
-    };
-  }
+  // debounce = (callback, wait) => {
+  //   let timeoutId = null;
+  //   return (...args) => {
+  //     window.clearTimeout(timeoutId);
+  //     timeoutId = window.setTimeout(() => {
+  //       callback.apply(null, args);
+  //     }, wait);
+  //   };
+  // }
 
-  onSaveAllData() {
-    Swal.fire('Not implemented yet,  more details about data is needed');
-  }
+   onSaveAllData() {
+
+
+     Swal.fire('Not implemented yet,  more details about data is needed');
+   }
+
+
+
 
 
 
@@ -296,14 +315,14 @@ export class SendMoney extends Component {
 
 
 
-  onChangeSendInput = this.debounce(async () => {
+  onChangeSendInput = API.debounce(async () => {
 
     if (this.changingReceiveAmount) { return; }
 
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
-   
+
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
     const zone = "Habana"; //TODO: obtener de datos
 
@@ -313,14 +332,14 @@ export class SendMoney extends Component {
     this.getFee(service, zone, sendAmount).then((feeData) => {
 
       const fee = feeData.fee;
-    
+
       //const receiveAmount = (sendAmount * conversionRate);
       // this.inputReceiveRef.el.value = (this.conversionRate.value * (this.inputSendRef.el.value - this.fee.value));
       //console.log(`Receive Amount sin fee ${receiveAmount}`)
 
       const receiveAmount = ((sendAmount - fee) * conversionRate).toFixed(2);
-      if (receiveAmount>0) this.inputReceiveRef.el.value =receiveAmount;
-      
+      if (receiveAmount > 0) this.inputReceiveRef.el.value = receiveAmount;
+
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
       const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
@@ -332,21 +351,21 @@ export class SendMoney extends Component {
     }
     );
 
-  }, this.tiempoDebounce);
+  }, API.tiempoDebounce);
 
 
 
 
-  onChangeReceiveInput = this.debounce(async () => {
+  onChangeReceiveInput = API.debounce(async () => {
 
     if (this.changingSendAmount) { return; }
 
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-  
+
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-   
+
     const zone = "Habana"; //TODO: obtener de datos
 
     const receiveAmount = this.inputReceiveRef.el.value;
@@ -354,7 +373,7 @@ export class SendMoney extends Component {
 
 
     const sendAmount = (receiveAmount / conversionRate);
-  
+
 
     this.getFee(service, zone, sendAmount).then((feeData) => {
 
@@ -362,7 +381,7 @@ export class SendMoney extends Component {
       const fee = feeData.fee;
 
       this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
-     
+
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
       const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
@@ -374,7 +393,7 @@ export class SendMoney extends Component {
     }
     );
 
-  }, this.tiempoDebounce);
+  }, API.tiempoDebounce);
 
 
 }

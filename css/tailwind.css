@@ -3601,6 +3601,10 @@ details.collapse summary::-webkit-details-marker {
   grid-row-start: 2;
 }
 
+.row-start-3 {
+  grid-row-start: 3;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -4026,6 +4030,10 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 640px) {
+  .sm\:row-start-2 {
+    grid-row-start: 2;
+  }
+
   .sm\:block {
     display: block;
   }
