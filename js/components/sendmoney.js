@@ -133,7 +133,7 @@ export class SendMoney extends Component {
 
               <div class="form-control   row-start-4 col-span-2 w-full ">
               <label class="label">
-                <span class="label-text">Concept</span>
+                <span class="label-text">Delivery Address</span>
               </label>
             
               <textarea class="textarea textarea-bordered" placeholder="" t-on-input="onChangeConceptInput" ></textarea>
@@ -347,8 +347,11 @@ export class SendMoney extends Component {
       // this.inputReceiveRef.el.value = (this.conversionRate.value * (this.inputSendRef.el.value - this.fee.value));
       //console.log(`Receive Amount sin fee ${receiveAmount}`)
 
-      const receiveAmount = ((sendAmount - fee) * conversionRate).toFixed(2);
-      if (receiveAmount > 0) this.inputReceiveRef.el.value = receiveAmount;
+      const receiveAmount = (sendAmount - fee) * conversionRate;
+      if (receiveAmount > 0) {
+        this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
+      } 
+      this.inputSendRef.el.value = API.roundDec(sendAmount);
 
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
@@ -390,7 +393,9 @@ export class SendMoney extends Component {
 
       const fee = feeData.fee;
 
-      this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
+      //this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
+       this.inputSendRef.el.value =API.roundDec (sendAmount + fee);
+       this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
 
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);

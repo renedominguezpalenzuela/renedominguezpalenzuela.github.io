@@ -118,22 +118,22 @@ export class API {
 
   //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
   //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
-  static roundDec(numero, dec_places) {
+  static roundDec(numero, dec_places = 2) {
     let negativo = 1;
     if (numero < 0) negativo = -1;
     const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
     return (resultado * negativo).toFixed(dec_places);
   }
 
-  static roundNumber = (number, decimals = 2) => {
-    try {
-      if (!number) return 0;
-      let modifier = Math.pow(10, decimals);
-      return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
-    } catch (e) {
-      return -1;
-    }
-  };
+  // static roundNumber = (number, decimals = 2) => {
+  //   try {
+  //     if (!number) return 0;
+  //     let modifier = Math.pow(10, decimals);
+  //     return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
+  //   } catch (e) {
+  //     return -1;
+  //   }
+  // };
 
   // Obtiene el fee a aplicar
   // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD

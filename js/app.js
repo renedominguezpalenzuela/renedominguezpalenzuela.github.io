@@ -25,7 +25,7 @@ class Root extends Component {
   static template = xml`
    
 
-      <div class="main-back grid place-items-center h-screen ">
+      <div class="main-back grid place-items-center  ">
         <div class="sm:hidden ">
             <img src="img/logo.png" alt="" class="img-size"/>
         </div>

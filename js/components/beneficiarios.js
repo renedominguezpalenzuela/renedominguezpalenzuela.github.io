@@ -42,11 +42,11 @@ export class Beneficiarios extends Component {
             <div class="card-body items-center   ">
               <div class="grid sm:grid-cols-[45%_45%]  w-full gap-y-0 gap-x-2">
 
-                <div class="form-control w-full max-w-xs ">
+                <div class="form-control w-full  ">
                   <label class="label">
                     <span class="label-text">Card Number</span>
                   </label>
-                  <input type="text" t-ref="inputCardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full max-w-xs"  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                  <input type="text" t-ref="inputCardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
                 <div class=" flex items-center ">
@@ -68,7 +68,7 @@ export class Beneficiarios extends Component {
                   <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full max-w-xs"  t-on-input="onChangePhoneInput" />   
                 </div>
 
-                <div class="form-control   row-start-4 col-span-2 w-full ">
+                <div class="form-control   row-start-3 col-span-2 w-full ">
                   <label class="label">
                     <span class="label-text">Delivery Address</span>
                   </label>
