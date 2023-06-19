@@ -43,7 +43,7 @@ export class LeftMenu extends Component {
 
 
     static template=xml`       
-            <div class="bg-[#009AFF] rounded-lg text-white text-[1rem] sm:h-[100%] pb-5">            
+            <div class="bg-[#009AFF] rounded-lg text-white text-[1rem] sm:h-full pb-5">            
 
                 <a class="flex items-center justify-center p-3" href="/userdata.html">
                     <img src="../img/logo-white.png" height="1.6rem"  alt="Logo" loading="lazy"  class="img-logo"  />

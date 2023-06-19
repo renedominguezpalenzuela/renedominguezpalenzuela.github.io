@@ -29,17 +29,17 @@ class Root extends Component {
   static template = xml` 
 
   
-<div class="grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7] h-screen">
-    <div class="p-2 sm:h-screen ">
+<div class="grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7]   ">
+    <div class="p-2 sm:h-full ">
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
     </div>
 
-    <div class="p-2 sm:h-screen  ">
+    <div class="p-2 sm:h-full  ">
       <div class="sm:h-[10%]">
          <Menu title="this.state.title"/>
       </div>
-      <main class="flex  justify-center  rounded-lg  sm:h-[90%]  h-full ">       
-        <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full  ">       
+      <main class="flex  justify-center  rounded-lg   ">       
+        <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-screen ">       
         
           <t t-if="this.state.menuId === 1">
             <Profile/>
@@ -50,7 +50,12 @@ class Root extends Component {
           </t>
 
           <t t-else="">
-            <div>No component defined for this menu option yet</div>
+            
+            <div class="grid sm:grid-cols-[34%_64%] gap-2 h-[100vh]">
+            <div class="h-[100vh]">No component defined for this menu option yet</div>
+              
+            </div>  
+              
           </t>
             
           
@@ -104,8 +109,7 @@ class Root extends Component {
   
 
   leftMenuController(menuId, menuName) {
-    console.log("Menu controller ");
-    console.log(menuName);
+
 
     this.state.menuId = menuId;
     this.state.title = menuName;

@@ -87,16 +87,12 @@ class Root extends Component {
   }
 
   async login_btn() {
+    
     console.log("Login...");
     const va = await login(this.inputUsr.el.value, this.inputPass.el.value);
-   // console.log("Resultado de login "+va);
 
     const userInfo = await getUsrInfo();
-    // console.log("User Info "+JSON.stringify(userInfo.user._id));
 
-   // if (va) window.location.assign("listatr.html");
-
-   // if (userInfo) window.location.assign("userdata.html");
    if (userInfo) window.location.assign("main.html");
    
   }

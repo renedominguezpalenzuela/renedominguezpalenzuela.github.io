@@ -24,7 +24,7 @@ export class Profile extends Component {
   })
 
   static template = xml`    
-    <div class="grid sm:grid-cols-[34%_64%] gap-2">
+    <div class="grid sm:grid-cols-[34%_64%] gap-2 h-[100vh]">
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
         <div class="card-title flex flex-col rounded-lg">
             <div class="px-10 pt-10 ">

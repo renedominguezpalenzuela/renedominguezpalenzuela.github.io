@@ -2920,6 +2920,10 @@ details.collapse summary::-webkit-details-marker {
   color: hsl(var(--bc) / 0.6);
 }
 
+.textarea-bordered {
+  --tw-border-opacity: 0.2;
+}
+
 .textarea:focus {
   outline-style: solid;
   outline-width: 2px;
@@ -3597,12 +3601,16 @@ details.collapse summary::-webkit-details-marker {
   position: sticky;
 }
 
-.row-start-2 {
-  grid-row-start: 2;
+.col-span-2 {
+  grid-column: span 2 / span 2;
 }
 
 .row-start-3 {
   grid-row-start: 3;
+}
+
+.row-start-4 {
+  grid-row-start: 4;
 }
 
 .ml-1 {
@@ -3615,6 +3623,22 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.ml-3 {
+  margin-left: 0.75rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
+.mt-9 {
+  margin-top: 2.25rem;
 }
 
 .block {
@@ -3729,6 +3753,10 @@ details.collapse summary::-webkit-details-marker {
   width: 100%;
 }
 
+.w-\[30vw\] {
+  width: 30vw;
+}
+
 .max-w-xs {
   max-width: 20rem;
 }
@@ -3785,6 +3813,15 @@ details.collapse summary::-webkit-details-marker {
   gap: 0.5rem;
 }
 
+.gap-y-0 {
+  row-gap: 0px;
+}
+
+.gap-x-2 {
+  -moz-column-gap: 0.5rem;
+       column-gap: 0.5rem;
+}
+
 .rounded {
   border-radius: 0.25rem;
 }
@@ -3799,6 +3836,10 @@ details.collapse summary::-webkit-details-marker {
 
 .border {
   border-width: 1px;
+}
+
+.border-4 {
+  border-width: 4px;
 }
 
 .bg-\[\#009AFF\] {
@@ -3881,10 +3922,6 @@ details.collapse summary::-webkit-details-marker {
 
 .pl-4 {
   padding-left: 1rem;
-}
-
-.pr-3 {
-  padding-right: 0.75rem;
 }
 
 .pt-10 {
@@ -4030,8 +4067,16 @@ details.collapse summary::-webkit-details-marker {
 }
 
 @media (min-width: 640px) {
+  .sm\:col-span-2 {
+    grid-column: span 2 / span 2;
+  }
+
   .sm\:row-start-2 {
     grid-row-start: 2;
+  }
+
+  .sm\:mt-9 {
+    margin-top: 2.25rem;
   }
 
   .sm\:block {
@@ -4062,6 +4107,10 @@ details.collapse summary::-webkit-details-marker {
     height: 100vh;
   }
 
+  .sm\:h-full {
+    height: 100%;
+  }
+
   .sm\:w-\[45vw\] {
     width: 45vw;
   }
@@ -4070,11 +4119,19 @@ details.collapse summary::-webkit-details-marker {
     width: 62vw;
   }
 
+  .sm\:w-\[10vw\] {
+    width: 10vw;
+  }
+
   .sm\:grid-cols-\[17\%_82\%\] {
     grid-template-columns: 17% 82%;
   }
 
   .sm\:grid-cols-\[34\%_64\%\] {
     grid-template-columns: 34% 64%;
+  }
+
+  .sm\:grid-cols-\[45\%_45\%\] {
+    grid-template-columns: 45% 45%;
   }
 }

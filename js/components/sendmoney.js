@@ -61,7 +61,7 @@ export class SendMoney extends Component {
 
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
-    <div class="grid sm:grid-cols-[34%_64%] gap-2">
+    <div class="grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
      
     
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
@@ -118,7 +118,9 @@ export class SendMoney extends Component {
                
                 <div>           
                   
-                  <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>             
+                  <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
+                   class="input input-bordered join-item text-right" placeholder="0.00"/>    
+
                 </div>
                 
 
@@ -128,6 +130,14 @@ export class SendMoney extends Component {
                 </select>
 
               </div>
+
+              <div class="form-control   row-start-4 col-span-2 w-full ">
+              <label class="label">
+                <span class="label-text">Concept</span>
+              </label>
+            
+              <textarea class="textarea textarea-bordered" placeholder="" t-on-input="onChangeConceptInput" ></textarea>
+            </div>
             </div>
 
 

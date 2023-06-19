@@ -51,6 +51,13 @@ export class API {
       datos = response.data.user;
     }).catch(function (error) {
       console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: error.message,
+        text: 'Something went wrong requesting User Profile',
+        footer: '<h5> Inspect console for details </h5>'
+      })
+
       return null;
     });
 
@@ -214,10 +221,10 @@ export function getAPIStatus() {
 
     })
     .catch(error => {
-      console.error(error);
+      console.error(error.message);
       Swal.fire({
         icon: 'error',
-        title: 'Oops...',
+        title: error.message,
         text: 'Something went wrong requesting API Status',
         footer: '<h5> Inspect console for details </h5>'
       })
