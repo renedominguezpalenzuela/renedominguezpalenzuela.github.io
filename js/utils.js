@@ -36,8 +36,9 @@ export class API {
     }
   }
 
-
+  //------------------------------------------------------------------------------------------------
   // Obtiene datos del usuario
+  //------------------------------------------------------------------------------------------------
   async getUserProfile() {
 
     var config = {
@@ -58,15 +59,48 @@ export class API {
         footer: '<h5> Inspect console for details </h5>'
       })
 
-      return null;
+      datos = error;
     });
 
     return datos;
 
   }
 
+  
+  //------------------------------------------------------------------------------------------------
+  // Obtiene Expresiones Regulares para validar tarjetas
+  //------------------------------------------------------------------------------------------------
+  async getCardRegExp() {
 
+    var config = {
+      method: 'get',
+      url: `${this.base_url}/api/private/delivery-card-regex`,
+      headers: this.headers,
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+     
+    }).catch(function (error) {
+      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: error.message,
+        text: 'Something went wrong requesting Card Regular Expressions',
+        footer: '<h5> Inspect console for details </h5>'
+      })
+
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+  //------------------------------------------------------------------------------------------------
   // Obtiene el fee a aplicar
+  //------------------------------------------------------------------------------------------------
   // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
   // zone: Provincias | Habana
   // amount: Total a enviar
@@ -83,14 +117,16 @@ export class API {
       datos = response.data;
     }).catch(function (error) {
       console.log(error);
-      return null;
+      datos = error;
     });
 
     return datos;
 
   }
 
+  //------------------------------------------------------------------------------------------------
   // Obtiene todos los tipos de cambio
+  //------------------------------------------------------------------------------------------------
   async getExchangeRate(moneda_base) {
 
     var config = {
@@ -109,12 +145,49 @@ export class API {
 
     }).catch(function (error) {
       console.log(error);
-      return null;
+      datos = error;
     });
 
     return datos;
 
   }
+
+
+  
+//-------------------------------------------------------------------------------
+//  createTX: Contabiliza transaccion
+//-------------------------------------------------------------------------------
+ async  createTX(datosTX) {
+  //leer token desde local storage
+  const accessToken = window.localStorage.getItem('accessToken');
+
+
+  var body = JSON.stringify(datosTX);
+
+  var config = {
+    method: 'post',
+    url: `${base_url}/api/private/transactions/cash-out/creditcard`,
+    headers: {
+      'authorization': `Bearer ${accessToken}`,
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    },
+    data: body
+  }
+
+  let datos = null;
+  await axios(config).then(function (response) {
+     datos = response.data;
+     console.log(datos);  
+  }).catch(function (error) {
+    console.log("ERRROR")
+    console.log(error);  
+    datos = error;
+  });
+
+  return datos;
+}
+
 
   //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
   //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
@@ -197,7 +270,17 @@ export class API {
       }, wait);
     };
   }
+  
 
+  static generateRandomID() {
+    var date = new Date();
+    date = date.toJSON().slice(0, 19).split`-`.join``.split`:`.join``;
+    const randomSTR= Math.random().toString(36).substring(2,10);
+    const randomId ='TR'+date+randomSTR;   
+    return randomId;
+  }
+
+  
 }
 
 
@@ -222,12 +305,14 @@ export function getAPIStatus() {
     })
     .catch(error => {
       console.error(error.message);
+      
       Swal.fire({
         icon: 'error',
         title: error.message,
         text: 'Something went wrong requesting API Status',
         footer: '<h5> Inspect console for details </h5>'
       })
+     
     });
 }
 
@@ -278,6 +363,7 @@ export async function login(usr, pass) {
           footer: '<h5> Inspect console for details </h5>'
         })
       }
+      return error;
 
     });
 
@@ -320,6 +406,7 @@ export async function getTrData() {
     datos = response.data.data;
   }).catch(function (error) {
     console.log(error);
+    datos = error;
   });
 
   return datos;
@@ -364,6 +451,7 @@ export async function getUsrInfo() {
 
   }).catch(function (error) {
     console.log(error);
+    datos = error;
   });
 
   return datos;
@@ -402,6 +490,8 @@ export async function getBalance() {
     // console.log(JSON.stringify(datos));  
   }).catch(function (error) {
     console.log(error);
+    datos = error;
+
   });
 
   return datos;

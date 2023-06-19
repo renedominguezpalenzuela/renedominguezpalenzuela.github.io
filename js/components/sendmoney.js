@@ -12,12 +12,14 @@ export class SendMoney extends Component {
 
   static components = { Beneficiarios };
 
-  
+
 
   inputAvatar = useRef("inputAvatar");
 
   inputSendRef = useRef("inputSendRef");
   inputReceiveRef = useRef("inputReceiveRef");
+
+  concept = useRef("concept");
 
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
@@ -41,7 +43,7 @@ export class SendMoney extends Component {
   })
 
 
-  beneficiarios = useState({
+  beneficiario = useState({
 
 
   })
@@ -133,10 +135,10 @@ export class SendMoney extends Component {
 
               <div class="form-control   row-start-4 col-span-2 w-full ">
               <label class="label">
-                <span class="label-text">Delivery Address</span>
+                <span class="label-text">Concept</span>
               </label>
             
-              <textarea class="textarea textarea-bordered" placeholder="" t-on-input="onChangeConceptInput" ></textarea>
+              <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
             </div>
             </div>
 
@@ -161,7 +163,7 @@ export class SendMoney extends Component {
 
     <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" />
 
-      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSaveAllData">Send</button>
+      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
 
 
 
@@ -182,9 +184,11 @@ export class SendMoney extends Component {
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
 
+    this.beneficiario = datosBeneficiario;
 
-    console.log(datosBeneficiario);
-    Swal.fire('Not implemented yet,  more details about data is needed');
+
+    //console.log(this.beneficiario);
+    //Swal.fire('Datos beneficiario actualizados');
   }
 
 
@@ -196,13 +200,11 @@ export class SendMoney extends Component {
 
 
     onWillStart(async () => {
-      //const accessToken = window.localStorage.getItem('accessToken');
+
       const api = new API(accessToken);
       const userData = await api.getUserProfile();
-      //console.log(userData);
 
       const exchangeRate = await api.getExchangeRate("usd");
-
 
       this.state = { ...userData };
 
@@ -211,23 +213,10 @@ export class SendMoney extends Component {
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-      // console.log("Will Start");
-      // console.log(exchangeRate);
-      // console.log(this.conversionRate.value);
-      // console.log(this.conversionRateSTR.value);
-
-      // const accessToken = window.localStorage.getItem('accessToken');
-
       const userProfileData = await api.getUserProfile();
       this.userProfile = { ...userProfileData };
 
       console.log(this.userProfile);
-
-      const beneficiariesData = await api.getBeneficiarios();
-      this.beneficiarios = { ...beneficiariesData };
-
-      console.log(this.beneficiarios);
-
 
 
     });
@@ -241,13 +230,13 @@ export class SendMoney extends Component {
       // this.inputReceiveRef.el.value = 0;
     })
 
-    
+
 
 
 
   }
 
-  
+
 
 
   // debounce = (callback, wait) => {
@@ -260,11 +249,6 @@ export class SendMoney extends Component {
   //   };
   // }
 
-   onSaveAllData() {
-
-
-     Swal.fire('Not implemented yet,  more details about data is needed');
-   }
 
 
 
@@ -350,7 +334,7 @@ export class SendMoney extends Component {
       const receiveAmount = (sendAmount - fee) * conversionRate;
       if (receiveAmount > 0) {
         this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-      } 
+      }
       this.inputSendRef.el.value = API.roundDec(sendAmount);
 
       this.fee.value = fee;
@@ -394,8 +378,8 @@ export class SendMoney extends Component {
       const fee = feeData.fee;
 
       //this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
-       this.inputSendRef.el.value =API.roundDec (sendAmount + fee);
-       this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
+      this.inputSendRef.el.value = API.roundDec(sendAmount + fee);
+      this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
 
       this.fee.value = fee;
       const feeSTR = fee.toFixed(2);
@@ -409,6 +393,87 @@ export class SendMoney extends Component {
     );
 
   }, API.tiempoDebounce);
+
+
+  async onSendMoney() {
+    //cardCUP	cardUSD
+    console.log(API.generateRandomID());
+
+    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
+    /*Campos obligatorios:
+    'service', 
+    'merchant_external_id', 
+    'amount', 
+    'currency',
+     'deliveryAmount',
+     'cardHolderName', 
+     'bankName', 
+     'contactPhone', 
+     'deliveryCountry',
+      'deliveryCountryCode'
+                */
+    //TODO: Validaciones
+    const datosTX = {
+      service: service,
+      amount: this.inputSendRef.el.value,                                           //Cantidad a enviar, incluyendo el fee
+      currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
+      deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
+      deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
+      concept: this.concept.el.value,                                               //Concepto del envio
+      //Datos de benefeciario
+      cardNumber: this.beneficiario.cardNumber,                                     //Tarjeta del que recibe el dinero 
+      bankName: this.beneficiario.bankName,                                         //Banco al que pertence la tarjeta 
+      cardHolderName: this.beneficiario.cardHolderName,                             //nombre del beneficiario
+      contactPhone: this.beneficiario.contactPhone,                                 //telefono del beneficiario                
+      deliveryAddress: this.beneficiario.deliveryAddress,                           //Direccion del beneficiario            
+      receiverCity: this.beneficiario.receiverCity,                                //Ciudad del beneficiario
+      deliveryCountry: this.beneficiario.deliveryCountry,                           //Pais del beneficiario
+      deliveryCountryCode: this.beneficiario.deliveryCountryCode,                   //ISO Code del pais del pais del beneficiario
+      receiverCountry: this.beneficiario.receiverCountry,                          //Pais de la persona que recibe la transaccion 
+      merchant_external_id: API.generateRandomID(),
+      paymentLink: true
+
+
+    }
+
+    console.log(datosTX);
+
+
+    const accessToken = window.localStorage.getItem('accessToken');
+    const api = new API(accessToken);
+
+    try {
+
+      const resultado = await api.createTX(datosTX);
+
+      //TODO OK
+      if (resultado.data) {
+        if (resultado.data.status === 200) {
+          Swal.fire(resultado.data.payload);
+        }
+      }
+
+      if (resultado.response) {
+        Swal.fire(resultado.response.data.message);
+      }
+
+
+
+    } catch (error) {
+
+      console.log(error);
+      // Swal.fire(resultado.response.data.message);
+    }
+
+
+
+
+
+
+
+
+  }
+
 
 
 }

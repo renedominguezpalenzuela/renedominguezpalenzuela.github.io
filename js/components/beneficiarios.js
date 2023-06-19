@@ -11,16 +11,19 @@ export class Beneficiarios extends Component {
   tiempoDebounce = 1000; //milisegundos
 
   inputCardNumber = useRef("inputCardNumber");
+  
+
+  accessToken = '';
 
 
 
 
   state = useState({
     cardNumber: '',
-    cardHolderName:'',
-    cardBankImage:'',
-    bankName:'',
-    contactPhone:'' ,
+    cardHolderName: '',
+    cardBankImage: '',
+    bankName: '',
+    contactPhone: '',
     deliveryAddress: '',
     receiverCity: '',
     deliveryCountry: 'Cuba',
@@ -87,7 +90,7 @@ export class Beneficiarios extends Component {
               <label class="label">
                 <span class="label-text">Country</span>
               </label>
-              <input type="text"  maxlength="100" placeholder="" class="input input-bordered w-full max-w-xs"  t-on-input="onChangeCountryInput" />   
+              <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="XXX" class="input input-bordered w-full max-w-xs"  t-on-input="onChangeCountryInput" />   
             </div>
 
              
@@ -101,10 +104,7 @@ export class Beneficiarios extends Component {
 
 
 
-            <div class="card-actions p-2">
-               <button class="btn btn-primary mt-2  w-[15%]" t-on-click="onSaveAllData">Save</button>
-
-            </div>
+            
         </div>    
 
 
@@ -126,6 +126,8 @@ export class Beneficiarios extends Component {
   setup() {
 
 
+    this.accessToken = window.localStorage.getItem('accessToken');
+
 
 
 
@@ -144,6 +146,9 @@ export class Beneficiarios extends Component {
 
       // this.inputSendRef.el.value = 0;
       // this.inputReceiveRef.el.value = 0;
+
+
+
     });
 
 
@@ -152,7 +157,10 @@ export class Beneficiarios extends Component {
   }
 
 
-
+  /* <div class="card-actions p-2">
+                 <button class="btn btn-primary mt-2  w-[15%]" t-on-click="onSaveAllData">Save</button>
+  
+              </div> */
   onSaveAllData() {
     //this.beneficiarioDatos.cardNumber="FFFF"
     // console.log( this.state)
@@ -163,24 +171,76 @@ export class Beneficiarios extends Component {
 
 
 
-  
 
-  onCardInputKeyDown= API.debounce(async (event) => {
+
+  onCardInputKeyDown = API.debounce(async (event) => {
 
     //TODO validar el card
-    if (event.target.value.length===19) {
-        //VALIDAR card
-        //Poner imagen
-        this.state.cardBankImage="img/logo-bandec.png";
-        this.state.bankName="BANDEC";
-       this.state.cardNumber = event.target.value;
-       this.props.onChangeDatosBeneficiarios(this.state);
+    if (event.target.value.length === 19) {
+      //VALIDAR card
+      this.state.cardNumber = event.target.value;
+      const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
+
+      const api = new API(this.accessToken);
+      const cardRegExp = await api.getCardRegExp();
+
+      console.log(typeof (cardRegExp));
+
+      for (const key in cardRegExp) {
+
+        const regexp = new RegExp(cardRegExp[key]);
+        const card = this.state.cardNumber.replace(/ /g, "");
+        const resultado = regexp.test(card);
+        if (resultado) {
+          console.log(key)
+          switch (key) {
+            case 'BANDEC_CARD':
+              //Poner imagen
+              this.state.cardBankImage = "img/logo-bandec.png";
+              this.state.bankName = "BANDEC";
+
+              break;
+
+            case 'BANMET_CARD':
+              //Poner imagen
+              this.state.cardBankImage = "img/logo-metro.png";
+              this.state.bankName = "METROPOLITANO";
+
+              break;
+
+            case 'BPA_CARD':
+              //Poner imagen
+              this.state.cardBankImage = "img/logo-bpa.png";
+              this.state.bankName = "BPA";
+
+              break;
+
+            default:
+              break;
+          }
+
+        }
+
+
+
+
+      }
+
+
+
+
+
+
+
+      this.props.onChangeDatosBeneficiarios(this.state);
     }
 
   }, API.tiempoDebounce);
 
-  onChangeCardInput  (event) {
+  onChangeCardInput(event) {
+
     this.inputCardNumber.el.value = this.formatCardNumber(event.target.value);
+
   };
 
   formatCardNumber(value) {
@@ -191,23 +251,27 @@ export class Beneficiarios extends Component {
   }
 
 
-  onChangeCardHolderInput= API.debounce(async (event) => {
+  onChangeCardHolderInput = API.debounce(async (event) => {
     this.state.cardHolderName = event.target.value;
+
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  onChangeAddressInput= API.debounce(async (event) => {
+  onChangeAddressInput = API.debounce(async (event) => {
     this.state.deliveryAddress = event.target.value;
+
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  onChangePhoneInput= API.debounce(async (event) => {
+  onChangePhoneInput = API.debounce(async (event) => {
     this.state.contactPhone = event.target.value;
+
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  onChangeCityInput= API.debounce(async (event) => {
+  onChangeCityInput = API.debounce(async (event) => {
     this.state.receiverCity = event.target.value;
+
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
