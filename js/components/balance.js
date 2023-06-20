@@ -23,7 +23,7 @@ export class Balance extends Component {
         <t t-foreach="balance.saldos" t-as="undato" t-key="undato.currency">                
           <div class="flex flex-row  ">
                 <div class="w-[30%] "> <t t-esc="undato.currency"/></div> 
-                <div  class="w-[50%]  text-end"> <t t-esc="undato.amount"/></div> 
+                <div  class="w-[60%]  text-end"> <t t-esc="undato.amount"/></div> 
           
           </div>
         </t>
