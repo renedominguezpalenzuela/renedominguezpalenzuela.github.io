@@ -102,7 +102,7 @@ export class Balance extends Component {
       console.log('TRANSACTION_UPDATE datos servidor2', data);
       console.log('TR Status ' + data.transactionStatus);
       if (data.transactionStatus == "confirmed") {
-        this.balance.saldos = await this.get_data(false);
+        this.balance.saldos = await this.get_data(true);
         console.log(JSON.stringify(this.balance));
       }
     });
