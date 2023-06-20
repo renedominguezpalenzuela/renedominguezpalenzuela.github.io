@@ -20,7 +20,13 @@ export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 export class API {
 
 
+  
+static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+//static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
+ 
   constructor(accessToken) {
+
+    this.accessToken = accessToken;
 
     this.base_url = 'https://backend.ducapp.net';
     this.x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
@@ -280,6 +286,47 @@ export class API {
     return randomId;
   }
 
+
+  
+//-------------------------------------------------------------------------------
+//  getDatosTR
+//-------------------------------------------------------------------------------
+ async  getBalance(  walletAddress) {
+  //leer token desde local storage
+  // const accessToken = window.localStorage.getItem('accessToken');
+  // const walletAddress = window.localStorage.getItem('walletAddress');
+
+  console.log(walletAddress);
+
+  var body = JSON.stringify({
+    "walletAddress": walletAddress
+  });
+
+ 
+  var config = {
+    method: 'post',
+    url: `${base_url}/api/private/users/get-balance`,
+    headers: {
+      'authorization': `Bearer ${this.accessToken}`,
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    },
+    data: body
+  }
+
+  let datos = null;
+  await axios(config).then(function (response) {
+    datos = response.data;
+    // console.log(JSON.stringify(datos));  
+  }).catch(function (error) {
+    console.log(error);
+    datos = error;
+
+  });
+
+  return datos;
+}
+
   
 }
 
@@ -459,42 +506,5 @@ export async function getUsrInfo() {
 
 
 
-//-------------------------------------------------------------------------------
-//  getDatosTR
-//-------------------------------------------------------------------------------
-export async function getBalance() {
-  //leer token desde local storage
-  const accessToken = window.localStorage.getItem('accessToken');
-  const walletAddress = window.localStorage.getItem('walletAddress');
-
-  console.log(walletAddress);
-
-  var body = JSON.stringify({
-    "walletAddress": walletAddress
-  });
-
-  var config = {
-    method: 'post',
-    url: `${base_url}/api/private/users/get-balance`,
-    headers: {
-      'authorization': `Bearer ${accessToken}`,
-      'x-api-key': x_api_key,
-      'Content-Type': 'application/json',
-    },
-    data: body
-  }
-
-  let datos = null;
-  await axios(config).then(function (response) {
-    datos = response.data;
-    // console.log(JSON.stringify(datos));  
-  }).catch(function (error) {
-    console.log(error);
-    datos = error;
-
-  });
-
-  return datos;
-}
 
 

@@ -1,5 +1,7 @@
 const { Component , xml} = owl;
 
+import {Balance} from "./balance.js";
+
 
 
 
@@ -39,7 +41,7 @@ class MenuItemSingle extends Component {
 export class LeftMenu extends Component {
 
 
-    static components = { MenuItemCollapsable, MenuItemSingle };
+    static components = { MenuItemCollapsable, MenuItemSingle, Balance };
 
 
     static template=xml`       
@@ -49,6 +51,24 @@ export class LeftMenu extends Component {
                     <img src="../img/logo-white.png" height="1.6rem"  alt="Logo" loading="lazy"  class="img-logo"  />
                 </a>
 
+                
+ 
+
+                <div class="collapse  collapse-arrow ">
+                    <input type="checkbox" class="peer" /> 
+                    
+                    <div class="collapse-title ">
+                         Balance
+                    </div>
+            
+                    <div class="collapse-content"> 
+                      <Balance/>
+                    </div>
+                
+                </div>
+
+                
+
                 <div t-foreach="props.items" t-as="unitem" t-key="unitem.id"  >
                    <t t-if="unitem.type === 1">                       
                       <MenuItemCollapsable  name="unitem.name" items="unitem.subitems" leftMenuController="props.leftMenuController"/>                         
@@ -57,6 +77,8 @@ export class LeftMenu extends Component {
                      <MenuItemSingle  name="unitem.name" id="unitem.id" leftMenuController="props.leftMenuController"/>                         
                    </t>
                 </div>
+
+                
                
             </div>  
     `;

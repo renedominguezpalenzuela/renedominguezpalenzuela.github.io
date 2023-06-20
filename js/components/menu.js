@@ -2,7 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 export class Menu extends Component {
-    static template=xml`
+    static template = xml`
 
 
             <div class="navbar hidden sm:flex ">
@@ -17,28 +17,34 @@ export class Menu extends Component {
                 <div class="navbar-center ">
                     
                 </div>
-                <div class="navbar-end">
-                    <ul class="menu menu-horizontal px-1">
+                <div class="navbar-end  ">
+                  
+
+                      
+                            <ul class="menu menu-horizontal px-1">
+
+                                <li>
+                                    <a class="dropdown-item" href="/listatr.html">TX List</a>
+                                </li>
+
+                                <li tabindex="0">
+                                    <details>
+                                        <summary>Send Money</summary>
+                                        <ul class="p-2">
+                                            <li><a class="dropdown-item" href="/sendmoney.html">Send Money Cuba</a></li>
+                                            <li><a>Submenu 1</a></li>
+                                            <li><a>Submenu 2</a></li>
+                                        </ul>
+                                    </details>
+                                </li>
+
+                                <li>
+                                    <a class="dropdown-item" href="/userdata.html">User Balances</a>
+                                </li>
+                            </ul>
+                
                     
-                        <li>
-                            <a class="dropdown-item" href="/listatr.html">TX List</a>
-                        </li>
-
-                        <li tabindex="0">
-                            <details>
-                                <summary>Send Money</summary>
-                                <ul class="p-2">
-                                    <li><a class="dropdown-item" href="/sendmoney.html">Send Money Cuba</a></li>
-                                    <li><a>Submenu 1</a></li>
-                                    <li><a>Submenu 2</a></li>
-                                </ul>
-                            </details>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="/userdata.html">User Balance</a>
-                        </li>
-                    </ul>
+                 
                   
                 </div>
         </div>
@@ -48,24 +54,24 @@ export class Menu extends Component {
     `;
 
 
-    
-  setup() {
-  
+
+    setup() {
 
 
-    onWillStart(() => {
-        // console.logs(props)
 
-    });
+        onWillStart(() => {
+            // console.logs(props)
 
-    onMounted(() => {
-      
-    });
+        });
+
+        onMounted(() => {
+
+        });
 
 
-    onRendered(() => {
-      
-    });
+        onRendered(() => {
 
-  }
+        });
+
+    }
 }

@@ -16,11 +16,11 @@ export class Profile extends Component {
 
 
   state = useState({
-    firstName:"Rene",
-    lastName:"Dominguez",
-    avatar:"/img/photo-1534528741775-53994a69daeb.jpg",
-    address:"",
-    nameFull:""
+    firstName: "Rene",
+    lastName: "Dominguez",
+    avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
+    address: "",
+    nameFull: ""
   })
 
   static template = xml`    
@@ -114,30 +114,30 @@ export class Profile extends Component {
     const accessToken = window.localStorage.getItem('accessToken');
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
-  
-    
+
+
     onWillStart(async () => {
-       const accessToken = window.localStorage.getItem('accessToken');
-       const api = new API(accessToken);
-       const userData = await api.getUserProfile();
-       this.state = {...userData};
-       this.state.avatar = userData.safeImage.image;
+      const accessToken = window.localStorage.getItem('accessToken');
+      const api = new API(accessToken);
+      const userData = await api.getUserProfile();
+      this.state = { ...userData };
+      this.state.avatar = userData.safeImage.image;
     });
   }
 
 
-  
+
   changeAvatarImage(newImage) {
     this.state.avatar = newImage;
     this.render();
   }
 
-  onChangeAvatarInput(){
+  onChangeAvatarInput() {
 
     let file = this.inputAvatar.el.files[0];
     let reader = new FileReader();
-    reader.onloadend = ()=> {
-       this.changeAvatarImage(reader.result);    
+    reader.onloadend = () => {
+      this.changeAvatarImage(reader.result);
     }
     reader.readAsDataURL(file);
 
@@ -149,7 +149,7 @@ export class Profile extends Component {
   }
 
 
-  
+
 
 }
 

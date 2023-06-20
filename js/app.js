@@ -90,10 +90,11 @@ class Root extends Component {
     
     console.log("Login...");
     const va = await login(this.inputUsr.el.value, this.inputPass.el.value);
+    console.log(va)
 
     const userInfo = await getUsrInfo();
 
-   if (userInfo) window.location.assign("main.html");
+     if (userInfo) window.location.assign("main.html");
    
   }
 
