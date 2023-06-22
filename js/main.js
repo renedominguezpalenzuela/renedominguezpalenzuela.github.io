@@ -39,7 +39,7 @@ class Root extends Component {
          <Menu title="this.state.title"/>
       </div>
       <main class="flex  justify-center  rounded-lg   ">       
-        <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-screen ">       
+        <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-full ">       
         
           <t t-if="this.state.menuId === 1">
             <Profile/>
