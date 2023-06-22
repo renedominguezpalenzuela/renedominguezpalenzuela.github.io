@@ -3,12 +3,12 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { Menu } from "./menu.js";
 import { LeftMenu } from "./leftmenu.js";
 import { API } from "../utils.js";
-import { Beneficiarios } from "./beneficiarios.js";
+import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
 
 
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 
-export class SendMoney extends Component {
+export class SendMoneyCuba extends Component {
 
   static components = { Beneficiarios };
 

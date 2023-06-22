@@ -3,13 +3,13 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { Menu } from "./components/menu.js";
 import { LeftMenu } from "./components/leftmenu.js";
 import { Profile } from "./components/profile.js";
-import { SendMoney } from "./components/sendmoney.js";
+import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoney};
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba};
 
-  state = useState({menuId: 4, title:'Send Money To Cuba'});
+  state = useState({menuId: 4, title:'To Credit Card'});
    
 
   leftmenuItems = [
@@ -46,7 +46,7 @@ class Root extends Component {
           </t>
 
           <t t-elif="this.state.menuId === 4">
-            <SendMoney/>
+            <SendMoneyCuba/>
           </t>
 
           <t t-else="">
