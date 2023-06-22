@@ -56,9 +56,9 @@ class Root extends Component {
     
 
     setup() {
-        const accessToken = window.localStorage.getItem('accessToken');
-        const walletAddress = window.localStorage.getItem('walletAddress');
-        const userId = window.localStorage.getItem('userId');
+        const accessToken = window.sessionStorage.getItem('accessToken');
+        const walletAddress = window.sessionStorage.getItem('walletAddress');
+        const userId = window.sessionStorage.getItem('userId');
         const subscriptionPath = "/api/subscription";
 
         const query = {

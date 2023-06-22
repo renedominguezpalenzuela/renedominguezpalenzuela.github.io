@@ -194,9 +194,9 @@ export class SendMoney extends Component {
 
 
   setup() {
-    const accessToken = window.localStorage.getItem('accessToken');
-    const walletAddress = window.localStorage.getItem('walletAddress');
-    const userId = window.localStorage.getItem('userId');
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const walletAddress = window.sessionStorage.getItem('walletAddress');
+    const userId = window.sessionStorage.getItem('userId');
 
 
     onWillStart(async () => {
@@ -261,7 +261,7 @@ export class SendMoney extends Component {
     this.inputReceiveRef.el.value = (0).toFixed(2);
     this.inputSendRef.el.value = (0).toFixed(2);
 
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const sendCurrency = this.inputSendCurrencyRef.el.value;
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
@@ -293,7 +293,7 @@ export class SendMoney extends Component {
   }
 
   async getFee(service, zone, amount) {
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const fee = await api.getFee(service, zone, amount)
 
@@ -439,7 +439,7 @@ export class SendMoney extends Component {
     console.log(datosTX);
 
 
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
 
     try {

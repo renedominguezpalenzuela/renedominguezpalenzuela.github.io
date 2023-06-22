@@ -37,41 +37,41 @@ export class Beneficiarios extends Component {
   //TODO: mask in input 0000-0000-0000-0000
 
   static template = xml`  
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg">
+        <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2">
+            <div class="card-title flex flex-col rounded-lg pt-2">
                <div>Beneficiaries</div> 
             </div>
 
             <div class="card-body items-center   ">
-              <div class="grid sm:grid-cols-[45%_45%]  w-full gap-y-0 gap-x-2">
+              <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
+              
+                  <div class="form-control w-full ">
+                    <label class="label">
+                      <span class="label-text">Card Number</span>
+                    </label>
+                    <input type="text" t-ref="inputCardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                  </div>
 
-                <div class="form-control w-full  ">
-                  <label class="label">
-                    <span class="label-text">Card Number</span>
-                  </label>
-                  <input type="text" t-ref="inputCardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
-                </div>
+                  <div class=" flex items-center w-full ">
+                      <img t-att-src="this.state.cardBankImage" alt="" class="ml-3 sm:mt-9 sm:w-[10vw] w-[30vw]"/>
+                  </div>
 
-                <div class=" flex items-center ">
-                   <img t-att-src="this.state.cardBankImage" alt="" class="ml-3 sm:mt-9 sm:w-[10vw] w-[30vw]"/>
-                </div>
-
-
-                <div class="form-control w-full max-w-xs  ">
+                  
+                <div class="form-control w-full   ">
                   <label class="label">
                     <span class="label-text">Card Holder Name</span>
                   </label>
-                  <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full max-w-xs"  t-on-input="onChangeCardHolderInput" />   
+                  <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
 
-                <div class="form-control w-full max-w-xs ">
+                <div class="form-control w-full  ">
                   <label class="label">
                     <span class="label-text">Contact Phone</span>
                   </label>
-                  <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full max-w-xs"  t-on-input="onChangePhoneInput" />   
+                  <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
                 </div>
 
-                <div class="form-control   row-start-3 col-span-2 w-full ">
+                <div class="form-control  sm:col-span-2 w-full ">
                   <label class="label">
                     <span class="label-text">Delivery Address</span>
                   </label>
@@ -79,23 +79,22 @@ export class Beneficiarios extends Component {
                   <textarea class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
                 </div>
 
+                <div class="form-control w-full ">
+                  <label class="label">
+                    <span class="label-text">City</span>
+                  </label>
+                  <input type="text"  maxlength="100" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCityInput" />   
+                </div>
+
                 <div class="form-control w-full max-w-xs ">
-                <label class="label">
-                  <span class="label-text">City</span>
-                </label>
-                <input type="text"  maxlength="100" placeholder="" class="input input-bordered w-full max-w-xs"  t-on-input="onChangeCityInput" />   
-              </div>
+                  <label class="label">
+                    <span class="label-text">Country</span>
+                  </label>
+                  <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                </div>
+  
 
-              <div class="form-control w-full max-w-xs ">
-              <label class="label">
-                <span class="label-text">Country</span>
-              </label>
-              <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="XXX" class="input input-bordered w-full max-w-xs"  t-on-input="onChangeCountryInput" />   
-            </div>
-
-             
-
-               
+     
               
 
               </div>
@@ -126,7 +125,7 @@ export class Beneficiarios extends Component {
   setup() {
 
 
-    this.accessToken = window.localStorage.getItem('accessToken');
+    this.accessToken = window.sessionStorage.getItem('accessToken');
 
 
 

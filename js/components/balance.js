@@ -20,6 +20,7 @@ export class Balance extends Component {
 
 
     <div class=" bg-[#4F50E9] p-2 mt-1  text-[#ffffff]  rounded-md">
+       <t t-if="balance.saldos">
         <t t-foreach="balance.saldos" t-as="undato" t-key="undato.currency">                
           <div class="flex flex-row  ">
                 <div class="w-[30%] "> <t t-esc="undato.currency"/></div> 
@@ -27,6 +28,7 @@ export class Balance extends Component {
           
           </div>
         </t>
+       </t> 
     </div>
 `;
 
@@ -38,8 +40,8 @@ export class Balance extends Component {
   }
 
   async get_data(update) {
-    const accessToken = window.localStorage.getItem('accessToken');
-    const walletAddress = window.localStorage.getItem('walletAddress');
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const walletAddress = window.sessionStorage.getItem('walletAddress');
 
     const api = new API(accessToken);
     let datos = await api.getBalance(walletAddress);
@@ -60,10 +62,10 @@ export class Balance extends Component {
 
 
   setup() {
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = window.sessionStorage.getItem('accessToken');
 
-    const walletAddress = window.localStorage.getItem('walletAddress');
-    const userId = window.localStorage.getItem('userId');
+    const walletAddress = window.sessionStorage.getItem('walletAddress');
+    const userId = window.sessionStorage.getItem('userId');
     const subscriptionPath = "/api/subscription";
 
    
