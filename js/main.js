@@ -29,7 +29,7 @@ class Root extends Component {
   static template = xml` 
 
   
-<div class="grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7]   ">
+<div class="sm:grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7]   ">
     <div class="p-2 sm:h-full ">
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
     </div>
@@ -51,7 +51,7 @@ class Root extends Component {
 
           <t t-else="">
             
-            <div class="grid sm:grid-cols-[34%_64%] gap-2 h-[100vh]">
+            <div class="sm:grid sm:grid-cols-[34%_64%] gap-2 h-[100vh]">
             <div class="h-[100vh]">No component defined for this menu option yet</div>
               
             </div>  

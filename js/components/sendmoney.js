@@ -63,7 +63,7 @@ export class SendMoney extends Component {
 
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
-    <div class="grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
+    <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
      
     
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
