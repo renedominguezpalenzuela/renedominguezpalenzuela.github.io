@@ -5,6 +5,9 @@ import { LeftMenu } from "./leftmenu.js";
 import { API } from "../utils.js";
 import { Beneficiarios } from "./homedeliveryCubaBeneficiario.js";
 
+import { Provincias } from "../../data/provincias_cu.js";
+
+
 
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 
@@ -187,7 +190,7 @@ export class HomeDeliveryCuba extends Component {
     this.beneficiario = datosBeneficiario;
 
 
-    //console.log(this.beneficiario);
+    console.log(this.beneficiario);
     //Swal.fire('Datos beneficiario actualizados');
   }
 

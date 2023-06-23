@@ -6,7 +6,9 @@ import { API } from "../utils.js";
 import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
 
 
-//TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
+//DONE: Desacoplar la vista de los calculos para poder implementar prubas unitarias
+//TODO: refactorizar en un componente la parte de las monedas y el importe
+
 
 export class SendMoneyCuba extends Component {
 

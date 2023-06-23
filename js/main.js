@@ -10,7 +10,8 @@ import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 class Root extends Component {
   static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba};
 
-  state = useState({menuId: 4, title:'To Credit Card'});
+  //Opcion inicial del menu
+  state = useState({menuId: 5, title:'Home Delivery'});
    
 
   leftmenuItems = [
