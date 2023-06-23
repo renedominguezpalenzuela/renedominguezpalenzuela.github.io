@@ -165,7 +165,7 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //-------------------------------------------------------------------------------
  async  createTX(datosTX) {
   //leer token desde local storage
-  const accessToken = window.sessionStorage.getItem('accessToken');
+  //const accessToken = window.sessionStorage.getItem('accessToken');
 
 
   var body = JSON.stringify(datosTX);
@@ -174,7 +174,7 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
     method: 'post',
     url: `${base_url}/api/private/transactions/cash-out/creditcard`,
     headers: {
-      'authorization': `Bearer ${accessToken}`,
+      'authorization': `Bearer ${this.accessToken}`,
       'x-api-key': x_api_key,
       'Content-Type': 'application/json',
     },
@@ -193,6 +193,43 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 
   return datos;
 }
+
+
+  
+//-------------------------------------------------------------------------------
+//  createTX: Contabiliza transaccion
+//-------------------------------------------------------------------------------
+async  createTXHomeDeliveryCuba(datosTX) {
+  //leer token desde local storage
+ // const accessToken = window.sessionStorage.getItem('accessToken');
+
+
+  var body = JSON.stringify(datosTX);
+
+  var config = {
+    method: 'post',
+    url: `${base_url}/api/private/transactions/cash-out/delivery`,
+    headers: {
+      'authorization': `Bearer ${this.accessToken}`,
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    },
+    data: body
+  }
+
+  let datos = null;
+  await axios(config).then(function (response) {
+     datos = response.data;
+     console.log(datos);  
+  }).catch(function (error) {
+    console.log("ERRROR")
+    console.log(error);  
+    datos = error;
+  });
+
+  return datos;
+}
+
 
 
   //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places

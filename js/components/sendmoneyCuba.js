@@ -190,7 +190,7 @@ export class SendMoneyCuba extends Component {
     this.beneficiario = datosBeneficiario;
 
 
-    //console.log(this.beneficiario);
+    console.log(this.beneficiario);
     //Swal.fire('Datos beneficiario actualizados');
   }
 
@@ -397,20 +397,8 @@ export class SendMoneyCuba extends Component {
   async onSendMoney() {
     //cardCUP	cardUSD
     console.log(API.generateRandomID());
-
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    /*Campos obligatorios:
-    'service', 
-    'merchant_external_id', 
-    'amount', 
-    'currency',
-     'deliveryAmount',
-     'cardHolderName', 
-     'bankName', 
-     'contactPhone', 
-     'deliveryCountry',
-      'deliveryCountryCode'
-                */
+   
     //TODO: Validaciones
     const datosTX = {
       service: service,
@@ -419,7 +407,12 @@ export class SendMoneyCuba extends Component {
       deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
       deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
       concept: this.concept.el.value,                                               //Concepto del envio
-      //Datos de benefeciario
+      merchant_external_id: API.generateRandomID(),
+      paymentLink: true,
+      ...this.beneficiario
+    }
+
+      /*Datos de benefeciario
       cardNumber: this.beneficiario.cardNumber,                                     //Tarjeta del que recibe el dinero 
       bankName: this.beneficiario.bankName,                                         //Banco al que pertence la tarjeta 
       cardHolderName: this.beneficiario.cardHolderName,                             //nombre del beneficiario
@@ -429,20 +422,13 @@ export class SendMoneyCuba extends Component {
       deliveryCountry: this.beneficiario.deliveryCountry,                           //Pais del beneficiario
       deliveryCountryCode: this.beneficiario.deliveryCountryCode,                   //ISO Code del pais del pais del beneficiario
       receiverCountry: this.beneficiario.receiverCountry,                          //Pais de la persona que recibe la transaccion 
-      merchant_external_id: API.generateRandomID(),
-      paymentLink: true
-
-
-    }
+      */
 
     console.log(datosTX);
 
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
-
-    const userData = await api.getUserProfile();
-    this.state = { ...userData };
+    //const userData = await api.getUserProfile();
+   // this.state = { ...userData };
 
     //const userProfileData = await api.getUserProfile();
     //this.userProfile = { ...userProfileData };
@@ -450,6 +436,10 @@ export class SendMoneyCuba extends Component {
     //console.log(this.userProfile);
 
     try {
+
+      const accessToken = window.sessionStorage.getItem('accessToken');
+      const api = new API(accessToken);
+  
 
       const resultado = await api.createTX(datosTX);
 
@@ -460,28 +450,17 @@ export class SendMoneyCuba extends Component {
         }
       }
 
+      //Error pero aun responde el API
       if (resultado.response) {
         Swal.fire(resultado.response.data.message);
       }
 
-
-
     } catch (error) {
-
       console.log(error);
       // Swal.fire(resultado.response.data.message);
     }
 
-
-
-
-
-
-
-
   }
-
-
 
 }
 

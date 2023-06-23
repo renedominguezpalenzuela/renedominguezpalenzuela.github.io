@@ -2,6 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 import { API } from "../utils.js";
+import { Provincias } from "../../data/provincias_cu.js";
 
 
 
@@ -79,12 +80,32 @@ export class Beneficiarios extends Component {
                   <textarea class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
                 </div>
 
+          
+
+                
+                <div class="form-control w-full ">
+                  <label class="label">
+                    <span class="label-text">Province</span>
+                  </label>
+                  <select class="select select-bordered w-full" t-on-input="onChangeProvince">
+                    <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
+                       <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
+                    </t>             
+                  </select>
+                </div>
+
                 <div class="form-control w-full ">
                   <label class="label">
                     <span class="label-text">City</span>
                   </label>
-                  <input type="text"  maxlength="100" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCityInput" />   
+                  <select class="select select-bordered w-full" t-on-input="onChangeCity">
+                    <t t-foreach="municipios" t-as="unMunicipio" t-key="unMunicipio">
+                       <option><t t-esc="unMunicipio"/></option>
+                    </t>             
+                  </select>
                 </div>
+
+
 
                 <div class="form-control w-full max-w-xs ">
                   <label class="label">
@@ -131,6 +152,15 @@ export class Beneficiarios extends Component {
 
 
     onWillStart(async () => {
+      this.provincias = Provincias;
+
+      this.municipios = this.provincias[0].municipios;
+
+      this.state.deliveryCity  = this.provincias[0].municipios[0];
+      this.state.receiverCity = this.provincias[0].municipios[0];
+      this.state.deliveryZona = this.provincias[0].id==="4" ? "Habana" : "Provincias";
+
+
 
 
 
@@ -268,11 +298,38 @@ export class Beneficiarios extends Component {
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
+  /*
   onChangeCityInput = API.debounce(async (event) => {
     this.state.receiverCity = event.target.value;
 
     this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);
+  }, API.tiempoDebounce);*/
+
+
+  
+   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
+   onChangeProvince = (event) => {
+    console.log(event.target.value);
+    const selectedProvinceId = event.target.value;
+    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
+    this.municipios = selectedProvince.municipios;
+    this.state.deliveryCity  = selectedProvince.municipios[0];
+    this.state.receiverCity = selectedProvince.municipios[0];
+    this.state.deliveryZona = selectedProvince.id==="4" ? "Habana" : "Provincias";
+    this.render();
+    this.state.deliveryArea = selectedProvince.nombre;
+    this.props.onChangeDatosBeneficiarios(this.state);
+  };
+
+
+  //Evento al cambiar de municipio
+  onChangeCity = (event) => {   
+    const selectedCity = event.target.value;
+    this.state.deliveryCity = selectedCity;
+    this.state.receiverCity = selectedCity;
+    this.props.onChangeDatosBeneficiarios(this.state);
+  };
+
 
 
 

@@ -3793,6 +3793,10 @@ details.collapse summary::-webkit-details-marker {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .flex-row {
   flex-direction: row;
 }
@@ -4172,6 +4176,10 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:grid-cols-\[34\%_64\%\] {
     grid-template-columns: 34% 64%;
+  }
+
+  .sm\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 

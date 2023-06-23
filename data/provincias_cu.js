@@ -40,7 +40,7 @@ export const Provincias = [{
 }, {
     id: "9",
     nombre: 'Ciego de Ávila',
-    municipio: ["Ciro Redondo", "Baraguá", "Bolivia", "Chambas", "Ciego de Ávila", "Florencia", "Majagua", "Morón", "Primero de Enero", "Venezuela"]
+    municipios: ["Ciro Redondo", "Baraguá", "Bolivia", "Chambas", "Ciego de Ávila", "Florencia", "Majagua", "Morón", "Primero de Enero", "Venezuela"]
 }, {
     id: "10",
     nombre: 'Camagüey',

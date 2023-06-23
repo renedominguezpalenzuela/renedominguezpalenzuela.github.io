@@ -186,11 +186,8 @@ export class HomeDeliveryCuba extends Component {
 
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
-
     this.beneficiario = datosBeneficiario;
-
-
-    console.log(this.beneficiario);
+    //console.log(this.beneficiario);
     //Swal.fire('Datos beneficiario actualizados');
   }
 
@@ -203,22 +200,11 @@ export class HomeDeliveryCuba extends Component {
 
 
     onWillStart(async () => {
-
       const api = new API(accessToken);
-      
-
       const exchangeRate = await api.getExchangeRate("usd");
-
-     
-
       this.feeSTR.value = '-';
-
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
-
-   
-
-
     });
 
     onRendered(() => {
@@ -231,29 +217,7 @@ export class HomeDeliveryCuba extends Component {
     })
 
 
-
-
-
   }
-
-
-
-
-  // debounce = (callback, wait) => {
-  //   let timeoutId = null;
-  //   return (...args) => {
-  //     window.clearTimeout(timeoutId);
-  //     timeoutId = window.setTimeout(() => {
-  //       callback.apply(null, args);
-  //     }, wait);
-  //   };
-  // }
-
-
-
-
-
-
 
 
   async onChangeCurrency() {
@@ -298,8 +262,7 @@ export class HomeDeliveryCuba extends Component {
     const fee = await api.getFee(service, zone, amount)
 
     return fee;
-    ///this.fee.value = 10;
-    ///this.feeSTR.value = '-';
+   
   }
 
 
@@ -398,12 +361,10 @@ export class HomeDeliveryCuba extends Component {
   async onSendMoney() {
     //cardCUP	cardUSD
     
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
+    
+    //const userData = await api.getUserProfile();
 
-    const userData = await api.getUserProfile();
-
-    this.state = { ...userData };
+    //this.state = { ...userData };
 
     //const userProfileData = await api.getUserProfile();
     //this.userProfile = { ...userProfileData };
@@ -413,19 +374,8 @@ export class HomeDeliveryCuba extends Component {
 
     console.log(API.generateRandomID());
 
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    /*Campos obligatorios:
-    'service', 
-    'merchant_external_id', 
-    'amount', 
-    'currency',
-     'deliveryAmount',
-     'cardHolderName', 
-     'bankName', 
-     'contactPhone', 
-     'deliveryCountry',
-      'deliveryCountryCode'
-                */
+    const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
+
     //TODO: Validaciones
     const datosTX = {
       service: service,
@@ -433,30 +383,37 @@ export class HomeDeliveryCuba extends Component {
       currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
       deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
       deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
-      concept: this.concept.el.value,                                               //Concepto del envio
-      //Datos de benefeciario
-      cardNumber: this.beneficiario.cardNumber,                                     //Tarjeta del que recibe el dinero 
-      bankName: this.beneficiario.bankName,                                         //Banco al que pertence la tarjeta 
-      cardHolderName: this.beneficiario.cardHolderName,                             //nombre del beneficiario
-      contactPhone: this.beneficiario.contactPhone,                                 //telefono del beneficiario                
-      deliveryAddress: this.beneficiario.deliveryAddress,                           //Direccion del beneficiario            
-      receiverCity: this.beneficiario.receiverCity,                                //Ciudad del beneficiario
-      deliveryCountry: this.beneficiario.deliveryCountry,                           //Pais del beneficiario
-      deliveryCountryCode: this.beneficiario.deliveryCountryCode,                   //ISO Code del pais del pais del beneficiario
-      receiverCountry: this.beneficiario.receiverCountry,                          //Pais de la persona que recibe la transaccion 
+      concept: this.concept.el.value,                                               //Concepto del envio  
       merchant_external_id: API.generateRandomID(),
-      paymentLink: true
+      paymentLink: true,
+      ...this.beneficiario
+    };
 
+    
 
-    }
+    /*
+    
+    //Datos de benefeciario
+      deliveryID: this.beneficiario.deliveryID,                                     //Numero de identificacion del beneficiario
+      deliveryFirstName: this.beneficiario.deliveryFirstName,
+      deliveryLastName: this.beneficiario.deliveryLastName,
+      deliverySecondLastName: this.beneficiario.deliverySecondLastName,
+      deliveryPhone: this.beneficiario.deliveryPhone,		      
+      deliveryAddress: this.beneficiario.deliveryAddress,                           //Direccion del beneficiario 
+      deliveryCity: this.beneficiario.deliveryCity,	                                 //Municipio del beneficiario
+      deliveryArea: this.beneficiario.deliveryArea,	                                 //Provincia del beneficiario
+      deliveryCountry: "Cuba",
+      deliveryCountryCode: "CU",
+    */
 
     console.log(datosTX);
 
-
-
+   
     try {
 
-      const resultado = await api.createTX(datosTX);
+      const accessToken = window.sessionStorage.getItem('accessToken');
+      const api = new API(accessToken);
+      const resultado = await api.createTXHomeDeliveryCuba(datosTX);
 
       //TODO OK
       if (resultado.data) {
@@ -465,6 +422,7 @@ export class HomeDeliveryCuba extends Component {
         }
       }
 
+      //Error pero aun responde el API
       if (resultado.response) {
         Swal.fire(resultado.response.data.message);
       }
