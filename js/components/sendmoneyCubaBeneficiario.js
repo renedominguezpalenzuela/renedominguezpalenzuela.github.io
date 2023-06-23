@@ -39,7 +39,7 @@ export class Beneficiarios extends Component {
   static template = xml`  
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2">
             <div class="card-title flex flex-col rounded-lg pt-2">
-               <div>Beneficiaries</div> 
+               <div>Beneficiary</div> 
             </div>
 
             <div class="card-body items-center   ">

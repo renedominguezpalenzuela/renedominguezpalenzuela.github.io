@@ -48,9 +48,9 @@ export class HomeDeliveryCuba extends Component {
 
   })
 
-  userProfile = useState({
+  /*userProfile = useState({
 
-  })
+  })*/
 
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
@@ -202,21 +202,18 @@ export class HomeDeliveryCuba extends Component {
     onWillStart(async () => {
 
       const api = new API(accessToken);
-      const userData = await api.getUserProfile();
+      
 
       const exchangeRate = await api.getExchangeRate("usd");
 
-      this.state = { ...userData };
+     
 
       this.feeSTR.value = '-';
 
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-      const userProfileData = await api.getUserProfile();
-      this.userProfile = { ...userProfileData };
-
-      console.log(this.userProfile);
+   
 
 
     });
@@ -397,6 +394,20 @@ export class HomeDeliveryCuba extends Component {
 
   async onSendMoney() {
     //cardCUP	cardUSD
+    
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const api = new API(accessToken);
+
+    const userData = await api.getUserProfile();
+
+    this.state = { ...userData };
+
+    //const userProfileData = await api.getUserProfile();
+    //this.userProfile = { ...userProfileData };
+
+    //console.log(this.userProfile);
+
+
     console.log(API.generateRandomID());
 
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
@@ -439,8 +450,6 @@ export class HomeDeliveryCuba extends Component {
     console.log(datosTX);
 
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
 
     try {
 

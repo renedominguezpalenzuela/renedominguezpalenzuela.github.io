@@ -4,10 +4,11 @@ import { Menu } from "./components/menu.js";
 import { LeftMenu } from "./components/leftmenu.js";
 import { Profile } from "./components/profile.js";
 import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
+import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba};
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba};
 
   state = useState({menuId: 4, title:'To Credit Card'});
    
@@ -47,6 +48,10 @@ class Root extends Component {
 
           <t t-elif="this.state.menuId === 4">
             <SendMoneyCuba/>
+          </t>
+
+          <t t-elif="this.state.menuId === 5">
+            <HomeDeliveryCuba/>
           </t>
 
           <t t-else="">

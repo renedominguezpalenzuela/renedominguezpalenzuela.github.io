@@ -48,9 +48,10 @@ export class SendMoneyCuba extends Component {
 
   })
 
+  /*
   userProfile = useState({
 
-  })
+  })*/
 
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
@@ -202,21 +203,17 @@ export class SendMoneyCuba extends Component {
     onWillStart(async () => {
 
       const api = new API(accessToken);
-      const userData = await api.getUserProfile();
+    
 
       const exchangeRate = await api.getExchangeRate("usd");
-
-      this.state = { ...userData };
+ 
 
       this.feeSTR.value = '-';
 
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-      const userProfileData = await api.getUserProfile();
-      this.userProfile = { ...userProfileData };
-
-      console.log(this.userProfile);
+     
 
 
     });
@@ -441,6 +438,14 @@ export class SendMoneyCuba extends Component {
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
+
+    const userData = await api.getUserProfile();
+    this.state = { ...userData };
+
+    //const userProfileData = await api.getUserProfile();
+    //this.userProfile = { ...userProfileData };
+
+    //console.log(this.userProfile);
 
     try {
 
