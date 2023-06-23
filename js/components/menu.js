@@ -8,40 +8,46 @@ export class Menu extends Component {
             <div class="navbar hidden sm:flex ">
                 <div class="navbar-start ">
                     
-                <div class="text-[1.5rem]  font-[600] pl-1 ">
-                    <t t-esc="props.title"/>
-                </div>
-                        
+                    <div class="text-[1.5rem]  font-[600] pl-1 ">
+                        <t t-esc="props.title"/>
+                    </div>
+                            
                               
                 </div>
+
                 <div class="navbar-center ">
+              
                     
                 </div>
+
                 <div class="navbar-end  ">
-                  
+
+                    <ul class="menu menu-horizontal px-1 z-50">
+
+                        <li>
+                            <a class="dropdown-item" href="#">TX List</a>
+                        </li>
+
+                        <li tabindex="0">
+                            <details>
+                                <summary>Send Money</summary>
+                                <ul class="p-2">
+                                    <li><a class="dropdown-item" href="#">Send Money Cuba</a></li>
+                                    <li><a>Submenu 1</a></li>
+                                    <li><a>Submenu 2</a></li>
+                                </ul>
+                            </details>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">User Balances</a>
+                        </li>
+                    </ul>
+
+          
 
                       
-                            <ul class="menu menu-horizontal px-1">
-
-                                <li>
-                                    <a class="dropdown-item" href="/listatr.html">TX List</a>
-                                </li>
-
-                                <li tabindex="0">
-                                    <details>
-                                        <summary>Send Money</summary>
-                                        <ul class="p-2">
-                                            <li><a class="dropdown-item" href="/sendmoney.html">Send Money Cuba</a></li>
-                                            <li><a>Submenu 1</a></li>
-                                            <li><a>Submenu 2</a></li>
-                                        </ul>
-                                    </details>
-                                </li>
-
-                                <li>
-                                    <a class="dropdown-item" href="/userdata.html">User Balances</a>
-                                </li>
-                            </ul>
+                          
                 
                     
                  
@@ -57,20 +63,21 @@ export class Menu extends Component {
 
     setup() {
 
-
+        
 
         onWillStart(() => {
-            // console.logs(props)
+            
+            
 
         });
 
         onMounted(() => {
-
+            
         });
 
 
         onRendered(() => {
-
+            
         });
 
     }

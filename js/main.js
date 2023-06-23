@@ -36,7 +36,7 @@ class Root extends Component {
 
     <div class="p-2 sm:h-full  ">
       <div class="sm:h-[10%]">
-         <Menu title="this.state.title"/>
+         <Menu title="state.title"/>
       </div>
       <main class="flex  justify-center  rounded-lg   ">       
         <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-full ">       
@@ -108,12 +108,9 @@ class Root extends Component {
     
   
 
-  leftMenuController(menuId, menuName) {
-
-
+  leftMenuController(menuId, menuName) { 
     this.state.menuId = menuId;
-    this.state.title = menuName;
-   
+    this.state.title = menuName;   
   }
 
 
