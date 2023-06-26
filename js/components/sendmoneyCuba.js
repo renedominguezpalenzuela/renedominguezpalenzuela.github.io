@@ -215,6 +215,11 @@ export class SendMoneyCuba extends Component {
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
+      //Recuperando los datos de los beneficiarios
+      this.allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
+
+      console.log(this.allDatosBeneficiariosFromStorage);
+
      
 
 

@@ -76,6 +76,8 @@ export class HomeDeliveryCuba extends Component {
         </div>
 
         <div class="card-body items-center  ">
+
+        
            
             <div class="form-control  max-w-xs  ">
                 <label class="label">
@@ -164,7 +166,7 @@ export class HomeDeliveryCuba extends Component {
     </div>
 
 
-    <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" />
+    <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
 
       <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
 
@@ -205,6 +207,17 @@ export class HomeDeliveryCuba extends Component {
       this.feeSTR.value = '-';
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
+
+        //Recuperando los datos de los beneficiarios
+        this.allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData')); 
+        
+        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+            beneficiaryFullName: el.beneficiaryFullName,
+            _id: el._id
+        }));
+
+        //console.log(this.beneficiariosNames);
+  
     });
 
     onRendered(() => {
@@ -359,21 +372,8 @@ export class HomeDeliveryCuba extends Component {
 
 
   async onSendMoney() {
-    //cardCUP	cardUSD
+
     
-    
-    //const userData = await api.getUserProfile();
-
-    //this.state = { ...userData };
-
-    //const userProfileData = await api.getUserProfile();
-    //this.userProfile = { ...userProfileData };
-
-    //console.log(this.userProfile);
-
-
-    console.log(API.generateRandomID());
-
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //TODO: Validaciones
@@ -391,20 +391,6 @@ export class HomeDeliveryCuba extends Component {
 
     
 
-    /*
-    
-    //Datos de benefeciario
-      deliveryID: this.beneficiario.deliveryID,                                     //Numero de identificacion del beneficiario
-      deliveryFirstName: this.beneficiario.deliveryFirstName,
-      deliveryLastName: this.beneficiario.deliveryLastName,
-      deliverySecondLastName: this.beneficiario.deliverySecondLastName,
-      deliveryPhone: this.beneficiario.deliveryPhone,		      
-      deliveryAddress: this.beneficiario.deliveryAddress,                           //Direccion del beneficiario 
-      deliveryCity: this.beneficiario.deliveryCity,	                                 //Municipio del beneficiario
-      deliveryArea: this.beneficiario.deliveryArea,	                                 //Provincia del beneficiario
-      deliveryCountry: "Cuba",
-      deliveryCountryCode: "CU",
-    */
 
     console.log(datosTX);
 

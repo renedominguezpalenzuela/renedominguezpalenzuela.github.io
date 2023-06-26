@@ -333,7 +333,7 @@ async  createTXHomeDeliveryCuba(datosTX) {
   // const accessToken = window.sessionStorage.getItem('accessToken');
   // const walletAddress = window.sessionStorage.getItem('walletAddress');
 
-  console.log(walletAddress);
+  //console.log(walletAddress);
 
   var body = JSON.stringify({
     "walletAddress": walletAddress
@@ -363,6 +363,32 @@ async  createTXHomeDeliveryCuba(datosTX) {
 
   return datos;
 }
+
+
+
+  //------------------------------------------------------------------------------------------------
+  // Obtiene todos los datos de los beneficiarios
+  //------------------------------------------------------------------------------------------------
+
+  async getAllDatosBeneficiarios() {
+
+    var config = {
+      method: 'post',
+      url: `${this.base_url}/api/private/users/beneficiary`,
+      headers: this.headers,
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+    }).catch(function (error) {
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
 
   
 }
@@ -420,7 +446,7 @@ export async function login(usr, pass) {
       const datos = response.data;
       if (datos.accessToken) {
         resultado = true;
-        console.log(datos.accessToken);
+        //console.log(datos.accessToken);
         window.sessionStorage.setItem('accessToken', datos.accessToken)
       } else {
         Swal.fire({

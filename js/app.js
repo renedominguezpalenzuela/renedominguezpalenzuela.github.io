@@ -3,7 +3,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 //import useStore from "/js/store.js";
 //import { getAPIStatus, login, getUsrInfo } from "/js/utils.js";
 import useStore from "./store.js";
-import { getAPIStatus, login, getUsrInfo } from "./utils.js";
+import { getAPIStatus, login, API } from "./utils.js";
 
 
 
@@ -62,13 +62,13 @@ class Root extends Component {
   setup() {
     this.store = useStore();
 
-   
+
 
     onMounted(async () => {
-   
 
-      
-     
+
+
+
     });
 
 
@@ -77,8 +77,8 @@ class Root extends Component {
 
     onRendered(async () => {
 
-     
-      
+
+
     });
 
 
@@ -87,15 +87,69 @@ class Root extends Component {
   }
 
   async login_btn() {
-    
+
     console.log("Login...");
-    const va = await login(this.inputUsr.el.value, this.inputPass.el.value);
-    console.log(va)
+    const loginOK = await login(this.inputUsr.el.value, this.inputPass.el.value);
+    console.log(loginOK)
 
-    const userInfo = await getUsrInfo();
+    if (loginOK) {
+      const accessToken = window.sessionStorage.getItem('accessToken');
+      console.log(accessToken)
+      const api = new API(accessToken);
 
-     if (userInfo) window.location.assign("main.html");
-   
+      
+      //obteniendo todos los datos de los beneficiarios
+      const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+  
+
+      if (allDatosBeneficiarios) {
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+      }
+
+      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
+      //console.log(allDatosBeneficiariosFromStorage);
+
+
+
+
+
+      // const userInfo = await getUsrInfo();
+      const userData = await api.getUserProfile();
+     // console.log(userData);
+
+          if (userData._id) {
+            window.sessionStorage.setItem('userId', userData._id)
+          }
+
+
+          if (userData.walletAddress) {
+            window.sessionStorage.setItem('walletAddress', userData.walletAddress)
+          }
+
+          //obteniendo lista de ids de beneficiarios
+          if (userData.beneficiaries) {
+            window.sessionStorage.setItem('beneficiariesID', userData.beneficiaries)
+          }
+
+          const beneficiariosIDList = userData.beneficiaries;
+          console.log(beneficiariosIDList);
+
+
+     window.location.assign("main.html");
+
+
+    }
+
+
+    /*datos = response.data;
+
+    
+*/
+
+
+
+    // if (userInfo) window.location.assign("main.html");
+
   }
 
   setTest_data() {
