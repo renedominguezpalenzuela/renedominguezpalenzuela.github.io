@@ -302,7 +302,7 @@ async  createTXHomeDeliveryCuba(datosTX) {
   }
 
 
-  static tiempoDebounce = 1000; //milisegundos
+  static tiempoDebounce = 300; //milisegundos
 
   static debounce = (callback, wait) => {
     let timeoutId = null;

@@ -208,16 +208,24 @@ export class HomeDeliveryCuba extends Component {
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-        //Recuperando los datos de los beneficiarios
-        this.allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData')); 
-        
-        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-            beneficiaryFullName: el.beneficiaryFullName,
-            _id: el._id
-        }));
+      //Recuperando los datos de los beneficiarios
 
-        //console.log(this.beneficiariosNames);
-  
+
+      //obteniendo todos los datos de los beneficiarios
+      const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+      if (allDatosBeneficiarios) {
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+      }
+
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+
+      this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+        beneficiaryFullName: el.beneficiaryFullName,
+        _id: el._id
+      }));
+
+      console.log(this.beneficiariosNames);
+
     });
 
     onRendered(() => {
@@ -275,7 +283,7 @@ export class HomeDeliveryCuba extends Component {
     const fee = await api.getFee(service, zone, amount)
 
     return fee;
-   
+
   }
 
 
@@ -373,7 +381,7 @@ export class HomeDeliveryCuba extends Component {
 
   async onSendMoney() {
 
-    
+
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //TODO: Validaciones
@@ -389,12 +397,15 @@ export class HomeDeliveryCuba extends Component {
       ...this.beneficiario
     };
 
-    
+    if (!this.validarDatos(datosTX)) {
+      console.log("Validation Errors");
+      return;
+    }
 
 
     console.log(datosTX);
 
-   
+
     try {
 
       const accessToken = window.sessionStorage.getItem('accessToken');
@@ -430,6 +441,36 @@ export class HomeDeliveryCuba extends Component {
 
   }
 
+
+  validarDatos(datos) {
+
+
+
+    console.log(datos)
+    if (!datos.amount) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the sending amount'
+      })
+      return false;
+    } else if (datos.amount <= 0) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Sending amount must be greater than zero'
+      })
+      return false;
+    }
+
+    /*service: service,
+      
+      concept: this.concept.el.value,                                               //Concepto del envio  
+      merchant_external_id: API.generateRandomID(),
+      paymentLink: true,
+   */
+
+    return true;
+
+  }
 
 
 }
