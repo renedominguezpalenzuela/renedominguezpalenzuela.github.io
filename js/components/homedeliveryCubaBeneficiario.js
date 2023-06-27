@@ -111,7 +111,7 @@ export class Beneficiarios extends Component {
                         <span class="label-text">City</span>
                       </label>
                       <select t-att-value="this.state.deliveryCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
-                       
+                      <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                         <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
                           <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
                         </t>             
@@ -157,34 +157,42 @@ export class Beneficiarios extends Component {
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
-    console.log("Evento on changeProvince")
+    
+  
     if (this.inicializando) return;
-    console.log("Evento on changeProvince inicializando = false")
-    const selectedProvinceId = event.target.value;
-    //this.state.deliveryAreaID = event.target.value;
-    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
-    // this.municipios = selectedProvince.municipios;
 
-    console.log(this.provincias)
-    this.municipios = selectedProvince.municipios.map((unMunicipio, i) => ({
-      id: i,
-      nombre: unMunicipio
-    }));
-    this.state.deliveryCity = selectedProvince.municipios[0];
-    this.state.deliveryArea = selectedProvince.nombre;
-    this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
-    this.props.onChangeDatosBeneficiarios(this.state);
+    const selectedProvinceId = event.target.value;
+    this.state.deliveryAreaID = event.target.value;
+    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
+     this.municipios = selectedProvince.municipios;
+
+    console.log(selectedProvince)
+    if (selectedProvince) {
+      this.municipios = selectedProvince.municipios.map((unMunicipio, i) => ({
+        id: i,
+        nombre: unMunicipio
+      }));
+      this.state.deliveryCityID = -1;
+      this.state.deliveryArea = selectedProvince.nombre;
+      this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
+      this.props.onChangeDatosBeneficiarios(this.state);
+    }
   };
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
-    console.log("Evento on changeCity")
     if (this.inicializando) return;
-    console.log("Evento on changeCity inicializando = false")
     const selectedCityId = event.target.value;
-    let selectedMunicipio = this.municipios.filter(unMunicipio => unMunicipio.id === selectedCityId)[0];
-    this.state.deliveryCity = selectedMunicipio.name;
-    this.props.onChangeDatosBeneficiarios(this.state);
+    console.log(selectedCityId)
+    console.log(this.municipios)
+    //let selectedMunicipio = this.municipios.filter(unMunicipio => unMunicipio.id === selectedCityId)[0];
+    let selectedMunicipio = this.municipios[selectedCityId];
+    console.log(selectedMunicipio)
+    if (selectedMunicipio) {
+      this.state.deliveryCity = selectedMunicipio.nombre;
+      this.state.deliveryCityID = selectedCityId;
+      this.props.onChangeDatosBeneficiarios(this.state);
+    }
   };
 
   onChangeFirstName = API.debounce(async (event) => {
@@ -256,18 +264,31 @@ export class Beneficiarios extends Component {
         nombre: unMunicipio
       }));
 
+      console.log("Beneficiario municipio:")
+      console.log(selectedBenefiarioData.deliveryCity)
+      console.log(selectedBenefiarioData)
+
       const selectedMuncipio = this.municipios.filter(
         (unMunicipio) => {
-          return this.eliminarAcentos(selectedBenefiarioData.deliveryCity) === this.eliminarAcentos(unMunicipio.nombre)
+          
+          const comparacion = this.eliminarAcentos(selectedBenefiarioData.deliveryCity) == this.eliminarAcentos(unMunicipio.nombre);
+          if (comparacion) {
+            console.log("OK")
+            console.log(unMunicipio.nombre)
+            console.log(selectedBenefiarioData.deliveryCity)
+          }
+          return comparacion
         }
-
       )[0];
+
       if (selectedMuncipio) {
         console.log("Municipio")
         console.log(selectedMuncipio)
         this.state.deliveryCityID = selectedMuncipio.id;
         this.state.deliveryCity = selectedMuncipio.nombre;
         this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
+      } else {
+        this.state.deliveryCityID = -1;
       }
 
       this.props.onChangeDatosBeneficiarios(this.state);
