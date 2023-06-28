@@ -587,7 +587,7 @@ export async function getUsrInfo() {
 //---------------------------------------------------------------------------------------
 // User interface manager
 //--------------------------------------------------------------------------------------
-export class UImgr {
+export class UImanager {
    //----------------------------------------------------------------------------------
   //SendInput manejar eventos on change de 
   //----------------------------------------------------------------------------------
@@ -695,7 +695,7 @@ export class UImgr {
       const api = new API(accessToken);
       const feeData = await api.getFee(service, zone, sendAmount)
         const fee = feeData.fee;
-        resultado.sendAmount = UImgr.roundDec(sendAmount + fee);        
+        resultado.sendAmount = this.roundDec(sendAmount + fee);        
         resultado.fee = fee;
 
         const feeSTR = fee.toFixed(2);
@@ -705,6 +705,7 @@ export class UImgr {
                
     } else {
       resultado.receiveAmount = this.roundDec(0);
+      resultado.sendAmount = this.roundDec(0);
     }
 
     return resultado;

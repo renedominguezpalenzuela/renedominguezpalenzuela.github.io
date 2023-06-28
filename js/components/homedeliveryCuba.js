@@ -1,6 +1,6 @@
 const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
 
-import { API, UImgr } from "../utils.js";
+import { API, UImanager } from "../utils.js";
 import { Beneficiarios } from "./homedeliveryCubaBeneficiario.js";
 
 import { Provincias } from "../../data/provincias_cu.js";
@@ -232,7 +232,7 @@ export class HomeDeliveryCuba extends Component {
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
     this.inputReceiveRef.el.value = resultado.receiveAmount;
-    this.inputSendRef.el.value = UImgr.roundDec(this.inputSendRef.el.value);
+    this.inputSendRef.el.value = UImanager.roundDec(this.inputSendRef.el.value);
 
     this.changingSendAmount = false;
     this.changingReceiveAmount = false;
@@ -249,7 +249,7 @@ export class HomeDeliveryCuba extends Component {
 
     //LLAMADA
     const accessToken = window.sessionStorage.getItem('accessToken');
-    const resultado = await API.onChangeReceiveInput(
+    const resultado = await UImanager.onChangeReceiveInput(
       this.inputReceiveCurrencyRef.el.value,
       this.inputSendCurrencyRef.el.value,
       this.inputReceiveRef.el.value,
@@ -262,7 +262,7 @@ export class HomeDeliveryCuba extends Component {
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
     this.inputSendRef.el.value = resultado.sendAmount;
-    this.inputReceiveRef.el.value = UImgr.roundDec(this.inputReceiveRef.el.value);
+    this.inputReceiveRef.el.value = UImanager.roundDec(this.inputReceiveRef.el.value);
 
 
     this.changingSendAmount = false;
