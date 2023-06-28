@@ -1,5 +1,5 @@
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
-import { API } from "../utils.js";
+import { API, UImanager } from "../utils.js";
 import { Provincias } from "../../data/provincias_cu.js";
 
 export class Beneficiarios extends Component {
@@ -129,7 +129,7 @@ export class Beneficiarios extends Component {
 
     onWillStart(async () => {
       this.provincias = Provincias;
-      this.municipios = this.addKeyToMunicipios(this.provincias[0].municipios);
+      this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
     });
 
     onRendered(() => {
@@ -142,12 +142,6 @@ export class Beneficiarios extends Component {
 
   }
 
-  addKeyToMunicipios(municipios) {
-    return municipios.map((unMunicipio, i) => ({
-      id: i,
-      nombre: unMunicipio
-    }));
-  }
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
@@ -156,7 +150,7 @@ export class Beneficiarios extends Component {
     this.state.deliveryAreaID = event.target.value;
     let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
     if (selectedProvince) {
-      this.municipios = this.addKeyToMunicipios(selectedProvince.municipios);
+      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
       this.state.deliveryCityID = -1;
       this.state.deliveryCity = '';
       this.state.deliveryArea = selectedProvince.nombre;
@@ -247,7 +241,7 @@ export class Beneficiarios extends Component {
 
       //inicializando municipio
       //this.municipios = selectedProvince.municipios;
-      this.municipios = this.addKeyToMunicipios(selectedProvince.municipios);
+      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
 
       console.log("Beneficiario municipio:")
       console.log(selectedBenefiarioData.deliveryCity)

@@ -720,16 +720,13 @@ export class UImanager {
     const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
     return (resultado * negativo).toFixed(dec_places);
   }
-
-  // static roundNumber = (number, decimals = 2) => {
-  //   try {
-  //     if (!number) return 0;
-  //     let modifier = Math.pow(10, decimals);
-  //     return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
-  //   } catch (e) {
-  //     return -1;
-  //   }
-  // };
+  
+  static addKeyToMunicipios(municipios) {
+    return municipios.map((unMunicipio, i) => ({
+      id: i,
+      nombre: unMunicipio
+    }));
+  }
 
 }
 
