@@ -15,21 +15,15 @@ export class HomeDeliveryCuba extends Component {
 
   static components = { Beneficiarios };
 
-
-
   inputAvatar = useRef("inputAvatar");
-
   inputSendRef = useRef("inputSendRef");
   inputReceiveRef = useRef("inputReceiveRef");
-
   concept = useRef("concept");
-
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
   changingSendAmount = false;
   changingReceiveAmount = false;
-
 
   state = useState({
     firstName: "Rene",
@@ -45,15 +39,9 @@ export class HomeDeliveryCuba extends Component {
     // fee: 0
   })
 
-
   beneficiario = useState({
 
-
   })
-
-  /*userProfile = useState({
-
-  })*/
 
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
@@ -61,14 +49,10 @@ export class HomeDeliveryCuba extends Component {
   feeSTR = useState({ value: "" });
   fee = useState({ value: 0 });
 
-
-
-
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
     <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
-     
-    
+      
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
         <div class="card-title flex flex-col rounded-lg">
           <div>Amount to Send</div> 
@@ -76,9 +60,7 @@ export class HomeDeliveryCuba extends Component {
         </div>
 
         <div class="card-body items-center  ">
-
-        
-           
+          
             <div class="form-control  max-w-xs  ">
                 <label class="label">
                   <span class="label-text">You Send</span>  
@@ -103,7 +85,6 @@ export class HomeDeliveryCuba extends Component {
                     </label>
                   </div>
                  
-
                   <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                     <option value="usd">USD</option>
                     <option value="eur">EUR</option>
@@ -113,9 +94,7 @@ export class HomeDeliveryCuba extends Component {
                 
                 </div>
               </div>
-
-
-             
+            
               <div class="form-control  max-w-xs   ">
               <label class="label">
                 <span class="label-text">Received Amount</span>  
@@ -130,7 +109,6 @@ export class HomeDeliveryCuba extends Component {
 
                 </div>
                 
-
                 <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                   <option value="cup">CUP</option>
                   <option value="usd">USD</option>
@@ -146,46 +124,19 @@ export class HomeDeliveryCuba extends Component {
               <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
             </div>
             </div>
-
-
-        
-        
+       
           <div class="card-actions">
             
           </div>
         </div>
-
-
-       
-
-    
-
-    
-
-      
+     
     </div>
-
 
     <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
-
-      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
-
-
-
-    
+      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>   
     </div>
       
-
-      
-
-
-
-        
-     
-    
-
   `;
-
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
@@ -193,13 +144,10 @@ export class HomeDeliveryCuba extends Component {
     //Swal.fire('Datos beneficiario actualizados');
   }
 
-
-
   setup() {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const walletAddress = window.sessionStorage.getItem('walletAddress');
     const userId = window.sessionStorage.getItem('userId');
-
 
     onWillStart(async () => {
       const api = new API(accessToken);
@@ -213,9 +161,7 @@ export class HomeDeliveryCuba extends Component {
       if (allDatosBeneficiarios) {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
-
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
         _id: el._id
@@ -249,18 +195,14 @@ export class HomeDeliveryCuba extends Component {
     console.log("Recibir en: " + receiveCurrency);
 
     if (receiveCurrency && sendCurrency) {
-
       const exchangeRate = await api.getExchangeRate(sendCurrency);
       this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
       this.feeSTR.value = '-';
-
       console.log(exchangeRate);
       console.log(this.conversionRate.value);
       console.log(this.conversionRateSTR.value);
     }
-
-
   }
 
   onChangeCurrencySend() {
@@ -279,7 +221,6 @@ export class HomeDeliveryCuba extends Component {
   }
 
   onChangeSendInput = API.debounce(async () => {
-
     if (this.changingReceiveAmount) { return; }
 
     this.changingSendAmount = true;
@@ -289,7 +230,7 @@ export class HomeDeliveryCuba extends Component {
     const zone = "Habana"; //TODO: obtener de datos
 
     const conversionRate = this.conversionRate.value;
-    const sendAmount = this.inputSendRef.el.value; 
+    const sendAmount = this.inputSendRef.el.value;
     this.inputSendRef.el.value = API.roundDec(sendAmount);
 
     if (sendAmount > 0) {
@@ -316,9 +257,7 @@ export class HomeDeliveryCuba extends Component {
 
   }, 1000);
 
-
   onChangeReceiveInput = API.debounce(async () => {
-
     if (this.changingSendAmount) { return; }
 
     this.changingSendAmount = false;
@@ -374,11 +313,9 @@ export class HomeDeliveryCuba extends Component {
       return;
     }
 
-
     console.log(datosTX);
 
     try {
-
       const accessToken = window.sessionStorage.getItem('accessToken');
       const api = new API(accessToken);
       const resultado = await api.createTXHomeDeliveryCuba(datosTX);
@@ -400,7 +337,6 @@ export class HomeDeliveryCuba extends Component {
       // Swal.fire(resultado.response.data.message);
     }
 
-
   }
 
 
@@ -420,7 +356,6 @@ export class HomeDeliveryCuba extends Component {
       })
       return false;
     }
-
 
     //--------------------- Receivers amount --------------------------------------------
     if (datos.amount <= 0) {
@@ -476,11 +411,9 @@ export class HomeDeliveryCuba extends Component {
       return false;
     }
 
-
     return true;
 
   }
-
 
 }
 

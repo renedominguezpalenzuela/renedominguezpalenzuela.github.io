@@ -1,18 +1,10 @@
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
-
-
 import { API } from "../utils.js";
 import { Provincias } from "../../data/provincias_cu.js";
 
-
-
-
 export class Beneficiarios extends Component {
-
   tiempoDebounce = 1000; //milisegundos 
   accessToken = '';
-
-
 
   state = useState({
     deliveryID: '',
@@ -282,15 +274,7 @@ export class Beneficiarios extends Component {
 
     }
 
-
-
   }
-
-
-
-
-
-
 
 }
 
