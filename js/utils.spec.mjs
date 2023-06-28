@@ -1,5 +1,5 @@
 
-import { API } from "./utils.js";
+import { API, UImgr } from "./utils.js";
 
 
 const setDatos = [
@@ -33,11 +33,11 @@ const setDatos = [
 describe("Probando API", function () {
     it("Funcion de aproximacion", function () {
 
-        const uno = API.roundDec(10.25678, 2);
+        const uno = UImgr.roundDec(10.25678, 2);
         expect(typeof (uno)).toEqual('string');
 
         setDatos.forEach((unDato) => {
-            expect(API.roundDec(unDato.in, unDato.digits)).toBe(unDato.expect);
+            expect(UImgr.roundDec(unDato.in, unDato.digits)).toBe(unDato.expect);
         });
 
         // setDatos.forEach((unDato) => {

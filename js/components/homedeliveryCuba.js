@@ -1,16 +1,11 @@
-const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
+const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
 
-import { Menu } from "./menu.js";
-import { LeftMenu } from "./leftmenu.js";
-import { API } from "../utils.js";
+import { API, UImgr } from "../utils.js";
 import { Beneficiarios } from "./homedeliveryCubaBeneficiario.js";
 
 import { Provincias } from "../../data/provincias_cu.js";
 
-
-
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
-
 export class HomeDeliveryCuba extends Component {
 
   static components = { Beneficiarios };
@@ -130,18 +125,16 @@ export class HomeDeliveryCuba extends Component {
           </div>
         </div>
      
-    </div>
+      </div>
 
-    <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
-      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>   
+        <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
+        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>   
     </div>
       
   `;
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
-    //console.log(this.beneficiario);
-    //Swal.fire('Datos beneficiario actualizados');
   }
 
   setup() {
@@ -212,84 +205,70 @@ export class HomeDeliveryCuba extends Component {
   onChangeCurrencyRecib() {
     this.onChangeCurrency();
   }
-
+/*
   async getFee(service, zone, amount) {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const fee = await api.getFee(service, zone, amount)
     return fee;
-  }
+  }*/
 
   onChangeSendInput = API.debounce(async () => {
-    if (this.changingReceiveAmount) { return; }
 
+
+    if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    const zone = "Habana"; //TODO: obtener de datos
+    
 
-    const conversionRate = this.conversionRate.value;
-    const sendAmount = this.inputSendRef.el.value;
-    this.inputSendRef.el.value = API.roundDec(sendAmount);
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
+      this.inputSendCurrencyRef.el.value,
+      this.inputSendRef.el.value,
+      this.conversionRate.value,
+      accessToken
+    )
+    this.fee.value = resultado.fee;
+    this.feeSTR.value = resultado.feeSTR;
+    this.inputReceiveRef.el.value = resultado.receiveAmount;
+    this.inputSendRef.el.value = UImgr.roundDec(this.inputSendRef.el.value);
 
-    if (sendAmount > 0) {
-      this.getFee(service, zone, sendAmount).then((feeData) => {
-        const fee = feeData.fee;
-        this.fee.value = fee;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = false;
 
-        const receiveAmount = (sendAmount - fee) * conversionRate;
-
-        if (receiveAmount > 0) {
-          this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-          this.changingSendAmount = false;
-          this.changingReceiveAmount = false;
-        } else {
-          this.inputReceiveRef.el.value = API.roundDec(0);
-        }
-      });
-    } else {
-      this.inputReceiveRef.el.value = API.roundDec(0);
-    }
-
-  }, 1000);
+  }, 700);
 
   onChangeReceiveInput = API.debounce(async () => {
-    if (this.changingSendAmount) { return; }
 
+    if (this.changingSendAmount) { return; }
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    const zone = "Habana"; //TODO: obtener de datos
-    const receiveAmount = this.inputReceiveRef.el.value;
-    const conversionRate = this.conversionRate.value;
-    const sendAmount = (receiveAmount / conversionRate);
+    
 
-    this.getFee(service, zone, sendAmount).then((feeData) => {
-      const fee = feeData.fee;
-      //this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
-      this.inputSendRef.el.value = API.roundDec(sendAmount + fee);
-      this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
+    //LLAMADA
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const resultado = await API.onChangeReceiveInput(
+      this.inputReceiveCurrencyRef.el.value,
+      this.inputSendCurrencyRef.el.value,
+      this.inputReceiveRef.el.value,
+      this.conversionRate.value,
+      accessToken
+    )
 
-      if (receiveAmount > 0) {
-        this.fee.value = fee;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+   
 
-        this.changingSendAmount = false;
-        this.changingReceiveAmount = false;
-      } else {
-        this.inputSendRef.el.value = API.roundDec(0);
-        this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-      }
-    });
+    this.fee.value = resultado.fee;
+    this.feeSTR.value = resultado.feeSTR;
+    this.inputSendRef.el.value = resultado.sendAmount;
+    this.inputReceiveRef.el.value = UImgr.roundDec(this.inputReceiveRef.el.value);
 
-  }, 1000);
+
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = false;
+
+  }, 700);
 
 
   async onSendMoney() {

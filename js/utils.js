@@ -20,10 +20,10 @@ export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 export class API {
 
 
-  
-static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
-//static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
- 
+
+  static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+  //static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
+
   constructor(accessToken) {
 
     this.accessToken = accessToken;
@@ -72,7 +72,7 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 
   }
 
-  
+
   //------------------------------------------------------------------------------------------------
   // Obtiene Expresiones Regulares para validar tarjetas
   //------------------------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
     let datos = null;
     await axios(config).then(function (response) {
       datos = response.data;
-     
+
     }).catch(function (error) {
       console.log(error);
       Swal.fire({
@@ -159,97 +159,80 @@ static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
   }
 
 
+
+  //-------------------------------------------------------------------------------
+  //  createTX: Contabiliza transaccion
+  //-------------------------------------------------------------------------------
+  async createTX(datosTX) {
+    //leer token desde local storage
+    //const accessToken = window.sessionStorage.getItem('accessToken');
+
+
+    var body = JSON.stringify(datosTX);
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/cash-out/creditcard`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+  }
+
+
+
+  //-------------------------------------------------------------------------------
+  //  createTX: Contabiliza transaccion
+  //-------------------------------------------------------------------------------
+  async createTXHomeDeliveryCuba(datosTX) {
+    //leer token desde local storage
+    // const accessToken = window.sessionStorage.getItem('accessToken');
+
+
+    var body = JSON.stringify(datosTX);
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/cash-out/delivery`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+  }
+
+
+
   
-//-------------------------------------------------------------------------------
-//  createTX: Contabiliza transaccion
-//-------------------------------------------------------------------------------
- async  createTX(datosTX) {
-  //leer token desde local storage
-  //const accessToken = window.sessionStorage.getItem('accessToken');
-
-
-  var body = JSON.stringify(datosTX);
-
-  var config = {
-    method: 'post',
-    url: `${base_url}/api/private/transactions/cash-out/creditcard`,
-    headers: {
-      'authorization': `Bearer ${this.accessToken}`,
-      'x-api-key': x_api_key,
-      'Content-Type': 'application/json',
-    },
-    data: body
-  }
-
-  let datos = null;
-  await axios(config).then(function (response) {
-     datos = response.data;
-     console.log(datos);  
-  }).catch(function (error) {
-    console.log("ERRROR")
-    console.log(error);  
-    datos = error;
-  });
-
-  return datos;
-}
-
-
-  
-//-------------------------------------------------------------------------------
-//  createTX: Contabiliza transaccion
-//-------------------------------------------------------------------------------
-async  createTXHomeDeliveryCuba(datosTX) {
-  //leer token desde local storage
- // const accessToken = window.sessionStorage.getItem('accessToken');
-
-
-  var body = JSON.stringify(datosTX);
-
-  var config = {
-    method: 'post',
-    url: `${base_url}/api/private/transactions/cash-out/delivery`,
-    headers: {
-      'authorization': `Bearer ${this.accessToken}`,
-      'x-api-key': x_api_key,
-      'Content-Type': 'application/json',
-    },
-    data: body
-  }
-
-  let datos = null;
-  await axios(config).then(function (response) {
-     datos = response.data;
-     console.log(datos);  
-  }).catch(function (error) {
-    console.log("ERRROR")
-    console.log(error);  
-    datos = error;
-  });
-
-  return datos;
-}
-
-
-
-  //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
-  //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
-  static roundDec(numero, dec_places = 2) {
-    let negativo = 1;
-    if (numero < 0) negativo = -1;
-    const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
-    return (resultado * negativo).toFixed(dec_places);
-  }
-
-  // static roundNumber = (number, decimals = 2) => {
-  //   try {
-  //     if (!number) return 0;
-  //     let modifier = Math.pow(10, decimals);
-  //     return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
-  //   } catch (e) {
-  //     return -1;
-  //   }
-  // };
 
   // Obtiene el fee a aplicar
   // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
@@ -313,56 +296,56 @@ async  createTXHomeDeliveryCuba(datosTX) {
       }, wait);
     };
   }
-  
+
 
   static generateRandomID() {
     var date = new Date();
     date = date.toJSON().slice(0, 19).split`-`.join``.split`:`.join``;
-    const randomSTR= Math.random().toString(36).substring(2,10);
-    const randomId ='TR'+date+randomSTR;   
+    const randomSTR = Math.random().toString(36).substring(2, 10);
+    const randomId = 'TR' + date + randomSTR;
     return randomId;
   }
 
 
-  
-//-------------------------------------------------------------------------------
-//  getDatosTR
-//-------------------------------------------------------------------------------
- async  getBalance(  walletAddress) {
-  //leer token desde local storage
-  // const accessToken = window.sessionStorage.getItem('accessToken');
-  // const walletAddress = window.sessionStorage.getItem('walletAddress');
 
-  //console.log(walletAddress);
+  //-------------------------------------------------------------------------------
+  //  getDatosTR
+  //-------------------------------------------------------------------------------
+  async getBalance(walletAddress) {
+    //leer token desde local storage
+    // const accessToken = window.sessionStorage.getItem('accessToken');
+    // const walletAddress = window.sessionStorage.getItem('walletAddress');
 
-  var body = JSON.stringify({
-    "walletAddress": walletAddress
-  });
+    //console.log(walletAddress);
 
- 
-  var config = {
-    method: 'post',
-    url: `${base_url}/api/private/users/get-balance`,
-    headers: {
-      'authorization': `Bearer ${this.accessToken}`,
-      'x-api-key': x_api_key,
-      'Content-Type': 'application/json',
-    },
-    data: body
+    var body = JSON.stringify({
+      "walletAddress": walletAddress
+    });
+
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/get-balance`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      // console.log(JSON.stringify(datos));  
+    }).catch(function (error) {
+      console.log(error);
+      datos = error;
+
+    });
+
+    return datos;
   }
-
-  let datos = null;
-  await axios(config).then(function (response) {
-    datos = response.data;
-    // console.log(JSON.stringify(datos));  
-  }).catch(function (error) {
-    console.log(error);
-    datos = error;
-
-  });
-
-  return datos;
-}
 
 
 
@@ -390,7 +373,41 @@ async  createTXHomeDeliveryCuba(datosTX) {
 
   }
 
-  
+ 
+
+  /*
+  if (this.changingSendAmount) { return; }
+
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = true;
+
+    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
+    const zone = "Habana"; //TODO: obtener de datos
+    const receiveAmount = this.inputReceiveRef.el.value;
+    const conversionRate = this.conversionRate.value;
+    const sendAmount = (receiveAmount / conversionRate);
+
+    if (receiveAmount > 0) {
+      this.getFee(service, zone, sendAmount).then((feeData) => {
+        const fee = feeData.fee;
+        this.inputSendRef.el.value = UImgr.roundDec(sendAmount + fee);
+        this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
+
+        this.fee.value = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+
+        this.changingSendAmount = false;
+        this.changingReceiveAmount = false;
+
+      });
+    } else {
+      this.inputSendRef.el.value = UImgr.roundDec(0);
+    }
+  */
+
+
 }
 
 
@@ -415,14 +432,14 @@ export function getAPIStatus() {
     })
     .catch(error => {
       console.error(error.message);
-      
+
       Swal.fire({
         icon: 'error',
         title: error.message,
         text: 'Something went wrong requesting API Status',
         footer: '<h5> Inspect console for details </h5>'
       })
-     
+
     });
 }
 
@@ -567,6 +584,153 @@ export async function getUsrInfo() {
   return datos;
 }
 
+//---------------------------------------------------------------------------------------
+// User interface manager
+//--------------------------------------------------------------------------------------
+export class UImgr {
+   //----------------------------------------------------------------------------------
+  //SendInput manejar eventos on change de 
+  //----------------------------------------------------------------------------------
+  static async onChangeSendInput(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken) {
+
+    const resultado = {
+      fee: 0,
+      feeSTR: '',
+      receiveAmount: 0
+    }
+
+    if (conversionRate<=0) {
+      return resultado;
+    }
+
+    const service = `card${receiveCurrency.toUpperCase()}`;
+    const zone = "Habana"; //TODO: obtener de datos   
+
+    if (sendAmount > 0) {
+      const api = new API(accessToken);
+      const feeData = await api.getFee(service, zone, sendAmount);
+        const fee = feeData.fee;
+        resultado.fee = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = sendCurrency.toUpperCase();
+        resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+
+        const receiveAmount = (sendAmount - fee) * conversionRate;
+        if (receiveAmount > 0) {
+          resultado.receiveAmount = this.roundDec(receiveAmount);
+        } else {
+          resultado.receiveAmount = this.roundDec(0);
+        }      
+    } else {
+      resultado.receiveAmount = this.roundDec(0);
+    }
+
+    return resultado;
+
+
+
+    /*if (this.changingReceiveAmount) { return; }
+  
+      this.changingSendAmount = true;
+      this.changingReceiveAmount = false;
+  
+      const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
+      const zone = "Habana"; //TODO: obtener de datos
+  
+      const conversionRate = this.conversionRate.value;
+      const sendAmount = this.inputSendRef.el.value;
+      this.inputSendRef.el.value = UImgr.roundDec(sendAmount);
+  
+      if (sendAmount > 0) {
+        this.getFee(service, zone, sendAmount).then((feeData) => {
+          const fee = feeData.fee;
+          this.fee.value = fee;
+          const feeSTR = fee.toFixed(2);
+          const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+          this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+  
+          const receiveAmount = (sendAmount - fee) * conversionRate;
+  
+          if (receiveAmount > 0) {
+            this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
+            this.changingSendAmount = false;
+            this.changingReceiveAmount = false;
+          } else {
+            this.inputReceiveRef.el.value = UImgr.roundDec(0);
+          }
+  
+        });
+      } else {
+        this.inputReceiveRef.el.value = UImgr.roundDec(0);
+      }*/
+  }
+
+
+
+
+  
+  //----------------------------------------------------------------------------------
+  //ReceiveInput: manejar eventos on change de inputs send
+  //----------------------------------------------------------------------------------
+  static async onChangeReceiveInput(receiveCurrency, sendCurrency, receiveAmount, conversionRate, accessToken) {
+
+    const resultado = {
+      fee: 0,
+      feeSTR: '',
+      sendAmount: 0
+    }
+
+    if (conversionRate<=0) {
+      return resultado;
+    }
+
+    const service = `card${receiveCurrency.toUpperCase()}`;
+    const zone = "Habana"; //TODO: obtener de datos  
+
+  
+    
+    const sendAmount = (receiveAmount / conversionRate);
+
+    if (receiveAmount > 0) {
+      const api = new API(accessToken);
+      const feeData = await api.getFee(service, zone, sendAmount)
+        const fee = feeData.fee;
+        resultado.sendAmount = UImgr.roundDec(sendAmount + fee);        
+        resultado.fee = fee;
+
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = sendCurrency.toUpperCase();
+        resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+
+               
+    } else {
+      resultado.receiveAmount = this.roundDec(0);
+    }
+
+    return resultado;
+
+  }
+
+  //https://stackoverflow.com/questions/15762768/javascript-math-round-to-two-decimal-places
+  //TODO: Implementar pruebas  para ver todos los casos de uso posibles de conversion
+  static roundDec(numero, dec_places = 2) {
+    let negativo = 1;
+    if (numero < 0) negativo = -1;
+    const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
+    return (resultado * negativo).toFixed(dec_places);
+  }
+
+  // static roundNumber = (number, decimals = 2) => {
+  //   try {
+  //     if (!number) return 0;
+  //     let modifier = Math.pow(10, decimals);
+  //     return (Math.round(Number(number) * modifier) / modifier).toFixed(decimals);
+  //   } catch (e) {
+  //     return -1;
+  //   }
+  // };
+
+}
 
 
 

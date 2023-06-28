@@ -1,34 +1,22 @@
-const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
-
-import { Menu } from "./menu.js";
-import { LeftMenu } from "./leftmenu.js";
+const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
 import { API } from "../utils.js";
 import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
 
-
-//DONE: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 //TODO: refactorizar en un componente la parte de las monedas y el importe
-
 
 export class SendMoneyCuba extends Component {
 
   static components = { Beneficiarios };
 
-
-
   inputAvatar = useRef("inputAvatar");
-
   inputSendRef = useRef("inputSendRef");
   inputReceiveRef = useRef("inputReceiveRef");
-
   concept = useRef("concept");
-
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
   changingSendAmount = false;
   changingReceiveAmount = false;
-
 
   state = useState({
     firstName: "Rene",
@@ -50,11 +38,6 @@ export class SendMoneyCuba extends Component {
 
   })
 
-  /*
-  userProfile = useState({
-
-  })*/
-
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
 
@@ -62,32 +45,23 @@ export class SendMoneyCuba extends Component {
   fee = useState({ value: 0 });
 
 
-
-
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
-    <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
-     
-    
+    <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">   
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
         <div class="card-title flex flex-col rounded-lg">
-          <div>Amount to Send</div> 
-          
+          <div>Amount to Send</div>         
         </div>
 
         <div class="card-body items-center  ">
-           
             <div class="form-control  max-w-xs  ">
                 <label class="label">
                   <span class="label-text">You Send</span>  
                 </label> 
 
-                <div class="join">
-                              
-                  <div>
-                    
+                <div class="join">                        
+                  <div>   
                     <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>
-
                     <label class="label">
                       <span class="label-text-alt"></span>
                       <span class="label-text-alt ">
@@ -101,126 +75,82 @@ export class SendMoneyCuba extends Component {
                     </label>
                   </div>
                  
-
                   <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                     <option value="usd">USD</option>
                     <option value="eur">EUR</option>
-                    <option value="cad">CAD</option>
-                    
+                    <option value="cad">CAD</option>   
                   </select>
-                
                 </div>
-              </div>
-
-
-             
+            </div>
+          
               <div class="form-control  max-w-xs   ">
-              <label class="label">
-                <span class="label-text">Received Amount</span>  
-              </label> 
+                  <label class="label">
+                    <span class="label-text">Received Amount</span>  
+                  </label> 
 
-              <div class="join">
-               
-                <div>           
-                  
-                  <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
-                   class="input input-bordered join-item text-right" placeholder="0.00"/>    
+                  <div class="join">        
+                    <div>                           
+                      <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
+                      class="input input-bordered join-item text-right" placeholder="0.00"/>    
+                    </div>
+                    
+                    <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                      <option value="cup">CUP</option>
+                      <option value="usd">USD</option>
+                    </select>
+                  </div>
 
-                </div>
+                  <div class="form-control   row-start-4 col-span-2 w-full ">
+                  <label class="label">
+                    <span class="label-text">Concept</span>
+                  </label>
                 
-
-                <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
-                  <option value="cup">CUP</option>
-                  <option value="usd">USD</option>
-                </select>
-
+                  <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
+                </div>
               </div>
-
-              <div class="form-control   row-start-4 col-span-2 w-full ">
-              <label class="label">
-                <span class="label-text">Concept</span>
-              </label>
-            
-              <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
-            </div>
-            </div>
-
-
-        
-        
-          <div class="card-actions">
-            
+    
+          <div class="card-actions">         
           </div>
         </div>
-
-
+   
+    </div>
        
-
-    
-
-    
-
-      
-    </div>
-
-
-    <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" />
-
-      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
-
-
-
-    
+       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
+       <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
     </div>
       
 
-      
-
-
-
-        
-     
-    
 
   `;
 
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
-
     this.beneficiario = datosBeneficiario;
-
-
     console.log(this.beneficiario);
-    //Swal.fire('Datos beneficiario actualizados');
   }
-
-
 
   setup() {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const walletAddress = window.sessionStorage.getItem('walletAddress');
     const userId = window.sessionStorage.getItem('userId');
 
-
     onWillStart(async () => {
-
       const api = new API(accessToken);
-    
-
       const exchangeRate = await api.getExchangeRate("usd");
- 
-
       this.feeSTR.value = '-';
-
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-      //Recuperando los datos de los beneficiarios
-      this.allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
-
-      console.log(this.allDatosBeneficiariosFromStorage);
-
-     
+      //obteniendo todos los datos de los beneficiarios desde el API
+      const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+      if (allDatosBeneficiarios) {
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+      }
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+      this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+        beneficiaryFullName: el.beneficiaryFullName,
+        _id: el._id
+      }));
 
 
     });
@@ -230,34 +160,10 @@ export class SendMoneyCuba extends Component {
     });
 
     onMounted(() => {
-      // this.inputSendRef.el.value = 0;
-      // this.inputReceiveRef.el.value = 0;
+
     })
 
-
-
-
-
   }
-
-
-
-
-  // debounce = (callback, wait) => {
-  //   let timeoutId = null;
-  //   return (...args) => {
-  //     window.clearTimeout(timeoutId);
-  //     timeoutId = window.setTimeout(() => {
-  //       callback.apply(null, args);
-  //     }, wait);
-  //   };
-  // }
-
-
-
-
-
-
 
 
   async onChangeCurrency() {
@@ -274,7 +180,6 @@ export class SendMoneyCuba extends Component {
     console.log("Recibir en: " + receiveCurrency);
 
     if (receiveCurrency && sendCurrency) {
-
       const exchangeRate = await api.getExchangeRate(sendCurrency);
       this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
@@ -284,8 +189,6 @@ export class SendMoneyCuba extends Component {
       console.log(this.conversionRate.value);
       console.log(this.conversionRateSTR.value);
     }
-
-
   }
 
   onChangeCurrencySend() {
@@ -300,110 +203,151 @@ export class SendMoneyCuba extends Component {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const fee = await api.getFee(service, zone, amount)
-
     return fee;
-    ///this.fee.value = 10;
-    ///this.feeSTR.value = '-';
   }
-
-
-
-
-
-
-
-
+/*
   onChangeSendInput = API.debounce(async () => {
-
     if (this.changingReceiveAmount) { return; }
-
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
-
 
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
     const zone = "Habana"; //TODO: obtener de datos
 
-    const sendAmount = this.inputSendRef.el.value;
     const conversionRate = this.conversionRate.value;
+    const sendAmount = this.inputSendRef.el.value;
+    console.log(sendAmount)
 
-    this.getFee(service, zone, sendAmount).then((feeData) => {
+    this.inputSendRef.el.value = UImgr.roundDec(sendAmount);
 
-      const fee = feeData.fee;
+    if (sendAmount > 0) {
+      this.getFee(service, zone, sendAmount).then((feeData) => {
+        const fee = feeData.fee;
+        this.fee.value = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales        
 
-      //const receiveAmount = (sendAmount * conversionRate);
-      // this.inputReceiveRef.el.value = (this.conversionRate.value * (this.inputSendRef.el.value - this.fee.value));
-      //console.log(`Receive Amount sin fee ${receiveAmount}`)
+        const receiveAmount = (sendAmount - fee) * conversionRate;
 
-      const receiveAmount = (sendAmount - fee) * conversionRate;
-      if (receiveAmount > 0) {
-        this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-      }
-      this.inputSendRef.el.value = API.roundDec(sendAmount);
+        if (receiveAmount > 0) {
+          this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
+          this.changingSendAmount = false;
+          this.changingReceiveAmount = false;
+        } else {
+          this.inputReceiveRef.el.value = UImgr.roundDec(0);
+        }
 
-      this.fee.value = fee;
-      const feeSTR = fee.toFixed(2);
-      const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-      this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
-      this.changingSendAmount = false;
-      this.changingReceiveAmount = false;
-
+      });
+    } else {
+      this.inputReceiveRef.el.value = UImgr.roundDec(0);
     }
-    );
 
-  }, API.tiempoDebounce);
-
-
+  }, 1000);
+*/
 
 
-  onChangeReceiveInput = API.debounce(async () => {
 
+  /*onChangeReceiveInput = API.debounce(async () => {
     if (this.changingSendAmount) { return; }
 
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-
     const zone = "Habana"; //TODO: obtener de datos
-
     const receiveAmount = this.inputReceiveRef.el.value;
+    console.log(receiveAmount)
     const conversionRate = this.conversionRate.value;
-
-
     const sendAmount = (receiveAmount / conversionRate);
+    this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
 
+    if (receiveAmount > 0) {
+      this.getFee(service, zone, sendAmount).then((feeData) => {
+        const fee = feeData.fee;
+        this.inputSendRef.el.value = UImgr.roundDec(sendAmount + fee);
+        
 
-    this.getFee(service, zone, sendAmount).then((feeData) => {
+        this.fee.value = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
 
+        this.changingSendAmount = false;
+        this.changingReceiveAmount = false;
 
-      const fee = feeData.fee;
-
-      //this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
-      this.inputSendRef.el.value = API.roundDec(sendAmount + fee);
-      this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-
-      this.fee.value = fee;
-      const feeSTR = fee.toFixed(2);
-      const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-      this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
-      this.changingSendAmount = false;
-      this.changingReceiveAmount = false;
-
+      });
+    } else {
+      console.log("ddd")
+      this.inputSendRef.el.value = UImgr.roundDec(0);
     }
-    );
 
-  }, API.tiempoDebounce);
+  }, 1000);
+  */
+
+  
+  onChangeSendInput = API.debounce(async () => {
+
+
+    if (this.changingReceiveAmount) { return; }
+    this.changingSendAmount = true;
+    this.changingReceiveAmount = false;
+
+    
+
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const resultado = await API.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
+      this.inputSendCurrencyRef.el.value,
+      this.inputSendRef.el.value,
+      this.conversionRate.value,
+      accessToken
+    )
+    this.fee.value = resultado.fee;
+    this.feeSTR.value = resultado.feeSTR;
+    this.inputReceiveRef.el.value = resultado.receiveAmount;
+    this.inputSendRef.el.value = UImgr.roundDec(this.inputSendRef.el.value);
+
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = false;
+
+  }, 700);
+
+  onChangeReceiveInput = API.debounce(async () => {
+
+    if (this.changingSendAmount) { return; }
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = true;
+
+    
+
+    //LLAMADA
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const resultado = await API.onChangeReceiveInput(
+      this.inputReceiveCurrencyRef.el.value,
+      this.inputSendCurrencyRef.el.value,
+      this.inputReceiveRef.el.value,
+      this.conversionRate.value,
+      accessToken
+    )
+
+   
+
+    this.fee.value = resultado.fee;
+    this.feeSTR.value = resultado.feeSTR;
+    this.inputSendRef.el.value = resultado.sendAmount;
+    this.inputReceiveRef.el.value = UImgr.roundDec(this.inputReceiveRef.el.value);
+
+
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = false;
+
+  }, 700);
 
 
   async onSendMoney() {
     //cardCUP	cardUSD
-    console.log(API.generateRandomID());
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-   
+
     //TODO: Validaciones
     const datosTX = {
       service: service,
@@ -417,35 +361,19 @@ export class SendMoneyCuba extends Component {
       ...this.beneficiario
     }
 
-      /*Datos de benefeciario
-      cardNumber: this.beneficiario.cardNumber,                                     //Tarjeta del que recibe el dinero 
-      bankName: this.beneficiario.bankName,                                         //Banco al que pertence la tarjeta 
-      cardHolderName: this.beneficiario.cardHolderName,                             //nombre del beneficiario
-      contactPhone: this.beneficiario.contactPhone,                                 //telefono del beneficiario                
-      deliveryAddress: this.beneficiario.deliveryAddress,                           //Direccion del beneficiario            
-      receiverCity: this.beneficiario.receiverCity,                                //Ciudad del beneficiario
-      deliveryCountry: this.beneficiario.deliveryCountry,                           //Pais del beneficiario
-      deliveryCountryCode: this.beneficiario.deliveryCountryCode,                   //ISO Code del pais del pais del beneficiario
-      receiverCountry: this.beneficiario.receiverCountry,                          //Pais de la persona que recibe la transaccion 
-      */
 
     console.log(datosTX);
 
+    if (!this.validarDatos(datosTX)) {
+      console.log("Validation Errors");
+      return;
+    }
 
-    //const userData = await api.getUserProfile();
-   // this.state = { ...userData };
-
-    //const userProfileData = await api.getUserProfile();
-    //this.userProfile = { ...userProfileData };
-
-    //console.log(this.userProfile);
 
     try {
 
       const accessToken = window.sessionStorage.getItem('accessToken');
       const api = new API(accessToken);
-  
-
       const resultado = await api.createTX(datosTX);
 
       //TODO OK
@@ -464,6 +392,75 @@ export class SendMoneyCuba extends Component {
       console.log(error);
       // Swal.fire(resultado.response.data.message);
     }
+
+  }
+
+  
+  validarDatos(datos) {
+    console.log(datos)
+    //--------------------- Sending amount --------------------------------------------
+    if (!datos.amount) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the sending amount'
+      })
+      return false;
+    } else if (datos.amount <= 0) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Sending amount must be greater than zero'
+      })
+      return false;
+    }
+
+    //--------------------- Receivers amount --------------------------------------------
+    if (datos.deliveryAmount <= 0) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'The received amount must be greater than zero'
+      })
+      return false;
+    }
+
+    //--------------------- Municipio --------------------------------------------
+    if (!datos.deliveryCity || datos.deliveryCity === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please select city'
+      })
+      return false;
+    }
+
+    //--------------------- Nombre --------------------------------------------
+    if (!datos.cardHolderName || datos.cardHolderName === '' ) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the full name of receiver First name and Last name at least'
+      })
+      return false;
+    }
+
+    
+
+    //--------------------- address --------------------------------------------
+    if (!datos.deliveryAddress || datos.deliveryAddress === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the address'
+      })
+      return false;
+    }
+
+    //--------------------- Phone --------------------------------------------
+    if (!datos.deliveryPhone || datos.deliveryPhone === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the phone number'
+      })
+      return false;
+    }
+
+    return true;
 
   }
 
