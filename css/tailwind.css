@@ -3050,6 +3050,10 @@ details.collapse summary::-webkit-details-marker {
   --tooltip-text-color: hsl(var(--erc));
 }
 
+.artboard.phone {
+  width: 320px;
+}
+
 .artboard.phone-1.horizontal,
       .artboard.phone-1.artboard-horizontal {
   width: 568px;

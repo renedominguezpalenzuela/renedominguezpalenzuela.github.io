@@ -208,9 +208,6 @@ export class HomeDeliveryCuba extends Component {
       this.conversionRate.value = exchangeRate["CUP"];
       this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
 
-      //Recuperando los datos de los beneficiarios
-
-
       //obteniendo todos los datos de los beneficiarios
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
       if (allDatosBeneficiarios) {
@@ -224,8 +221,6 @@ export class HomeDeliveryCuba extends Component {
         _id: el._id
       }));
 
-      console.log(this.beneficiariosNames);
-
     });
 
     onRendered(() => {
@@ -233,8 +228,7 @@ export class HomeDeliveryCuba extends Component {
     });
 
     onMounted(() => {
-      // this.inputSendRef.el.value = 0;
-      // this.inputReceiveRef.el.value = 0;
+
     })
 
 
@@ -281,17 +275,8 @@ export class HomeDeliveryCuba extends Component {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const fee = await api.getFee(service, zone, amount)
-
     return fee;
-
   }
-
-
-
-
-
-
-
 
   onChangeSendInput = API.debounce(async () => {
 
@@ -300,41 +285,36 @@ export class HomeDeliveryCuba extends Component {
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
-
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
     const zone = "Habana"; //TODO: obtener de datos
 
-    const sendAmount = this.inputSendRef.el.value;
     const conversionRate = this.conversionRate.value;
+    const sendAmount = this.inputSendRef.el.value; 
+    this.inputSendRef.el.value = API.roundDec(sendAmount);
 
-    this.getFee(service, zone, sendAmount).then((feeData) => {
+    if (sendAmount > 0) {
+      this.getFee(service, zone, sendAmount).then((feeData) => {
+        const fee = feeData.fee;
+        this.fee.value = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
 
-      const fee = feeData.fee;
+        const receiveAmount = (sendAmount - fee) * conversionRate;
 
-      //const receiveAmount = (sendAmount * conversionRate);
-      // this.inputReceiveRef.el.value = (this.conversionRate.value * (this.inputSendRef.el.value - this.fee.value));
-      //console.log(`Receive Amount sin fee ${receiveAmount}`)
-
-      const receiveAmount = (sendAmount - fee) * conversionRate;
-      if (receiveAmount > 0) {
-        this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
-      }
-      this.inputSendRef.el.value = API.roundDec(sendAmount);
-
-      this.fee.value = fee;
-      const feeSTR = fee.toFixed(2);
-      const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-      this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
-      this.changingSendAmount = false;
-      this.changingReceiveAmount = false;
-
+        if (receiveAmount > 0) {
+          this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
+          this.changingSendAmount = false;
+          this.changingReceiveAmount = false;
+        } else {
+          this.inputReceiveRef.el.value = API.roundDec(0);
+        }
+      });
+    } else {
+      this.inputReceiveRef.el.value = API.roundDec(0);
     }
-    );
 
-  }, API.tiempoDebounce);
-
-
+  }, 1000);
 
 
   onChangeReceiveInput = API.debounce(async () => {
@@ -344,44 +324,36 @@ export class HomeDeliveryCuba extends Component {
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-
     const zone = "Habana"; //TODO: obtener de datos
-
     const receiveAmount = this.inputReceiveRef.el.value;
     const conversionRate = this.conversionRate.value;
-
-
     const sendAmount = (receiveAmount / conversionRate);
 
-
     this.getFee(service, zone, sendAmount).then((feeData) => {
-
-
       const fee = feeData.fee;
-
       //this.inputSendRef.el.value = (sendAmount + fee).toFixed(2);
       this.inputSendRef.el.value = API.roundDec(sendAmount + fee);
       this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
 
-      this.fee.value = fee;
-      const feeSTR = fee.toFixed(2);
-      const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-      this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+      if (receiveAmount > 0) {
+        this.fee.value = fee;
+        const feeSTR = fee.toFixed(2);
+        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
+        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
 
-      this.changingSendAmount = false;
-      this.changingReceiveAmount = false;
+        this.changingSendAmount = false;
+        this.changingReceiveAmount = false;
+      } else {
+        this.inputSendRef.el.value = API.roundDec(0);
+        this.inputReceiveRef.el.value = API.roundDec(receiveAmount);
+      }
+    });
 
-    }
-    );
-
-  }, API.tiempoDebounce);
+  }, 1000);
 
 
   async onSendMoney() {
-
-
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //TODO: Validaciones
@@ -405,7 +377,6 @@ export class HomeDeliveryCuba extends Component {
 
     console.log(datosTX);
 
-
     try {
 
       const accessToken = window.sessionStorage.getItem('accessToken');
@@ -424,29 +395,18 @@ export class HomeDeliveryCuba extends Component {
         Swal.fire(resultado.response.data.message);
       }
 
-
-
     } catch (error) {
-
       console.log(error);
       // Swal.fire(resultado.response.data.message);
     }
-
-
-
-
-
-
 
 
   }
 
 
   validarDatos(datos) {
-
-
-
     console.log(datos)
+    //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
       Swal.fire({
         icon: 'error', title: 'Error',
@@ -461,12 +421,61 @@ export class HomeDeliveryCuba extends Component {
       return false;
     }
 
-    /*service: service,
-      
-      concept: this.concept.el.value,                                               //Concepto del envio  
-      merchant_external_id: API.generateRandomID(),
-      paymentLink: true,
-   */
+
+    //--------------------- Receivers amount --------------------------------------------
+    if (datos.amount <= 0) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'The received amount must be greater than zero'
+      })
+      return false;
+    }
+
+    //--------------------- Municipio --------------------------------------------
+    if (!datos.deliveryCity || datos.deliveryCity === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please select city'
+      })
+      return false;
+    }
+
+    //--------------------- Nombre --------------------------------------------
+    if (!datos.deliveryFirstName || datos.deliveryFirstName === '' || !datos.deliveryLastName || datos.deliveryLastName === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the full name of receiver First name and Last name at least'
+      })
+      return false;
+    }
+
+    //--------------------- id --------------------------------------------
+    if (!datos.deliveryID || datos.deliveryID === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the ID'
+      })
+      return false;
+    }
+
+    //--------------------- address --------------------------------------------
+    if (!datos.deliveryAddress || datos.deliveryAddress === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the address'
+      })
+      return false;
+    }
+
+    //--------------------- Phone --------------------------------------------
+    if (!datos.deliveryPhone || datos.deliveryPhone === '') {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Please enter the phone number'
+      })
+      return false;
+    }
+
 
     return true;
 

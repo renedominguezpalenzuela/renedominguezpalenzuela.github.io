@@ -137,12 +137,7 @@ export class Beneficiarios extends Component {
 
     onWillStart(async () => {
       this.provincias = Provincias;
-      this.municipios = this.provincias[0].municipios.map((unMunicipio, i) => ({
-        id: i,
-        nombre: unMunicipio
-      }));
-
-
+      this.municipios = this.addKeyToMunicipios(this.provincias[0].municipios);
     });
 
     onRendered(() => {
@@ -155,39 +150,34 @@ export class Beneficiarios extends Component {
 
   }
 
+  addKeyToMunicipios(municipios) {
+    return municipios.map((unMunicipio, i) => ({
+      id: i,
+      nombre: unMunicipio
+    }));
+  }
+
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
-    
-  
     if (this.inicializando) return;
-
     const selectedProvinceId = event.target.value;
     this.state.deliveryAreaID = event.target.value;
     let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
-     this.municipios = selectedProvince.municipios;
-
-    console.log(selectedProvince)
     if (selectedProvince) {
-      this.municipios = selectedProvince.municipios.map((unMunicipio, i) => ({
-        id: i,
-        nombre: unMunicipio
-      }));
+      this.municipios = this.addKeyToMunicipios(selectedProvince.municipios);
       this.state.deliveryCityID = -1;
+      this.state.deliveryCity = '';
       this.state.deliveryArea = selectedProvince.nombre;
       this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       this.props.onChangeDatosBeneficiarios(this.state);
-    }
+    } 
   };
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
-    console.log(selectedCityId)
-    console.log(this.municipios)
-    //let selectedMunicipio = this.municipios.filter(unMunicipio => unMunicipio.id === selectedCityId)[0];
     let selectedMunicipio = this.municipios[selectedCityId];
-    console.log(selectedMunicipio)
     if (selectedMunicipio) {
       this.state.deliveryCity = selectedMunicipio.nombre;
       this.state.deliveryCityID = selectedCityId;
@@ -238,7 +228,6 @@ export class Beneficiarios extends Component {
   }
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
-
     const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
@@ -253,48 +242,42 @@ export class Beneficiarios extends Component {
 
       //Inicializando provincia
       const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
-
-      this.state.deliveryAreaID = selectedProvince.id;
+      if (selectedProvince) {
+        this.state.deliveryAreaID = selectedProvince.id;
+        this.state.deliveryArea = selectedProvince.nombre;
+      } else {
+        this.state.deliveryAreaID = "-1";
+        this.state.deliveryArea ="";
+        this.state.deliveryCityID = -1;
+        this.state.deliveryCity = '';
+        return;
+      }
 
       //inicializando municipio
       //this.municipios = selectedProvince.municipios;
-
-      this.municipios = selectedProvince.municipios.map((unMunicipio, i) => ({
-        id: i,
-        nombre: unMunicipio
-      }));
+      this.municipios = this.addKeyToMunicipios(selectedProvince.municipios);
 
       console.log("Beneficiario municipio:")
       console.log(selectedBenefiarioData.deliveryCity)
       console.log(selectedBenefiarioData)
 
-      const selectedMuncipio = this.municipios.filter(
-        (unMunicipio) => {
-          
-          const comparacion = this.eliminarAcentos(selectedBenefiarioData.deliveryCity) == this.eliminarAcentos(unMunicipio.nombre);
-          if (comparacion) {
-            console.log("OK")
-            console.log(unMunicipio.nombre)
-            console.log(selectedBenefiarioData.deliveryCity)
-          }
-          return comparacion
-        }
-      )[0];
+      const selectedMuncipio = this.municipios.filter((unMunicipio) => {
+        const comparacion = this.eliminarAcentos(selectedBenefiarioData.deliveryCity) == this.eliminarAcentos(unMunicipio.nombre);
+        return comparacion
+      })[0];
 
       if (selectedMuncipio) {
         console.log("Municipio")
-        console.log(selectedMuncipio)
+        console.log(selectedMuncipio.nombre)
         this.state.deliveryCityID = selectedMuncipio.id;
         this.state.deliveryCity = selectedMuncipio.nombre;
         this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       } else {
         this.state.deliveryCityID = -1;
+        this.state.deliveryCity = '';
       }
 
       this.props.onChangeDatosBeneficiarios(this.state);
-
-
-
       this.inicializando = false;
 
     }
