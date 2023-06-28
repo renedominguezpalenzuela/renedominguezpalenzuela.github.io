@@ -291,9 +291,7 @@ export class SendMoneyCuba extends Component {
 
     if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
-    this.changingReceiveAmount = false;
-
-    
+    this.changingReceiveAmount = false;  
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await API.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
@@ -319,7 +317,6 @@ export class SendMoneyCuba extends Component {
     this.changingReceiveAmount = true;
 
     
-
     //LLAMADA
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await API.onChangeReceiveInput(
@@ -329,14 +326,11 @@ export class SendMoneyCuba extends Component {
       this.conversionRate.value,
       accessToken
     )
-
    
-
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
     this.inputSendRef.el.value = resultado.sendAmount;
     this.inputReceiveRef.el.value = UImgr.roundDec(this.inputReceiveRef.el.value);
-
 
     this.changingSendAmount = false;
     this.changingReceiveAmount = false;
