@@ -3613,12 +3613,32 @@ details.collapse summary::-webkit-details-marker {
   grid-column: span 2 / span 2;
 }
 
+.row-start-1 {
+  grid-row-start: 1;
+}
+
+.row-start-2 {
+  grid-row-start: 2;
+}
+
 .row-start-3 {
   grid-row-start: 3;
 }
 
 .row-start-4 {
   grid-row-start: 4;
+}
+
+.row-start-5 {
+  grid-row-start: 5;
+}
+
+.row-start-6 {
+  grid-row-start: 6;
+}
+
+.row-start-7 {
+  grid-row-start: 7;
 }
 
 .ml-1 {
@@ -3848,6 +3868,10 @@ details.collapse summary::-webkit-details-marker {
 
 .border {
   border-width: 1px;
+}
+
+.border-2 {
+  border-width: 2px;
 }
 
 .bg-\[\#009AFF\] {

@@ -45,34 +45,45 @@ export class Beneficiarios extends Component {
 
             <div class="card-body items-center   ">
               <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
+
+                  <div class="form-control w-full row-start-1 ">
+                    <label class="label">
+                      <span class="label-text">Select Beneficiary</span>
+                    </label>
+                    <select class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                      <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
+                        <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
+                      </t>             
+                    </select>
+                  </div>   
               
-                  <div class="form-control w-full ">
+                  <div class="form-control w-full  row-start-2 ">
                     <label class="label">
                       <span class="label-text">Card Number</span>
                     </label>
                     <input type="text" t-ref="inputCardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                   </div>
 
-                  <div class=" flex items-center w-full ">
+                  <div class=" flex items-center w-full row-start-2 ">
                       <img t-att-src="this.state.cardBankImage" alt="" class="ml-3 sm:mt-9 sm:w-[10vw] w-[30vw]"/>
                   </div>
 
                   
-                <div class="form-control w-full   ">
+                <div class="form-control w-full  row-start-3 ">
                   <label class="label">
                     <span class="label-text">Card Holder Name</span>
                   </label>
                   <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
 
-                <div class="form-control w-full  ">
+                <div class="form-control w-full row-start-3 ">
                   <label class="label">
                     <span class="label-text">Contact Phone</span>
                   </label>
                   <input type="text"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
                 </div>
 
-                <div class="form-control  sm:col-span-2 w-full ">
+                <div class="form-control  sm:col-span-2 w-full row-start-4">
                   <label class="label">
                     <span class="label-text">Delivery Address</span>
                   </label>
@@ -83,7 +94,7 @@ export class Beneficiarios extends Component {
           
 
                 
-                <div class="form-control w-full ">
+                <div class="form-control w-full row-start-5 ">
                   <label class="label">
                     <span class="label-text">Province</span>
                   </label>
@@ -94,7 +105,7 @@ export class Beneficiarios extends Component {
                   </select>
                 </div>
 
-                <div class="form-control w-full ">
+                <div class="form-control w-full row-start-2 row-start-5 ">
                   <label class="label">
                     <span class="label-text">City</span>
                   </label>
@@ -107,7 +118,7 @@ export class Beneficiarios extends Component {
 
 
 
-                <div class="form-control w-full max-w-xs ">
+                <div class="form-control w-full max-w-xs row-start-6 ">
                   <label class="label">
                     <span class="label-text">Country</span>
                   </label>

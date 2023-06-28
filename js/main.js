@@ -11,7 +11,7 @@ class Root extends Component {
   static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba};
 
   //Opcion inicial del menu
-  state = useState({menuId: 5, title:'Home Delivery'});
+  state = useState({menuId: 4, title:'To Credit Card'});
    
 
   leftmenuItems = [
