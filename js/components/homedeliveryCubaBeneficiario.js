@@ -206,12 +206,6 @@ export class Beneficiarios extends Component {
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
   }
 
-  //https://stackoverflow.com/questions/5700636/using-javascript-to-perform-text-matches-with-without-accented-characters
-  //https://itqna.net/questions/514/how-do-search-ignoring-accent-javascript
-  eliminarAcentos = (cadena) => {
-    var string_norm = cadena.normalize('NFD').replace(/\p{Diacritic}/gu, ''); // Old method: .replace(/[\u0300-\u036f]/g, "");
-    return string_norm.toLowerCase().split(" ").join("");
-  }
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
     const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
@@ -248,7 +242,7 @@ export class Beneficiarios extends Component {
       console.log(selectedBenefiarioData)
 
       const selectedMuncipio = this.municipios.filter((unMunicipio) => {
-        const comparacion = this.eliminarAcentos(selectedBenefiarioData.deliveryCity) == this.eliminarAcentos(unMunicipio.nombre);
+        const comparacion = UImanager.eliminarAcentos(selectedBenefiarioData.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
         return comparacion
       })[0];
 

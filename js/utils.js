@@ -728,6 +728,25 @@ export class UImanager {
     }));
   }
 
+
+    //https://stackoverflow.com/questions/5700636/using-javascript-to-perform-text-matches-with-without-accented-characters
+  //https://itqna.net/questions/514/how-do-search-ignoring-accent-javascript
+  static eliminarAcentos = (cadena) => {
+    var string_norm = cadena.normalize('NFD').replace(/\p{Diacritic}/gu, ''); // Old method: .replace(/[\u0300-\u036f]/g, "");
+    return string_norm.toLowerCase().split(" ").join("");
+  }
+
+
+  static formatCardNumber(value) {
+    if (!value) return "0000-0000-0000-0000";
+    var value = value.replace(/\D/g, '');
+    if ((/^\d{0,16}$/).test(value)) {
+      return value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{4})/, '$1 $2 ').replace(/(\d{4}) (\d{4}) (\d{4})/, '$1 $2 $3 ');
+    }
+  }
+
+
+
 }
 
 

@@ -417,7 +417,7 @@ export class SendMoneyCuba extends Component {
     }
 
     //--------------------- Municipio --------------------------------------------
-    if (!datos.deliveryCity || datos.deliveryCity === '') {
+    if (!datos.receiverCity || datos.receiverCity === '') {
       Swal.fire({
         icon: 'error', title: 'Error',
         text: 'Please select city'
@@ -446,7 +446,7 @@ export class SendMoneyCuba extends Component {
     }
 
     //--------------------- Phone --------------------------------------------
-    if (!datos.deliveryPhone || datos.deliveryPhone === '') {
+    if (!datos.contactPhone || datos.contactPhone === '') {
       Swal.fire({
         icon: 'error', title: 'Error',
         text: 'Please enter the phone number'
