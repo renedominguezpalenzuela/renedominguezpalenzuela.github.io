@@ -297,6 +297,8 @@ export class Beneficiarios extends Component {
 
   onChangeSelectedBeneficiario = (event) => {
     const selectedBeneficiaryId = event.target.value;
+    this.state.cardBankImage = "";
+    this.state.bankName = "";
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
   }
 

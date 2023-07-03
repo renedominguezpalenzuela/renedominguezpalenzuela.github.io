@@ -5,13 +5,14 @@ import { LeftMenu } from "./components/leftmenu.js";
 import { Profile } from "./components/profile.js";
 import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
+import { Beneficiarios } from "./components/beneficiarios.js";
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba};
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios};
 
   //Opcion inicial del menu
-  state = useState({menuId: 4, title:'To Credit Card'});
+  state = useState({menuId: 2, title:'Beneficiaries'});
    
 
   leftmenuItems = [
@@ -20,10 +21,9 @@ class Root extends Component {
     {
       id: 3, name: "Send Money To Cuba", type: 1, subitems: [
         { id: 4, name: "To Credit Card" },
-        { id: 5, name: "Home Delivery" },
-    
+        { id: 5, name: "Home Delivery" },    
       ]
-    },
+    }
 
    
   ];
@@ -36,7 +36,7 @@ class Root extends Component {
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
     </div>
 
-    <div class="p-2 sm:h-full  ">
+    <div class="p-2   ">
       <div class="sm:h-[10%]">
          <Menu title="state.title"/>
       </div>
@@ -47,6 +47,11 @@ class Root extends Component {
             <Profile/>
           </t>
 
+          <t t-elif="this.state.menuId === 2">
+             <Beneficiarios/>
+          </t>
+
+
           <t t-elif="this.state.menuId === 4">
             <SendMoneyCuba/>
           </t>
@@ -54,6 +59,9 @@ class Root extends Component {
           <t t-elif="this.state.menuId === 5">
             <HomeDeliveryCuba/>
           </t>
+
+      
+          
 
           <t t-else="">
             
