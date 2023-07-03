@@ -14,11 +14,18 @@ export class Beneficiarios extends Component {
     accessToken = '';
 
     state = useState({
-        cardNumber: '',
+        identityNumber: '',
+        firstName: '',
+        lastName:'',
+        secondLastName:''
+
+
+        /*cardNumber: '',
         cardHolderName: '',
         cardBankImage: '',
         bankName: '',
         contactPhone: '',
+        deliveryFirstName: '',
         deliveryAddress: '',
         receiverCity: '',          //Municipio
         receiverCityID: '',        //Municipio id 
@@ -26,21 +33,29 @@ export class Beneficiarios extends Component {
         deliveryAreaID: '',         //Provincia id
         deliveryCountry: 'Cuba',
         deliveryCountryCode: 'CU',
-        receiverCountry: 'CUB'
+        receiverCountry: 'CUB'*/
     })
 
     cardsList = useState({});
 
     //TODO: mask in input 0000-0000-0000-0000
     static template = xml`  
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2">
-            <div class="card-title flex flex-col rounded-lg pt-2">
-               <div>Beneficiary</div> 
-            </div>
+    <div class="sm:grid sm:grid-cols-[54%_44%] gap-2 h-[100vh]">
+    <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
+      <div class="card-title flex flex-col rounded-lg">
+          
+      </div>
 
-            <div class="card-body items-center   ">
-                <div class="grid grid-cols-1 sm:grid-cols-2 w-full sm:grid-rows-10  gap-y-0 gap-x-2 ">
+      
 
+
+
+      <div class="card-body items-center ">
+        <div class="flex flex-row ">
+        
+                    <div class="grid grid-cols-1 sm:grid-cols-2 w-full sm:grid-rows-10  gap-y-0 gap-x-2 ">
+                                
+                    <!-- Seleccionar beneficiario -->
                     <div class="form-control w-full sm:row-start-1 sm:col-start-1  ">
                         <label class="label">
                             <span class="label-text">Select  Beneficiary</span>
@@ -60,87 +75,58 @@ export class Beneficiarios extends Component {
                     </div>
 
                     
-             
-
+            
+                    <!-- Nombre -->
                     <div class="w-full  flex justify-start items-end  sm:col-start-1  sm:col-span-2 sm:row-start-3 ">
                         <div class="form-control  w-full">
                             <label class="label">
                                 <span class="label-text">First Name</span>
                             </label>
-                            <input type="text" t-att-value="this.state.deliveryFirstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
+                            <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
                         </div>
 
                         <div class="form-control   w-full ml-2 ">
                             <label class="label">
                                 <span class="label-text">Last Name</span>
                             </label>
-                            <input type="text" t-att-value="this.state.deliveryLastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
+                            <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
                         </div>
 
                         <div class="form-control w-full ml-2">     
                             <label class="label">
                                 <span class="label-text">Second Last Name</span>
                             </label>
-                            <input type="text" t-att-value="this.state.deliverySecondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
+                            <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
                         </div> 
                     </div>
 
-                    <div class="form-control w-full  sm:row-start-4 sm:col-start-1">
+                    <!-- Identificacion -->
+                    <div class="form-control w-full sm:row-start-4 sm:col-start-1">
                         <label class="label">
-                            <span class="label-text">Select Card</span>
+                            <span class="label-text">ID</span>
                         </label>
-                        <select class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
-                            <option  t-att-value="-1" >Select Card</option>
-                            <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
-                                <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
-                            </t>             
-                        </select>
+                        <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
                     </div>
-
-                    <div class=" w-full sm:row-start-4 sm:col-start-2 flex justify-start items-end mt-3  ">
-                        <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onNew">Add Card</button>
-                        <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onSave">Save Card</button>
-                        <button class="btn btn-primary  w-[28%]" t-on-click="onDelete">Delete Card</button>
-                    </div>
-
-                    <div class="form-control w-full  sm:row-start-5 sm:col-start-1">
-                        <label class="label">
-                            <span class="label-text">Card Number</span>
-                        </label>
-                        <input type="text" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
-                    </div>
-
-                    <div class="form-control w-full  sm:row-start-5 sm:col-start-2 ">
-                        <label class="label">
-                            <span class="label-text">Card Holder Name</span>
-                        </label>
-                        <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
-                    </div>
-                    
-                    <div class=" flex items-center w-full sm:row-start-6 sm:col-start-2 mt-1">
-                        <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
-                    </div>
-
-                   
-                    
-                    <div class="form-control w-full sm:row-start-7 sm:col-start-2">
+                
+                    <!-- Telefono -->
+                    <div class="form-control w-full sm:row-start-4 sm:col-start-2">
                         <label class="label">
                             <span class="label-text">Contact Phone</span>
                         </label>
                         <input type="text" t-att-value="this.state.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
                     </div>
 
-                    <div class="form-control   w-full sm:row-start-7 sm:col-start-1">
+                    <!-- Address -->
+                    <div class="form-control   w-full sm:row-start-5 sm:col-span-2 sm:col-start-1">
                         <label class="label">
                             <span class="label-text">Delivery Address</span>
                         </label>
-
                         <textarea t-att-value="this.state.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
                     </div>
 
                     
-
-                    <div class="form-control w-full sm:row-start-9 ">
+                    <!-- Provincia -->
+                    <div class="form-control w-full sm:row-start-6 ">
                     <label class="label">
                         <span class="label-text">Province</span>
                     </label>
@@ -152,7 +138,8 @@ export class Beneficiarios extends Component {
                     </select>
                     </div>
 
-                    <div class="form-control w-full sm:row-start-9 ">
+                    <!-- Municipio -->
+                    <div class="form-control w-full sm:row-start-6 ">
                     <label class="label">
                         <span class="label-text">City</span>
                     </label>
@@ -164,22 +151,86 @@ export class Beneficiarios extends Component {
                     </select>
                     </div>
 
-                    <div class="form-control w-full  sm:row-start-10 sm:col-start-1 ">
+                    <!-- Pais -->
+                    <div class="form-control w-full  sm:row-start-7 sm:col-start-1 ">
                         <label class="label">
                             <span class="label-text">Country</span>
                         </label>
                         <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
                     </div>  
 
-                  
-                  
+
+                   
+
+                
+
+                
+                
 
                     
-           
 
+
+                </div> 
+        </div>  
+      
+    
+      </div>
+    </div>
+
+
+
+        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
+            <div class="card-title flex flex-col rounded-lg">
+                Card Data
+            </div>
+            <div class="card-body items-center ">
+                <div class="form-control w-full  sm:row-start-8 sm:col-start-1">
+                    <label class="label">
+                    <span class="label-text">Select Card</span>
+                    </label>
+                    <select class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                    <option  t-att-value="-1" >Select Card</option>
+                    <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
+                    <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
+                    </t>             
+                    </select>
                 </div>
-            </div>         
-        </div>     
+
+                
+
+                <div class="form-control w-full  sm:row-start-9 sm:col-start-1">
+                    <label class="label">
+                    <span class="label-text">Card Number</span>
+                    </label>
+                    <input type="text" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                </div>
+
+                <div class="form-control w-full  sm:row-start-9 sm:col-start-2 ">
+                    <label class="label">
+                    <span class="label-text">Card Holder Name</span>
+                    </label>
+                    <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
+                </div>
+
+                <div class=" flex items-center w-full sm:row-start-10 sm:col-start-2 mt-1">
+                    <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                </div>
+
+                <div class="card-actions">
+                <div class=" w-full flex justify-start items-end mt-3  ">
+                    <button class="btn   mr-3" t-on-click="onNew">Add </button>
+                    <button class="btn  w-[28%] mr-3" t-on-click="onSave">Save </button>
+                    <button class="btn  w-[28%]" t-on-click="onDelete">Delete </button>
+                </div>
+              </div>
+
+            </div>
+        </div>
+  </div>
+    
+
+    
+
   `;
 
 

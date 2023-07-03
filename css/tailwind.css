@@ -1164,13 +1164,6 @@ html {
     background-color: hsl(var(--pf) / var(--tw-bg-opacity));
   }
 
-  .btn-secondary:hover {
-    --tw-border-opacity: 1;
-    border-color: hsl(var(--sf) / var(--tw-border-opacity));
-    --tw-bg-opacity: 1;
-    background-color: hsl(var(--sf) / var(--tw-bg-opacity));
-  }
-
   .btn.glass:hover {
     --glass-opacity: 25%;
     --glass-border-opacity: 15%;
@@ -1183,15 +1176,6 @@ html {
     background-color: hsl(var(--pf) / var(--tw-bg-opacity));
     --tw-text-opacity: 1;
     color: hsl(var(--pc) / var(--tw-text-opacity));
-  }
-
-  .btn-outline.btn-secondary:hover {
-    --tw-border-opacity: 1;
-    border-color: hsl(var(--sf) / var(--tw-border-opacity));
-    --tw-bg-opacity: 1;
-    background-color: hsl(var(--sf) / var(--tw-bg-opacity));
-    --tw-text-opacity: 1;
-    color: hsl(var(--sc) / var(--tw-text-opacity));
   }
 
   .btn-disabled:hover,
@@ -1960,26 +1944,6 @@ html {
   outline-color: hsl(var(--p) / 1);
 }
 
-.btn-secondary {
-  --tw-border-opacity: 1;
-  border-color: hsl(var(--s) / var(--tw-border-opacity));
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--s) / var(--tw-bg-opacity));
-  --tw-text-opacity: 1;
-  color: hsl(var(--sc) / var(--tw-text-opacity));
-}
-
-.btn-secondary.btn-active {
-  --tw-border-opacity: 1;
-  border-color: hsl(var(--sf) / var(--tw-border-opacity));
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--sf) / var(--tw-bg-opacity));
-}
-
-.btn-secondary:focus-visible {
-  outline-color: hsl(var(--s) / 1);
-}
-
 .btn.glass {
   --tw-shadow: 0 0 #0000;
   --tw-shadow-colored: 0 0 #0000;
@@ -2007,20 +1971,6 @@ html {
   background-color: hsl(var(--pf) / var(--tw-bg-opacity));
   --tw-text-opacity: 1;
   color: hsl(var(--pc) / var(--tw-text-opacity));
-}
-
-.btn-outline.btn-secondary {
-  --tw-text-opacity: 1;
-  color: hsl(var(--s) / var(--tw-text-opacity));
-}
-
-.btn-outline.btn-secondary.btn-active {
-  --tw-border-opacity: 1;
-  border-color: hsl(var(--sf) / var(--tw-border-opacity));
-  --tw-bg-opacity: 1;
-  background-color: hsl(var(--sf) / var(--tw-bg-opacity));
-  --tw-text-opacity: 1;
-  color: hsl(var(--sc) / var(--tw-text-opacity));
 }
 
 .btn-group > input[type="radio"]:checked.btn,
@@ -4165,6 +4115,26 @@ details.collapse summary::-webkit-details-marker {
     grid-row-start: 1;
   }
 
+  .sm\:row-start-10 {
+    grid-row-start: 10;
+  }
+
+  .sm\:row-start-11 {
+    grid-row-start: 11;
+  }
+
+  .sm\:row-start-12 {
+    grid-row-start: 12;
+  }
+
+  .sm\:row-start-13 {
+    grid-row-start: 13;
+  }
+
+  .sm\:row-start-14 {
+    grid-row-start: 15;
+  }
+
   .sm\:row-start-2 {
     grid-row-start: 2;
   }
@@ -4195,14 +4165,6 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:row-start-9 {
     grid-row-start: 9;
-  }
-
-  .sm\:row-start-10 {
-    grid-row-start: 10;
-  }
-
-  .sm\:row-start-11 {
-    grid-row-start: 11;
   }
 
   .sm\:block {
@@ -4255,5 +4217,13 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:grid-cols-\[34\%_64\%\] {
     grid-template-columns: 34% 64%;
+  }
+
+  .sm\:grid-cols-\[64\%_34\%\] {
+    grid-template-columns: 64% 34%;
+  }
+
+  .sm\:grid-cols-\[54\%_44\%\] {
+    grid-template-columns: 54% 44%;
   }
 }
