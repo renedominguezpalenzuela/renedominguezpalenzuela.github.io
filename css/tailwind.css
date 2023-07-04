@@ -3625,10 +3625,6 @@ details.collapse summary::-webkit-details-marker {
   margin-left: 0.25rem;
 }
 
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
 .ml-3 {
   margin-left: 0.75rem;
 }
@@ -3771,18 +3767,6 @@ details.collapse summary::-webkit-details-marker {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[18\%\] {
-  width: 18%;
-}
-
-.w-\[40\%\] {
-  width: 40%;
-}
-
-.w-\[70\%\] {
-  width: 70%;
 }
 
 .max-w-xs {
@@ -4207,6 +4191,10 @@ details.collapse summary::-webkit-details-marker {
     width: 70%;
   }
 
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
   .sm\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4225,18 +4213,6 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:grid-cols-\[54\%_44\%\] {
     grid-template-columns: 54% 44%;
-  }
-
-  .sm\:grid-cols-1 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
-
-  .sm\:flex-row {
-    flex-direction: row;
-  }
-
-  .sm\:items-end {
-    align-items: flex-end;
   }
 
   .sm\:justify-start {

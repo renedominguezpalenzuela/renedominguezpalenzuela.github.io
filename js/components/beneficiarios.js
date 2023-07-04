@@ -13,10 +13,10 @@ export class Beneficiarios extends Component {
 
     accessToken = '';
 
-    creandoNuevoBeneficiario = false;
+    creandoNuevoBeneficiario = true;
 
     state = useState({
-         _id:'',
+        _id: '',
         identityNumber: '',
         firstName: '',
         lastName: '',
@@ -31,7 +31,7 @@ export class Beneficiarios extends Component {
         municipality: '',
         countryIsoCode: "CU",
         country: "Cuba",
-        selectedBeneficiaryId:'-1'
+        selectedBeneficiaryId: '-1'
 
 
 
@@ -479,23 +479,23 @@ export class Beneficiarios extends Component {
     inicializarDatosBeneficiario = async (idBeneficiario) => {
         this.state.selectedBeneficiaryId = idBeneficiario;
 
-        if (idBeneficiario==='-1') {
+        if (idBeneficiario === '-1') {
             this.creandoNuevoBeneficiario = true;
-        this.state.identityNumber = '';
-        this.state.firstName = '';
-        this.state.lastName = '';
-        this.state.secondLastName = '';
-        this.state.phone = '';
-        this.state.streetName = '';
-        this.state.houseNumber = '';
+            this.state.identityNumber = '';
+            this.state.firstName = '';
+            this.state.lastName = '';
+            this.state.secondLastName = '';
+            this.state.phone = '';
+            this.state.streetName = '';
+            this.state.houseNumber = '';
             this.state.zipcode = '';
-        this.state.email = '';
-        this.state._id = '';
-        this.state.provinceID = "-1";
-        this.state.province = "";
-        this.state.municipalityID = -1;
-        this.state.municipality = '';
-        return;
+            this.state.email = '';
+            this.state._id = '';
+            this.state.provinceID = "-1";
+            this.state.province = "";
+            this.state.municipalityID = -1;
+            this.state.municipality = '';
+            return;
 
         }
         const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
@@ -587,14 +587,14 @@ export class Beneficiarios extends Component {
         this.state.phone = '';
         this.state.streetName = '';
         this.state.houseNumber = '';
-            this.state.zipcode = '';
+        this.state.zipcode = '';
         this.state.email = '';
         this.state._id = '';
         this.state.provinceID = "-1";
         this.state.province = "";
         this.state.municipalityID = -1;
         this.state.municipality = '';
-        this.state.selectedBeneficiaryId='-1';
+        this.state.selectedBeneficiaryId = '-1';
 
     }
 
@@ -607,20 +607,25 @@ export class Beneficiarios extends Component {
         try {
             const api = new API(this.accessToken);
             let resultado = null;
-            this.creandoNuevoBeneficiario = false;
+            
 
             if (this.creandoNuevoBeneficiario) {
+                console.log("Nuevo")
                 resultado = await api.createBeneficiario(this.state);
             } else {
+                console.log("Actualizandro")
                 resultado = await api.updateBeneficiario(this.state);
             }
+
+          
 
             console.log(resultado)
             //TODO OK
             if (resultado.processed) {
-               // if (resultado.data.status === 200) {
-                    Swal.fire("Beneficiary data saved correctly");
-               // }
+                this.creandoNuevoBeneficiario = false;
+                // if (resultado.data.status === 200) {
+                Swal.fire("Beneficiary data saved correctly");
+                // }
             }
 
             //Error  responde el API
