@@ -15,6 +15,8 @@ export class Beneficiarios extends Component {
 
     creandoNuevoBeneficiario = true;
 
+    //"creditCards": ["9225 1234 1234 1234"]
+
     state = useState({
         _id: '',
         identityNumber: '',
@@ -493,6 +495,7 @@ export class Beneficiarios extends Component {
             this.state.province = "";
             this.state.municipalityID = -1;
             this.state.municipality = '';
+            this.state.creditCards = [];
             return;
 
         }
@@ -593,6 +596,7 @@ export class Beneficiarios extends Component {
         this.state.municipalityID = -1;
         this.state.municipality = '';
         this.state.selectedBeneficiaryId = '-1';
+        this.state.creditCards = [];
 
     }
 

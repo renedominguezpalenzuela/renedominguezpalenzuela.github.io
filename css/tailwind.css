@@ -3737,16 +3737,16 @@ details.collapse summary::-webkit-details-marker {
   width: 17vw;
 }
 
-.w-\[28\%\] {
-  width: 28%;
-}
-
 .w-\[30\%\] {
   width: 30%;
 }
 
 .w-\[30vw\] {
   width: 30vw;
+}
+
+.w-\[38\%\] {
+  width: 38%;
 }
 
 .w-\[5vw\] {
@@ -3767,18 +3767,6 @@ details.collapse summary::-webkit-details-marker {
 
 .w-full {
   width: 100%;
-}
-
-.w-\[38\%\] {
-  width: 38%;
-}
-
-.w-\[48\%\] {
-  width: 48%;
-}
-
-.w-\[40\%\] {
-  width: 40%;
 }
 
 .max-w-xs {
