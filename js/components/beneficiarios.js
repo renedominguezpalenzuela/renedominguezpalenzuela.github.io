@@ -72,9 +72,9 @@ export class Beneficiarios extends Component {
                         </div> 
 
                         <div class=" w-full sm:row-start-1 sm:col-start-2 flex justify-start items-end mt-3  ">
-                            <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onNewBeneficiario">New</button>
-                            <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
-                            <button class="btn btn-primary  w-[28%]" t-on-click="onDeleteBeneficiario">Delete</button>
+                            <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onNewBeneficiario">New</button>
+                            <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                            
                         </div>
 
                         
@@ -233,12 +233,12 @@ export class Beneficiarios extends Component {
                 </div>
 
                 <div class="card-actions">
-                <div class=" w-full flex justify-start items-end mt-3  ">
-                    <button class="btn   mr-3" t-on-click="onNew">Add </button>
-                    <button class="btn  w-[28%] mr-3" t-on-click="onSave">Save </button>
-                    <button class="btn  w-[28%]" t-on-click="onDelete">Delete </button>
+                    <div class=" w-full flex justify-start  mt-3  ">
+                    
+                        <button class="btn  w-[60%] mr-3" t-on-click="onSave">New Card </button>
+                        <button class="btn  w-[60%] " t-on-click="onSave">Save </button>
+                    </div>
                 </div>
-              </div>
 
             </div>
         </div>
@@ -611,6 +611,7 @@ export class Beneficiarios extends Component {
 
             if (this.creandoNuevoBeneficiario) {
                 console.log("Nuevo")
+                console.log(this.state)
                 resultado = await api.createBeneficiario(this.state);
             } else {
                 console.log("Actualizandro")
