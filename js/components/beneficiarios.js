@@ -31,10 +31,8 @@ export class Beneficiarios extends Component {
         municipality: '',
         countryIsoCode: "CU",
         country: "Cuba",
-        selectedBeneficiaryId: '-1'
-
-
-
+        selectedBeneficiaryId: '-1',
+        creditCards: []
 
 
     })
@@ -451,7 +449,7 @@ export class Beneficiarios extends Component {
 
     onChangeSelectedCard = async (event) => {
         // //Lista de tarjetas
-        console.log('lista')
+        console.log('lista tarjetas')
         console.log(this.cardsList);
         const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
 
