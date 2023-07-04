@@ -3773,6 +3773,18 @@ details.collapse summary::-webkit-details-marker {
   width: 100%;
 }
 
+.w-\[18\%\] {
+  width: 18%;
+}
+
+.w-\[40\%\] {
+  width: 40%;
+}
+
+.w-\[70\%\] {
+  width: 70%;
+}
+
 .max-w-xs {
   max-width: 20rem;
 }
@@ -4119,22 +4131,6 @@ details.collapse summary::-webkit-details-marker {
     grid-row-start: 10;
   }
 
-  .sm\:row-start-11 {
-    grid-row-start: 11;
-  }
-
-  .sm\:row-start-12 {
-    grid-row-start: 12;
-  }
-
-  .sm\:row-start-13 {
-    grid-row-start: 13;
-  }
-
-  .sm\:row-start-14 {
-    grid-row-start: 15;
-  }
-
   .sm\:row-start-2 {
     grid-row-start: 2;
   }
@@ -4165,6 +4161,10 @@ details.collapse summary::-webkit-details-marker {
 
   .sm\:row-start-9 {
     grid-row-start: 9;
+  }
+
+  .sm\:ml-2 {
+    margin-left: 0.5rem;
   }
 
   .sm\:block {
@@ -4203,6 +4203,10 @@ details.collapse summary::-webkit-details-marker {
     width: 62vw;
   }
 
+  .sm\:w-\[70\%\] {
+    width: 70%;
+  }
+
   .sm\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4219,11 +4223,32 @@ details.collapse summary::-webkit-details-marker {
     grid-template-columns: 34% 64%;
   }
 
-  .sm\:grid-cols-\[64\%_34\%\] {
-    grid-template-columns: 64% 34%;
-  }
-
   .sm\:grid-cols-\[54\%_44\%\] {
     grid-template-columns: 54% 44%;
+  }
+
+  .sm\:grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .sm\:flex-row {
+    flex-direction: row;
+  }
+
+  .sm\:items-end {
+    align-items: flex-end;
+  }
+
+  .sm\:justify-start {
+    justify-content: flex-start;
+  }
+
+  .sm\:gap-2 {
+    gap: 0.5rem;
+  }
+
+  .sm\:gap-x-2 {
+    -moz-column-gap: 0.5rem;
+         column-gap: 0.5rem;
   }
 }

@@ -17,14 +17,21 @@ export class Beneficiarios extends Component {
         identityNumber: '',
         firstName: '',
         lastName:'',
-        secondLastName:''
+        secondLastName:'',
+        phone: '',
+        streetName:'',
+        houseNumber:'',
+        zipcode:'',
+        email:''
+
+
 
 
         /*cardNumber: '',
         cardHolderName: '',
         cardBankImage: '',
         bankName: '',
-        contactPhone: '',
+
         deliveryFirstName: '',
         deliveryAddress: '',
         receiverCity: '',          //Municipio
@@ -40,7 +47,7 @@ export class Beneficiarios extends Component {
 
     //TODO: mask in input 0000-0000-0000-0000
     static template = xml`  
-    <div class="sm:grid sm:grid-cols-[54%_44%] gap-2 h-[100vh]">
+    <div class="sm:grid sm:grid-cols-[54%_44%] sm:gap-2 h-[100vh]">
     <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
       <div class="card-title flex flex-col rounded-lg">
           
@@ -50,130 +57,143 @@ export class Beneficiarios extends Component {
 
 
 
-      <div class="card-body items-center ">
-        <div class="flex flex-row ">
+      <div class="card-body items-center  ">
+       
         
-                    <div class="grid grid-cols-1 sm:grid-cols-2 w-full sm:grid-rows-10  gap-y-0 gap-x-2 ">
+                    <div class="sm:grid sm:grid-cols-1 sm:grid-cols-2 w-full sm:grid-rows-10  gap-y-0 sm:gap-x-2 ">
                                 
-                    <!-- Seleccionar beneficiario -->
-                    <div class="form-control w-full sm:row-start-1 sm:col-start-1  ">
+                        <!-- Seleccionar beneficiario -->
+                        <div class="form-control w-full sm:row-start-1 sm:col-start-1  ">
+                            <label class="label">
+                                <span class="label-text">Select  Beneficiary</span>
+                            </label>
+                            <select class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                                <option t-att-disabled="true" t-att-value="-1" >Select Beneficiary</option>
+                                <t t-foreach="this.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
+                                    <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
+                                </t>             
+                            </select>
+                        </div> 
+
+                        <div class=" w-full sm:row-start-1 sm:col-start-2 flex justify-start items-end mt-3  ">
+                            <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onNewBeneficiario">New</button>
+                            <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                            <button class="btn btn-primary  w-[28%]" t-on-click="onDeleteBeneficiario">Delete</button>
+                        </div>
+
+                        
+                
+                        <!-- Nombre -->
+                    
+                        <div class="w-full  sm:row-start-3 sm:col-span-2 sm:col-start-1 sm:flex sm:justify-start      ">
+                            <div class="form-control  ">
+                                <label class="label">
+                                    <span class="label-text">First Name</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
+                            </div>
+
+                            <div class="form-control   sm:ml-2 ">
+                                <label class="label">
+                                    <span class="label-text">Last Name</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
+                            </div>
+
+                            <div class="form-control sm:ml-2">     
+                                <label class="label">
+                                    <span class="label-text">Second Last Name</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
+                            </div> 
+                        </div>
+
+                        <!-- Identificacion -->
+                        <div class="form-control w-full sm:row-start-4 sm:col-start-1">
+                            <label class="label">
+                                <span class="label-text">ID</span>
+                            </label>
+                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="input input-bordered w-full "  t-on-input="onChangeIDInput"  />   
+                        </div>
+                    
+                        <!-- Telefono -->
+                        <div class="form-control w-full sm:row-start-4 sm:col-start-2">
+                            <label class="label">
+                                <span class="label-text">Contact Phone</span>
+                            </label>
+                            <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
+                        </div>
+
+                    
+                        <!-- Address -->
+                        <div class="w-full  sm:row-start-5 sm:col-span-2 sm:col-start-1 sm:flex sm:justify-start ">
+                            <div class="form-control  sm:w-[70%]">
+                                <label class="label">
+                                    <span class="label-text">Street Name</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  maxlength="300" placeholder="Street Name" class="input input-bordered w-full " />   
+                            </div>
+
+                            <div class="form-control    sm:ml-2 ">
+                                <label class="label">
+                                    <span class="label-text">House Number</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  maxlength="300" placeholder="House Number" class="input input-bordered  w-full " /> 
+                            </div>
+
+                            <div class="form-control  sm:ml-2">     
+                                <label class="label">
+                                    <span class="label-text">Zip Code</span>
+                                </label>
+                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  maxlength="300" placeholder="Zip Code" class="input input-bordered w-full " />  
+                            </div> 
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-control w-full sm:row-start-6 sm:col-start-1">
+                            <label class="label">
+                                <span class="label-text">Email Address</span>
+                            </label>
+                            <input type="text" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="input input-bordered w-full "  t-on-input="onChangeEmail" />   
+                        </div>
+
+
+                        
+                        <!-- Provincia -->
+                        <div class="form-control w-full sm:row-start-7 sm:col-start-1">
                         <label class="label">
-                            <span class="label-text">Select  Beneficiary</span>
+                            <span class="label-text">Province</span>
                         </label>
-                        <select class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
-                            <option t-att-disabled="true" t-att-value="-1" >Select Beneficiary</option>
-                            <t t-foreach="this.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
-                                <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
+                        <select t-att-value="this.state.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
+                        <option t-att-disabled="true" t-att-value="-1" >Select Province</option>
+                            <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
+                            <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                             </t>             
                         </select>
+                        </div>
+
+                        <!-- Municipio -->
+                        <div class="form-control w-full sm:row-start-7 sm:col-start-2">
+                        <label class="label">
+                            <span class="label-text">City</span>
+                        </label>
+                        <select t-att-value="this.state.receiverCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
+                            <option t-att-disabled="true" t-att-value="-1" >Select city</option>
+                            <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
+                            <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
+                            </t>             
+                        </select>
+                        </div>
+
+                        <!-- Pais -->
+                        <div class="form-control w-full  sm:row-start-8 sm:col-start-2 ">
+                            <label class="label">
+                                <span class="label-text">Country</span>
+                            </label>
+                            <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                        </div>  
                     </div> 
-
-                    <div class=" w-full sm:row-start-1 sm:col-start-2 flex justify-start items-end mt-3  ">
-                        <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onNew">New</button>
-                        <button class="btn btn-primary  w-[28%] mr-3" t-on-click="onSave">Save</button>
-                        <button class="btn btn-primary  w-[28%]" t-on-click="onDelete">Delete</button>
-                    </div>
-
-                    
-            
-                    <!-- Nombre -->
-                    <div class="w-full  flex justify-start items-end  sm:col-start-1  sm:col-span-2 sm:row-start-3 ">
-                        <div class="form-control  w-full">
-                            <label class="label">
-                                <span class="label-text">First Name</span>
-                            </label>
-                            <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
-                        </div>
-
-                        <div class="form-control   w-full ml-2 ">
-                            <label class="label">
-                                <span class="label-text">Last Name</span>
-                            </label>
-                            <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
-                        </div>
-
-                        <div class="form-control w-full ml-2">     
-                            <label class="label">
-                                <span class="label-text">Second Last Name</span>
-                            </label>
-                            <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
-                        </div> 
-                    </div>
-
-                    <!-- Identificacion -->
-                    <div class="form-control w-full sm:row-start-4 sm:col-start-1">
-                        <label class="label">
-                            <span class="label-text">ID</span>
-                        </label>
-                        <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
-                    </div>
-                
-                    <!-- Telefono -->
-                    <div class="form-control w-full sm:row-start-4 sm:col-start-2">
-                        <label class="label">
-                            <span class="label-text">Contact Phone</span>
-                        </label>
-                        <input type="text" t-att-value="this.state.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
-                    </div>
-
-                    <!-- Address -->
-                    <div class="form-control   w-full sm:row-start-5 sm:col-span-2 sm:col-start-1">
-                        <label class="label">
-                            <span class="label-text">Delivery Address</span>
-                        </label>
-                        <textarea t-att-value="this.state.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
-                    </div>
-
-                    
-                    <!-- Provincia -->
-                    <div class="form-control w-full sm:row-start-6 ">
-                    <label class="label">
-                        <span class="label-text">Province</span>
-                    </label>
-                    <select t-att-value="this.state.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
-                    <option t-att-disabled="true" t-att-value="-1" >Select Province</option>
-                        <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
-                        <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
-                        </t>             
-                    </select>
-                    </div>
-
-                    <!-- Municipio -->
-                    <div class="form-control w-full sm:row-start-6 ">
-                    <label class="label">
-                        <span class="label-text">City</span>
-                    </label>
-                    <select t-att-value="this.state.receiverCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
-                        <option t-att-disabled="true" t-att-value="-1" >Select city</option>
-                        <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
-                        <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
-                        </t>             
-                    </select>
-                    </div>
-
-                    <!-- Pais -->
-                    <div class="form-control w-full  sm:row-start-7 sm:col-start-1 ">
-                        <label class="label">
-                            <span class="label-text">Country</span>
-                        </label>
-                        <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
-                    </div>  
-
-
-                   
-
-                
-
-                
-                
-
-                    
-
-
-                </div> 
-        </div>  
-      
-    
+          
       </div>
     </div>
 
@@ -186,13 +206,13 @@ export class Beneficiarios extends Component {
             <div class="card-body items-center ">
                 <div class="form-control w-full  sm:row-start-8 sm:col-start-1">
                     <label class="label">
-                    <span class="label-text">Select Card</span>
+                        <span class="label-text">Select Card</span>
                     </label>
                     <select class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
-                    <option  t-att-value="-1" >Select Card</option>
-                    <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
-                    <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
-                    </t>             
+                        <option  t-att-value="-1" >Select Card</option>
+                        <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
+                        <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
+                        </t>             
                     </select>
                 </div>
 
@@ -200,14 +220,14 @@ export class Beneficiarios extends Component {
 
                 <div class="form-control w-full  sm:row-start-9 sm:col-start-1">
                     <label class="label">
-                    <span class="label-text">Card Number</span>
+                        <span class="label-text">Card Number</span>
                     </label>
                     <input type="text" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
                 <div class="form-control w-full  sm:row-start-9 sm:col-start-2 ">
                     <label class="label">
-                    <span class="label-text">Card Holder Name</span>
+                        <span class="label-text">Card Holder Name</span>
                     </label>
                     <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
@@ -319,6 +339,64 @@ export class Beneficiarios extends Component {
     }
 
 
+
+    onChangeSelectedBeneficiario = (event) => {
+        const selectedBeneficiaryId = event.target.value;
+        this.state.cardBankImage = "";
+        this.state.bankName = "";
+        this.inicializarDatosBeneficiario(selectedBeneficiaryId);
+    }
+
+
+
+    onChangeIDInput = API.debounce(async (event) => {
+        this.state.identityNumber = event.target.value;
+    }, API.tiempoDebounce);
+
+
+    onChangeFirstName = API.debounce(async (event) => {
+        this.state.firstName = event.target.value;
+    }, API.tiempoDebounce);
+
+    onChangeLastName = API.debounce(async (event) => {
+        this.state.lastName = event.target.value;
+    }, API.tiempoDebounce);
+
+    onChangeSecondLastName= API.debounce(async (event) => {
+        this.state.secondLastName = event.target.value;
+    }, API.tiempoDebounce);
+
+    onChangePhoneInput = API.debounce(async (event) => {
+        this.state.phone = event.target.value;       
+    }, API.tiempoDebounce);
+
+    onChangeStreetName = API.debounce(async (event) => {
+        this.state.streetName = event.target.value;       
+    }, API.tiempoDebounce);
+
+    onChangeHouseNumber = API.debounce(async (event) => {
+        this.state.houseNumber = event.target.value;       
+    }, API.tiempoDebounce);
+
+    onChangeZipCode = API.debounce(async (event) => {
+        this.state.zipcode = event.target.value;       
+    }, API.tiempoDebounce);
+
+    onChangeEmail = API.debounce(async (event) => {
+        this.state.email = event.target.value;       
+    }, API.tiempoDebounce);
+    
+
+
+
+
+
+
+
+
+
+
+/*
     onCardInputKeyDown = API.debounce(async (event) => {
         if (event.target.value.length === 19) {
             this.state.cardNumber = event.target.value;
@@ -329,8 +407,11 @@ export class Beneficiarios extends Component {
     }, API.tiempoDebounce);
 
     onChangeCardInput(event) {
-         this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+        // this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
     };
+
+  
+    
 
     onChangeCardHolderInput = API.debounce(async (event) => {
         this.state.cardHolderName = event.target.value;       
@@ -340,18 +421,8 @@ export class Beneficiarios extends Component {
         this.state.deliveryAddress = event.target.value;       
     }, API.tiempoDebounce);
 
-    onChangePhoneInput = API.debounce(async (event) => {
-        this.state.contactPhone = event.target.value;       
-    }, API.tiempoDebounce);
-
-
-    onChangeSelectedBeneficiario = (event) => {
-        const selectedBeneficiaryId = event.target.value;
-        this.state.cardBankImage = "";
-        this.state.bankName = "";
-        this.inicializarDatosBeneficiario(selectedBeneficiaryId);
-    }
-
+  
+   
     //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
     onChangeProvince = (event) => {
         if (this.inicializando) return;
@@ -405,20 +476,30 @@ export class Beneficiarios extends Component {
 
         
     }
-
+*/
 
     inicializarDatosBeneficiario = async (idBeneficiario) => {
         const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
         const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
 
-
-
         if (selectedBenefiarioData) {
             this.inicializando = true;
+          
 
-            this.state.contactPhone = selectedBenefiarioData.deliveryPhone;
-            this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
+            this.state.identityNumber = selectedBenefiarioData.deliveryCI;
+            this.state.firstName = selectedBenefiarioData.deliveryContact;
+            this.state.lastName = selectedBenefiarioData.deliveryLastName;
+            this.state.secondLastName = selectedBenefiarioData.deliverySecondLastName;
+            this.state.phone = selectedBenefiarioData.deliveryPhone;
+            this.state.streetName=selectedBenefiarioData.streetName;
+            this.state.houseNumber=selectedBenefiarioData.houseNumber,
+            this.state.zipcode=selectedBenefiarioData.zipcode;
+    
+            
+            //this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
+            
+
 
 
 
@@ -471,6 +552,15 @@ export class Beneficiarios extends Component {
         }
 
     }
+
+    //Boton salvar datos del beneficiario
+    //mantener inactivo hasta que se haga un cambio en un campo
+    onSaveBeneficiario() {
+        console.log(this.state)
+    }
+
+    //al iniciar mantener todos los campos disabled hasta que se presione el boton new
+    
 
 }
 
