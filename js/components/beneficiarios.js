@@ -346,6 +346,7 @@ export class Beneficiarios extends Component {
 
     onChangeSelectedBeneficiario = (event) => {
         const selectedBeneficiaryId = event.target.value;
+
         this.state.cardBankImage = "";
         this.state.bankName = "";
         this.creandoNuevoBeneficiario = false;
@@ -628,6 +629,8 @@ export class Beneficiarios extends Component {
         this.state.selectedBeneficiaryId = '-1';
         this.state.creditCards = [];
 
+
+
     }
 
 
@@ -732,8 +735,8 @@ export class Beneficiarios extends Component {
                 this.creandoNuevoBeneficiario = false;
                 console.log('nuevo')
                 console.log(this.beneficiariosNames.length)
-                this.inicializarDatosBeneficiario(this.beneficiariosNames.length - 1);
-                this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1;
+                this.inicializarDatosBeneficiario(this.beneficiariosNames[this.beneficiariosNames.length - 1]._id);
+                //this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1;
             }
         }
 
@@ -809,7 +812,7 @@ export class Beneficiarios extends Component {
                 this.creandoNuevoBeneficiario = false;
 
                 this.inicializarDatosBeneficiario(this.beneficiariosNames.length - 1);
-                this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1; 
+                this.state.selectedBeneficiaryId = this.beneficiariosNames.length - 1;
             }
         }
 
