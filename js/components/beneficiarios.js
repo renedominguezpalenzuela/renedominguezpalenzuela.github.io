@@ -280,9 +280,9 @@ export class Beneficiarios extends Component {
                 _id: el._id
             }));
 
-         
 
-            
+
+
 
 
         });
@@ -468,14 +468,14 @@ export class Beneficiarios extends Component {
             return
         }
 
-       
+
 
         const cardData = this.cardsList.filter((unaCard) =>
-       
-              unaCard.id == id
 
-            )[0];
-       
+            unaCard.id == id
+
+        )[0];
+
 
         if (cardData) {
             const formatedCardNumber = UImanager.formatCardNumber(cardData.number)
@@ -594,7 +594,7 @@ export class Beneficiarios extends Component {
                 (el, i) => ({
                     id: i,
                     ...el
-                    
+
 
                 })
             )
@@ -635,6 +635,7 @@ export class Beneficiarios extends Component {
     async salvar() {
         console.log('Modificando datos de beneficiario')
         console.log(this.state)
+        let respuesta = false;
         try {
             const api = new API(this.accessToken);
             let resultado = null;
@@ -653,8 +654,10 @@ export class Beneficiarios extends Component {
 
             console.log(resultado)
             //TODO OK
-            if (resultado.processed) {
-                this.creandoNuevoBeneficiario = false;
+            if (resultado.status === 200 || resultado.status === 201) {
+
+                respuesta = true;
+
                 // if (resultado.data.status === 200) {
                 Swal.fire("Beneficiary data saved correctly");
                 // }
@@ -671,25 +674,68 @@ export class Beneficiarios extends Component {
             console.log(error);
             Swal.fire("Error saving data");
         }
+
+        return respuesta;
     }
     //Boton salvar datos del beneficiario
     //mantener inactivo hasta que se haga un cambio en un campo
     async onSaveBeneficiario() {
-        this.salvar();
+        const nuevaCard = this.state.cardNumber;
+        console.log('Card  a salvar')
+        console.log(nuevaCard);
+        if (nuevaCard) {
+            if (this.cardsList && this.cardsList.length > 0) {
 
-        const api = new API(this.accessToken);
-        const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+                //la busco en cardList
+                const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
+                console.log('Card Existe')
+                console.log(cardExisteenLista)
 
-        console.log(allDatosBeneficiarios)
+                if (!cardExisteenLista && cardExisteenLista != '') {
+                    this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
+                    this.state.creditCards.push(nuevaCard.split(" ").join(""))
 
-        if (allDatosBeneficiarios) {
-            window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                }
+
+            } else {
+
+                this.state.creditCards.push(nuevaCard.split(" ").join(""))
+                console.log("Salvando")
+                console.log(this.state.creditCards)
+
+            }
         }
-        this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-            beneficiaryFullName: el.beneficiaryFullName,
-            _id: el._id
-        }));
+
+
+        const respuesta = await this.salvar();
+
+        if (respuesta) {
+
+            console.log('Pidiendo beneficiarios en usuario ')
+
+            const api = new API(this.accessToken);
+            const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+
+            console.log(allDatosBeneficiarios)
+
+            if (allDatosBeneficiarios) {
+                window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+            }
+
+            this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+            this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+                beneficiaryFullName: el.beneficiaryFullName,
+                _id: el._id
+            }));
+
+            if (this.creandoNuevoBeneficiario) {
+                this.creandoNuevoBeneficiario = false;
+                console.log('nuevo')
+                console.log(this.beneficiariosNames.length)
+                this.inicializarDatosBeneficiario(this.beneficiariosNames.length - 1);
+                this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1;
+            }
+        }
 
     }
 
@@ -705,52 +751,67 @@ export class Beneficiarios extends Component {
         const nuevaCard = this.state.cardNumber;
         console.log('Card  a salvar')
         console.log(nuevaCard);
+        if (nuevaCard) {
 
-        console.log('Lista')
-        console.log(this.cardsList)
-        console.log(this.cardsList.length)
+            console.log('Lista')
+            console.log(this.cardsList)
+            console.log(this.cardsList.length)
 
-        if (!this.cardsList || !this.cardsList.length) {
+            if (!this.cardsList || !this.cardsList.length) {
 
-            return
+                return
+            }
+
+            //la busco en cardList
+            const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
+            console.log('Card Existe')
+            console.log(cardExisteenLista)
+
+
+            if (!cardExisteenLista && cardExisteenLista != '') {
+                this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
+
+                this.state.creditCards.push(nuevaCard.split(" ").join(""))
+                console.log("Salvando")
+                console.log(this.state.creditCards)
+            } else {
+                return
+            }
         }
 
-        //la busco en cardList
-        const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
-        console.log('Card Existe')
-        console.log(cardExisteenLista)
 
 
-        if (!cardExisteenLista && cardExisteenLista != '') {
-            this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
-            this.state.creditCards.push(nuevaCard.split(" ").join(""))
-            console.log("Salvando")
-            console.log(this.state.creditCards)
-        } else {
-            return
-        }
 
 
         //this.state.creditCards
-        await this.salvar();
+
+        const respuesta = await this.salvar();
 
         //this.cardsList = selectedBenefiarioData.creditCards;
+        if (respuesta) {
+            console.log('Pidiendo beneficiarios en cards ')
 
-        const api = new API(this.accessToken);
-        const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+            const api = new API(this.accessToken);
+            const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
 
-        console.log(allDatosBeneficiarios)
+            console.log(allDatosBeneficiarios)
 
-        if (allDatosBeneficiarios) {
-            window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+            if (allDatosBeneficiarios) {
+                window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+            }
+            this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+            this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+                beneficiaryFullName: el.beneficiaryFullName,
+                _id: el._id
+            }));
+
+            if (this.creandoNuevoBeneficiario) {
+                this.creandoNuevoBeneficiario = false;
+
+                this.inicializarDatosBeneficiario(this.beneficiariosNames.length - 1);
+                this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1; 
+            }
         }
-        this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-            beneficiaryFullName: el.beneficiaryFullName,
-            _id: el._id
-        }));
-
-        this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
 
     }
 

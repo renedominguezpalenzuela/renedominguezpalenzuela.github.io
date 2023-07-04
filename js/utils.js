@@ -320,8 +320,8 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
-      // console.log(JSON.stringify(datos));  
+      datos = response;
+      console.log(response); 
     }).catch(function (error) {
    
       console.log(error);
@@ -339,7 +339,9 @@ export class API {
   //-------------------------------------------------------------------------------
   async createBeneficiario(beneficiarioDatos) {
 
-
+    delete beneficiarioDatos["_id"];
+   
+   
     var body = JSON.stringify(beneficiarioDatos);
 
 
@@ -356,8 +358,8 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
-      // console.log(JSON.stringify(datos));  
+      datos = response;
+       console.log(response);  
     }).catch(function (error) {
    
       console.log(error);
