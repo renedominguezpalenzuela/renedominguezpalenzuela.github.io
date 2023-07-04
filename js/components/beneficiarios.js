@@ -15,6 +15,9 @@ export class Beneficiarios extends Component {
 
     creandoNuevoBeneficiario = true;
 
+
+    inputCardNumber = useRef("inputCardNumber");
+
     //"creditCards": ["9225 1234 1234 1234"]
 
     state = useState({
@@ -34,6 +37,7 @@ export class Beneficiarios extends Component {
         countryIsoCode: "CU",
         country: "Cuba",
         selectedBeneficiaryId: '-1',
+        selectedCardId: '-1',
         creditCards: []
 
 
@@ -204,10 +208,12 @@ export class Beneficiarios extends Component {
                     <label class="label">
                         <span class="label-text">Select Card</span>
                     </label>
-                    <select class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                    <select  t-att-value="this.state.selectedCardId" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
                         <option  t-att-value="-1" >Select Card</option>
-                        <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
-                        <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
+                        <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
+                           <option t-att-value="unCard.id">
+                            <t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/>
+                           </option>
                         </t>             
                     </select>
                 </div>
@@ -218,14 +224,14 @@ export class Beneficiarios extends Component {
                     <label class="label">
                         <span class="label-text">Card Number</span>
                     </label>
-                    <input type="text" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
                 <div class="form-control w-full  sm:row-start-9 sm:col-start-2 ">
                     <label class="label">
                         <span class="label-text">Card Holder Name</span>
                     </label>
-                    <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
+                    <input type="text" readonly="true"  t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
 
                 <div class=" flex items-center w-full sm:row-start-10 sm:col-start-2 mt-1">
@@ -235,8 +241,8 @@ export class Beneficiarios extends Component {
                 <div class="card-actions">
                     <div class=" w-full flex justify-start  mt-3  ">
                     
-                        <button class="btn  w-[60%] mr-3" t-on-click="onSave">New Card </button>
-                        <button class="btn  w-[60%] " t-on-click="onSave">Save </button>
+                        <button class="btn  w-[60%] mr-3" t-on-click="onNewCard">New Card </button>
+                        <button class="btn  w-[60%] " t-on-click="onSaveCard">Save </button>
                     </div>
                 </div>
 
@@ -274,7 +280,9 @@ export class Beneficiarios extends Component {
                 _id: el._id
             }));
 
-            //console.log(this.beneficiariosNames);
+         
+
+            
 
 
         });
@@ -296,7 +304,7 @@ export class Beneficiarios extends Component {
         const api = new API(this.accessToken);
         const cardRegExp = await api.getCardRegExp();
 
-        console.log(typeof (cardRegExp));
+
 
         for (const key in cardRegExp) {
 
@@ -304,7 +312,7 @@ export class Beneficiarios extends Component {
             const card = this.state.cardNumber.replace(/ /g, "");
             const resultado = regexp.test(card);
             if (resultado) {
-                console.log(key)
+
                 switch (key) {
                     case 'BANDEC_CARD':
                         //Poner imagen
@@ -426,17 +434,18 @@ export class Beneficiarios extends Component {
 
 
     onCardInputKeyDown = API.debounce(async (event) => {
+        this.state.cardNumber = event.target.value;
         if (event.target.value.length === 19) {
-            this.state.cardNumber = event.target.value;
+
             this.buscarLogotipoBanco(this.state.cardNumber);
 
             //TODO: si es un card nuevo agregarlo?
         }
     }, API.tiempoDebounce);
 
-    // onChangeCardInput(event) {
-    //     // this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
-    // };
+    onChangeCardInput(event) {
+        this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+    };
 
 
 
@@ -450,24 +459,33 @@ export class Beneficiarios extends Component {
 
 
     onChangeSelectedCard = async (event) => {
-        // //Lista de tarjetas
-        console.log('lista tarjetas')
-        console.log(this.cardsList);
-        const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
+        const id = event.target.value;
+        this.state.selectedCardId = id;
+        console.log('Seleccionado')
+        console.log(id)
+
+        if (id === '-1') {
+            return
+        }
+
+       
 
         const cardData = this.cardsList.filter((unaCard) =>
-            UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
-        )[0];
+       
+              unaCard.id == id
+
+            )[0];
+       
 
         if (cardData) {
-            console.log(cardData);
-            //cardHolderName
+            const formatedCardNumber = UImanager.formatCardNumber(cardData.number)
+
 
             this.state.cardNumber = formatedCardNumber;
             this.state.cardHolderName = cardData.cardHolderName;
             await this.buscarLogotipoBanco(this.state.cardNumber);
         } else {
-            console.log(cardData);
+
             this.state.cardNumber = '';
             this.state.cardHolderName = '';
         }
@@ -570,7 +588,19 @@ export class Beneficiarios extends Component {
 
 
 
-            this.cardsList = selectedBenefiarioData.creditCards;
+            //this.cardsList = selectedBenefiarioData.creditCards;
+
+            this.cardsList = selectedBenefiarioData.creditCards.map(
+                (el, i) => ({
+                    id: i,
+                    ...el
+                    
+
+                })
+            )
+
+            console.log('Inicializando beneficiario')
+            console.log(this.cardsList)
             this.state.cardNumber = '';
             this.inicializando = false;
 
@@ -601,15 +631,14 @@ export class Beneficiarios extends Component {
     }
 
 
-    //Boton salvar datos del beneficiario
-    //mantener inactivo hasta que se haga un cambio en un campo
-    async onSaveBeneficiario() {
+
+    async salvar() {
         console.log('Modificando datos de beneficiario')
         console.log(this.state)
         try {
             const api = new API(this.accessToken);
             let resultado = null;
-            
+
 
             if (this.creandoNuevoBeneficiario) {
                 console.log("Nuevo")
@@ -620,7 +649,7 @@ export class Beneficiarios extends Component {
                 resultado = await api.updateBeneficiario(this.state);
             }
 
-          
+
 
             console.log(resultado)
             //TODO OK
@@ -643,8 +672,88 @@ export class Beneficiarios extends Component {
             Swal.fire("Error saving data");
         }
     }
+    //Boton salvar datos del beneficiario
+    //mantener inactivo hasta que se haga un cambio en un campo
+    async onSaveBeneficiario() {
+        this.salvar();
+
+        const api = new API(this.accessToken);
+        const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+
+        console.log(allDatosBeneficiarios)
+
+        if (allDatosBeneficiarios) {
+            window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        }
+        this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+            beneficiaryFullName: el.beneficiaryFullName,
+            _id: el._id
+        }));
+
+    }
 
     //al iniciar mantener todos los campos disabled hasta que se presione el boton new
+    async onNewCard() {
+        this.state.cardNumber = '';
+        this.state.cardBankImage = '';
+        this.state.selectedCardId = '-1'
+    }
+
+    async onSaveCard() {
+
+        const nuevaCard = this.state.cardNumber;
+        console.log('Card  a salvar')
+        console.log(nuevaCard);
+
+        console.log('Lista')
+        console.log(this.cardsList)
+        console.log(this.cardsList.length)
+
+        if (!this.cardsList || !this.cardsList.length) {
+
+            return
+        }
+
+        //la busco en cardList
+        const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
+        console.log('Card Existe')
+        console.log(cardExisteenLista)
+
+
+        if (!cardExisteenLista && cardExisteenLista != '') {
+            this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
+            this.state.creditCards.push(nuevaCard.split(" ").join(""))
+            console.log("Salvando")
+            console.log(this.state.creditCards)
+        } else {
+            return
+        }
+
+
+        //this.state.creditCards
+        await this.salvar();
+
+        //this.cardsList = selectedBenefiarioData.creditCards;
+
+        const api = new API(this.accessToken);
+        const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+
+        console.log(allDatosBeneficiarios)
+
+        if (allDatosBeneficiarios) {
+            window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        }
+        this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+            beneficiaryFullName: el.beneficiaryFullName,
+            _id: el._id
+        }));
+
+        this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
+
+    }
+
 
 
 }
