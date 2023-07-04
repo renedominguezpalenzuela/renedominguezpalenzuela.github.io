@@ -232,58 +232,7 @@ export class API {
 
 
 
-  
-
-  // Obtiene el fee a aplicar
-  // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
-  // zone: Provincias | Habana
-  // amount: Total a enviar
-  async getBeneficiarios() {
-
-    // var config = {
-    //   method: 'get',
-    //   url: `${this.base_url}/api/private/beneficiaries`,
-    //   headers: this.headers,
-    // }
-
-    // let datos = null;
-    // await axios(config).then(function (response) {
-    //   datos = response.data;
-    // }).catch(function (error) {
-    //   console.log(error);
-    //   return null;
-    // });
-
-    const datos = [
-      {
-        "cardNumber": "9225 1299 7929 0027",
-        "cardHolderName": "Deicy Johana Morales Cadavid",
-        "bankName": "BPA",
-        "contactPhone": "005353129327",
-        "deliveryAddress": "Cll 48A #103BB31 23 , ESMERALDA, CAMAGUEY, Cuba",
-        "deliveryCountry": "Cuba",
-        "deliveryCountryCode": "CU",
-        "receiverCity": "ESMERALDA",
-        "receiverCountry": "CUB",
-      },
-      {
-        "cardNumber": "9225 1299 4560 3450",
-        "cardHolderName": "Maria Gonzalez Riera",
-        "bankName": "BPA",
-        "contactPhone": "005467223445",
-        "deliveryAddress": "Cll 49A #103BB31 23 , VERTIENTES, CAMAGUEY, Cuba",
-        "deliveryCountry": "Cuba",
-        "deliveryCountryCode": "CU",
-        "receiverCity": "VERTIENTES",
-        "receiverCountry": "CUB",
-      }
-
-    ]
-
-    return datos;
-
-  }
-
+ 
 
   static tiempoDebounce = 300; //milisegundos
 
@@ -347,6 +296,77 @@ export class API {
     return datos;
   }
 
+
+  
+  //-------------------------------------------------------------------------------
+  //  Modificar datos de un beneficiario
+  //-------------------------------------------------------------------------------
+  async updateBeneficiario(beneficiarioDatos) {
+
+
+    var body = JSON.stringify(beneficiarioDatos);
+
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/beneficiary/update`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      // console.log(JSON.stringify(datos));  
+    }).catch(function (error) {
+   
+      console.log(error);
+      datos = error;
+
+    });
+
+    return datos;
+  }
+
+
+  
+  //-------------------------------------------------------------------------------
+  //  Crear nuevo  beneficiario
+  //-------------------------------------------------------------------------------
+  async createBeneficiario(beneficiarioDatos) {
+
+
+    var body = JSON.stringify(beneficiarioDatos);
+
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/beneficiary/create`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      // console.log(JSON.stringify(datos));  
+    }).catch(function (error) {
+   
+      console.log(error);
+      datos = error;
+
+    });
+
+    return datos;
+  }
 
 
   //------------------------------------------------------------------------------------------------
