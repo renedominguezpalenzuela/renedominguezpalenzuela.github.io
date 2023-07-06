@@ -299,9 +299,10 @@ export class Beneficiarios extends Component {
         });
 
         onMounted(() => {
-            //this.state.selectedCardId = '-1';
+            //this.state.selectedCardId = "-1";
             
-             this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
+             //this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
+             this.onNewBeneficiario();
         });
 
     }
@@ -354,6 +355,7 @@ export class Beneficiarios extends Component {
 
 
     onChangeSelectedBeneficiario = (event) => {
+        this.onNewBeneficiario();
         const selectedBeneficiaryId = event.target.value;
         this.selectedBeneficiaryId = selectedBeneficiaryId;
 
@@ -763,7 +765,7 @@ export class Beneficiarios extends Component {
     async onNewCard() {
         this.state.cardNumber = '';
         this.state.cardBankImage = '';
-        this.state.selectedCardId = '-1'
+       // this.state.selectedCardId = '-1'
     }
 
     /*async onSaveCard() {
