@@ -47,7 +47,7 @@ export class Beneficiarios extends Component {
 
     //TODO: mask in input 0000-0000-0000-0000
     static template = xml`  
-    <div class="sm:grid sm:grid-cols-[54%_44%] sm:gap-2 h-[100vh]">
+    <div class="sm:grid sm:grid-cols-[54%_44%] sm:gap-2 h-full">
     <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
       <div class="card-title flex flex-col rounded-lg">
           
@@ -77,7 +77,7 @@ export class Beneficiarios extends Component {
 
                         <div class=" w-full sm:row-start-1 sm:col-start-2 flex justify-start items-end mt-3  ">
                             <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onNewBeneficiario">New</button>
-                            <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                          
                             
                         </div>
 
@@ -193,7 +193,8 @@ export class Beneficiarios extends Component {
                             <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
                         </div>  
                     </div> 
-          
+
+                   
       </div>
     </div>
 
@@ -241,13 +242,19 @@ export class Beneficiarios extends Component {
                 <div class="card-actions">
                     <div class=" w-full flex justify-start  mt-3  ">
                     
-                        <button class="btn  w-[60%] mr-3" t-on-click="onNewCard">New Card </button>
-                        <button class="btn  w-[60%] " t-on-click="onSaveCard">Save </button>
+                        <button class="btn   mr-3" t-on-click="onNewCard">New Card </button>
+                       
                     </div>
                 </div>
 
             </div>
         </div>
+        <div class="card-actions">
+        <div class=" w-full flex justify-start  mt-3  ">
+          <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
+        </div>
+    </div>
+
   </div>
     
 
