@@ -68,7 +68,7 @@ export class Beneficiarios extends Component {
                                 <span class="label-text">Select  Beneficiary</span>
                             </label>
                             <select t-att-value="this.state.selectedBeneficiaryId" class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
-                                <option  t-att-value="-1" >Select Beneficiary</option>
+                                <option  t-att-value="-1" >Select or enter new data</option>
                                 <t t-foreach="this.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                                     <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                                 </t>             
@@ -210,7 +210,7 @@ export class Beneficiarios extends Component {
                         <span class="label-text">Select Card</span>
                     </label>
                     <select  t-att-value="this.state.selectedCardId" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
-                        <option  t-att-value="-1" >Select Card</option>
+                        <option  t-att-value="-1" >Select or enter new data</option>
                         <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
                            <option t-att-value="unCard.id">
                             <t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/>
@@ -276,7 +276,7 @@ export class Beneficiarios extends Component {
             const api = new API(this.accessToken);
             const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
 
-            console.log(allDatosBeneficiarios)
+            //console.log(allDatosBeneficiarios)
 
             if (allDatosBeneficiarios) {
                 window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -299,7 +299,9 @@ export class Beneficiarios extends Component {
         });
 
         onMounted(() => {
-            // this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
+            //this.state.selectedCardId = '-1';
+            
+             this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
         });
 
     }
@@ -353,6 +355,7 @@ export class Beneficiarios extends Component {
 
     onChangeSelectedBeneficiario = (event) => {
         const selectedBeneficiaryId = event.target.value;
+        this.selectedBeneficiaryId = selectedBeneficiaryId;
 
         this.state.cardBankImage = "";
         this.state.bankName = "";
@@ -423,7 +426,7 @@ export class Beneficiarios extends Component {
         if (this.inicializando) return;
         const selectedCityId = event.target.value;
         let selectedMunicipio = this.municipios[selectedCityId];
-        console.log(selectedMunicipio)
+        //console.log(selectedMunicipio)
         if (selectedMunicipio) {
             this.state.municipality = selectedMunicipio.nombre;
             this.state.municipalityID = selectedCityId;
@@ -469,7 +472,7 @@ export class Beneficiarios extends Component {
     onChangeSelectedCard = async (event) => {
         const id = event.target.value;
         this.state.selectedCardId = id;
-        console.log('Seleccionado')
+        console.log('Card Seleccionado')
         console.log(id)
 
         if (id === '-1') {
@@ -504,6 +507,7 @@ export class Beneficiarios extends Component {
 
     inicializarDatosBeneficiario = async (idBeneficiario) => {
         this.state.selectedBeneficiaryId = idBeneficiario;
+       
 
         if (idBeneficiario === '-1') {
             this.creandoNuevoBeneficiario = true;
@@ -522,6 +526,7 @@ export class Beneficiarios extends Component {
             this.state.municipalityID = -1;
             this.state.municipality = '';
             this.state.creditCards = [];
+           
             return;
 
         }
@@ -557,7 +562,7 @@ export class Beneficiarios extends Component {
 
             //Inicializando provincia
             const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
-            console.log(selectedProvince)
+            //console.log(selectedProvince)
             if (selectedProvince) {
                 this.state.provinceID = selectedProvince.id;
                 this.state.province = selectedProvince.nombre;
@@ -593,23 +598,19 @@ export class Beneficiarios extends Component {
                 this.state.municipality = '';
             }
 
-
-
-
             //this.cardsList = selectedBenefiarioData.creditCards;
-
+            this.cardsList = [];
             this.cardsList = selectedBenefiarioData.creditCards.map(
                 (el, i) => ({
                     id: i,
                     ...el
-
-
                 })
             )
 
-            console.log('Inicializando beneficiario')
+            console.log('Cards del beneficiario')
             console.log(this.cardsList)
             this.state.cardNumber = '';
+           
             this.inicializando = false;
 
         }
@@ -635,6 +636,13 @@ export class Beneficiarios extends Component {
         this.state.municipality = '';
         this.state.selectedBeneficiaryId = '-1';
         this.state.creditCards = [];
+        this.cardsList = [];
+        this.state.cardHolderName = '';
+
+
+        this.state.cardNumber = '';
+        this.state.cardBankImage = '';
+        this.state.selectedCardId = '-1'
 
 
 
@@ -698,7 +706,7 @@ export class Beneficiarios extends Component {
 
                 //la busco en cardList
                 const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
-                console.log('Card Existe')
+                console.log('Comprobando si Card Existe:')
                 console.log(cardExisteenLista)
 
                 if (!cardExisteenLista && cardExisteenLista != '') {
@@ -744,6 +752,8 @@ export class Beneficiarios extends Component {
                 console.log(this.beneficiariosNames.length)
                 this.inicializarDatosBeneficiario(this.beneficiariosNames[this.beneficiariosNames.length - 1]._id);
                 //this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1;
+            } else {
+                this.inicializarDatosBeneficiario(this.selectedBeneficiaryId);
             }
         }
 
@@ -756,7 +766,7 @@ export class Beneficiarios extends Component {
         this.state.selectedCardId = '-1'
     }
 
-    async onSaveCard() {
+    /*async onSaveCard() {
 
         const nuevaCard = this.state.cardNumber;
         console.log('Card  a salvar')
@@ -823,7 +833,7 @@ export class Beneficiarios extends Component {
             }
         }
 
-    }
+    }*/
 
 
 
