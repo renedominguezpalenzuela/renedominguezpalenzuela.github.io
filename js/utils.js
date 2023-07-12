@@ -395,6 +395,39 @@ export class API {
 
   }
 
+  
+  //------------------------------------------------------------------------------------------------
+  // Obtiene todos los datos de los beneficiarios
+  //------------------------------------------------------------------------------------------------
+
+  async getProductosRecargaTelefon(countryPhone, currency) {
+
+    const parametros = {
+      destination: countryPhone,
+      currency: currency
+    }
+    
+    var body = JSON.stringify(parametros);
+
+    var config = {
+      method: 'post',
+      url: `${this.base_url}/api/private/transactions/topup/operators`,
+      headers:this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+    }).catch(function (error) {
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
  
 
   /*

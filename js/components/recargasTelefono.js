@@ -9,12 +9,17 @@ export class RecargasTelefono extends Component {
 
     //static components = { Beneficiarios };
 
-
+    //TODO: poner imagen de espera con una ventana
 
     state = useState({
-        pais: -1
-
+        pais: 53,
+        currency: "USD",
+        producto: -1,
+        listaProductos: [],
+        productoDesc: ""
     })
+
+
 
 
 
@@ -28,37 +33,50 @@ export class RecargasTelefono extends Component {
             </div>
 
             <div class="card-body items-center ">
-                             
-                
-                    <select t-att-value="this.state.pais" class="select select-bordered w-full" t-on-input="onChangePais" name="people" id="people">            
-                        <t t-foreach="this.seleccionPaises" t-as="unPais" t-key="unPais.id">
-                            <option t-att-value="unPais.id" data-class="avatar" t-att-data-style="unPais.flag" >
-                                 <span class="countryname"><t t-esc="unPais.name"/> </span>
-                                
-                            </option>
-                        </t>             
+
+                <select t-att-value="this.state.currency" class="select select-bordered join-item" t-on-input="onChangeCurrencySend"  >                    
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CAD">CAD</option>            
                 </select>
+                                
+                    
+                <select   t-att-value="this.state.pais" class="select select-bordered w-full"  name="people" id="people">            
+                    <t t-foreach="this.seleccionPaises" t-as="unPais" t-key="unPais.id">
+                        <option t-att-value="unPais.id" data-class="avatar" t-att-data-style="unPais.flag" >
+                                <span class="countryname"><t t-esc="unPais.name"/> </span>
+                            
+                        </option>
+                    </t>             
+                </select>
+
+           
+
+                <select  class="select select-bordered w-full" t-on-input="onChangeProduct" >            
+                    <t t-foreach="this.state.listaProductos" t-as="unProducto" t-key="unProducto.id">
+                        <option t-att-value="unProducto.id"   >
+                                <span><t t-esc="unProducto.name"/> </span>     
+                        </option>
+                    </t>             
+                </select>
+
+                <div>
+                   <t t-esc="this.state.productoDesc"/>
+                </div>
+
+                
             </div>
         </div>
 
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
             <div class="card-title flex flex-col rounded-lg">
                 Other Data
+               
+                
             </div>
             <div class="card-body items-center ">
-                <div class="ui-widget">
-                    <label for="tags">Tags: </label>
-                    <input id="tags"/>
-                </div>
-                <fieldset>
-                    <label for="people">Select a Person:</label>
-                    <select name="people" id="people1">
-                    
-                    <option value="1" data-class="avatar" data-style="background-image: url(&apos;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAYAAACaq43EAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpBQkE2MUNDQTE3NzUxMUUyODY3Q0FBOTFCQzlGNjlDRiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpBQkE2MUNDQjE3NzUxMUUyODY3Q0FBOTFCQzlGNjlDRiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkFCQTYxQ0M4MTc3NTExRTI4NjdDQUE5MUJDOUY2OUNGIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkFCQTYxQ0M5MTc3NTExRTI4NjdDQUE5MUJDOUY2OUNGIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+9/ZNdQAAAztJREFUeNq8ll9oHFUUxn+zM7OT3c3spMlus8kS3RL/RU1JokglJrRaFH3pg2+C+CAICq0PRqigVYrStFhEfBEVXwQRn0RQEESsT2KqjUhrpaR/NFmbpNlsdjO7m/l3PZsWRXxK2PXCMHDnzj33nO/7zne19/v3LxxL77MvWrsgrEK0DsRo99Dcrj61FOvgw877OG4/gGf0QLACymvrAbSZzHClO6rbhXCVH8w8b6cn+CQ1JjHjsPon+EF7Ap/J3FVRYEeS3UBYwYlqfGHdxpv2OBdGHyTyqgSLy6hItTSwsRldHp2Ied2mqHfyUGOOkbVzVO+tkp9+EWdoF76sCV2vtRnL2/5nRiOS7DpUgFG6gjVQIDf1HNahgy3N+D/s0bQYqlymUfdp9N3J8kKF088f4peh+yl9+lmLM9Y0G6WI6g18d5HuRw/gC67rP/2I6WSIWQkaSxdR1Ol55AD51w5zaeQeUrJBd7ghUGnbDBxFNrqOmeuldu5ndp+fYfXzr/jj6Ksk+4fwrhaJmZYQLSAoz+HoXXw9OMEJZx9XzF46RH6m8rckv+usDiM7qJXJPvkEuReepeOOQZGxx9o3p5h/6Q0av81hpJwb4Ogo1yXrXmNZS/BRapS3RIIQv6H9LWCsGTpGMk3xg5O4M2eunygeZ/HYu6zPzkjQrn/9pGLCAymvoxqkow2Z2KacmvhqcgYzuRMVBBSPniQ5Oow1eBPad80lsrOQTiDBX7qAQ5Jvb53geHovZ60BKfWqlLqZbWLrclK+j5HZiZF1KH//JVaiQHJsmNrZ8+jxBN7SvGi5xI49+7n59Zf5fXxy89RZIVds2+Rq6jimoaQ9hmtVjJ4dRG5NMmyCoVGvzZHK303+yBTZZ55qUwOREUlZLRViXruMmcnSe/BpkkcOyxeztS3zb9JIyZo8KXgl1hsuK489Tv8rUxh7douCxbRq/iYfWmoSoSCVEy/uFU8+FS8w3TnO7MjDssLDL15FJNdadzotttipNuxbghK/GhneEVd6T7wZXfpSWWzR89tji2td/aqu6dIIxpi2J1mJ90lNy1LSensvAh/nJhdOpPfas4nbhVXC5LDyv1x9/hJgAIwQQwS2sEaJAAAAAElFTkSuQmCC&apos;);">John Resig</option>
-                    <option value="2" data-class="avatar" data-style="background-image: url(&apos;http://www.gravatar.com/avatar/e42b1e5c7cfd2be0933e696e292a4d5f?d=monsterid&amp;r=g&amp;s=16&apos;);">Tauren Mills</option>
-                    <option value="3" data-class="avatar" data-style="background-image: url(&apos;http://www.gravatar.com/avatar/bdeaec11dd663f26fa58ced0eb7facc8?d=monsterid&amp;r=g&amp;s=16&apos;);">Jane Doe</option>
-                    </select>
-                </fieldset>
+               
+               
             </div>
         </div>
     </div>
@@ -75,6 +93,8 @@ export class RecargasTelefono extends Component {
         const walletAddress = window.sessionStorage.getItem('walletAddress');
         const userId = window.sessionStorage.getItem('userId');
 
+
+
         onWillStart(async () => {
             const api = new API(accessToken);
             //const exchangeRate = await api.getExchangeRate("usd");
@@ -82,7 +102,7 @@ export class RecargasTelefono extends Component {
             this.paises = Paises.map((unPais, i) => ({
                 id: unPais.id,
                 name: unPais.name,
-                flag: "background-image: url('data:image/png;base64," + unPais.flag +"');",
+                flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
                 currency: unPais.currency.code,
                 number: unPais.number,
                 show: unPais.show
@@ -110,6 +130,7 @@ export class RecargasTelefono extends Component {
         });
 
         onRendered(() => {
+
 
         });
 
@@ -145,6 +166,8 @@ export class RecargasTelefono extends Component {
 
             $.widget("custom.iconselectmenu", $.ui.selectmenu, {
                 _renderItem: function (ul, item) {
+
+
                     var li = $("<li>"), wrapper = $("<div>", { text: item.label });
 
                     if (item.disabled) {
@@ -160,19 +183,107 @@ export class RecargasTelefono extends Component {
                 }
             });
 
-           // $("#filesA").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons");
 
-           // $("#filesB").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons customicons");
+            //$("#people").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons avatar");
 
-            $("#people").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons avatar");
+            $("#people").iconselectmenu({
+                change: (event, ui) => {
+                    //alert("Hi"); 
+                    //console.log(event)
+                    const idPais = ui.item.value;
+                    this.onChangePais(idPais);
+
+
+
+                }
+            }
+            ).iconselectmenu("menuWidget").addClass("ui-menu-icons");
+            //$("#people").iconselectmenu('setValue',53);
+
+
+            // $('#people').val(this.state.pais);
+
+            const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == this.state.pais)[0].name
+            console.log(nombre_pais)
+
+            $('.ui-selectmenu-text').html(nombre_pais)
+
+
+            this.onChangePais(this.state.pais)
 
         })
+
 
     }
 
 
-    async onChangePais() {
+    onChangeProduct(event) {
+        this.state.producto = event.target.value;
+        console.log(this.state.producto)
+        console.log(this.listaProductos)
 
+
+
+
+
+        const productoDesc = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
+        console.log("DESCR")
+        this.state.productoDesc = productoDesc.description
+        console.log(productoDesc);
+
+
+
+
+    }
+
+    onChangePais = async (idPAis) => {
+        console.log("PAis" + idPAis);
+        const accessToken = window.sessionStorage.getItem('accessToken');
+        const api = new API(accessToken);
+
+
+
+        const paisDatos = this.paises.find(unPais => unPais.id == idPAis);
+
+
+
+       
+
+        Swal.fire({
+            title: 'Please Wait..!',
+            text: 'Retrieving product list...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            didOpen :async () => {
+                swal.showLoading()
+                console.log("SSS")
+                const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
+                console.log(operadores);
+                this.listaProductos = operadores.data.operators[0].products;
+                this.state.listaProductos = this.listaProductos;
+                swal.close();
+            }
+        })
+
+       
+
+
+
+
+       
+
+
+
+
+
+        //const exchangeRate = await api.getProductosRecargaTelefon("usd");
+
+    }
+
+
+    onChangeCurrencySend(event) {
+        this.state.currency = event.target.value
     }
 
 
