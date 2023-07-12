@@ -33,7 +33,7 @@ export class RecargasTelefono extends Component {
                     <select t-att-value="this.state.pais" class="select select-bordered w-full" t-on-input="onChangePais" name="people" id="people">            
                         <t t-foreach="this.seleccionPaises" t-as="unPais" t-key="unPais.id">
                             <option t-att-value="unPais.id" data-class="avatar" t-att-data-style="unPais.flag" >
-                                 <t t-esc="unPais.name"/> 
+                                 <span class="countryname"><t t-esc="unPais.name"/> </span>
                                 
                             </option>
                         </t>             

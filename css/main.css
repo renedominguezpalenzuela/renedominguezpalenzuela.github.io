@@ -7,3 +7,60 @@
     padding-right: 0px;
     min-height: 1rem;
 }
+
+
+/* select with custom icons */
+.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item-wrapper {
+    padding: 0.5em 0 0.5em 3em;
+}
+
+.ui-selectmenu-menu .ui-menu.customicons .ui-menu-item .ui-icon {
+    height: 24px;
+    width: 24px;
+    top: 0.1em;
+}
+
+.ui-icon.video {
+    background: url("img/24-video-square.png") 0 0 no-repeat;
+}
+
+.ui-icon.podcast {
+    background: url("img/24-podcast-square.png") 0 0 no-repeat;
+}
+
+.ui-icon.rss {
+    background: url("img/24-rss-square.png") 0 0 no-repeat;
+}
+
+/* select with CSS avatar icons */
+option.avatar {
+    background-repeat: no-repeat !important;
+    padding-left: 20px;
+}
+
+.avatar .ui-icon {
+    background-position: left top;
+}
+
+.ui-menu-item-wrapper>span.ui-icon {
+    height: 32px;
+    width: 32px;
+
+
+}
+
+.ui-menu .ui-icon {
+    position: absolute;
+    top: 10px;
+    bottom: 0;
+    left: 0.2em;
+    margin: auto 1px;
+}
+
+.ui-menu-icons .ui-menu-item-wrapper {
+    padding-left: 2.5em;
+}
+
+.countryname {
+    margin-left: 10px;
+}
