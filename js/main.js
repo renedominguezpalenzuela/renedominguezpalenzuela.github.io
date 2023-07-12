@@ -6,13 +6,15 @@ import { Profile } from "./components/profile.js";
 import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
+import { RecargasTelefono } from "./components/recargasTelefono.js";
+
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios};
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono};
 
   //Opcion inicial del menu
-  state = useState({menuId: 2, title:'Beneficiaries'});
+  state = useState({menuId: 6, title:'Phone Recharge'});
    
 
   leftmenuItems = [
@@ -23,7 +25,8 @@ class Root extends Component {
         { id: 4, name: "To Credit Card" },
         { id: 5, name: "Home Delivery" },    
       ]
-    }
+    },
+    { id: 6, name: "Phone Recharge", type: 2 },
 
    
   ];
@@ -58,6 +61,10 @@ class Root extends Component {
 
           <t t-elif="this.state.menuId === 5">
             <HomeDeliveryCuba/>
+          </t>
+
+          <t t-elif="this.state.menuId === 6">
+             <RecargasTelefono/>
           </t>
 
       
