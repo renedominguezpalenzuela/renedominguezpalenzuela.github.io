@@ -397,7 +397,7 @@ export class API {
 
   
   //------------------------------------------------------------------------------------------------
-  // Obtiene todos los datos de los beneficiarios
+  // Obtiene datos de tipos de recargas de telefonos
   //------------------------------------------------------------------------------------------------
 
   async getProductosRecargaTelefon(countryPhone, currency) {
@@ -426,6 +426,35 @@ export class API {
 
     return datos;
 
+  }
+
+  
+  //-------------------------------------------------------------------------------
+  //  sendPhoneRecharge: envia recarga de telefono
+  //-------------------------------------------------------------------------------
+  async sendPhoneRecharge(datosTX) {
+  
+
+    var body = JSON.stringify(datosTX);
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/topup/send`,
+      headers: this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
   }
 
  

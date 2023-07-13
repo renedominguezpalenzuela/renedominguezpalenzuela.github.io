@@ -16,7 +16,14 @@ export class RecargasTelefono extends Component {
         currency: "USD",
         producto: -1,
         listaProductos: [],
-        productoDesc: ""
+        productoDesc: "",
+        salePrice: 0,
+        operator: '',
+        label: '',
+        phone: '',
+        phoneOwnerName: ''
+
+
     })
 
 
@@ -34,48 +41,102 @@ export class RecargasTelefono extends Component {
 
             <div class="card-body items-center ">
 
+            <div class="form-control w-full   ">
+                <label class="label">
+                    <span class="label-text">Currency to pay for recharge</span>
+                </label>
                 <select t-att-value="this.state.currency" class="select select-bordered join-item" t-on-input="onChangeCurrencySend"  >                    
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="CAD">CAD</option>            
                 </select>
+            </div>    
                                 
-                    
-                <select   t-att-value="this.state.pais" class="select select-bordered w-full"  name="people" id="people">            
+            <div class="form-control w-full   ">  
+                <label class="label">
+                    <span class="label-text">Country to send recharge </span>
+                </label>     
+                <select   class="select select-bordered w-full"  name="people" id="people">            
                     <t t-foreach="this.seleccionPaises" t-as="unPais" t-key="unPais.id">
                         <option t-att-value="unPais.id" data-class="avatar" t-att-data-style="unPais.flag" >
-                                <span class="countryname"><t t-esc="unPais.name"/> </span>
-                            
+                                <span class="countryname"><t t-esc="unPais.name"/> </span>                            
                         </option>
                     </t>             
                 </select>
+            </div>     
 
            
-
-                <select  class="select select-bordered w-full" t-on-input="onChangeProduct" >            
+            <div class="form-control w-full   ">  
+                <label class="label">
+                    <span class="label-text">Recharge type </span>
+                </label>  
+                <select  class="select select-bordered w-full" t-on-input="onChangeProduct" >  
+                    <option  t-att-value="-1" >Select Product</option>          
                     <t t-foreach="this.state.listaProductos" t-as="unProducto" t-key="unProducto.id">
                         <option t-att-value="unProducto.id"   >
-                                <span><t t-esc="unProducto.name"/> </span>     
+                                
+                                      <t t-esc="unProducto.name"/> - <t t-esc="unProducto.label"/>
+                                         
+                                
                         </option>
                     </t>             
                 </select>
+            </div>   
 
-                <div>
-                   <t t-esc="this.state.productoDesc"/>
-                </div>
 
+                <div class="form-control w-full   ">
+                <label class="label">
+                  <span class="label-text">Phone to recharge</span>
+                </label>
+                <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="input input-bordered w-full " t-on-input="onChangePhone" />   
+              </div>
+
+              <div class="form-control w-full   ">
+              <label class="label">
+                <span class="label-text">Phone owner full name</span>
+              </label>
+              <input type="text" t-att-value="this.state.phoneOwnerName"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneOwnerName" />   
+            </div>
+
+              
+            <div class="card-actions">
+            <button class="btn btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
+          </div>
                 
             </div>
         </div>
 
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
             <div class="card-title flex flex-col rounded-lg">
-                Other Data
+                Recharge Data
                
                 
             </div>
             <div class="card-body items-center ">
-               
+            <div>
+
+            <div>
+            Operator:                   
+             <t t-esc="this.state.operator"/>
+            </div>
+           <div>
+           Description:                   
+                <t t-esc="this.state.productoDesc"/>
+           </div>
+           <div>                   
+                
+           </div>
+           <div>
+            Cost:
+                <t t-esc="this.state.salePrice"/>
+                <span class="mr-2"></span>
+                <t t-esc="this.state.currency"/>
+                <span class="mr-2"></span>
+                <div>
+                <t t-esc="this.state.label"/>
+                </div>
+           </div>
+        </div>
                
             </div>
         </div>
@@ -96,8 +157,6 @@ export class RecargasTelefono extends Component {
 
 
         onWillStart(async () => {
-            const api = new API(accessToken);
-            //const exchangeRate = await api.getExchangeRate("usd");
 
             this.paises = Paises.map((unPais, i) => ({
                 id: unPais.id,
@@ -108,21 +167,11 @@ export class RecargasTelefono extends Component {
                 show: unPais.show
             }));
 
-            this.seleccionPaises = this.paises.filter(unPais => (
-                (unPais.show)
-            )
-            );
-
-
-            this.cuba = this.paises.filter(unPais => (
-                (unPais.id == 53)
-            )
-            )[0];
-
+            //solo mostrar los que tienen show = true
+            this.seleccionPaises = this.paises.filter(unPais => ((unPais.show)));
 
 
             console.log(this.seleccionPaises);
-            //console.log(this.paises)
 
 
 
@@ -135,37 +184,12 @@ export class RecargasTelefono extends Component {
         });
 
         onMounted(() => {
-            var availableTags = [
-                "ActionScript",
-                "AppleScript",
-                "Asp",
-                "BASIC",
-                "C",
-                "C++",
-                "Clojure",
-                "COBOL",
-                "ColdFusion",
-                "Erlang",
-                "Fortran",
-                "Groovy",
-                "Haskell",
-                "Java",
-                "JavaScript",
-                "Lisp",
-                "Perl",
-                "PHP",
-                "Python",
-                "Ruby",
-                "Scala",
-                "Scheme"
-            ];
 
-            $("#tags").autocomplete({
-                source: availableTags
-            });
 
             $.widget("custom.iconselectmenu", $.ui.selectmenu, {
                 _renderItem: function (ul, item) {
+
+                    console.log("SSSSSSS")
 
 
                     var li = $("<li>"), wrapper = $("<div>", { text: item.label });
@@ -183,32 +207,22 @@ export class RecargasTelefono extends Component {
                 }
             });
 
-
-            //$("#people").iconselectmenu().iconselectmenu("menuWidget").addClass("ui-menu-icons avatar");
-
+            //Creando Select Menu de Easy UI 
+            //Creando Evento cuando se cambia de pais
             $("#people").iconselectmenu({
                 change: (event, ui) => {
-                    //alert("Hi"); 
-                    //console.log(event)
                     const idPais = ui.item.value;
                     this.onChangePais(idPais);
-
-
 
                 }
             }
             ).iconselectmenu("menuWidget").addClass("ui-menu-icons");
-            //$("#people").iconselectmenu('setValue',53);
 
 
-            // $('#people').val(this.state.pais);
-
-            const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == this.state.pais)[0].name
-            console.log(nombre_pais)
-
-            $('.ui-selectmenu-text').html(nombre_pais)
 
 
+
+            //Inicializando
             this.onChangePais(this.state.pais)
 
         })
@@ -226,10 +240,18 @@ export class RecargasTelefono extends Component {
 
 
 
-        const productoDesc = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
-        console.log("DESCR")
-        this.state.productoDesc = productoDesc.description
-        console.log(productoDesc);
+        const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
+
+        this.state.productoDesc = producto.description
+
+        console.log("Costo")
+        console.log(producto.salePrice.amount)
+        console.log(producto.salePrice.currency)
+
+        this.state.salePrice = producto.salePrice.amount;
+        this.state.operator = producto.operator;
+        this.state.label = producto.label;
+
 
 
 
@@ -238,6 +260,16 @@ export class RecargasTelefono extends Component {
 
     onChangePais = async (idPAis) => {
         console.log("PAis" + idPAis);
+        this.state.pais = idPAis;
+        this.state.productoDesc = ""
+        this.state.salePrice = 0
+
+        //Poniendo el nombre del pais en el control EasyUI
+        const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == idPAis)[0].name
+        console.log(nombre_pais)
+        $('.ui-selectmenu-text').html(nombre_pais)
+
+
         const accessToken = window.sessionStorage.getItem('accessToken');
         const api = new API(accessToken);
 
@@ -247,7 +279,7 @@ export class RecargasTelefono extends Component {
 
 
 
-       
+
 
         Swal.fire({
             title: 'Please Wait..!',
@@ -255,9 +287,12 @@ export class RecargasTelefono extends Component {
             allowOutsideClick: false,
             allowEscapeKey: false,
             allowEnterKey: false,
-            didOpen :async () => {
+            //showCancelButton: true,
+            showCloseButton: true,
+            didOpen: async () => {
                 swal.showLoading()
                 console.log("SSS")
+                console.log(this.state.currency);
                 const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
                 console.log(operadores);
                 this.listaProductos = operadores.data.operators[0].products;
@@ -266,12 +301,12 @@ export class RecargasTelefono extends Component {
             }
         })
 
-       
 
 
 
 
-       
+
+
 
 
 
@@ -284,126 +319,168 @@ export class RecargasTelefono extends Component {
 
     onChangeCurrencySend(event) {
         this.state.currency = event.target.value
+        console.log("Pais")
+        console.log(this.state.pais)
+        this.onChangePais(this.state.pais)
     }
 
 
-
-    async onRecargar() {
-        return;
-        //cardCUP	cardUSD
-        const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
+    async onSendRecharge() {
+        console.log(this.state);
 
         //TODO: Validaciones
         const datosTX = {
-            //   service: service,
-            //   amount: this.inputSendRef.el.value,                                           //Cantidad a enviar, incluyendo el fee
-            //   currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
-            //   deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
-            //   deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
-            //   concept: this.concept.el.value,                                               //Concepto del envio
-            //   merchant_external_id: API.generateRandomID(),
-            //   paymentLink: true,
-            //   ...this.beneficiario
+
+            productId: this.state.producto,
+            receiverName: this.state.phoneOwnerName,
+            destinations: [this.state.phone],
+            currency: this.state.currency,
+            isScheduled: false,
+            scheduledDate: null,
+            paymentLink: true,
+            merchant_external_id: API.generateRandomID()
+
         }
 
 
+
+
+
         console.log(datosTX);
+
+
 
         if (!this.validarDatos(datosTX)) {
             console.log("Validation Errors");
             return;
         }
 
+     
 
         try {
 
             const accessToken = window.sessionStorage.getItem('accessToken');
             const api = new API(accessToken);
-            const resultado = await api.createTX(datosTX);
+           
+            let resultado = null;
+            
+        Swal.fire({
+            title: 'Please Wait..!',
+            text: 'Creating recharge operation...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            //showCancelButton: true,
+            showCloseButton: true,
+            didOpen: async () => {
+                swal.showLoading()
+                resultado = await api.sendPhoneRecharge(datosTX);
 
-            //TODO OK
-            if (resultado.data) {
-                if (resultado.data.status === 200) {
-                    Swal.fire(resultado.data.payload);
-                }
+                    if (resultado.code) {
+                        if (resultado.code==="ERR_BAD_REQUEST") {
+                          
+                            Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: resultado.response.data.message
+                            })
+
+                            
+                        }
+                        console.log(resultado.code)
+                    }
+
+                   //TODO OK
+                    if (resultado.data) {
+                        if (resultado.data.status === 200) {
+                            Swal.fire(resultado.data.payload);
+                        }
+                    }
+
+                
+                    //Error pero aun responde el API
+                    if (resultado.error) {
+                        Swal.fire(resultado.message);
+                    }
+
+
+                console.log(resultado)
+                //swal.close();
             }
+        })
 
-            //Error pero aun responde el API
-            if (resultado.response) {
-                Swal.fire(resultado.response.data.message);
-            }
 
+         
         } catch (error) {
             console.log(error);
             // Swal.fire(resultado.response.data.message);
         }
 
+
+
     }
+
+
+    onChangePhone(event) {
+        this.state.phone = event.target.value
+    }
+    onChangePhoneOwnerName(event) {
+        this.state.phoneOwnerName = event.target.value
+    }
+
+
+
 
 
     validarDatos(datos) {
         console.log(datos)
-        //--------------------- Sending amount --------------------------------------------
-        if (!datos.amount) {
+        //--------------------- Product ID --------------------------------------------
+        if (!datos.productId || datos.productId == -1) {
             Swal.fire({
                 icon: 'error', title: 'Error',
-                text: 'Please enter the sending amount'
-            })
-            return false;
-        } else if (datos.amount <= 0) {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Sending amount must be greater than zero'
+                text: 'Please select the product'
             })
             return false;
         }
 
-        //--------------------- Receivers amount --------------------------------------------
-        if (datos.deliveryAmount <= 0) {
+        //--------------------- Phone number --------------------------------------------
+        //TODO: Validar que sea un numero correcto
+        if (datos.destinations.length <= 0) {
             Swal.fire({
                 icon: 'error', title: 'Error',
-                text: 'The received amount must be greater than zero'
+                text: 'Please enter the phone number to recharge'
             })
             return false;
         }
 
-        //--------------------- Municipio --------------------------------------------
-        if (!datos.receiverCity || datos.receiverCity === '') {
+        if (!datos.destinations[0] || datos.destinations[0] === '') {
             Swal.fire({
                 icon: 'error', title: 'Error',
-                text: 'Please select city'
+                text: 'Please enter the phone number to recharge'
             })
             return false;
         }
 
-        //--------------------- Nombre --------------------------------------------
-        if (!datos.cardHolderName || datos.cardHolderName === '') {
+        //--------------------- Receiver Name --------------------------------------------
+        if (!datos.receiverName || datos.receiverName === '') {
             Swal.fire({
                 icon: 'error', title: 'Error',
-                text: 'Please enter the full name of receiver First name and Last name at least'
+                text: "Please enter receiver's name"
+            })
+            return false;
+        }
+
+        //--------------------- Currency --------------------------------------------
+        if (!datos.currency || datos.currency === '') {
+            Swal.fire({
+                icon: 'error', title: 'Error',
+                text: 'Please select currency'
             })
             return false;
         }
 
 
 
-        //--------------------- address --------------------------------------------
-        if (!datos.deliveryAddress || datos.deliveryAddress === '') {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please enter the address'
-            })
-            return false;
-        }
-
-        //--------------------- Phone --------------------------------------------
-        if (!datos.contactPhone || datos.contactPhone === '') {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please enter the phone number'
-            })
-            return false;
-        }
 
         return true;
 
