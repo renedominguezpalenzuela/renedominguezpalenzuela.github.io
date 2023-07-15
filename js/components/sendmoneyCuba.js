@@ -429,7 +429,7 @@ export class SendMoneyCuba extends Component {
     if (!datos.cardHolderName || datos.cardHolderName === '' ) {
       Swal.fire({
         icon: 'error', title: 'Error',
-        text: 'Please enter the full name of receiver First name and Last name at least'
+        text: 'Please enter the full name of receiver. First name and Last name at least'
       })
       return false;
     }

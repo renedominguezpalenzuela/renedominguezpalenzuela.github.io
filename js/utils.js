@@ -458,39 +458,41 @@ export class API {
   }
 
  
-
-  /*
-  if (this.changingSendAmount) { return; }
-
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = true;
-
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    const zone = "Habana"; //TODO: obtener de datos
-    const receiveAmount = this.inputReceiveRef.el.value;
-    const conversionRate = this.conversionRate.value;
-    const sendAmount = (receiveAmount / conversionRate);
-
-    if (receiveAmount > 0) {
-      this.getFee(service, zone, sendAmount).then((feeData) => {
-        const fee = feeData.fee;
-        this.inputSendRef.el.value = UImgr.roundDec(sendAmount + fee);
-        this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
-
-        this.fee.value = fee;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
-        this.changingSendAmount = false;
-        this.changingReceiveAmount = false;
-
-      });
-    } else {
-      this.inputSendRef.el.value = UImgr.roundDec(0);
+  //----------------------------------------------------------------------------------------------
+  // Obtener lista de Transacciones
+  //----------------------------------------------------------------------------------------------
+  async  getTrData() {
+   
+    const parametros = {
+      "filter": {
+        "status": "queued"
+      }
     }
-  */
+    
+    var body = JSON.stringify(parametros);
 
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/transactions?skip=0&limit=100`,
+      headers:this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data.data;
+    }).catch(function (error) {
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+   
+    
+  
+  
+   
+  }
 
 }
 
@@ -625,7 +627,7 @@ export async function getTrData() {
 
 
 //-------------------------------------------------------------------------------
-//  getDatosTR
+//  getUser info
 //-------------------------------------------------------------------------------
 export async function getUsrInfo() {
   //leer token desde local storage
