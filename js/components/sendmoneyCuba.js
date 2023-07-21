@@ -1,12 +1,13 @@
 const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
 import { API, UImanager } from "../utils.js";
 import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
+import { ListaTR } from "./listatr.js";
 
 //TODO: refactorizar en un componente la parte de las monedas y el importe
 
 export class SendMoneyCuba extends Component {
 
-  static components = { Beneficiarios };
+  static components = { Beneficiarios, ListaTR };
 
   inputAvatar = useRef("inputAvatar");
   inputSendRef = useRef("inputSendRef");
@@ -46,6 +47,12 @@ export class SendMoneyCuba extends Component {
 
 
    moneda_vs_USD = 1;
+
+   tipo_operacion = {
+    //name: "CASH_OUT_TRANSACTION"
+    name: "CREDIT_CARD_TRANSACTION"
+  }
+
 
 
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
@@ -120,7 +127,21 @@ export class SendMoneyCuba extends Component {
        
        <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
+
+
+     <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2">
+       <div class="card-body items-center  ">
+         <ListaTR tipooperacion="this.tipo_operacion.name" />
+       </div>
+     </div>
+      
     </div>
+
+   
+
+
+
+  
       
 
 
@@ -132,6 +153,7 @@ export class SendMoneyCuba extends Component {
     console.log(this.beneficiario);
   }
 
+  //CASH_OUT_TRANSACTION
   setup() {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const walletAddress = window.sessionStorage.getItem('walletAddress');

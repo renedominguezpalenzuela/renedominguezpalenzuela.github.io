@@ -4,11 +4,16 @@ import { API, UImanager } from "../utils.js";
 import { Beneficiarios } from "./homedeliveryCubaBeneficiario.js";
 
 import { Provincias } from "../../data/provincias_cu.js";
+import { ListaTR } from "./listatr.js";
 
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 export class HomeDeliveryCuba extends Component {
 
-  static components = { Beneficiarios };
+  tipo_operacion = {
+    name: "DELIVERY_TRANSACTION"
+  }
+
+  static components = { Beneficiarios, ListaTR };
 
   inputAvatar = useRef("inputAvatar");
   inputSendRef = useRef("inputSendRef");
@@ -130,8 +135,18 @@ export class HomeDeliveryCuba extends Component {
       </div>
 
         <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
-        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>   
+        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>  
+        
+        <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2">
+        <div class="card-body items-center  ">
+          <ListaTR tipooperacion="this.tipo_operacion.name" />
+        </div>
+      </div>
+      
     </div>
+
+
+   
       
   `;
 

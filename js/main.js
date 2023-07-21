@@ -17,6 +17,9 @@ class Root extends Component {
   //Opcion inicial del menu
   state = useState({menuId: 7, title:'Transactions List'});
    
+  tipo_operacion = {
+    name: "CASH_OUT_TRANSACTION"
+  }
 
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
@@ -42,7 +45,7 @@ class Root extends Component {
     </div>
 
     <div class="p-2   ">
-      <div class="sm:h-[10%]">
+      <div class="sm:h-[4rem]">
          <Menu title="state.title"/>
       </div>
       <main class="flex  justify-center  rounded-lg   ">       
@@ -70,7 +73,7 @@ class Root extends Component {
           </t>
 
           <t t-elif="this.state.menuId === 7">
-           <ListaTR/>
+           <ListaTR />
           </t>
 
       
