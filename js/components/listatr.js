@@ -11,6 +11,9 @@ import { API } from "../utils.js";
 
 export class ListaTR extends Component {
 
+
+    //static props = ["tipo-operacion"];
+
     datos = null;
     grid = null;
 
@@ -59,7 +62,20 @@ export class ListaTR extends Component {
 
         onWillStart(async () => {
             const api = new API(accessToken);
-            this.datos = await api.getTrData();
+            const raw_datos = await api.getTrData();
+
+            console.log("Tipo Operacion")
+         /*   console.log(this.props.tipo-operacion)
+
+            if (this.props.tipo-operacion) {
+
+                this.datos = raw_datos.filter((unaOperacion)=>{unaOperacion.type===this.props.tipo-operacion})
+            } else {
+                this.datos = raw_datos;
+            }
+            */
+
+            this.datos = raw_datos;
             console.log(this.datos)
         });
 

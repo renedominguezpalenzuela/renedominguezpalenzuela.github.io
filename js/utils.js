@@ -677,7 +677,7 @@ export class UImanager {
    //----------------------------------------------------------------------------------
   //SendInput manejar eventos on change de 
   //----------------------------------------------------------------------------------
-  static async onChangeSendInput(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken) {
+  static async onChangeSendInput(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
 
     const resultado = {
       fee: 0,
@@ -695,8 +695,9 @@ export class UImanager {
     if (sendAmount > 0) {
       const api = new API(accessToken);
       const feeData = await api.getFee(service, zone, sendAmount);
-        const fee = feeData.fee;
-        resultado.fee = fee;
+        
+        const fee = feeData.fee / moneda_vs_USD;
+        resultado.fee = fee ;
         const feeSTR = fee.toFixed(2);
         const CurrencySTR = sendCurrency.toUpperCase();
         resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  

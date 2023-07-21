@@ -3818,6 +3818,26 @@ details.collapse summary::-webkit-details-marker {
   grid-row-start: 4;
 }
 
+.me-1 {
+  -webkit-margin-end: 0.25rem;
+          margin-inline-end: 0.25rem;
+}
+
+.me-16 {
+  -webkit-margin-end: 4rem;
+          margin-inline-end: 4rem;
+}
+
+.me-2 {
+  -webkit-margin-end: 0.5rem;
+          margin-inline-end: 0.5rem;
+}
+
+.me-7 {
+  -webkit-margin-end: 1.75rem;
+          margin-inline-end: 1.75rem;
+}
+
 .ml-1 {
   margin-left: 0.25rem;
 }
@@ -3848,26 +3868,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-3 {
   margin-top: 0.75rem;
-}
-
-.me-1 {
-  -webkit-margin-end: 0.25rem;
-          margin-inline-end: 0.25rem;
-}
-
-.me-16 {
-  -webkit-margin-end: 4rem;
-          margin-inline-end: 4rem;
-}
-
-.me-2 {
-  -webkit-margin-end: 0.5rem;
-          margin-inline-end: 0.5rem;
-}
-
-.me-7 {
-  -webkit-margin-end: 1.75rem;
-          margin-inline-end: 1.75rem;
 }
 
 .block {
@@ -3958,6 +3958,10 @@ details.collapse summary::-webkit-details-marker {
   height: 100%;
 }
 
+.w-1 {
+  width: 0.25rem;
+}
+
 .w-24 {
   width: 6rem;
 }
@@ -4008,10 +4012,6 @@ details.collapse summary::-webkit-details-marker {
 
 .w-full {
   width: 100%;
-}
-
-.w-1 {
-  width: 0.25rem;
 }
 
 .max-w-xs {

@@ -38,6 +38,8 @@ export class HomeDeliveryCuba extends Component {
 
   })
 
+  moneda_vs_USD = 1;
+
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
 
@@ -190,8 +192,10 @@ export class HomeDeliveryCuba extends Component {
     if (receiveCurrency && sendCurrency) {
       const exchangeRate = await api.getExchangeRate(sendCurrency);
       this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
+      this.moneda_vs_USD = exchangeRate["USD"];
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
       this.feeSTR.value = '-';
+      console.log("Cambio moneda")
       console.log(exchangeRate);
       console.log(this.conversionRate.value);
       console.log(this.conversionRateSTR.value);
@@ -227,7 +231,8 @@ export class HomeDeliveryCuba extends Component {
       this.inputSendCurrencyRef.el.value,
       this.inputSendRef.el.value,
       this.conversionRate.value,
-      accessToken
+      accessToken,
+      this.moneda_vs_USD
     )
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -292,6 +297,7 @@ export class HomeDeliveryCuba extends Component {
       return;
     }
 
+    console.log("DATOS")
     console.log(datosTX);
 
     try {

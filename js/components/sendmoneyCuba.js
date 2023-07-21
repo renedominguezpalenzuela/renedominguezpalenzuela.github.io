@@ -45,6 +45,9 @@ export class SendMoneyCuba extends Component {
   fee = useState({ value: 0 });
 
 
+   moneda_vs_USD = 1;
+
+
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
     <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">   
@@ -182,6 +185,7 @@ export class SendMoneyCuba extends Component {
     if (receiveCurrency && sendCurrency) {
       const exchangeRate = await api.getExchangeRate(sendCurrency);
       this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
+      this.moneda_vs_USD = exchangeRate["USD"];
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
       this.feeSTR.value = '-';
 
@@ -199,91 +203,13 @@ export class SendMoneyCuba extends Component {
     this.onChangeCurrency();
   }
 
+  /*
   async getFee(service, zone, amount) {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
     const fee = await api.getFee(service, zone, amount)
     return fee;
-  }
-/*
-  onChangeSendInput = API.debounce(async () => {
-    if (this.changingReceiveAmount) { return; }
-    this.changingSendAmount = true;
-    this.changingReceiveAmount = false;
-
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    const zone = "Habana"; //TODO: obtener de datos
-
-    const conversionRate = this.conversionRate.value;
-    const sendAmount = this.inputSendRef.el.value;
-    console.log(sendAmount)
-
-    this.inputSendRef.el.value = UImgr.roundDec(sendAmount);
-
-    if (sendAmount > 0) {
-      this.getFee(service, zone, sendAmount).then((feeData) => {
-        const fee = feeData.fee;
-        this.fee.value = fee;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales        
-
-        const receiveAmount = (sendAmount - fee) * conversionRate;
-
-        if (receiveAmount > 0) {
-          this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
-          this.changingSendAmount = false;
-          this.changingReceiveAmount = false;
-        } else {
-          this.inputReceiveRef.el.value = UImgr.roundDec(0);
-        }
-
-      });
-    } else {
-      this.inputReceiveRef.el.value = UImgr.roundDec(0);
-    }
-
-  }, 1000);
-*/
-
-
-
-  /*onChangeReceiveInput = API.debounce(async () => {
-    if (this.changingSendAmount) { return; }
-
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = true;
-
-    const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-    const zone = "Habana"; //TODO: obtener de datos
-    const receiveAmount = this.inputReceiveRef.el.value;
-    console.log(receiveAmount)
-    const conversionRate = this.conversionRate.value;
-    const sendAmount = (receiveAmount / conversionRate);
-    this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
-
-    if (receiveAmount > 0) {
-      this.getFee(service, zone, sendAmount).then((feeData) => {
-        const fee = feeData.fee;
-        this.inputSendRef.el.value = UImgr.roundDec(sendAmount + fee);
-        
-
-        this.fee.value = fee;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-        this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-
-        this.changingSendAmount = false;
-        this.changingReceiveAmount = false;
-
-      });
-    } else {
-      console.log("ddd")
-      this.inputSendRef.el.value = UImgr.roundDec(0);
-    }
-
-  }, 1000);
-  */
+  }*/
 
   
   onChangeSendInput = API.debounce(async () => {
@@ -298,10 +224,14 @@ export class SendMoneyCuba extends Component {
       this.inputSendCurrencyRef.el.value,
       this.inputSendRef.el.value,
       this.conversionRate.value,
-      accessToken
+      accessToken,
+      this.moneda_vs_USD
     )
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
+
+
+
     this.inputReceiveRef.el.value = resultado.receiveAmount;
     this.inputSendRef.el.value = UImanager.roundDec(this.inputSendRef.el.value);
 
@@ -354,6 +284,8 @@ export class SendMoneyCuba extends Component {
       paymentLink: true,
       ...this.beneficiario
     }
+
+    console.log("DATOS")
 
 
     console.log(datosTX);
