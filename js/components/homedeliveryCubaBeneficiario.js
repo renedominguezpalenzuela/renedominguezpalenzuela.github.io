@@ -7,6 +7,10 @@ export class Beneficiarios extends Component {
   accessToken = '';
   cambioBeneficiario = false;
 
+  
+
+  
+
   state = useState({
     deliveryID: '',
     deliveryFirstName: '',
@@ -21,6 +25,7 @@ export class Beneficiarios extends Component {
     deliveryZona: 'Provincias',
     deliveryCountry: 'Cuba',
     deliveryCountryCode: 'CU',
+    selectedBeneficiaryId: "-1"
   })
 
   static template = xml`  
@@ -36,7 +41,8 @@ export class Beneficiarios extends Component {
                     <label class="label">
                       <span class="label-text">Select Beneficiary</span>
                     </label>
-                    <select class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                    <select t-att-value="this.state.selectedBeneficiaryId" class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                      <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                       </t>             
@@ -254,6 +260,7 @@ export class Beneficiarios extends Component {
   onChangeSelectedBeneficiario = (event) => {
     const selectedBeneficiaryId = event.target.value;
     this.cambioBeneficiario = true;
+    this.state.selectedBeneficiaryId = selectedBeneficiaryId;
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
   }
 
@@ -271,7 +278,7 @@ export class Beneficiarios extends Component {
       this.state.deliveryID = selectedBenefiarioData.deliveryCI;
       this.state.deliveryPhone = selectedBenefiarioData.deliveryPhone;
       this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
-
+      this.state.selectedBeneficiaryId = idBeneficiario;
       //Inicializando provincia
       const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
       if (selectedProvince) {
