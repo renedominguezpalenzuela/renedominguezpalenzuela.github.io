@@ -15,7 +15,7 @@ class Root extends Component {
   static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono, ListaTR};
 
   //Opcion inicial del menu
-  state = useState({menuId: 7, title:'Transactions List'});
+  state = useState({menuId: 5, title:'Home Delivery'});
    
   tipo_operacion = {
     name: "CASH_OUT_TRANSACTION"

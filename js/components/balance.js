@@ -6,6 +6,11 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { API } from "../utils.js";
 
 export class Balance extends Component {
+
+
+  socketActivo = false;
+
+
   balance = useState({
     saldos: []
   });
@@ -13,9 +18,7 @@ export class Balance extends Component {
   socket = null;
   subscriptionPath = "/api/subscription";
 
-  
-/* <div class="ml-5">Account Balance:</div>
-<button id="getdata-btn" class="other-btn ml-5" t-on-click="get_data_btn">Refresh Data </button> */
+
   static template = xml`  
 
 
@@ -40,6 +43,9 @@ export class Balance extends Component {
   }
 
   async get_data(update) {
+
+    if (!this.socketActivo) return; 
+
     const accessToken = window.sessionStorage.getItem('accessToken');
     const walletAddress = window.sessionStorage.getItem('walletAddress');
 
@@ -62,6 +68,8 @@ export class Balance extends Component {
 
 
   setup() {
+    if (!this.socketActivo) return; 
+
     const accessToken = window.sessionStorage.getItem('accessToken');
 
     const walletAddress = window.sessionStorage.getItem('walletAddress');
@@ -70,25 +78,27 @@ export class Balance extends Component {
 
    
 
-  const query = {
-        token: accessToken
-      }
 
-      this.socket = io(API.baseSocketURL, {
-        path: subscriptionPath,
-        query: query,
-      });
-      
- 
+
+    const query = {
+      token: accessToken
+    }
+
+    this.socket = io(API.baseSocketURL, {
+      path: subscriptionPath,
+      query: query,
+    });
+
+
     this.socket.on("connect", (datos) => {
       console.log("Socket conectado correctamente");
       console.log("socket id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
-      
+
       // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
       this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
     });
 
-    
+
     this.socket.on('reconnect', () => {
       console.log('Socket RE conectado ', this.socket.connected);
     });
@@ -108,24 +118,26 @@ export class Balance extends Component {
         console.log(JSON.stringify(this.balance));
       }
     });
-   
+
 
     onWillStart(async () => {
-     
+
+      if (!this.socketActivo) return; 
+
       this.balance.saldos = await this.get_data(false);
       console.log(JSON.stringify(this.balance));
 
 
-     
 
-     
-   
+
+
+
 
     });
 
     onMounted(async () => {
 
-     
+
     });
   }
 }

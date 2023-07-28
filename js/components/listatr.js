@@ -17,6 +17,8 @@ export class ListaTR extends Component {
     datos = null;
     grid = null;
 
+    
+
     static template = xml`  
 
     <div class="container-fluid no-padding">
@@ -103,6 +105,9 @@ export class ListaTR extends Component {
                 this.datos = raw_datos1;
             }
 
+            console.log("Operacion")
+            console.log(this.datos[0])
+
 
 
 
@@ -118,8 +123,8 @@ export class ListaTR extends Component {
 
 
 
-
-            $('#container-listtr').DataTable({
+             //CCreando la tabla
+           this.tabla =  $('#container-listtr').DataTable({
                 data: this.datos,
                 columns: [
                     { data: 'createdAt' },
@@ -133,8 +138,25 @@ export class ListaTR extends Component {
 
                 ],
                 "pageLength": 10,
-                order: [[0, 'desc']]
+                order: [[0, 'desc']],
+                select: true
             });
+
+
+            //console.log(this.tabla)
+
+
+            this.tabla.on( 'select',  ( e, dt, type, indexes ) => {
+               
+                if ( type === 'row' ) {
+
+                 
+
+                    this.props.onChangeSelectedTX(this.tabla.rows( indexes ).data()[0])
+                    
+                   
+                }
+            } );
 
 
 

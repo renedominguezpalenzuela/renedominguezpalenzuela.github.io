@@ -5,6 +5,7 @@ import { Provincias } from "../../data/provincias_cu.js";
 export class Beneficiarios extends Component {
   tiempoDebounce = 1000; //milisegundos 
   accessToken = '';
+  cambioBeneficiario = false;
 
   state = useState({
     deliveryID: '',
@@ -116,13 +117,16 @@ export class Beneficiarios extends Component {
                       </label>
                       <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
                   </div>
+                   <div class="hidden"> 
+                  <t t-esc="this.props.datosSelectedTX.txID"/>
+                  </div>
 
               </div>
             </div>           
         </div>    
   `;
 
-
+ 
   //"deliveryZone": "Provincias",| Habana
   setup() {
     this.accessToken = window.sessionStorage.getItem('accessToken');
@@ -134,17 +138,62 @@ export class Beneficiarios extends Component {
 
     onRendered(() => {
 
+      if (this.cambioBeneficiario) {
+        this.cambioBeneficiario=false;
+        return;
+      }
+
+      console.log("RENDER")
+
+      this.indice = this.props.datosSelectedTX.indice;
+      
+      //buscar el indice del beneficiario
+      console.log("Datos que llegan a beneficiario")
+      console.log(this.props.datosSelectedTX)
+
+      //Buscar el CI
+      if (this.props.datosSelectedTX.allData) {
+        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
+        console.log(CI)
+
+      const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario)=>{
+        console.log(unBeneficiario)
+        return unBeneficiario.CI == CI 
+      })[0]
+
+      console.log("Beneficiario")
+      console.log(beneficiario)
+    
+      //this.inicializarDatosBeneficiario(this.props.beneficiariosNames[this.indice]._id);
+      if (beneficiario) {
+        this.inicializarDatosBeneficiario(beneficiario._id);
+        //ERROR: no inicializa correctamente el SELECT
+      } else {
+        //TODO: inicializar todos los controles
+      }
+      
+
+      }
+     
+
+     
+  
+
+     
+
     });
 
     onMounted(() => {
+   
       this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
     });
-
+   
   }
 
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
+    this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedProvinceId = event.target.value;
     this.state.deliveryAreaID = event.target.value;
@@ -161,6 +210,7 @@ export class Beneficiarios extends Component {
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
+    this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
     let selectedMunicipio = this.municipios[selectedCityId];
@@ -203,11 +253,13 @@ export class Beneficiarios extends Component {
 
   onChangeSelectedBeneficiario = (event) => {
     const selectedBeneficiaryId = event.target.value;
+    this.cambioBeneficiario = true;
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
   }
 
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
+   
     const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
@@ -260,9 +312,13 @@ export class Beneficiarios extends Component {
       this.props.onChangeDatosBeneficiarios(this.state);
       this.inicializando = false;
 
+     
+
     }
 
   }
+
+
 
 }
 

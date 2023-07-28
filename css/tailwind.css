@@ -4461,16 +4461,12 @@ details.collapse summary::-webkit-details-marker {
     display: none;
   }
 
-  .sm\:h-\[10\%\] {
-    height: 10%;
+  .sm\:h-\[4rem\] {
+    height: 4rem;
   }
 
   .sm\:h-full {
     height: 100%;
-  }
-
-  .sm\:h-\[4rem\] {
-    height: 4rem;
   }
 
   .sm\:w-\[10vw\] {

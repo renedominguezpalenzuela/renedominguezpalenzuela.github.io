@@ -25,19 +25,20 @@ export class HomeDeliveryCuba extends Component {
   changingSendAmount = false;
   changingReceiveAmount = false;
 
+
+  datosSelectedTX = useState({
+    txID: "",
+    allData: null
+  })
+
   state = useState({
     firstName: "Rene",
     lastName: "Dominguez",
     avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
     address: "",
     nameFull: "",
-    // sendValue: 0,
-    // receiveValue: 0,
-    // conversionRateSTR: "",
-    // conversionRate: 0,
-    // feeSTR: "",
-    // fee: 0
   })
+
 
   beneficiario = useState({
 
@@ -51,7 +52,6 @@ export class HomeDeliveryCuba extends Component {
   feeSTR = useState({ value: "" });
   fee = useState({ value: 0 });
 
-  // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
     <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
       
@@ -134,12 +134,12 @@ export class HomeDeliveryCuba extends Component {
      
       </div>
 
-        <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
+        <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" />
         <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>  
         
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2">
         <div class="card-body items-center  ">
-          <ListaTR tipooperacion="this.tipo_operacion.name" />
+          <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX"/>
         </div>
       </div>
       
@@ -172,10 +172,16 @@ export class HomeDeliveryCuba extends Component {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+
+     
+
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
-        _id: el._id
+        _id: el._id,
+        CI: el.deliveryCI
       }));
+   
+
 
     });
 
@@ -201,8 +207,7 @@ export class HomeDeliveryCuba extends Component {
     const sendCurrency = this.inputSendCurrencyRef.el.value;
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
 
-    console.log("Enviar en: " + sendCurrency);
-    console.log("Recibir en: " + receiveCurrency);
+
 
     if (receiveCurrency && sendCurrency) {
       const exchangeRate = await api.getExchangeRate(sendCurrency);
@@ -210,10 +215,7 @@ export class HomeDeliveryCuba extends Component {
       this.moneda_vs_USD = exchangeRate["USD"];
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
       this.feeSTR.value = '-';
-      console.log("Cambio moneda")
-      console.log(exchangeRate);
-      console.log(this.conversionRate.value);
-      console.log(this.conversionRateSTR.value);
+
     }
   }
 
@@ -224,22 +226,13 @@ export class HomeDeliveryCuba extends Component {
   onChangeCurrencyRecib() {
     this.onChangeCurrency();
   }
-/*
-  async getFee(service, zone, amount) {
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
-    const fee = await api.getFee(service, zone, amount)
-    return fee;
-  }*/
 
   onChangeSendInput = API.debounce(async () => {
-
 
     if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
-    
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
@@ -265,7 +258,7 @@ export class HomeDeliveryCuba extends Component {
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-    
+
 
     //LLAMADA
     const accessToken = window.sessionStorage.getItem('accessToken');
@@ -277,7 +270,7 @@ export class HomeDeliveryCuba extends Component {
       accessToken
     )
 
-   
+
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -312,8 +305,6 @@ export class HomeDeliveryCuba extends Component {
       return;
     }
 
-    console.log("DATOS")
-    console.log(datosTX);
 
     try {
       const accessToken = window.sessionStorage.getItem('accessToken');
@@ -341,7 +332,7 @@ export class HomeDeliveryCuba extends Component {
 
 
   validarDatos(datos) {
-    console.log(datos)
+
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
       Swal.fire({
@@ -412,6 +403,18 @@ export class HomeDeliveryCuba extends Component {
     }
 
     return true;
+
+  }
+
+
+  //Recibiendo los datos de la TX seleccionada
+  onChangeSelectedTX = (datos) => {
+
+
+
+    this.datosSelectedTX.txID = datos._id;
+    this.datosSelectedTX.allData = { ...datos }
+
 
   }
 
