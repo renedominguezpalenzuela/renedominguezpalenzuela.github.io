@@ -409,14 +409,33 @@ export class HomeDeliveryCuba extends Component {
 
   //Recibiendo los datos de la TX seleccionada
   onChangeSelectedTX = (datos) => {
+    console.log("datos")
+
+    console.log(datos)
 
 
 
     this.datosSelectedTX.txID = datos._id;
     this.datosSelectedTX.allData = { ...datos }
 
+    //Actualizar datos de send money
+
+    
+    this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
+   
+
+    this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
+    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
+    console.log(datos.concept)
+    
+    this.concept.el.value = datos.concept;
+
+    this.onChangeSendInput()
+
+
 
   }
 
 }
+
 

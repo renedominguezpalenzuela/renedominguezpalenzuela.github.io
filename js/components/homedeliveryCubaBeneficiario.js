@@ -162,10 +162,10 @@ export class Beneficiarios extends Component {
         const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
         console.log(CI)
 
-      const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario)=>{
-        console.log(unBeneficiario)
-        return unBeneficiario.CI == CI 
-      })[0]
+      const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario)=>
+        
+        unBeneficiario.CI === CI 
+      )[0]
 
       console.log("Beneficiario")
       console.log(beneficiario)
@@ -173,7 +173,8 @@ export class Beneficiarios extends Component {
       //this.inicializarDatosBeneficiario(this.props.beneficiariosNames[this.indice]._id);
       if (beneficiario) {
         this.inicializarDatosBeneficiario(beneficiario._id);
-        //ERROR: no inicializa correctamente el SELECT
+        //ERROR: no inicializa correctamente el SELECT -- DONE
+
       } else {
         //TODO: inicializar todos los controles
       }
