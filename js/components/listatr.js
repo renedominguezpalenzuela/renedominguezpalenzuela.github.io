@@ -147,23 +147,10 @@ export class ListaTR extends Component {
 
 
             this.tabla.on('select', (e, dt, type, indexes) => {
-
                 if (type === 'row') {
-
-
-
                     this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
-
-
                 }
             });
-
-
-
-
-
-
-
         });
 
 

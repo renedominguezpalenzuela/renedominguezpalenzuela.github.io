@@ -33,6 +33,12 @@ export class SendMoneyCuba extends Component {
     // fee: 0
   })
 
+  datosSelectedTX = useState({
+    txID: "",
+    allData: null
+  })
+
+
 
   beneficiario = useState({
 
@@ -46,9 +52,9 @@ export class SendMoneyCuba extends Component {
   fee = useState({ value: 0 });
 
 
-   moneda_vs_USD = 1;
+  moneda_vs_USD = 1;
 
-   tipo_operacion = {
+  tipo_operacion = {
     //name: "CASH_OUT_TRANSACTION"
     name: "CREDIT_CARD_TRANSACTION"
   }
@@ -125,13 +131,13 @@ export class SendMoneyCuba extends Component {
    
     </div>
        
-       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" />
+       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX"  />
        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
 
 
      <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2">
        <div class="card-body items-center  ">
-         <ListaTR tipooperacion="this.tipo_operacion.name" />
+         <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
        </div>
      </div>
       
@@ -233,13 +239,13 @@ export class SendMoneyCuba extends Component {
     return fee;
   }*/
 
-  
+
   onChangeSendInput = API.debounce(async () => {
 
 
     if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
-    this.changingReceiveAmount = false;  
+    this.changingReceiveAmount = false;
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
@@ -268,7 +274,7 @@ export class SendMoneyCuba extends Component {
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
-    
+
     //LLAMADA
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeReceiveInput(
@@ -278,7 +284,7 @@ export class SendMoneyCuba extends Component {
       this.conversionRate.value,
       accessToken
     )
-   
+
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
     this.inputSendRef.el.value = resultado.sendAmount;
@@ -343,7 +349,7 @@ export class SendMoneyCuba extends Component {
 
   }
 
-  
+
   validarDatos(datos) {
     console.log(datos)
     //--------------------- Sending amount --------------------------------------------
@@ -380,7 +386,7 @@ export class SendMoneyCuba extends Component {
     }
 
     //--------------------- Nombre --------------------------------------------
-    if (!datos.cardHolderName || datos.cardHolderName === '' ) {
+    if (!datos.cardHolderName || datos.cardHolderName === '') {
       Swal.fire({
         icon: 'error', title: 'Error',
         text: 'Please enter the full name of receiver. First name and Last name at least'
@@ -388,7 +394,7 @@ export class SendMoneyCuba extends Component {
       return false;
     }
 
-    
+
 
     //--------------------- address --------------------------------------------
     if (!datos.deliveryAddress || datos.deliveryAddress === '') {
@@ -411,6 +417,36 @@ export class SendMoneyCuba extends Component {
     return true;
 
   }
+
+
+  onChangeSelectedTX = (datos) => {
+    console.log("datos")
+
+    console.log(datos)
+
+
+
+    this.datosSelectedTX.txID = datos._id;
+    this.datosSelectedTX.allData = { ...datos }
+
+    //Actualizar datos de send money
+
+    
+    this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
+   
+
+    this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
+    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
+    console.log(datos.concept)
+    
+    this.concept.el.value = datos.concept;
+
+    this.onChangeSendInput()
+
+
+
+  }
+
 
 }
 

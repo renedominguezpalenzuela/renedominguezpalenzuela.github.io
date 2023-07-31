@@ -13,6 +13,8 @@ export class Beneficiarios extends Component {
 
   accessToken = '';
 
+  cambioBeneficiario = false;
+
   state = useState({
     cardNumber: '',
     cardHolderName: '',
@@ -26,7 +28,8 @@ export class Beneficiarios extends Component {
     deliveryAreaID: '',         //Provincia id
     deliveryCountry: 'Cuba',
     deliveryCountryCode: 'CU',
-    receiverCountry: 'CUB'
+    receiverCountry: 'CUB',
+    selectedBeneficiaryId: "-1"
   })
 
   cardsList = useState({});
@@ -45,7 +48,8 @@ export class Beneficiarios extends Component {
                     <label class="label">
                       <span class="label-text">Select Beneficiary</span>
                     </label>
-                    <select class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                    <select t-att-value="this.state.selectedBeneficiaryId"  class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                      <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                       </t>             
@@ -194,6 +198,36 @@ export class Beneficiarios extends Component {
     });
 
     onRendered(() => {
+      if (this.cambioBeneficiario) {
+        this.cambioBeneficiario = false;
+        return;
+      }
+
+      console.log("RENDER")
+      console.log("Datos que llegan a beneficiario")
+      console.log(this.props.datosSelectedTX)
+
+      //Buscar el CI
+      if (this.props.datosSelectedTX.allData) {
+        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
+        console.log(CI)
+        const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CI)[0]
+
+        console.log("Beneficiario")
+        console.log(beneficiario)
+
+
+        if (beneficiario) {
+          this.inicializarDatosBeneficiario(beneficiario._id);
+          //ERROR: no inicializa correctamente el SELECT -- DONE
+
+        } else {
+          //TODO: inicializar todos los controles
+        }
+
+
+      }
+
 
     });
 
@@ -299,45 +333,18 @@ export class Beneficiarios extends Component {
     const selectedBeneficiaryId = event.target.value;
     this.state.cardBankImage = "";
     this.state.bankName = "";
+    this.cambioBeneficiario = true;
+    this.state.selectedBeneficiaryId = selectedBeneficiaryId;
+
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
   }
 
 
-  /*
-  onChangeCityInput = API.debounce(async (event) => {
-    this.state.receiverCity = event.target.value;
-
-    this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);*/
-
-
-
-  //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
-  /* onChangeProvince = (event) => {
-    console.log(event.target.value);
-    const selectedProvinceId = event.target.value;
-    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
-    this.municipios = selectedProvince.municipios;
-    this.state.deliveryCity  = selectedProvince.municipios[0];
-    this.state.receiverCity = selectedProvince.municipios[0];
-    this.state.deliveryZona = selectedProvince.id==="4" ? "Habana" : "Provincias";
-    this.render();
-    this.state.deliveryArea = selectedProvince.nombre;
-    this.props.onChangeDatosBeneficiarios(this.state);
-  };*/
-
-
-  //Evento al cambiar de municipio
-  /*onChangeCity = (event) => {   
-    const selectedCity = event.target.value;
-    this.state.deliveryCity = selectedCity;
-    this.state.receiverCity = selectedCity;
-    this.props.onChangeDatosBeneficiarios(this.state);
-  };*/
 
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
+    this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedProvinceId = event.target.value;
     this.state.deliveryAreaID = event.target.value;
@@ -354,6 +361,7 @@ export class Beneficiarios extends Component {
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
+    this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
     let selectedMunicipio = this.municipios[selectedCityId];
@@ -369,28 +377,30 @@ export class Beneficiarios extends Component {
   onChangeSelectedCard = async (event) => {
     // //Lista de tarjetas
 
-    
+
     console.log('lista')
     console.log(this.cardsList);
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
 
-    const cardData = this.cardsList.filter((unaCard) => 
+    const cardData = this.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
-      )[0];
+    )[0];
 
-    if (cardData) {      
-    console.log(cardData);
-    //cardHolderName
-    
-    this.state.cardNumber = formatedCardNumber;
-    this.state.cardHolderName = cardData.cardHolderName;
-    await this.buscarLogotipoBanco(this.state.cardNumber);
+    if (cardData) {
+      console.log("Hay card data");
+      console.log(cardData);
+      //cardHolderName
+
+      this.state.cardNumber = formatedCardNumber;
+      this.state.cardHolderName = cardData.cardHolderName;
+      await this.buscarLogotipoBanco(this.state.cardNumber);
     } else {
+      console.log("NO Hay card data");
       console.log(cardData);
       this.state.cardNumber = '';
-      this.state.cardHolderName='' ;
+      this.state.cardHolderName = '';
     }
-    
+
     this.props.onChangeDatosBeneficiarios(this.state);
   }
 
@@ -403,13 +413,13 @@ export class Beneficiarios extends Component {
 
     if (selectedBenefiarioData) {
       this.inicializando = true;
-            
-       this.state.contactPhone = selectedBenefiarioData.deliveryPhone;
-       this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
+
+      this.state.contactPhone = selectedBenefiarioData.deliveryPhone;
+      this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
+      this.state.selectedBeneficiaryId = idBeneficiario;
 
 
-       
-       this.state.cardHolderName ='';
+      this.state.cardHolderName = '';
 
       //Inicializando provincia
       const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
@@ -453,8 +463,8 @@ export class Beneficiarios extends Component {
 
       this.cardsList = selectedBenefiarioData.creditCards;
       this.state.cardNumber = '';
- 
-      
+
+
 
 
 
