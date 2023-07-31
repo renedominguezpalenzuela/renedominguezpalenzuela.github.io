@@ -8,7 +8,7 @@ import { API } from "../utils.js";
 export class Balance extends Component {
 
 
-  socketActivo = false;
+  socketActivo = true;
 
 
   balance = useState({

@@ -151,9 +151,6 @@ export class Beneficiarios extends Component {
 
       console.log("RENDER")
 
-      this.indice = this.props.datosSelectedTX.indice;
-      
-      //buscar el indice del beneficiario
       console.log("Datos que llegan a beneficiario")
       console.log(this.props.datosSelectedTX)
 
@@ -170,7 +167,7 @@ export class Beneficiarios extends Component {
       console.log("Beneficiario")
       console.log(beneficiario)
     
-      //this.inicializarDatosBeneficiario(this.props.beneficiariosNames[this.indice]._id);
+      
       if (beneficiario) {
         this.inicializarDatosBeneficiario(beneficiario._id);
         //ERROR: no inicializa correctamente el SELECT -- DONE

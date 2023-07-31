@@ -17,7 +17,7 @@ export class ListaTR extends Component {
     datos = null;
     grid = null;
 
-    
+
 
     static template = xml`  
 
@@ -90,7 +90,7 @@ export class ListaTR extends Component {
                     })
 
                 //const fecha2 = fecha.substring(0, 10) + " " + fecha.substring(11, 20);
-               // console.log(fecha2)
+                // console.log(fecha2)
                 return {
                     fecha_creada: fecha,
                     type2: !unDato.metadata.method ? "-" : unDato.metadata.method,
@@ -123,8 +123,8 @@ export class ListaTR extends Component {
 
 
 
-             //CCreando la tabla
-           this.tabla =  $('#container-listtr').DataTable({
+            //CCreando la tabla
+            this.tabla = $('#container-listtr').DataTable({
                 data: this.datos,
                 columns: [
                     { data: 'createdAt' },
@@ -146,17 +146,17 @@ export class ListaTR extends Component {
             //console.log(this.tabla)
 
 
-            this.tabla.on( 'select',  ( e, dt, type, indexes ) => {
-               
-                if ( type === 'row' ) {
+            this.tabla.on('select', (e, dt, type, indexes) => {
 
-                 
+                if (type === 'row') {
 
-                    this.props.onChangeSelectedTX(this.tabla.rows( indexes ).data()[0])
-                    
-                   
+
+
+                    this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
+
+
                 }
-            } );
+            });
 
 
 
