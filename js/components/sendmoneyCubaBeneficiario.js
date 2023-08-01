@@ -17,6 +17,7 @@ export class Beneficiarios extends Component {
 
   state = useState({
     cardNumber: '',
+    selectedCard:'-1',
     cardHolderName: '',
     cardBankImage: '',
     bankName: '',
@@ -61,7 +62,7 @@ export class Beneficiarios extends Component {
                   <label class="label">
                     <span class="label-text">Select Card</span>
                   </label>
-                  <select class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                  <select t-att-value="this.state.selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
                   <option  t-att-value="-1" >Select Card</option>
                   <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
                     <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
@@ -177,18 +178,14 @@ export class Beneficiarios extends Component {
 
 
     onWillStart(async () => {
-      /*this.provincias = Provincias;
-      this.municipios = this.provincias[0].municipios;
-      this.state.deliveryCity  = this.provincias[0].municipios[0];
-      this.state.receiverCity = this.provincias[0].municipios[0];
-      this.state.deliveryZona = this.provincias[0].id==="4" ? "Habana" : "Provincias";*/
+
 
       this.provincias = Provincias;
-      console.log(this.provincias[0].municipios)
+      //console.log(this.provincias[0].municipios)
 
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
-      console.log(this.municipios)
+      //console.log(this.municipios)
 
 
 
@@ -197,8 +194,9 @@ export class Beneficiarios extends Component {
 
     });
 
-    onRendered(() => {
+    onRendered(async() => {
       if (this.cambioBeneficiario) {
+        console.log("Cambio benficiario")
         this.cambioBeneficiario = false;
         return;
       }
@@ -210,20 +208,37 @@ export class Beneficiarios extends Component {
       //Buscar el CI
       if (this.props.datosSelectedTX.allData) {
         const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
-        console.log(CI)
+        //console.log(CI)
         const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CI)[0]
-
-        console.log("Beneficiario")
-        console.log(beneficiario)
-
-
+        //console.log("Beneficiario")
+        //console.log(beneficiario)
         if (beneficiario) {
           this.inicializarDatosBeneficiario(beneficiario._id);
           //ERROR: no inicializa correctamente el SELECT -- DONE
-
         } else {
           //TODO: inicializar todos los controles
         }
+
+        //Inicializar card del envio
+       
+
+        this.state.cardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber;
+        this.state.selectedCard = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
+        this.state.cardBankImage = "";
+        this.state.bankName = "";
+
+
+    
+       this.state.cardHolderName = this.props.datosSelectedTX.allData.metadata.cardHolderName;
+       // await this.buscarLogotipoBanco(this.state.cardNumber);
+
+        console.log("SELECTED CARD")
+        console.log(this.cardsList)
+        console.log(this.state.selectedCard)
+
+    
+        this.cambioBeneficiario = true;
+
 
 
       }
@@ -305,7 +320,10 @@ export class Beneficiarios extends Component {
   }, API.tiempoDebounce);
 
   onChangeCardInput(event) {
+    console.log(event.target.value)
     // this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+
+   // this.state.cardNumber = UImanager.formatCardNumber(event.target.value);
   };
 
 
@@ -378,9 +396,11 @@ export class Beneficiarios extends Component {
     // //Lista de tarjetas
 
 
-    console.log('lista')
+    console.log('lista cards')
     console.log(this.cardsList);
+    console.log(event.target.value)
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
+    console.log(formatedCardNumber)
 
     const cardData = this.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
@@ -401,7 +421,7 @@ export class Beneficiarios extends Component {
       this.state.cardHolderName = '';
     }
 
-    this.props.onChangeDatosBeneficiarios(this.state);
+   // this.props.onChangeDatosBeneficiarios(this.state);
   }
 
 

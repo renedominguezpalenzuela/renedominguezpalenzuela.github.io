@@ -72,7 +72,7 @@ export class ListaTR extends Component {
             const api = new API(accessToken);
             const raw_datos = await api.getTrData();
 
-            console.log(raw_datos)
+            //console.log(raw_datos)
 
 
 
@@ -105,8 +105,8 @@ export class ListaTR extends Component {
                 this.datos = raw_datos1;
             }
 
-            console.log("Operacion")
-            console.log(this.datos[0])
+           // console.log("Operacion")
+           // console.log(this.datos[0])
 
 
 

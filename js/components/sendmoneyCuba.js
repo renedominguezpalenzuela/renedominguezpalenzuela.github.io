@@ -156,7 +156,7 @@ export class SendMoneyCuba extends Component {
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
-    console.log(this.beneficiario);
+   // console.log(this.beneficiario);
   }
 
   //CASH_OUT_TRANSACTION
@@ -180,7 +180,8 @@ export class SendMoneyCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
-        _id: el._id
+        _id: el._id,
+         CI: el.deliveryCI
       }));
 
 
@@ -420,9 +421,9 @@ export class SendMoneyCuba extends Component {
 
 
   onChangeSelectedTX = (datos) => {
-    console.log("datos")
+   // console.log("datos")
 
-    console.log(datos)
+   // console.log(datos)
 
 
 
@@ -437,7 +438,7 @@ export class SendMoneyCuba extends Component {
 
     this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
-    console.log(datos.concept)
+   // console.log(datos.concept)
     
     this.concept.el.value = datos.concept;
 
