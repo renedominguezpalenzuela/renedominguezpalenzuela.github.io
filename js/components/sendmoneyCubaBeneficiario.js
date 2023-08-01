@@ -13,11 +13,12 @@ export class Beneficiarios extends Component {
 
   accessToken = '';
 
-  cambioBeneficiario = false;
+  selectedCard = useRef("selectedCard");
+  cardNumber = useRef("cardNumber");
+
 
   state = useState({
     cardNumber: '',
-    selectedCard:'-1',
     cardHolderName: '',
     cardBankImage: '',
     bankName: '',
@@ -55,59 +56,53 @@ export class Beneficiarios extends Component {
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                       </t>             
                     </select>
-                  </div>   
-              
+                  </div>                
 
                   <div class="form-control w-full  sm:row-start-2 ">
                   <label class="label">
-                    <span class="label-text">Select Card</span>
+                      <span class="label-text">Select Card</span>
                   </label>
-                  <select t-att-value="this.state.selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
-                  <option  t-att-value="-1" >Select Card</option>
-                  <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
-                    <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
-                  </t>             
-                </select>
-                </div>
-
                 
-
-
-                  <div class="form-control w-full  sm:row-start-2 ">
+                  <select t-ref="selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                    <option  t-att-value="-1" >Select Card</option>
+                    <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
+                      <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
+                    </t>             
+                 </select>
+                 </div>
+                
+                 <div class="form-control w-full  sm:row-start-2 ">
                     <label class="label">
                       <span class="label-text">Card Number</span>
                     </label>
-                    <input type="text" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
-                  </div>
+                    <input type="text" t-ref="cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                 </div>
 
-                  <div class=" flex items-center w-full row-start-3 mt-1">
+                 <div class=" flex items-center w-full row-start-3 mt-1">
                       <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
-                  </div>
-
-                  
-                <div class="form-control w-full  sm:row-start-4 ">
+                 </div>
+               
+                 <div class="form-control w-full  sm:row-start-4 ">
                   <label class="label">
                     <span class="label-text">Card Holder Name</span>
                   </label>
                   <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
-                </div>
+                 </div>
 
-                <div class="form-control w-full sm:row-start-4 ">
+                 <div class="form-control w-full sm:row-start-4 ">
                   <label class="label">
                     <span class="label-text">Contact Phone</span>
                   </label>
                   <input type="text" t-att-value="this.state.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
-                </div>
+                 </div>
 
-                <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
+                 <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
                   <label class="label">
                     <span class="label-text">Delivery Address</span>
-                  </label>
-                
+                  </label>           
                   <textarea t-att-value="this.state.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
-                </div>
-
-               
+                 </div>
+             
                 <div class="form-control w-full sm:row-start-6 ">
                   <label class="label">
                     <span class="label-text">Province</span>
@@ -131,87 +126,50 @@ export class Beneficiarios extends Component {
                   </select>
                 </div>
 
-
-
                 <div class="form-control w-full max-w-xs sm:row-start-7 ">
                   <label class="label">
                     <span class="label-text">Country</span>
                   </label>
                   <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
-                </div>
-  
-
-     
-              
+                </div>             
 
               </div>
             </div>
-
-
-
-
             
         </div>    
-
-
-        
-
-
-
-
-
-
-
-
-
-
   `;
-
-
 
   setup() {
 
-
     this.accessToken = window.sessionStorage.getItem('accessToken');
 
-
-
-
     onWillStart(async () => {
-
-
       this.provincias = Provincias;
-      //console.log(this.provincias[0].municipios)
-
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
-
-      //console.log(this.municipios)
-
-
-
-
-
-
+      const api = new API(this.accessToken);
+      this.cardRegExp = await api.getCardRegExp();
     });
 
-    onRendered(async() => {
-      if (this.cambioBeneficiario) {
-        console.log("Cambio benficiario")
-        this.cambioBeneficiario = false;
+    onRendered(async () => {
+      if (this.inicializando) {
+        console.log("inicializando")
+       // this.cambioPorSeleccionDesdeListaTX = false;
         return;
       }
-
+   
       console.log("RENDER")
       console.log("Datos que llegan a beneficiario")
       console.log(this.props.datosSelectedTX)
+
+      
 
       //Buscar el CI
       if (this.props.datosSelectedTX.allData) {
         const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
         //console.log(CI)
         const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CI)[0]
-        //console.log("Beneficiario")
-        //console.log(beneficiario)
+        console.log("Beneficiario")
+        console.log(beneficiario)
         if (beneficiario) {
           this.inicializarDatosBeneficiario(beneficiario._id);
           //ERROR: no inicializa correctamente el SELECT -- DONE
@@ -220,26 +178,23 @@ export class Beneficiarios extends Component {
         }
 
         //Inicializar card del envio
-       
-
         this.state.cardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber;
-        this.state.selectedCard = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
-        this.state.cardBankImage = "";
-        this.state.bankName = "";
+        //this.state.selectedCard = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
+        this.selectedCard.el.value = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
+        //this.state.cardBankImage = "";
+        //this.state.bankName = "";
+
+        //this.state.cardHolderName = this.props.datosSelectedTX.allData.metadata.cardHolderName;
+        //await this.buscarLogotipoBanco(this.state.cardNumber);
+
+        //console.log("SELECTED CARD")
+        //console.log(this.cardsList)
+        //console.log(this.state.selectedCard)
 
 
-    
-       this.state.cardHolderName = this.props.datosSelectedTX.allData.metadata.cardHolderName;
-       // await this.buscarLogotipoBanco(this.state.cardNumber);
+       // this.cambioBeneficiario = true;
 
-        console.log("SELECTED CARD")
-        console.log(this.cardsList)
-        console.log(this.state.selectedCard)
-
-    
-        this.cambioBeneficiario = true;
-
-
+       this.cambioPorSeleccionDesdeListaTX = false;
 
       }
 
@@ -259,14 +214,14 @@ export class Beneficiarios extends Component {
   async buscarLogotipoBanco(CardNumber) {
     const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
 
-    const api = new API(this.accessToken);
-    const cardRegExp = await api.getCardRegExp();
+    // const api = new API(this.accessToken);
+    //const cardRegExp = await api.getCardRegExp();
 
-    console.log(typeof (cardRegExp));
+    //console.log(typeof (cardRegExp));
 
-    for (const key in cardRegExp) {
+    for (const key in this.cardRegExp) {
 
-      const regexp = new RegExp(cardRegExp[key]);
+      const regexp = new RegExp(this.cardRegExp[key]);
       const card = this.state.cardNumber.replace(/ /g, "");
       const resultado = regexp.test(card);
       if (resultado) {
@@ -313,6 +268,7 @@ export class Beneficiarios extends Component {
   onCardInputKeyDown = API.debounce(async (event) => {
     if (event.target.value.length === 19) {
       this.state.cardNumber = event.target.value;
+      this.cardNumber.el.value =  event.target.value;
       this.buscarLogotipoBanco(this.state.cardNumber);
       this.props.onChangeDatosBeneficiarios(this.state);
       //TODO: si es un card nuevo agregarlo?
@@ -323,7 +279,7 @@ export class Beneficiarios extends Component {
     console.log(event.target.value)
     // this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
 
-   // this.state.cardNumber = UImanager.formatCardNumber(event.target.value);
+    // this.state.cardNumber = UImanager.formatCardNumber(event.target.value);
   };
 
 
@@ -351,7 +307,7 @@ export class Beneficiarios extends Component {
     const selectedBeneficiaryId = event.target.value;
     this.state.cardBankImage = "";
     this.state.bankName = "";
-    this.cambioBeneficiario = true;
+   // this.cambioBeneficiario = true;
     this.state.selectedBeneficiaryId = selectedBeneficiaryId;
 
     this.inicializarDatosBeneficiario(selectedBeneficiaryId);
@@ -362,7 +318,7 @@ export class Beneficiarios extends Component {
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
-    this.cambioBeneficiario = true;
+    //this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedProvinceId = event.target.value;
     this.state.deliveryAreaID = event.target.value;
@@ -379,7 +335,7 @@ export class Beneficiarios extends Component {
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
-    this.cambioBeneficiario = true;
+   // this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
     let selectedMunicipio = this.municipios[selectedCityId];
@@ -395,10 +351,12 @@ export class Beneficiarios extends Component {
   onChangeSelectedCard = async (event) => {
     // //Lista de tarjetas
 
-
-    console.log('lista cards')
+    //this.cambioBeneficiario = true;
+    console.log('Cambio de CARD')
     console.log(this.cardsList);
     console.log(event.target.value)
+    
+
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
     console.log(formatedCardNumber)
 
@@ -406,22 +364,29 @@ export class Beneficiarios extends Component {
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
     )[0];
 
+
+
     if (cardData) {
       console.log("Hay card data");
       console.log(cardData);
       //cardHolderName
-
+      this.selectedCard.el.value = event.target.value; 
+      
       this.state.cardNumber = formatedCardNumber;
+      this.cardNumber.el.value = formatedCardNumber;
       this.state.cardHolderName = cardData.cardHolderName;
       await this.buscarLogotipoBanco(this.state.cardNumber);
     } else {
       console.log("NO Hay card data");
       console.log(cardData);
       this.state.cardNumber = '';
+      this.cardNumber.el.value='';
       this.state.cardHolderName = '';
     }
 
-   // this.props.onChangeDatosBeneficiarios(this.state);
+    //this.cambioBeneficiario = false;
+
+    this.props.onChangeDatosBeneficiarios(this.state);
   }
 
 
@@ -439,7 +404,7 @@ export class Beneficiarios extends Component {
       this.state.selectedBeneficiaryId = idBeneficiario;
 
 
-      this.state.cardHolderName = '';
+    
 
       //Inicializando provincia
       const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
@@ -483,6 +448,9 @@ export class Beneficiarios extends Component {
 
       this.cardsList = selectedBenefiarioData.creditCards;
       this.state.cardNumber = '';
+      this.cardNumber.el.value = '';
+      this.state.selectedCard='-1'
+      this.state.cardHolderName = '';
 
 
 
