@@ -233,6 +233,9 @@ export class HomeDeliveryCuba extends Component {
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
 
+   
+
+
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,

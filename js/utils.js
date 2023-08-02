@@ -232,7 +232,7 @@ export class API {
 
 
 
- 
+
 
   static tiempoDebounce = 300; //milisegundos
 
@@ -297,7 +297,7 @@ export class API {
   }
 
 
-  
+
   //-------------------------------------------------------------------------------
   //  Modificar datos de un beneficiario
   //-------------------------------------------------------------------------------
@@ -321,9 +321,9 @@ export class API {
     let datos = null;
     await axios(config).then(function (response) {
       datos = response;
-      console.log(response); 
+      console.log(response);
     }).catch(function (error) {
-   
+
       console.log(error);
       datos = error;
 
@@ -333,15 +333,15 @@ export class API {
   }
 
 
-  
+
   //-------------------------------------------------------------------------------
   //  Crear nuevo  beneficiario
   //-------------------------------------------------------------------------------
   async createBeneficiario(beneficiarioDatos) {
 
     delete beneficiarioDatos["_id"];
-   
-   
+
+
     var body = JSON.stringify(beneficiarioDatos);
 
 
@@ -359,9 +359,9 @@ export class API {
     let datos = null;
     await axios(config).then(function (response) {
       datos = response;
-       console.log(response);  
+      console.log(response);
     }).catch(function (error) {
-   
+
       console.log(error);
       datos = error;
 
@@ -395,7 +395,7 @@ export class API {
 
   }
 
-  
+
   //------------------------------------------------------------------------------------------------
   // Obtiene datos de tipos de recargas de telefonos
   //------------------------------------------------------------------------------------------------
@@ -406,13 +406,13 @@ export class API {
       destination: countryPhone,
       currency: currency
     }
-    
+
     var body = JSON.stringify(parametros);
 
     var config = {
       method: 'post',
       url: `${this.base_url}/api/private/transactions/topup/operators`,
-      headers:this.headers,
+      headers: this.headers,
       data: body
     }
 
@@ -428,12 +428,12 @@ export class API {
 
   }
 
-  
+
   //-------------------------------------------------------------------------------
   //  sendPhoneRecharge: envia recarga de telefono
   //-------------------------------------------------------------------------------
   async sendPhoneRecharge(datosTX) {
-  
+
 
     var body = JSON.stringify(datosTX);
 
@@ -457,24 +457,24 @@ export class API {
     return datos;
   }
 
- 
+
   //----------------------------------------------------------------------------------------------
   // Obtener lista de Transacciones
   //----------------------------------------------------------------------------------------------
-  async  getTrData() {
-   
+  async getTrData() {
+
     const parametros = {
       "filter": {
         "status": "queued"
       }
     }
-    
+
     var body = JSON.stringify(parametros);
 
     var config = {
       method: 'get',
       url: `${base_url}/api/private/transactions?skip=0&limit=100`,
-      headers:this.headers,
+      headers: this.headers,
       data: body
     }
 
@@ -487,11 +487,11 @@ export class API {
     });
 
     return datos;
-   
-    
-  
-  
-   
+
+
+
+
+
   }
 
 }
@@ -674,9 +674,10 @@ export async function getUsrInfo() {
 // User interface manager
 //--------------------------------------------------------------------------------------
 export class UImanager {
-   //----------------------------------------------------------------------------------
-  //SendInput manejar eventos on change de 
-  //----------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------------------
+  //SendInput manejar eventos on change de Cantidad enviada, pide el Fee, en funcion de la cantidad a enviar
+  //--------------------------------------------------------------------------------------------------------------------
+
   static async onChangeSendInput(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
 
     const resultado = {
@@ -685,7 +686,7 @@ export class UImanager {
       receiveAmount: 0
     }
 
-    if (conversionRate<=0) {
+    if (conversionRate <= 0) {
       return resultado;
     }
 
@@ -695,19 +696,21 @@ export class UImanager {
     if (sendAmount > 0) {
       const api = new API(accessToken);
       const feeData = await api.getFee(service, zone, sendAmount);
-        
-        const fee = feeData.fee / moneda_vs_USD;
-        resultado.fee = fee ;
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = sendCurrency.toUpperCase();
-        resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
 
-        const receiveAmount = (sendAmount - fee) * conversionRate;
-        if (receiveAmount > 0) {
-          resultado.receiveAmount = this.roundDec(receiveAmount);
-        } else {
-          resultado.receiveAmount = this.roundDec(0);
-        }      
+      const fee = feeData.fee / moneda_vs_USD;
+      resultado.fee = fee;
+
+      const feeSTR = fee.toFixed(2);
+
+      resultado.feeSTR = `${feeSTR} ${sendCurrency.toUpperCase()}`; //TODO convertir a 2 decimales  
+
+      const receiveAmount = (sendAmount - fee) * conversionRate;
+
+      if (receiveAmount > 0) {
+        resultado.receiveAmount = this.roundDec(receiveAmount);
+      } else {
+        resultado.receiveAmount = this.roundDec(0);
+      }
     } else {
       resultado.receiveAmount = this.roundDec(0);
     }
@@ -715,51 +718,16 @@ export class UImanager {
     return resultado;
 
 
-
-    /*if (this.changingReceiveAmount) { return; }
-  
-      this.changingSendAmount = true;
-      this.changingReceiveAmount = false;
-  
-      const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
-      const zone = "Habana"; //TODO: obtener de datos
-  
-      const conversionRate = this.conversionRate.value;
-      const sendAmount = this.inputSendRef.el.value;
-      this.inputSendRef.el.value = UImgr.roundDec(sendAmount);
-  
-      if (sendAmount > 0) {
-        this.getFee(service, zone, sendAmount).then((feeData) => {
-          const fee = feeData.fee;
-          this.fee.value = fee;
-          const feeSTR = fee.toFixed(2);
-          const CurrencySTR = this.inputSendCurrencyRef.el.value.toUpperCase();
-          this.feeSTR.value = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
-  
-          const receiveAmount = (sendAmount - fee) * conversionRate;
-  
-          if (receiveAmount > 0) {
-            this.inputReceiveRef.el.value = UImgr.roundDec(receiveAmount);
-            this.changingSendAmount = false;
-            this.changingReceiveAmount = false;
-          } else {
-            this.inputReceiveRef.el.value = UImgr.roundDec(0);
-          }
-  
-        });
-      } else {
-        this.inputReceiveRef.el.value = UImgr.roundDec(0);
-      }*/
   }
 
 
 
 
-  
+
   //----------------------------------------------------------------------------------
   //ReceiveInput: manejar eventos on change de inputs send
   //----------------------------------------------------------------------------------
-  static async onChangeReceiveInput(receiveCurrency, sendCurrency, receiveAmount, conversionRate, accessToken) {
+  static async onChangeReceiveInput(receiveCurrency, sendCurrency, receiveAmount, conversionRate, accessToken, moneda_vs_USD) {
 
     const resultado = {
       fee: 0,
@@ -767,29 +735,29 @@ export class UImanager {
       sendAmount: 0
     }
 
-    if (conversionRate<=0) {
+    if (conversionRate <= 0) {
       return resultado;
     }
 
     const service = `card${receiveCurrency.toUpperCase()}`;
     const zone = "Habana"; //TODO: obtener de datos  
 
-  
-    
+
+
     const sendAmount = (receiveAmount / conversionRate);
 
     if (receiveAmount > 0) {
       const api = new API(accessToken);
       const feeData = await api.getFee(service, zone, sendAmount)
-        const fee = feeData.fee;
-        resultado.sendAmount = this.roundDec(sendAmount + fee);        
-        resultado.fee = fee;
+      const fee = feeData.fee / moneda_vs_USD;
+      resultado.sendAmount = this.roundDec(sendAmount + fee);
+      resultado.fee = fee;
 
-        const feeSTR = fee.toFixed(2);
-        const CurrencySTR = sendCurrency.toUpperCase();
-        resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+      const feeSTR = fee.toFixed(2);
+      const CurrencySTR = sendCurrency.toUpperCase();
+      resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
 
-               
+
     } else {
       resultado.receiveAmount = this.roundDec(0);
       resultado.sendAmount = this.roundDec(0);
@@ -807,7 +775,7 @@ export class UImanager {
     const resultado = Number(Math.round(Math.abs(numero) + 'e' + dec_places) + 'e-' + dec_places)
     return (resultado * negativo).toFixed(dec_places);
   }
-  
+
   static addKeyToMunicipios(municipios) {
     return municipios.map((unMunicipio, i) => ({
       id: i,
@@ -816,7 +784,7 @@ export class UImanager {
   }
 
 
-    //https://stackoverflow.com/questions/5700636/using-javascript-to-perform-text-matches-with-without-accented-characters
+  //https://stackoverflow.com/questions/5700636/using-javascript-to-perform-text-matches-with-without-accented-characters
   //https://itqna.net/questions/514/how-do-search-ignoring-accent-javascript
   static eliminarAcentos = (cadena) => {
     var string_norm = cadena.normalize('NFD').replace(/\p{Diacritic}/gu, ''); // Old method: .replace(/[\u0300-\u036f]/g, "");

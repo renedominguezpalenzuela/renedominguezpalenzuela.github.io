@@ -25,12 +25,6 @@ export class SendMoneyCuba extends Component {
     avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
     address: "",
     nameFull: "",
-    // sendValue: 0,
-    // receiveValue: 0,
-    // conversionRateSTR: "",
-    // conversionRate: 0,
-    // feeSTR: "",
-    // fee: 0
   })
 
   datosSelectedTX = useState({
@@ -143,20 +137,11 @@ export class SendMoneyCuba extends Component {
       
     </div>
 
-   
-
-
-
-  
-      
-
-
   `;
 
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
-   // console.log(this.beneficiario);
   }
 
   //CASH_OUT_TRANSACTION
@@ -167,10 +152,9 @@ export class SendMoneyCuba extends Component {
 
     onWillStart(async () => {
       const api = new API(accessToken);
-      const exchangeRate = await api.getExchangeRate("usd");
-      this.feeSTR.value = '-';
-      this.conversionRate.value = exchangeRate["CUP"];
-      this.conversionRateSTR.value = `1 USD = ${this.conversionRate.value} CUP`;
+
+      //Pidiendo las tasas de conversion de monedas
+      await this.pedirTasadeCambio("usd", "cup");
 
       //obteniendo todos los datos de los beneficiarios desde el API
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
@@ -181,7 +165,7 @@ export class SendMoneyCuba extends Component {
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
         _id: el._id,
-         CI: el.deliveryCI
+        CI: el.deliveryCI
       }));
 
 
@@ -191,10 +175,24 @@ export class SendMoneyCuba extends Component {
 
     });
 
-    onMounted(() => {
-
+    onMounted(async () => {
+     
     })
 
+  }
+
+
+  async pedirTasadeCambio(sendCurrency, receiveCurrency) {
+    const accessToken = window.sessionStorage.getItem('accessToken');
+    const api = new API(accessToken);
+
+    if (receiveCurrency && sendCurrency) {
+      const exchangeRate = await api.getExchangeRate(sendCurrency);
+      this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
+      this.moneda_vs_USD = exchangeRate["USD"];
+      this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
+      this.feeSTR.value = '-';
+    }
   }
 
 
@@ -203,25 +201,11 @@ export class SendMoneyCuba extends Component {
     this.inputReceiveRef.el.value = (0).toFixed(2);
     this.inputSendRef.el.value = (0).toFixed(2);
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
     const sendCurrency = this.inputSendCurrencyRef.el.value;
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
 
-    console.log("Enviar en: " + sendCurrency);
-    console.log("Recibir en: " + receiveCurrency);
+    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
 
-    if (receiveCurrency && sendCurrency) {
-      const exchangeRate = await api.getExchangeRate(sendCurrency);
-      this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
-      this.moneda_vs_USD = exchangeRate["USD"];
-      this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
-      this.feeSTR.value = '-';
-
-      console.log(exchangeRate);
-      console.log(this.conversionRate.value);
-      console.log(this.conversionRateSTR.value);
-    }
   }
 
   onChangeCurrencySend() {
@@ -232,34 +216,34 @@ export class SendMoneyCuba extends Component {
     this.onChangeCurrency();
   }
 
-  /*
-  async getFee(service, zone, amount) {
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
-    const fee = await api.getFee(service, zone, amount)
-    return fee;
-  }*/
 
 
   onChangeSendInput = API.debounce(async () => {
 
-
     if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
+ 
+    //ACtualizar variables de tasas de cambio
+    const sendCurrency = this.inputSendCurrencyRef.el.value;
+    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
+    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
 
+    //Pide el fee y Calcula el resultado
+    //TODO: refactorizar, pedir el fee una funcion, calcular los resultados otra
     const accessToken = window.sessionStorage.getItem('accessToken');
-    const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
-      this.inputSendCurrencyRef.el.value,
-      this.inputSendRef.el.value,
+    const resultado = await UImanager.onChangeSendInput(
+      receiveCurrency,                            //moneda recibida
+      sendCurrency,                               //moneda del que envia
+      this.inputSendRef.el.value,                 //cantidad a enviar
       this.conversionRate.value,
       accessToken,
       this.moneda_vs_USD
     )
+    console.log(resultado)
+
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
-
-
 
     this.inputReceiveRef.el.value = resultado.receiveAmount;
     this.inputSendRef.el.value = UImanager.roundDec(this.inputSendRef.el.value);
@@ -275,6 +259,10 @@ export class SendMoneyCuba extends Component {
     this.changingSendAmount = false;
     this.changingReceiveAmount = true;
 
+    //ACtualizar variables de tasas de cambio
+    const sendCurrency = this.inputSendCurrencyRef.el.value;
+    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
+    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
 
     //LLAMADA
     const accessToken = window.sessionStorage.getItem('accessToken');
@@ -283,8 +271,10 @@ export class SendMoneyCuba extends Component {
       this.inputSendCurrencyRef.el.value,
       this.inputReceiveRef.el.value,
       this.conversionRate.value,
-      accessToken
+      accessToken,
+      this.moneda_vs_USD
     )
+    console.log(resultado)
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -420,32 +410,14 @@ export class SendMoneyCuba extends Component {
   }
 
 
-  onChangeSelectedTX = (datos) => {
-   // console.log("datos")
-
-   // console.log(datos)
-
-
-
+  onChangeSelectedTX = async (datos) => {
     this.datosSelectedTX.txID = datos._id;
-    this.datosSelectedTX.allData = { ...datos }
-
-    //Actualizar datos de send money
-
-    
+    this.datosSelectedTX.allData = { ...datos }   
     this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
-   
-
     this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
-    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
-   // console.log(datos.concept)
-    
+    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();   
     this.concept.el.value = datos.concept;
-
-    this.onChangeSendInput()
-
-
-
+    await this.onChangeSendInput()
   }
 
 
