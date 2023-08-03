@@ -132,7 +132,9 @@ export class Beneficiarios extends Component {
                   </label>
                   <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
                 </div>             
-
+                <div class="hidden"> 
+                <t t-esc="this.props.datosSelectedTX.txID"/>
+              </div>
               </div>
             </div>
             
@@ -151,15 +153,18 @@ export class Beneficiarios extends Component {
     });
 
     onRendered(async () => {
+      console.log("RENDER")
+      console.log("Datos que llegan a beneficiario")
+      console.log(this.props.datosSelectedTX)
+
+      /*
       if (this.inicializando) {
         console.log("inicializando")
        // this.cambioPorSeleccionDesdeListaTX = false;
         return;
-      }
+      }*/
    
-      console.log("RENDER")
-      console.log("Datos que llegan a beneficiario")
-      console.log(this.props.datosSelectedTX)
+ 
 
       
 

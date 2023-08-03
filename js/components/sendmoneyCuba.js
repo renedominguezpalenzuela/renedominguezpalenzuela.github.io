@@ -240,7 +240,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-    console.log(resultado)
+   // console.log(resultado)
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
