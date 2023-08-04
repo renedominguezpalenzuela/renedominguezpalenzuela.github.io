@@ -9,7 +9,7 @@ import { Provincias } from "../../data/provincias_cu.js";
 
 export class Beneficiarios extends Component {
 
-  inicializandoCardList  = false;
+  inicializandoCardList = false;
 
   tiempoDebounce = 1000; //milisegundos
 
@@ -22,11 +22,8 @@ export class Beneficiarios extends Component {
 
 
 
-  // cardsList = useState({});
-
  
-    cardsList = []
-  
+
 
   //TODO: mask in input 0000-0000-0000-0000
   static template = xml`  
@@ -58,7 +55,7 @@ export class Beneficiarios extends Component {
                   
                     <select t-ref="selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
                       <option  t-att-value="-1" >Select Card</option>
-                      <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
+                      <t t-foreach="this.props.cardsList" t-as="unCard" t-key="unCard.number">
                         <option t-att-value="unCard.number">
                            
                           <t t-esc="unCard.currency"/> -
@@ -80,6 +77,9 @@ export class Beneficiarios extends Component {
 
   setup() {
 
+    console.log("Card LIST")
+    console.log(this.props);
+
 
 
     this.accessToken = API.getTokenFromSessionStorage();
@@ -93,7 +93,7 @@ export class Beneficiarios extends Component {
 
     onMounted(() => {
       console.log("Mounted")
-      console.log(this.props.beneficiariosNames[0].CI)
+      //console.log(this.props.beneficiariosNames[0].CI)
 
       //Cargando los datos del primer beneficiario de la lista
       this.setearBeneficiario(this.props.beneficiariosNames[0].CI);
@@ -102,14 +102,15 @@ export class Beneficiarios extends Component {
 
 
     onRendered(async () => {
-      console.log("Inicializando cardList")
-      console.log(this.inicializandoCardList)
+      console.log("RENDER")
+      console.log("Datos que llegan a beneficiario")
+      console.log(this.props.datosSelectedTX)
 
-      if (this.inicializandoCardList ) {
-        console.log("Inicializando cardList")
-        this.inicializandoCardList = false;
-        return;
-      }
+      /*  if (this.inicializandoCardList) {
+          console.log("Inicializando cardList")
+          this.inicializandoCardList = false;
+          return;
+        }*/
 
       /*if (cambiandoBeneficiario) {
         console.log("Cambiando beneficiario");
@@ -117,30 +118,24 @@ export class Beneficiarios extends Component {
         return;
       }*/
 
-      console.log("RENDER")
-      console.log("Datos que llegan a beneficiario")
-      console.log(this.props.datosSelectedTX)
 
-      if (this.props.datosSelectedTX.allData) {
+
+      if (this.props.datosSelectedTX.allData != null) {
 
 
         const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
 
-        await this.setearBeneficiario(CI);
+       // await this.setearBeneficiario(CI);
 
         console.log("Render: Invocado desde el padre, al seleccionar una TX")
 
 
       } else {
         console.log("Render: Cargando ventana por primera ves")
+
       }
 
-      /*
-      if (this.inicializando) {
-        console.log("inicializando")
-       // this.cambioPorSeleccionDesdeListaTX = false;
-        return;
-      }*/
+
 
     });
 
@@ -151,13 +146,15 @@ export class Beneficiarios extends Component {
 
   setearBeneficiario = async (CIBeneficiario) => {
 
-    const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
-    console.log(beneficiario)
-    this.selectedBeneficiaryId.el.value = beneficiario._id;
+    const beneficiarioName = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
+    console.log("Beneficiario name")
+    console.log(beneficiarioName)
+    this.selectedBeneficiaryId.el.value = beneficiarioName._id;
+
+   // this.setearDatosBeneficiario(beneficiarioName._id)
 
 
 
-    await this.setearDatosBeneficiario(beneficiario._id);
 
 
   }
@@ -170,35 +167,61 @@ export class Beneficiarios extends Component {
 
 
   setearDatosBeneficiario = async (idBeneficiario) => {
+
+
     const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
+    console.log(selectedBenefiarioData)
 
     //seteando lista de tarjetas del beneficiario
     this.inicializandoCardList = true;
-    this.cardsList = selectedBenefiarioData.creditCards;
-    await this.render();
-   // this.inicializandoCardList = false;
+    //this.cardsList.value = selectedBenefiarioData.creditCards;
+    //await this.render();
+
+
+
+    //await this.setearDatosBeneficiario(beneficiario._id);
+    if (!selectedBenefiarioData) return;
+    console.log("allData")
+    console.log(this.props.datosSelectedTX.allData)
+    if (!this.props.datosSelectedTX.allData) return;
+
+ 
+
 
     console.log("Selected Beneficiary Data")
     console.log(selectedBenefiarioData)
-    console.log(this.cardsList)
+    //console.log("Card List")
+    //console.log(this.cardsList.value)
+
+
+
+    const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber;
+    const selectedCardID = selectedCardNumber.replace(/ /g, "");
+    console.log("Selected card " + selectedCardID)
+
+
+    //this.selectedCard.value = selectedCardID;
+    // this.inicializandoCardList = false;
+
+
 
   }
 
 
 
   onChangeSelectedCard = async (event) => {
-    return;
+
 
     console.log('Cambio de CARD')
-    console.log(this.cardsList);
+    console.log(this.props.cardsList);
     console.log(event.target.value)
 
 
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
     console.log(formatedCardNumber)
 
-    const cardData = this.cardsList.filter((unaCard) =>
+    const cardData = this.props.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
     )[0];
 
@@ -230,11 +253,13 @@ export class Beneficiarios extends Component {
 
 
   onChangeSelectedBeneficiario = async (event) => {
-    
     const selectedBeneficiaryId = event.target.value;
+    this.props.onChangeDatosBeneficiarios(selectedBeneficiaryId)
+
+    
 
 
-    await this.setearDatosBeneficiario(selectedBeneficiaryId);
+    //await this.setearDatosBeneficiario(selectedBeneficiaryId);
 
     // this.state.cardBankImage = "";
     // this.state.bankName = "";

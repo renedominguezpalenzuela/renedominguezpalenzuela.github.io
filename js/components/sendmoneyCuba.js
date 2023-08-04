@@ -36,6 +36,10 @@ export class SendMoneyCuba extends Component {
 
   beneficiario = useState({
 
+  })
+
+  cardList = useState({
+    value:[]
 
   })
 
@@ -125,7 +129,7 @@ export class SendMoneyCuba extends Component {
    
     </div>
        
-       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX"  />
+       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" cardsList="cardList.value" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX"  />
        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
 
 
@@ -140,8 +144,16 @@ export class SendMoneyCuba extends Component {
   `;
 
 
-  onChangeDatosBeneficiarios(datosBeneficiario) {
-    this.beneficiario = datosBeneficiario;
+  onChangeDatosBeneficiarios(IDBeneficiarioSeleccionado) {
+    
+    console.log("ID Beneficiario Seleccionado")
+    console.log(IDBeneficiarioSeleccionado)
+    this.beneficiario =  this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === IDBeneficiarioSeleccionado)[0];
+    console.log(this.beneficiario)
+
+    //this.beneficiario = datosBeneficiario;
+    this.cardList.value = this.beneficiario.creditCards;
+    console.log(this.cardList)
   }
 
   //CASH_OUT_TRANSACTION
@@ -168,6 +180,8 @@ export class SendMoneyCuba extends Component {
         _id: el._id,
         CI: el.deliveryCI
       }));
+
+      this.cardList.value = this.allDatosBeneficiariosFromStorage[0].creditCards;
     }
 
 
