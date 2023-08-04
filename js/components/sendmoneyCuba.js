@@ -213,6 +213,14 @@ export class SendMoneyCuba extends Component {
               </div>
 
               
+              <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
+              <label class="label">
+                <span class="label-text">Delivery Address</span>
+              </label>           
+              <textarea t-att-value="this.beneficiarioData.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+             </div>
+
+              
                           
                 
             </div>
@@ -665,11 +673,6 @@ export class SendMoneyCuba extends Component {
     console.log(beneficiarioSelected)
 
     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
-
-
-  
-
-    
 
     this.beneficiarioData.contactPhone = beneficiarioSelected.deliveryPhone;
     this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
