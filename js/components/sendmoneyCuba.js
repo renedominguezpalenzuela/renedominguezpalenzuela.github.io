@@ -67,7 +67,9 @@ export class SendMoneyCuba extends Component {
     selectedCard: '-1',
     cardBankImage: '',
     cardNumber: '',
-    cardHolderName:''
+    cardHolderName:'',
+    contactPhone:'',
+    deliveryAddress:''
 
 
 
@@ -202,6 +204,13 @@ export class SendMoneyCuba extends Component {
                 </label>
                 <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                </div>
+
+               <div class="form-control w-full sm:row-start-4 ">
+               <label class="label">
+                 <span class="label-text">Contact Phone</span>
+               </label>
+               <input type="text" t-att-value="this.beneficiarioData.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
+              </div>
 
               
                           
@@ -343,7 +352,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-    // console.log(resultado)
+    
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -377,7 +386,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-    console.log(resultado)
+    
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -524,8 +533,7 @@ export class SendMoneyCuba extends Component {
 
 
     const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
-    console.log("Beneficiario seleccionado en TX")
-    console.log(this.datosSelectedTX.allData.metadata)
+    
 
 
 
@@ -540,35 +548,31 @@ export class SendMoneyCuba extends Component {
 
   }
 
+  /*
+
   onChangeDatosBeneficiarios(IDBeneficiarioSeleccionado) {
 
-    console.log("ID Beneficiario Seleccionado")
-    console.log(IDBeneficiarioSeleccionado)
+    
     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === IDBeneficiarioSeleccionado)[0];
-    console.log(beneficiarioSelected)
+    
 
     //this.beneficiario = datosBeneficiario;
     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
 
-    console.log("Tarketas")
-    console.log(this.beneficiarioData.cardsList)
-
-  }
+    
+  }*/
 
 
 
   setearBeneficiario = async (CIBeneficiario) => {
 
-    console.log("CI")
-    console.log(CIBeneficiario)
-    console.log("Beneficiario name")
-    console.log(this.beneficiarioData.beneficiariosNames)
+    
 
     const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
 
     if (!beneficiarioName) { return }
 
-    console.log(beneficiarioName)
+    
     this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
 
     this.setearDatosBeneficiario(beneficiarioName._id)
@@ -581,36 +585,17 @@ export class SendMoneyCuba extends Component {
 
 
 
-  onChangeSelectedBeneficiario = async (event) => {
-    const selectedBeneficiaryId = event.target.value;
-    this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
-
-
-    this.setearDatosBeneficiario(selectedBeneficiaryId);
-
-    
-    //this.beneficiarioData.selectedBeneficiaryId: '-1',
-    this.beneficiarioData.selectedCard= '-1',
-    this.beneficiarioData.cardBankImage= '',
-    this.beneficiarioData.cardNumber= '',
-    this.beneficiarioData.cardHolderName=''
-
-
-
-  }
 
   onChangeSelectedCard = async (event) => {
 
 
-    console.log('Cambio de CARD')
-    //console.log(this.beneficiarioData.cardsList);
-
+    
 
     this.beneficiarioData.selectedCard = event.target.value
 
 
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
-    console.log(formatedCardNumber)
+    
 
     const cardData = this.beneficiarioData.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
@@ -634,12 +619,10 @@ export class SendMoneyCuba extends Component {
      
       */
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-      console.log("BANCO")
-      console.log( this.beneficiarioData.cardBankImage)
-      console.log(this.beneficiarioData.bankName )
+
     } else {
       console.log("NO Hay card data");
-      console.log(cardData);
+   
       this.beneficiarioData.cardHolderName='';
       /*this.state.cardNumber = '';
       this.cardNumber.el.value='';
@@ -651,52 +634,77 @@ export class SendMoneyCuba extends Component {
     //this.props.onChangeDatosBeneficiarios(this.state);
   }
 
+  
+  onChangeSelectedBeneficiario = async (event) => {
+    const selectedBeneficiaryId = event.target.value;
+    this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
+
+
+    this.setearDatosBeneficiario(selectedBeneficiaryId);
+
+    
+    //this.beneficiarioData.selectedBeneficiaryId: '-1',
+    this.beneficiarioData.selectedCard= '-1',
+    this.beneficiarioData.cardBankImage= '',
+    this.beneficiarioData.cardNumber= '',
+    this.beneficiarioData.cardHolderName=''
+
+
+
+  }
+
 
   setearDatosBeneficiario = async (idBeneficiario) => {
 
     //Setear el select de tarjetas con la tarjeta de la operacion
 
+    
+   console.log("setear datos beneficiario")
 
     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
+    console.log(beneficiarioSelected)
 
     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
 
 
-    if (!this.datosSelectedTX.allData) { return }
+  
+
+    
+
+    this.beneficiarioData.contactPhone = beneficiarioSelected.deliveryPhone;
+    this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
+
+
+    if (!this.datosSelectedTX.allData) { 
+      this.beneficiarioData.cardHolderName = '';
+      return
+    
+    }
+    this.beneficiarioData.cardHolderName = this.datosSelectedTX.allData.metadata.cardHolderName;
     this.beneficiarioData.selectedCard = this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
     console.log("Operacion")
     
     console.log(this.datosSelectedTX.allData);
-
-    this.beneficiarioData.cardHolderName = this.datosSelectedTX.allData.metadata.cardHolderName;
-
 
 
 
 
     //const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
 
-    console.log("Selected card " + this.beneficiarioData.selectedCard)
-    //console.log(this.props.datosSelectedTX.allData.metadata.cardNumber)
+   
 
     //const selectedCard = this.props.cardsList.filter((unCard)=>unCard.number ===selectedCardNumber )[0];
-    //console.log(selectedCard.id)
-
-
-    //console.log(this.selectedCard.el.value)
+    
     //this.selectedCard.el.value = selectedCardNumber;
 
-    //console.log(this.selectedCard.el.value)
+    
 
 
     const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
      await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-     console.log("BANCO")
-     console.log( this.beneficiarioData.cardBankImage)
-     console.log(this.beneficiarioData.bankName )
-
+     
     //this.selectedCard.el.value="9225959875865500"
 
 
@@ -711,16 +719,15 @@ export class SendMoneyCuba extends Component {
     // const api = new API(this.accessToken);
     //const cardRegExp = await api.getCardRegExp();
 
-    //console.log(typeof (cardRegExp));
-    console.log(CardNumber)
+  
 
     for (const key in this.cardRegExp) {
 
       const regexp = new RegExp(this.cardRegExp[key]);
       //const card = this.state.cardNumber.replace(/ /g, "");
-      console.log(regexp)
+    
       const resultado = regexp.test(CardNumber);
-      console.log(resultado)
+     
       if (resultado) {
        
         switch (key) {
@@ -785,6 +792,27 @@ export class SendMoneyCuba extends Component {
     
 
   };
+
+  
+  onChangeCardHolderInput = API.debounce(async (event) => {
+    this.beneficiarioData.cardHolderName = event.target.value;
+
+    //this.props.onChangeDatosBeneficiarios(this.state);
+  }, API.tiempoDebounce);
+
+  onChangeAddressInput = API.debounce(async (event) => {
+    this.beneficiarioData.deliveryAddress = event.target.value;
+
+    //this.props.onChangeDatosBeneficiarios(this.state);
+  }, API.tiempoDebounce);
+
+  onChangePhoneInput = API.debounce(async (event) => {
+    this.beneficiarioData.contactPhone = event.target.value;
+
+    //this.props.onChangeDatosBeneficiarios(this.state);
+  }, API.tiempoDebounce);
+
+
 
 }
 
