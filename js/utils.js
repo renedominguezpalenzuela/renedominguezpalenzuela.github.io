@@ -486,7 +486,11 @@ export class API {
   //----------------------------------------------------------------------------------------------
   // Obtener lista de Transacciones
   //----------------------------------------------------------------------------------------------
-  async getTrData() {
+  async getTrData(total_tx) {
+
+    if(!total_tx) {
+      total_tx=10;
+    }
 
     const parametros = {
       "filter": {
@@ -498,7 +502,7 @@ export class API {
 
     var config = {
       method: 'get',
-      url: `${base_url}/api/private/transactions?skip=0&limit=100`,
+      url: `${base_url}/api/private/transactions?skip=0&limit=${total_tx}`,
       headers: this.headers,
       data: body
     }

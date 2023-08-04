@@ -1,6 +1,6 @@
 
 
-
+//
 const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillStart, onWillUpdateProps } = owl;
 
 import { API } from "../utils.js";
@@ -83,61 +83,76 @@ export class Balance extends Component {
 
 
 
+    
+
+    if (!accessToken) { return }
+
+
     const query = {
       token: accessToken
     }
 
-    if (!accessToken) {return}
-
+    // -----   Creando el socket  ------------------------------------------------
     this.socket = io(API.baseSocketURL, {
       path: subscriptionPath,
       query: query,
     });
-  
 
 
+
+
+
+    // ----- Socket conectado  ---------------------------------------------------
     this.socket.on("connect", (datos) => {
-      console.log("Socket conectado correctamente");
-      console.log("socket id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
+      console.log("Socket Balance conectado correctamente");
+      console.log("socket Balance id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
 
       // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
+      //Creando subscripcion a todas las transacciones de la wallet
       this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
     });
 
-
+    // ----- Socket ReConectado  --------------------------------------------------- 
     this.socket.on('reconnect', () => {
-      console.log('Socket RE conectado ', this.socket.connected);
+      console.log('Socket Balance RE conectado ', this.socket.connected);
     });
 
+    // ----- Si ocurre algun error --------------------------------------------------
     this.socket.on('error', (error) => {
-      console.log('Socket ERROR: _testSocket', {
+      console.log('Socket Balance ERROR', {
         event: 'error',
         data: error
       });
     });
 
+
+    // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
     this.socket.on('TRANSACTION_UPDATE', async (data) => {
-      console.log('TRANSACTION_UPDATE datos servidor2', data);
-      console.log('TR Status ' + data.transactionStatus);
+      console.log('TRANSACTION_UPDATE Socket Balance recibiendo datos servidor', data);
+      console.log('TR Status Socket Balance  ' + data.transactionStatus);
       if (data.transactionStatus == "confirmed") {
         const saldos = await this.get_data(true);
         if (saldos) {
-         this.balance.saldos = saldos;
-         console.log(JSON.stringify(this.balance));
+          this.balance.saldos = saldos;
+          console.log(JSON.stringify(this.balance));
         }
       }
     });
 
 
+    //Inicializando 
     onWillStart(async () => {
 
       if (!this.socketActivo) return;
 
+      console.log("Solicitando Balance al servidor")
+
       const saldos = await this.get_data(false);
+      console.log("Balance recibido servidor")
 
       if (saldos) {
-      this.balance.saldos = saldos;
-      console.log(JSON.stringify(this.balance));
+        this.balance.saldos = saldos;
+        console.log(JSON.stringify(this.balance));
       }
 
 
