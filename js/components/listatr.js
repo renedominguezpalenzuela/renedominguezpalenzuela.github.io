@@ -80,6 +80,8 @@ export class ListaTR extends Component {
 
             const raw_datos1 = raw_datos.map((unDato) => {
 
+                
+
                 //const fecha = new Date(unDato.createdAt).toLocaleDateString('en-US');
                 const fecha = new Date(unDato.createdAt).
                     toLocaleDateString('en-US', {
@@ -92,9 +94,15 @@ export class ListaTR extends Component {
 
                 //const fecha2 = fecha.substring(0, 10) + " " + fecha.substring(11, 20);
                 // console.log(fecha2)
+
+                let type2 = '-';
+                if (unDato.metadata) {
+                    type2 = !unDato.metadata.method ? "-" : unDato.metadata.method
+                }
+
                 return {
                     fecha_creada: fecha,
-                    type2: !unDato.metadata.method ? "-" : unDato.metadata.method,
+                    type2: type2,
                     ...unDato
                 }
             })
