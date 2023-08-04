@@ -65,7 +65,8 @@ export class ListaTR extends Component {
     setup() {
 
 
-        const accessToken = window.sessionStorage.getItem('accessToken');
+        const accessToken = API.getTokenFromSessionStorage();
+        if (!accessToken) {return}
 
 
         onWillStart(async () => {

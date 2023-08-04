@@ -46,7 +46,8 @@ export class Beneficiarios extends Component {
                       <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
-                      </t>             
+                      </t>    
+                                 
                     </select>
                   </div> 
                   
@@ -81,7 +82,7 @@ export class Beneficiarios extends Component {
 
 
 
-    this.accessToken = window.sessionStorage.getItem('accessToken');
+    this.accessToken = API.getTokenFromSessionStorage();
 
     onWillStart(async () => {
       this.provincias = Provincias;

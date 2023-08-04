@@ -173,12 +173,13 @@ export class HomeDeliveryCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
 
 
-
+      if (  this.allDatosBeneficiariosFromStorage) {
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
         _id: el._id,
         CI: el.deliveryCI
       }));
+      }
 
 
 

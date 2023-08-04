@@ -162,11 +162,13 @@ export class SendMoneyCuba extends Component {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+      if (  this.allDatosBeneficiariosFromStorage) {
       this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
         beneficiaryFullName: el.beneficiaryFullName,
         _id: el._id,
         CI: el.deliveryCI
       }));
+    }
 
 
     });
@@ -188,10 +190,12 @@ export class SendMoneyCuba extends Component {
 
     if (receiveCurrency && sendCurrency) {
       const exchangeRate = await api.getExchangeRate(sendCurrency);
-      this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
-      this.moneda_vs_USD = exchangeRate["USD"];
-      this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
-      this.feeSTR.value = '-';
+      if (exchangeRate) {
+        this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
+        this.moneda_vs_USD = exchangeRate["USD"];
+        this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
+        this.feeSTR.value = '-';
+      }
     }
   }
 

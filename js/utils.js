@@ -42,6 +42,23 @@ export class API {
     }
   }
 
+
+  //------------------------------------------------------------------------------------------------
+  // Leer Token desde sesion Storage
+  //------------------------------------------------------------------------------------------------
+  static getTokenFromSessionStorage() {
+    let token = '';
+    try {
+      token = window.sessionStorage.getItem('accessToken');      
+    } catch (error) {
+      console.log("Token not found on session storage");
+      console.log(error);      
+    }
+
+    return token;
+    
+  }
+
   //------------------------------------------------------------------------------------------------
   // Obtiene datos del usuario
   //------------------------------------------------------------------------------------------------
@@ -77,6 +94,8 @@ export class API {
   // Obtiene Expresiones Regulares para validar tarjetas
   //------------------------------------------------------------------------------------------------
   async getCardRegExp() {
+
+    if (!this.accessToken) return null;
 
     var config = {
       method: 'get',
@@ -134,6 +153,8 @@ export class API {
   // Obtiene todos los tipos de cambio
   //------------------------------------------------------------------------------------------------
   async getExchangeRate(moneda_base) {
+
+    if (!this.accessToken) return null;
 
     var config = {
       method: 'get',
@@ -261,6 +282,8 @@ export class API {
   //  getDatosTR
   //-------------------------------------------------------------------------------
   async getBalance(walletAddress) {
+
+    if (!this.accessToken) return null;
     //leer token desde local storage
     // const accessToken = window.sessionStorage.getItem('accessToken');
     // const walletAddress = window.sessionStorage.getItem('walletAddress');
@@ -376,6 +399,8 @@ export class API {
   //------------------------------------------------------------------------------------------------
 
   async getAllDatosBeneficiarios() {
+
+    if (!this.accessToken) return null;
 
     var config = {
       method: 'post',

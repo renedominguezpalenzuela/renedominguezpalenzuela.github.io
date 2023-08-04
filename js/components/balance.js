@@ -44,7 +44,7 @@ export class Balance extends Component {
 
   async get_data(update) {
 
-    if (!this.socketActivo) return; 
+    if (!this.socketActivo) return;
 
     const accessToken = window.sessionStorage.getItem('accessToken');
     const walletAddress = window.sessionStorage.getItem('walletAddress');
@@ -52,23 +52,26 @@ export class Balance extends Component {
     const api = new API(accessToken);
     let datos = await api.getBalance(walletAddress);
     console.log(datos)
+    if (datos) {
+      if (update) {
+        datos.balance.map((unDato, i) => {
+          if (unDato.currency == "USD") {
+            let n = (Math.floor(Math.random() * 10) + 1) * 100
+            datos.balance[i].amount = parseFloat(datos.balance[i].amount) + n;
+          }
+        })
+      }
 
-    if (update) {
-      datos.balance.map((unDato, i) => {
-        if (unDato.currency == "USD") {
-          let n = (Math.floor(Math.random() * 10) + 1) * 100
-          datos.balance[i].amount = parseFloat(datos.balance[i].amount) + n;
-        }
-      })
+      return datos.balance;
+    } else {
+      return null
     }
-
-    return datos.balance;
   }
 
 
 
   setup() {
-    if (!this.socketActivo) return; 
+    if (!this.socketActivo) return;
 
     const accessToken = window.sessionStorage.getItem('accessToken');
 
@@ -76,7 +79,7 @@ export class Balance extends Component {
     const userId = window.sessionStorage.getItem('userId');
     const subscriptionPath = "/api/subscription";
 
-   
+
 
 
 
@@ -84,10 +87,13 @@ export class Balance extends Component {
       token: accessToken
     }
 
+    if (!accessToken) {return}
+
     this.socket = io(API.baseSocketURL, {
       path: subscriptionPath,
       query: query,
     });
+  
 
 
     this.socket.on("connect", (datos) => {
@@ -104,7 +110,7 @@ export class Balance extends Component {
     });
 
     this.socket.on('error', (error) => {
-      console.log('ERROR: _testSocket', {
+      console.log('Socket ERROR: _testSocket', {
         event: 'error',
         data: error
       });
@@ -114,18 +120,25 @@ export class Balance extends Component {
       console.log('TRANSACTION_UPDATE datos servidor2', data);
       console.log('TR Status ' + data.transactionStatus);
       if (data.transactionStatus == "confirmed") {
-        this.balance.saldos = await this.get_data(true);
-        console.log(JSON.stringify(this.balance));
+        const saldos = await this.get_data(true);
+        if (saldos) {
+         this.balance.saldos = saldos;
+         console.log(JSON.stringify(this.balance));
+        }
       }
     });
 
 
     onWillStart(async () => {
 
-      if (!this.socketActivo) return; 
+      if (!this.socketActivo) return;
 
-      this.balance.saldos = await this.get_data(false);
+      const saldos = await this.get_data(false);
+
+      if (saldos) {
+      this.balance.saldos = saldos;
       console.log(JSON.stringify(this.balance));
+      }
 
 
 
