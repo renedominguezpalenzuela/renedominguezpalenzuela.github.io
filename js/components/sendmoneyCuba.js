@@ -69,7 +69,14 @@ export class SendMoneyCuba extends Component {
     cardNumber: '',
     cardHolderName:'',
     contactPhone:'',
-    deliveryAddress:''
+    deliveryAddress:'',
+    receiverCity: '',          //Municipio
+    receiverCityID: '',        //Municipio id 
+    deliveryArea: '',           //Provincia
+    deliveryAreaID: '',         //Provincia id
+    deliveryCountry: 'Cuba',
+    deliveryCountryCode: 'CU',
+    receiverCountry: 'CUB',
 
 
 
@@ -219,6 +226,37 @@ export class SendMoneyCuba extends Component {
               </label>           
               <textarea t-att-value="this.beneficiarioData.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
              </div>
+
+
+             <div class="form-control w-full sm:row-start-6 ">
+             <label class="label">
+               <span class="label-text">Province</span>
+             </label>
+             <select t-att-value="this.beneficiarioData.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
+               <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
+                 <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
+               </t>             
+             </select>
+           </div>
+
+           <div class="form-control w-full sm:row-start-6 ">
+             <label class="label">
+               <span class="label-text">City</span>
+             </label>
+             <select t-att-value="this.beneficiarioData.receiverCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
+               <option t-att-disabled="true" t-att-value="-1" >Select city</option>
+               <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
+                 <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
+               </t>             
+             </select>
+           </div>
+
+           <div class="form-control w-full max-w-xs sm:row-start-7 ">
+             <label class="label">
+               <span class="label-text">Country</span>
+             </label>
+             <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+           </div> 
 
               
                           
@@ -678,6 +716,44 @@ export class SendMoneyCuba extends Component {
     this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
 
 
+    
+      //Inicializando provincia
+      const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === beneficiarioSelected.deliveryArea)[0];
+      if (selectedProvince) {
+        this.beneficiarioData.deliveryAreaID = selectedProvince.id;
+        this.beneficiarioData.deliveryArea = selectedProvince.nombre;
+      } else {
+        this.beneficiarioData.deliveryAreaID = "-1";
+        this.beneficiarioData.deliveryArea = "";
+        this.beneficiarioData.receiverCityID = -1;
+        this.beneficiarioData.receiverCity = '';
+        return;
+      }
+
+      //inicializando municipio
+      //this.municipios = selectedProvince.municipios;
+      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
+
+      // console.log("Beneficiario municipio:")
+      // console.log(selectedBenefiarioData.deliveryCity)
+      // console.log(selectedBenefiarioData)
+
+      const selectedMuncipio = this.municipios.filter((unMunicipio) => {
+        const comparacion = UImanager.eliminarAcentos(beneficiarioSelected.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
+        return comparacion
+      })[0];
+
+
+
+      if (selectedMuncipio) {
+        this.beneficiarioData.receiverCityID = selectedMuncipio.id;
+        this.beneficiarioData.receiverCity = selectedMuncipio.nombre;
+        this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
+      } else {
+        this.beneficiarioData.receiverCityID = -1;
+        this.beneficiarioData.receiverCity = '';
+      }
+
     if (!this.datosSelectedTX.allData) { 
       this.beneficiarioData.cardHolderName = '';
       return
@@ -814,6 +890,42 @@ export class SendMoneyCuba extends Component {
 
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
+
+
+  
+
+  //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
+  onChangeProvince = (event) => {
+    //this.cambioBeneficiario = true;
+    if (this.inicializando) return;
+    const selectedProvinceId = event.target.value;
+    this.beneficiarioData.deliveryAreaID = event.target.value;
+    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
+    if (selectedProvince) {
+      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
+      this.beneficiarioData.receiverCityID = -1;
+      this.beneficiarioData.receiverCity = '';
+      this.beneficiarioData.deliveryArea = selectedProvince.nombre;
+      this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
+      //this.props.onChangeDatosBeneficiarios(this.state);
+    }
+  };
+
+  //Evento al cambiar de municipio
+  onChangeCity = (event) => {
+   // this.cambioBeneficiario = true;
+    if (this.inicializando) return;
+    const selectedCityId = event.target.value;
+    let selectedMunicipio = this.municipios[selectedCityId];
+    console.log(selectedMunicipio)
+    if (selectedMunicipio) {
+      this.beneficiarioData.receiverCity = selectedMunicipio.nombre;
+      this.beneficiarioData.receiverCityID = selectedCityId;
+     // this.props.onChangeDatosBeneficiarios(this.state);
+    }
+  };
+
+
 
 
 
