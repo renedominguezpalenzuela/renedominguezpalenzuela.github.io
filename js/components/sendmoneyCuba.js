@@ -449,6 +449,19 @@ export class SendMoneyCuba extends Component {
     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
+    const beneficiario = {     
+      cardNumber: this.beneficiarioData.selectedCard,
+      cardHolderName: this.beneficiarioData.cardHolderName,
+      contactPhone: this.beneficiarioData.contactPhone,
+      deliveryAddress: this.beneficiarioData.deliveryAddress,
+      receiverCity:  this.beneficiarioData.receiverCity,          //Municipio      
+      deliveryArea:  this.beneficiarioData.deliveryArea,           //Provincia
+      deliveryCountry: 'Cuba',
+      deliveryCountryCode: 'CU',
+      receiverCountry: 'CUB',
+      bankName: this.beneficiarioData.bankName
+    }
+
     //TODO: Validaciones
     const datosTX = {
       service: service,
@@ -459,7 +472,7 @@ export class SendMoneyCuba extends Component {
       concept: this.concept.el.value,                                               //Concepto del envio
       merchant_external_id: API.generateRandomID(),
       paymentLink: true,
-      ...this.beneficiario
+      ...beneficiario
     }
 
     console.log("DATOS")
@@ -467,10 +480,14 @@ export class SendMoneyCuba extends Component {
 
     console.log(datosTX);
 
+    
+
     if (!this.validarDatos(datosTX)) {
       console.log("Validation Errors");
       return;
     }
+
+
 
 
     try {
