@@ -66,7 +66,8 @@ export class SendMoneyCuba extends Component {
     selectedBeneficiaryId: '-1',
     selectedCard: '-1',
     cardBankImage: '',
-    cardNumber: ''
+    cardNumber: '',
+    cardHolderName:''
 
 
 
@@ -191,8 +192,16 @@ export class SendMoneyCuba extends Component {
                 </div>
 
                 <div class=" flex items-center w-full row-start-3 mt-1">
-                  <img t-att-src="this.beneficiarioData.cardBankImage" alt="IMG" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                  <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
                 </div>
+
+                
+                <div class="form-control w-full  sm:row-start-4 ">
+                <label class="label">
+                  <span class="label-text">Card Holder Name</span>
+                </label>
+                <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
+               </div>
 
               
                           
@@ -579,8 +588,12 @@ export class SendMoneyCuba extends Component {
 
     this.setearDatosBeneficiario(selectedBeneficiaryId);
 
-    this.state.cardBankImage = "";
-    this.state.bankName = "";
+    
+    //this.beneficiarioData.selectedBeneficiaryId: '-1',
+    this.beneficiarioData.selectedCard= '-1',
+    this.beneficiarioData.cardBankImage= '',
+    this.beneficiarioData.cardNumber= '',
+    this.beneficiarioData.cardHolderName=''
 
 
 
@@ -610,13 +623,15 @@ export class SendMoneyCuba extends Component {
       console.log(cardData);
       this.beneficiarioData.cardNumber = formatedCardNumber;
 
+      this.beneficiarioData.cardHolderName = cardData.cardHolderName;
+
 
       //cardHolderName
       /*this.selectedCard.el.value = event.target.value; 
       
       this.state.cardNumber = formatedCardNumber;
       
-      this.state.cardHolderName = cardData.cardHolderName;
+     
       */
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
       console.log("BANCO")
@@ -625,9 +640,10 @@ export class SendMoneyCuba extends Component {
     } else {
       console.log("NO Hay card data");
       console.log(cardData);
+      this.beneficiarioData.cardHolderName='';
       /*this.state.cardNumber = '';
       this.cardNumber.el.value='';
-      this.state.cardHolderName = '';*/
+      */
     }
 
 
@@ -642,14 +658,17 @@ export class SendMoneyCuba extends Component {
 
 
     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
-    console.log("Beneficiario selected")
-    console.log(beneficiarioSelected)
+
     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
 
 
     if (!this.datosSelectedTX.allData) { return }
     this.beneficiarioData.selectedCard = this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
+    console.log("Operacion")
+    
     console.log(this.datosSelectedTX.allData);
+
+    this.beneficiarioData.cardHolderName = this.datosSelectedTX.allData.metadata.cardHolderName;
 
 
 
