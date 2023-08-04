@@ -75,6 +75,8 @@ export class ListaTR extends Component {
 
             //console.log(raw_datos)
 
+            if (!raw_datos) {return}
+
 
 
 
