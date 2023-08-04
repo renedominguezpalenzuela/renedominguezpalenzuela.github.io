@@ -9,6 +9,8 @@ import { Provincias } from "../../data/provincias_cu.js";
 
 export class Beneficiarios extends Component {
 
+  inicializandoCardList  = false;
+
   tiempoDebounce = 1000; //milisegundos
 
   accessToken = '';
@@ -16,25 +18,15 @@ export class Beneficiarios extends Component {
   selectedCard = useRef("selectedCard");
   cardNumber = useRef("cardNumber");
 
+  selectedBeneficiaryId = useRef("selectedBeneficiaryId");
 
-  state = useState({
-    cardNumber: '',
-    cardHolderName: '',
-    cardBankImage: '',
-    bankName: '',
-    contactPhone: '',
-    deliveryAddress: '',
-    receiverCity: '',          //Municipio
-    receiverCityID: '',        //Municipio id 
-    deliveryArea: '',           //Provincia
-    deliveryAreaID: '',         //Provincia id
-    deliveryCountry: 'Cuba',
-    deliveryCountryCode: 'CU',
-    receiverCountry: 'CUB',
-    selectedBeneficiaryId: "-1"
-  })
 
-  cardsList = useState({});
+
+  // cardsList = useState({});
+
+ 
+    cardsList = []
+  
 
   //TODO: mask in input 0000-0000-0000-0000
   static template = xml`  
@@ -50,91 +42,35 @@ export class Beneficiarios extends Component {
                     <label class="label">
                       <span class="label-text">Select Beneficiary</span>
                     </label>
-                    <select t-att-value="this.state.selectedBeneficiaryId"  class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                    <select t-ref="selectedBeneficiaryId"  class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario" >
                       <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                       </t>             
                     </select>
-                  </div>                
-
+                  </div> 
+                  
                   <div class="form-control w-full  sm:row-start-2 ">
-                  <label class="label">
-                      <span class="label-text">Select Card</span>
-                  </label>
-                
-                  <select t-ref="selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
-                    <option  t-att-value="-1" >Select Card</option>
-                    <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
-                      <option t-att-value="unCard.number"><t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/></option>
-                    </t>             
-                 </select>
-                 </div>
-                
-                 <div class="form-control w-full  sm:row-start-2 ">
                     <label class="label">
-                      <span class="label-text">Card Number</span>
+                        <span class="label-text">Select Card</span>
                     </label>
-                    <input type="text" t-ref="cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
-                 </div>
-
-                 <div class=" flex items-center w-full row-start-3 mt-1">
-                      <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
-                 </div>
-               
-                 <div class="form-control w-full  sm:row-start-4 ">
-                  <label class="label">
-                    <span class="label-text">Card Holder Name</span>
-                  </label>
-                  <input type="text"   t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
-                 </div>
-
-                 <div class="form-control w-full sm:row-start-4 ">
-                  <label class="label">
-                    <span class="label-text">Contact Phone</span>
-                  </label>
-                  <input type="text" t-att-value="this.state.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
-                 </div>
-
-                 <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
-                  <label class="label">
-                    <span class="label-text">Delivery Address</span>
-                  </label>           
-                  <textarea t-att-value="this.state.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
-                 </div>
-             
-                <div class="form-control w-full sm:row-start-6 ">
-                  <label class="label">
-                    <span class="label-text">Province</span>
-                  </label>
-                  <select t-att-value="this.state.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
-                    <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
-                      <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
-                    </t>             
+                  
+                    <select t-ref="selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                      <option  t-att-value="-1" >Select Card</option>
+                      <t t-foreach="cardsList" t-as="unCard" t-key="unCard.number">
+                        <option t-att-value="unCard.number">
+                           
+                          <t t-esc="unCard.currency"/> -
+                          <t t-esc="unCard.number"/>
+                        </option>
+                      </t>             
                   </select>
-                </div>
+                 </div>
 
-                <div class="form-control w-full sm:row-start-6 ">
-                  <label class="label">
-                    <span class="label-text">City</span>
-                  </label>
-                  <select t-att-value="this.state.receiverCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
-                    <option t-att-disabled="true" t-att-value="-1" >Select city</option>
-                    <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
-                      <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
-                    </t>             
-                  </select>
-                </div>
-
-                <div class="form-control w-full max-w-xs sm:row-start-7 ">
-                  <label class="label">
-                    <span class="label-text">Country</span>
-                  </label>
-                  <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
-                </div>             
-                <div class="hidden"> 
-                <t t-esc="this.props.datosSelectedTX.txID"/>
-              </div>
+                             
+                  <div class="hidden"> 
+                     <t t-esc="this.props.datosSelectedTX.txID"/>
+                  </div>
               </div>
             </div>
             
@@ -142,6 +78,8 @@ export class Beneficiarios extends Component {
   `;
 
   setup() {
+
+
 
     this.accessToken = window.sessionStorage.getItem('accessToken');
 
@@ -152,10 +90,49 @@ export class Beneficiarios extends Component {
       this.cardRegExp = await api.getCardRegExp();
     });
 
+    onMounted(() => {
+      console.log("Mounted")
+      console.log(this.props.beneficiariosNames[0].CI)
+
+      //Cargando los datos del primer beneficiario de la lista
+      this.setearBeneficiario(this.props.beneficiariosNames[0].CI);
+
+    });
+
+
     onRendered(async () => {
+      console.log("Inicializando cardList")
+      console.log(this.inicializandoCardList)
+
+      if (this.inicializandoCardList ) {
+        console.log("Inicializando cardList")
+        this.inicializandoCardList = false;
+        return;
+      }
+
+      /*if (cambiandoBeneficiario) {
+        console.log("Cambiando beneficiario");
+        this.cambiandoBeneficiario = false;
+        return;
+      }*/
+
       console.log("RENDER")
       console.log("Datos que llegan a beneficiario")
       console.log(this.props.datosSelectedTX)
+
+      if (this.props.datosSelectedTX.allData) {
+
+
+        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
+
+        await this.setearBeneficiario(CI);
+
+        console.log("Render: Invocado desde el padre, al seleccionar una TX")
+
+
+      } else {
+        console.log("Render: Cargando ventana por primera ves")
+      }
 
       /*
       if (this.inicializando) {
@@ -163,204 +140,59 @@ export class Beneficiarios extends Component {
        // this.cambioPorSeleccionDesdeListaTX = false;
         return;
       }*/
-   
- 
-
-      
-
-      //Buscar el CI
-      if (this.props.datosSelectedTX.allData) {
-        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
-        //console.log(CI)
-        const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CI)[0]
-        console.log("Beneficiario")
-        console.log(beneficiario)
-        if (beneficiario) {
-          this.inicializarDatosBeneficiario(beneficiario._id);
-          //ERROR: no inicializa correctamente el SELECT -- DONE
-        } else {
-          //TODO: inicializar todos los controles
-        }
-
-        //Inicializar card del envio
-        this.state.cardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber;
-        //this.state.selectedCard = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
-        this.selectedCard.el.value = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
-        //this.state.cardBankImage = "";
-        //this.state.bankName = "";
-
-        //this.state.cardHolderName = this.props.datosSelectedTX.allData.metadata.cardHolderName;
-        //await this.buscarLogotipoBanco(this.state.cardNumber);
-
-        //console.log("SELECTED CARD")
-        //console.log(this.cardsList)
-        //console.log(this.state.selectedCard)
-
-
-       // this.cambioBeneficiario = true;
-
-       this.cambioPorSeleccionDesdeListaTX = false;
-
-      }
-
 
     });
 
-    onMounted(() => {
-      this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
-    });
+
+  }
 
 
+
+  setearBeneficiario = async (CIBeneficiario) => {
+
+    const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
+    console.log(beneficiario)
+    this.selectedBeneficiaryId.el.value = beneficiario._id;
+
+
+
+    await this.setearDatosBeneficiario(beneficiario._id);
 
 
   }
 
 
-  async buscarLogotipoBanco(CardNumber) {
-    const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
-
-    // const api = new API(this.accessToken);
-    //const cardRegExp = await api.getCardRegExp();
-
-    //console.log(typeof (cardRegExp));
-
-    for (const key in this.cardRegExp) {
-
-      const regexp = new RegExp(this.cardRegExp[key]);
-      const card = this.state.cardNumber.replace(/ /g, "");
-      const resultado = regexp.test(card);
-      if (resultado) {
-        console.log(key)
-        switch (key) {
-          case 'BANDEC_CARD':
-            //Poner imagen
-            this.state.cardBankImage = "img/logo-bandec.png";
-            this.state.bankName = "BANDEC";
-
-            break;
-
-          case 'BANMET_CARD':
-            //Poner imagen
-            this.state.cardBankImage = "img/logo-metro.png";
-            this.state.bankName = "METROPOLITANO";
-
-            break;
-
-          case 'BPA_CARD':
-            //Poner imagen
-            this.state.cardBankImage = "img/logo-bpa.png";
-            this.state.bankName = "BPA";
-
-            break;
-
-          default:
-            break;
-        }
-
-      }
 
 
 
 
-    }
 
 
+  setearDatosBeneficiario = async (idBeneficiario) => {
+    const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+    const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
+    //seteando lista de tarjetas del beneficiario
+    this.inicializandoCardList = true;
+    this.cardsList = selectedBenefiarioData.creditCards;
+    await this.render();
+   // this.inicializandoCardList = false;
+
+    console.log("Selected Beneficiary Data")
+    console.log(selectedBenefiarioData)
+    console.log(this.cardsList)
 
   }
 
-
-  onCardInputKeyDown = API.debounce(async (event) => {
-    if (event.target.value.length === 19) {
-      this.state.cardNumber = event.target.value;
-      this.cardNumber.el.value =  event.target.value;
-      this.buscarLogotipoBanco(this.state.cardNumber);
-      this.props.onChangeDatosBeneficiarios(this.state);
-      //TODO: si es un card nuevo agregarlo?
-    }
-  }, API.tiempoDebounce);
-
-  onChangeCardInput(event) {
-    console.log(event.target.value)
-    // this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
-
-    // this.state.cardNumber = UImanager.formatCardNumber(event.target.value);
-  };
-
-
-
-  onChangeCardHolderInput = API.debounce(async (event) => {
-    this.state.cardHolderName = event.target.value;
-
-    this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);
-
-  onChangeAddressInput = API.debounce(async (event) => {
-    this.state.deliveryAddress = event.target.value;
-
-    this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);
-
-  onChangePhoneInput = API.debounce(async (event) => {
-    this.state.contactPhone = event.target.value;
-
-    this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);
-
-
-  onChangeSelectedBeneficiario = (event) => {
-    const selectedBeneficiaryId = event.target.value;
-    this.state.cardBankImage = "";
-    this.state.bankName = "";
-   // this.cambioBeneficiario = true;
-    this.state.selectedBeneficiaryId = selectedBeneficiaryId;
-
-    this.inicializarDatosBeneficiario(selectedBeneficiaryId);
-  }
-
-
-
-
-  //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
-  onChangeProvince = (event) => {
-    //this.cambioBeneficiario = true;
-    if (this.inicializando) return;
-    const selectedProvinceId = event.target.value;
-    this.state.deliveryAreaID = event.target.value;
-    let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
-    if (selectedProvince) {
-      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
-      this.state.receiverCityID = -1;
-      this.state.receiverCity = '';
-      this.state.deliveryArea = selectedProvince.nombre;
-      this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
-      this.props.onChangeDatosBeneficiarios(this.state);
-    }
-  };
-
-  //Evento al cambiar de municipio
-  onChangeCity = (event) => {
-   // this.cambioBeneficiario = true;
-    if (this.inicializando) return;
-    const selectedCityId = event.target.value;
-    let selectedMunicipio = this.municipios[selectedCityId];
-    console.log(selectedMunicipio)
-    if (selectedMunicipio) {
-      this.state.receiverCity = selectedMunicipio.nombre;
-      this.state.receiverCityID = selectedCityId;
-      this.props.onChangeDatosBeneficiarios(this.state);
-    }
-  };
 
 
   onChangeSelectedCard = async (event) => {
-    // //Lista de tarjetas
+    return;
 
-    //this.cambioBeneficiario = true;
     console.log('Cambio de CARD')
     console.log(this.cardsList);
     console.log(event.target.value)
-    
+
 
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
     console.log(formatedCardNumber)
@@ -375,109 +207,43 @@ export class Beneficiarios extends Component {
       console.log("Hay card data");
       console.log(cardData);
       //cardHolderName
-      this.selectedCard.el.value = event.target.value; 
+      /*this.selectedCard.el.value = event.target.value; 
       
       this.state.cardNumber = formatedCardNumber;
       this.cardNumber.el.value = formatedCardNumber;
       this.state.cardHolderName = cardData.cardHolderName;
-      await this.buscarLogotipoBanco(this.state.cardNumber);
+      await this.buscarLogotipoBanco(this.state.cardNumber);*/
     } else {
       console.log("NO Hay card data");
       console.log(cardData);
-      this.state.cardNumber = '';
+      /*this.state.cardNumber = '';
       this.cardNumber.el.value='';
-      this.state.cardHolderName = '';
+      this.state.cardHolderName = '';*/
     }
 
-    //this.cambioBeneficiario = false;
 
-    this.props.onChangeDatosBeneficiarios(this.state);
+
+    //this.props.onChangeDatosBeneficiarios(this.state);
   }
 
 
-  inicializarDatosBeneficiario = async (idBeneficiario) => {
-    const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-    const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
-
-
-    if (selectedBenefiarioData) {
-      this.inicializando = true;
-
-      this.state.contactPhone = selectedBenefiarioData.deliveryPhone;
-      this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
-      this.state.selectedBeneficiaryId = idBeneficiario;
-
-
+  onChangeSelectedBeneficiario = async (event) => {
     
-
-      //Inicializando provincia
-      const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
-      if (selectedProvince) {
-        this.state.deliveryAreaID = selectedProvince.id;
-        this.state.deliveryArea = selectedProvince.nombre;
-      } else {
-        this.state.deliveryAreaID = "-1";
-        this.state.deliveryArea = "";
-        this.state.receiverCityID = -1;
-        this.state.receiverCity = '';
-        return;
-      }
-
-      //inicializando municipio
-      //this.municipios = selectedProvince.municipios;
-      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
-
-      // console.log("Beneficiario municipio:")
-      // console.log(selectedBenefiarioData.deliveryCity)
-      // console.log(selectedBenefiarioData)
-
-      const selectedMuncipio = this.municipios.filter((unMunicipio) => {
-        const comparacion = UImanager.eliminarAcentos(selectedBenefiarioData.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
-        return comparacion
-      })[0];
+    const selectedBeneficiaryId = event.target.value;
 
 
+    await this.setearDatosBeneficiario(selectedBeneficiaryId);
 
-      if (selectedMuncipio) {
-        this.state.receiverCityID = selectedMuncipio.id;
-        this.state.receiverCity = selectedMuncipio.nombre;
-        this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
-      } else {
-        this.state.receiverCityID = -1;
-        this.state.receiverCity = '';
-      }
+    // this.state.cardBankImage = "";
+    // this.state.bankName = "";
+    // this.cambioBeneficiario = true;
+    // this.state.selectedBeneficiaryId = selectedBeneficiaryId;
 
+    // this.inicializarDatosBeneficiario(selectedBeneficiaryId);
 
-
-
-      this.cardsList = selectedBenefiarioData.creditCards;
-      this.state.cardNumber = '';
-      this.cardNumber.el.value = '';
-      this.state.selectedCard='-1'
-      this.state.cardHolderName = '';
-
-
-
-
-
-
-      this.props.onChangeDatosBeneficiarios(this.state);
-      this.inicializando = false;
-
-    }
 
   }
-
-
-
-
-
-
-
-
-
-
 
 }
 
