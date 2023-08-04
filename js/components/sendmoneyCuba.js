@@ -646,13 +646,15 @@ export class SendMoneyCuba extends Component {
   setearDatosBeneficiario = async (idBeneficiario) => {
 
      //Setear el select de tarjetas con la tarjeta de la operacion
-     if (!this.datosSelectedTX.allData) {return}
+    
 
      const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
      console.log("Beneficiario selected")
      console.log(beneficiarioSelected)
      this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
 
+
+     if (!this.datosSelectedTX.allData) {return}
      this.beneficiarioData.selectedCard =this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
      console.log(this.datosSelectedTX.allData);
 
