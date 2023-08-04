@@ -15,14 +15,24 @@ export class Beneficiarios extends Component {
 
   accessToken = '';
 
+
+
+  //Lista de beneficiarios y de tarjetas
+  selectedBeneficiaryId = useRef("selectedBeneficiaryId");
   selectedCard = useRef("selectedCard");
+
+  //resto de los datos
   cardNumber = useRef("cardNumber");
 
-  selectedBeneficiaryId = useRef("selectedBeneficiaryId");
+  state = useState({
+    cardBankImage:'',
+    bankName:''
+  })
 
 
 
- 
+
+
 
 
   //TODO: mask in input 0000-0000-0000-0000
@@ -65,6 +75,19 @@ export class Beneficiarios extends Component {
                   </select>
                  </div>
 
+
+                 <div class="form-control w-full  sm:row-start-2 ">
+                    <label class="label">
+                      <span class="label-text">Card Number</span>
+                    </label>
+                    <input type="text" t-ref="cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                 </div>
+
+                 <div class=" flex items-center w-full row-start-3 mt-1">
+                  <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                 </div>
+
+                
                              
                   <div class="hidden"> 
                      <t t-esc="this.props.datosSelectedTX.txID"/>
@@ -89,6 +112,9 @@ export class Beneficiarios extends Component {
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
       const api = new API(this.accessToken);
       this.cardRegExp = await api.getCardRegExp();
+
+
+
     });
 
     onMounted(() => {
@@ -106,33 +132,14 @@ export class Beneficiarios extends Component {
       console.log("Datos que llegan a beneficiario")
       console.log(this.props.datosSelectedTX)
 
-      /*  if (this.inicializandoCardList) {
-          console.log("Inicializando cardList")
-          this.inicializandoCardList = false;
-          return;
-        }*/
-
-      /*if (cambiandoBeneficiario) {
-        console.log("Cambiando beneficiario");
-        this.cambiandoBeneficiario = false;
-        return;
-      }*/
-
 
 
       if (this.props.datosSelectedTX.allData != null) {
-
-
-        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
-
-       // await this.setearBeneficiario(CI);
-
         console.log("Render: Invocado desde el padre, al seleccionar una TX")
-
-
+        const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
+        await this.setearBeneficiario(CI);
       } else {
         console.log("Render: Cargando ventana por primera ves")
-
       }
 
 
@@ -151,7 +158,7 @@ export class Beneficiarios extends Component {
     console.log(beneficiarioName)
     this.selectedBeneficiaryId.el.value = beneficiarioName._id;
 
-   // this.setearDatosBeneficiario(beneficiarioName._id)
+    this.setearDatosBeneficiario(beneficiarioName._id)
 
 
 
@@ -169,40 +176,31 @@ export class Beneficiarios extends Component {
   setearDatosBeneficiario = async (idBeneficiario) => {
 
 
-    const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-    const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
-    console.log(selectedBenefiarioData)
-
-    //seteando lista de tarjetas del beneficiario
-    this.inicializandoCardList = true;
-    //this.cardsList.value = selectedBenefiarioData.creditCards;
-    //await this.render();
+    if (this.props.datosSelectedTX.allData == null) { return }
 
 
+    const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
 
-    //await this.setearDatosBeneficiario(beneficiario._id);
-    if (!selectedBenefiarioData) return;
-    console.log("allData")
-    console.log(this.props.datosSelectedTX.allData)
-    if (!this.props.datosSelectedTX.allData) return;
+    console.log("Selected card " + selectedCardNumber)
+    console.log(this.props.datosSelectedTX.allData.metadata.cardNumber)
 
- 
-
-
-    console.log("Selected Beneficiary Data")
-    console.log(selectedBenefiarioData)
-    //console.log("Card List")
-    //console.log(this.cardsList.value)
+    //const selectedCard = this.props.cardsList.filter((unCard)=>unCard.number ===selectedCardNumber )[0];
+    //console.log(selectedCard.id)
 
 
+    console.log(this.selectedCard.el.value)
+    this.selectedCard.el.value = selectedCardNumber;
 
-    const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber;
-    const selectedCardID = selectedCardNumber.replace(/ /g, "");
-    console.log("Selected card " + selectedCardID)
+    console.log(this.selectedCard.el.value)
 
 
-    //this.selectedCard.value = selectedCardID;
-    // this.inicializandoCardList = false;
+    const formatedCardNumber = UImanager.formatCardNumber(selectedCardNumber);
+    this.cardNumber.el.value = formatedCardNumber;
+
+    await this.buscarLogotipoBanco(selectedCardNumber);
+    //this.selectedCard.el.value="9225959875865500"
+
+
 
 
 
@@ -230,11 +228,13 @@ export class Beneficiarios extends Component {
     if (cardData) {
       console.log("Hay card data");
       console.log(cardData);
+      this.cardNumber.el.value = formatedCardNumber;
+
       //cardHolderName
       /*this.selectedCard.el.value = event.target.value; 
       
       this.state.cardNumber = formatedCardNumber;
-      this.cardNumber.el.value = formatedCardNumber;
+      
       this.state.cardHolderName = cardData.cardHolderName;
       await this.buscarLogotipoBanco(this.state.cardNumber);*/
     } else {
@@ -254,9 +254,9 @@ export class Beneficiarios extends Component {
 
   onChangeSelectedBeneficiario = async (event) => {
     const selectedBeneficiaryId = event.target.value;
-    this.props.onChangeDatosBeneficiarios(selectedBeneficiaryId)
+   // this.props.onChangeDatosBeneficiarios(selectedBeneficiaryId)
 
-    
+
 
 
     //await this.setearDatosBeneficiario(selectedBeneficiaryId);
@@ -270,6 +270,74 @@ export class Beneficiarios extends Component {
 
 
   }
+
+  onCardInputKeyDown = API.debounce(async (event) => {
+    if (event.target.value.length === 19) {
+      this.state.cardNumber = event.target.value;
+      this.cardNumber.el.value =  event.target.value;
+      this.buscarLogotipoBanco(this.state.cardNumber);
+      this.props.onChangeDatosBeneficiarios(this.state);
+      //TODO: si es un card nuevo agregarlo?
+    }
+  }, API.tiempoDebounce);
+
+
+  async buscarLogotipoBanco(CardNumber) {
+   // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
+
+    // const api = new API(this.accessToken);
+    //const cardRegExp = await api.getCardRegExp();
+
+    //console.log(typeof (cardRegExp));
+
+    for (const key in this.cardRegExp) {
+
+      const regexp = new RegExp(this.cardRegExp[key]);
+      //const card = this.state.cardNumber.replace(/ /g, "");
+      const resultado = regexp.test(CardNumber);
+      if (resultado) {
+        console.log(key)
+        switch (key) {
+          case 'BANDEC_CARD':
+            //Poner imagen
+            this.state.cardBankImage = "img/logo-bandec.png";
+            this.state.bankName = "BANDEC";
+
+            break;
+
+          case 'BANMET_CARD':
+            //Poner imagen
+            this.state.cardBankImage = "img/logo-metro.png";
+            this.state.bankName = "METROPOLITANO";
+
+            break;
+
+          case 'BPA_CARD':
+            //Poner imagen
+            this.state.cardBankImage = "img/logo-bpa.png";
+            this.state.bankName = "BPA";
+
+            break;
+
+          default:
+            this.state.cardBankImage='';
+            this.state.bankName='';
+
+            break;
+        }
+
+      }
+
+
+
+
+    }
+
+
+
+
+  }
+
 
 }
 

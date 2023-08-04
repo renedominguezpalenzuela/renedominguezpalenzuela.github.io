@@ -1,13 +1,14 @@
 const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
 import { API, UImanager } from "../utils.js";
-import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
+//import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
 import { ListaTR } from "./listatr.js";
+import { Provincias } from "../../data/provincias_cu.js";
 
 //TODO: refactorizar en un componente la parte de las monedas y el importe
 
 export class SendMoneyCuba extends Component {
 
-  static components = { Beneficiarios, ListaTR };
+  static components = {  ListaTR };
 
   inputAvatar = useRef("inputAvatar");
   inputSendRef = useRef("inputSendRef");
@@ -39,9 +40,11 @@ export class SendMoneyCuba extends Component {
   })
 
   cardList = useState({
-    value:[]
+    value: []
 
   })
+
+ 
 
   conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
@@ -56,6 +59,18 @@ export class SendMoneyCuba extends Component {
     //name: "CASH_OUT_TRANSACTION"
     name: "CREDIT_CARD_TRANSACTION"
   }
+
+  beneficiarioData = useState({
+    beneficiariosNames:[],
+    cardsList:[],
+    selectedBeneficiaryId:'-1',
+    selectedCard:'-1',
+    cardBankImage:'',
+    cardNumber:''
+
+
+
+  })
 
 
 
@@ -128,8 +143,68 @@ export class SendMoneyCuba extends Component {
         </div>
    
     </div>
-       
-       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" cardsList="cardList.value" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX"  />
+       <!-- Beneficiario -->
+          <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2">
+            <div class="card-title flex flex-col rounded-lg pt-2">
+              <div>Beneficiary</div> 
+            </div>
+
+            <div class="card-body items-center   ">
+              <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
+
+                  <div class="form-control w-full sm:row-start-1 ">
+                    <label class="label">
+                      <span class="label-text">Select Beneficiary</span>
+                    </label>
+                    <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario" >
+                      <option  t-att-value="-1" >Select Beneficiary</option>
+                      <t t-foreach="this.beneficiarioData.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
+                        <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
+                      </t>    
+                                
+                    </select>
+                  </div> 
+                  
+                  <div class="form-control w-full  sm:row-start-2 ">
+                    <label class="label">
+                        <span class="label-text">Select Card</span>
+                    </label>
+                  
+                    <select t-att-value="this.beneficiarioData.selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                      <option  t-att-value="-1" >Select Card</option>
+                      <t t-foreach="this.beneficiarioData.cardsList" t-as="unCard" t-key="unCard.number">
+                        <option t-att-value="unCard.number">
+                          
+                          <t t-esc="unCard.currency"/> -
+                          <t t-esc="unCard.number"/>
+                        </option>
+                      </t>             
+                  </select>
+                </div>
+
+
+                <div class="form-control w-full  sm:row-start-2 ">
+                    <label class="label">
+                      <span class="label-text">Card Number</span>
+                    </label>
+                    <input type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                </div>
+
+                <div class=" flex items-center w-full row-start-3 mt-1">
+                  <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                </div>
+
+              
+                          
+                
+            </div>
+          </div>
+         
+        
+        </div>    
+        <!-- Beneficiario END -->
+
+
        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
 
 
@@ -144,23 +219,14 @@ export class SendMoneyCuba extends Component {
   `;
 
 
-  onChangeDatosBeneficiarios(IDBeneficiarioSeleccionado) {
-    
-    console.log("ID Beneficiario Seleccionado")
-    console.log(IDBeneficiarioSeleccionado)
-    this.beneficiario =  this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === IDBeneficiarioSeleccionado)[0];
-    console.log(this.beneficiario)
 
-    //this.beneficiario = datosBeneficiario;
-    this.cardList.value = this.beneficiario.creditCards;
-    console.log(this.cardList)
-  }
 
   //CASH_OUT_TRANSACTION
   setup() {
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const walletAddress = window.sessionStorage.getItem('walletAddress');
-    const userId = window.sessionStorage.getItem('userId');
+    
+    const accessToken = API.getTokenFromSessionStorage();
+    //const walletAddress = window.sessionStorage.getItem('walletAddress');
+    //const userId = window.sessionStorage.getItem('userId');
 
     onWillStart(async () => {
       const api = new API(accessToken);
@@ -174,15 +240,24 @@ export class SendMoneyCuba extends Component {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-      if (  this.allDatosBeneficiariosFromStorage) {
-      this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-        beneficiaryFullName: el.beneficiaryFullName,
-        _id: el._id,
-        CI: el.deliveryCI
-      }));
+      if (this.allDatosBeneficiariosFromStorage) {
+        this.beneficiarioData.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+          beneficiaryFullName: el.beneficiaryFullName,
+          _id: el._id,
+          CI: el.deliveryCI
+        }));
 
-      this.cardList.value = this.allDatosBeneficiariosFromStorage[0].creditCards;
-    }
+
+
+
+        this.beneficiarioData.cardsList = this.allDatosBeneficiariosFromStorage[0].creditCards;
+
+      }
+
+      this.provincias = Provincias;
+      this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
+     
+      this.cardRegExp = await api.getCardRegExp();
 
 
     });
@@ -192,7 +267,8 @@ export class SendMoneyCuba extends Component {
     });
 
     onMounted(async () => {
-     
+      this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
+
     })
 
   }
@@ -241,7 +317,7 @@ export class SendMoneyCuba extends Component {
     if (this.changingReceiveAmount) { return; }
     this.changingSendAmount = true;
     this.changingReceiveAmount = false;
- 
+
     //ACtualizar variables de tasas de cambio
     const sendCurrency = this.inputSendCurrencyRef.el.value;
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
@@ -258,7 +334,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-   // console.log(resultado)
+    // console.log(resultado)
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -430,14 +506,186 @@ export class SendMoneyCuba extends Component {
 
   onChangeSelectedTX = async (datos) => {
     this.datosSelectedTX.txID = datos._id;
-    this.datosSelectedTX.allData = { ...datos }   
+    this.datosSelectedTX.allData = { ...datos }
     this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
     this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
-    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();   
+    this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
+
+
+
+    const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
+    console.log("Beneficiario seleccionado en TX")
+    console.log(this.datosSelectedTX.allData.metadata)
+
+
+
+    
+
+    this.setearBeneficiario(CIBeneficiariodeTX)
+  
+   
+
+
     await this.onChangeSendInput()
+    
   }
 
+  onChangeDatosBeneficiarios(IDBeneficiarioSeleccionado) {
+
+    console.log("ID Beneficiario Seleccionado")
+    console.log(IDBeneficiarioSeleccionado)
+    const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === IDBeneficiarioSeleccionado)[0];
+    console.log(beneficiarioSelected)
+
+    //this.beneficiario = datosBeneficiario;
+    this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
+
+    console.log("Tarketas")
+    console.log(this.beneficiarioData.cardsList)
+    
+  }
+
+
+  
+  setearBeneficiario = async (CIBeneficiario) => {
+
+    console.log("CI")
+    console.log(CIBeneficiario)
+    console.log("Beneficiario name")
+    console.log(this.beneficiarioData.beneficiariosNames)
+
+    const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
+
+    if(!beneficiarioName) {return}
+   
+    console.log(beneficiarioName)
+    this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
+
+    this.setearDatosBeneficiario(beneficiarioName._id)
+
+
+
+
+
+  }
+
+  
+
+  onChangeSelectedBeneficiario = async (event) => {
+    const selectedBeneficiaryId = event.target.value;
+    this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
+
+    console.log("onChangeSelectedBeneficiario")
+    console.log(selectedBeneficiaryId)
+
+    //this.setearBeneficiario(selectedBeneficiaryId);
+    //this.beneficiario.onChangeDatosBeneficiarios(selectedBeneficiaryId)
+
+
+
+
+     this.setearDatosBeneficiario(selectedBeneficiaryId);
+
+    // this.state.cardBankImage = "";
+    // this.state.bankName = "";
+    // this.cambioBeneficiario = true;
+    // this.state.selectedBeneficiaryId = selectedBeneficiaryId;
+
+    // this.inicializarDatosBeneficiario(selectedBeneficiaryId);
+
+
+  }
+
+  onChangeSelectedCard = async (event) => {
+
+
+    console.log('Cambio de CARD')
+    console.log(this.beneficiarioData.cardsList);
+    
+
+    this.beneficiarioData.selectedCard = event.target.value
+
+
+    const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
+    console.log(formatedCardNumber)
+
+    const cardData = this.beneficiarioData.cardsList.filter((unaCard) =>
+      UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
+    )[0];
+
+
+
+    if (cardData) {
+      console.log("Hay card data");
+      console.log(cardData);
+      this.beneficiarioData.cardNumber = formatedCardNumber;
+      
+
+      //cardHolderName
+      /*this.selectedCard.el.value = event.target.value; 
+      
+      this.state.cardNumber = formatedCardNumber;
+      
+      this.state.cardHolderName = cardData.cardHolderName;
+      await this.buscarLogotipoBanco(this.state.cardNumber);*/
+    } else {
+      console.log("NO Hay card data");
+      console.log(cardData);
+      /*this.state.cardNumber = '';
+      this.cardNumber.el.value='';
+      this.state.cardHolderName = '';*/
+    }
+
+
+
+    //this.props.onChangeDatosBeneficiarios(this.state);
+  }
+
+  
+  setearDatosBeneficiario = async (idBeneficiario) => {
+
+     //Setear el select de tarjetas con la tarjeta de la operacion
+     if (!this.datosSelectedTX.allData) {return}
+
+     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
+     console.log("Beneficiario selected")
+     console.log(beneficiarioSelected)
+     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
+
+     this.beneficiarioData.selectedCard =this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
+     console.log(this.datosSelectedTX.allData);
+
+    
+   
+
+
+    //const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
+
+    console.log("Selected card " + this.beneficiarioData.selectedCard)
+    //console.log(this.props.datosSelectedTX.allData.metadata.cardNumber)
+
+    //const selectedCard = this.props.cardsList.filter((unCard)=>unCard.number ===selectedCardNumber )[0];
+    //console.log(selectedCard.id)
+
+
+    //console.log(this.selectedCard.el.value)
+    //this.selectedCard.el.value = selectedCardNumber;
+
+    //console.log(this.selectedCard.el.value)
+
+
+    const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
+    this.beneficiarioData.cardNumber = formatedCardNumber;
+
+    //await this.buscarLogotipoBanco(selectedCardNumber);
+    //this.selectedCard.el.value="9225959875865500"
+
+
+
+
+
+  }
 
 }
 
