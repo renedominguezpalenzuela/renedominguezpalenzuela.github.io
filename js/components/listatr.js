@@ -41,7 +41,7 @@ export class ListaTR extends Component {
     <table  id="container-listtr" class="display nowrap " style="width:100%" >
     <thead>
         <tr>
-            <th>Created</th>
+            <th >Created</th>
             <th>Status</th>
             <th data-priority="1">Amount</th>
             
@@ -197,21 +197,26 @@ export class ListaTR extends Component {
             this.tabla = $('#container-listtr').DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'createdAt',  "width": "15%"  },
-                    { data: 'transactionStatus',  "width": "5%"  },
-                    { data: 'transactionAmount',  "width": "50%"  },
+                    { data: 'createdAt' },
+                    { data: 'transactionStatus'  },
+                    { data: 'transactionAmount'  },
 
-                    { data: 'currency' ,  "width": "10%" },
-                    { data: 'type' ,  "width": "10%" },
-                    { data: 'type2', "width": "10%"  },
-                    { data: 'transactionID' ,  "width": "10%" },
+                    { data: 'currency' },
+                    { data: 'type' },
+                    { data: 'type2'  },
+                    { data: 'transactionID'  },
 
                 ],
+                
                 "pageLength": 10,
                 order: [[0, 'desc']],
                 select: true,
-                responsive: true
+                responsive: true,
+                
+                
             });
+
+            this.tabla.columns.adjust().draw();
 
 
             //console.log(this.tabla)
