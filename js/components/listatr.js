@@ -37,29 +37,25 @@ export class ListaTR extends Component {
 
     static template = xml`  
 
-    <div class="container-fluid no-padding">
-    <div>TX List:</div>
-    <button id="getdata-btn" class="other-btn" t-on-click="get_data">Refresh Data </button>
-        <div class="row tx-container">
-            <div class="col">
-                <table  id="container-listtr" class="table table-striped table-bordered  table-responsive dataTable_width_auto display" style="width:100%" >
-                    <thead>
-                        <tr>
-                            <th>Created</th>
-                            <th>Transaction Status</th>
-                            <th>Transaction Amount</th>
-                            
-                            <th>Currency</th>
-                            <th>Type</th>
-                            <th>Type2</th>
-                            <th>Transaction ID</th>
-                           
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
+    
+    <table  id="container-listtr" class="display nowrap " style="width:100%" >
+    <thead>
+        <tr>
+            <th>Created</th>
+            <th>Status</th>
+            <th data-priority="1">Amount</th>
+            
+            <th data-priority="2" >Currency</th>
+            <th>Type</th>
+            <th>Type2</th>
+            <th>Transaction ID</th>
+           
+        </tr>
+    </thead>
+</table>
+
+
+
    
   `;
 
@@ -201,19 +197,20 @@ export class ListaTR extends Component {
             this.tabla = $('#container-listtr').DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'createdAt' },
-                    { data: 'transactionStatus' },
-                    { data: 'transactionAmount' },
+                    { data: 'createdAt',  "width": "15%"  },
+                    { data: 'transactionStatus',  "width": "5%"  },
+                    { data: 'transactionAmount',  "width": "50%"  },
 
-                    { data: 'currency' },
-                    { data: 'type' },
-                    { data: 'type2' },
-                    { data: 'transactionID' },
+                    { data: 'currency' ,  "width": "10%" },
+                    { data: 'type' ,  "width": "10%" },
+                    { data: 'type2', "width": "10%"  },
+                    { data: 'transactionID' ,  "width": "10%" },
 
                 ],
                 "pageLength": 10,
                 order: [[0, 'desc']],
-                select: true
+                select: true,
+                responsive: true
             });
 
 
