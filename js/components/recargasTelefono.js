@@ -33,10 +33,10 @@ export class RecargasTelefono extends Component {
     tipo_operacion = {
         //name: "CASH_OUT_TRANSACTION"
         name: "DIRECT_TOPUP"
-      }
-    
+    }
 
-    static components = {  ListaTR };
+
+    static components = { ListaTR };
 
 
 
@@ -375,62 +375,88 @@ export class RecargasTelefono extends Component {
             return;
         }
 
-     
+
 
         try {
 
             const accessToken = window.sessionStorage.getItem('accessToken');
             const api = new API(accessToken);
-           
+
             let resultado = null;
-            
-        Swal.fire({
-            title: 'Please Wait..!',
-            text: 'Creating recharge operation...',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            allowEnterKey: false,
-            //showCancelButton: true,
-            showCloseButton: true,
-            didOpen: async () => {
-                swal.showLoading()
-                resultado = await api.sendPhoneRecharge(datosTX);
+
+            Swal.fire({
+                title: 'Please Wait..!',
+                text: 'Creating recharge operation...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                //showCancelButton: true,
+                showCloseButton: true,
+                didOpen: async () => {
+                    swal.showLoading()
+                    resultado = await api.sendPhoneRecharge(datosTX);
 
                     if (resultado.code) {
-                        if (resultado.code==="ERR_BAD_REQUEST") {
-                          
+                        if (resultado.code === "ERR_BAD_REQUEST") {
+
                             Swal.fire({
-                              icon: 'error',
-                              title: 'Error',
-                              text: resultado.response.data.message
+                                icon: 'error',
+                                title: 'Error',
+                                text: resultado.response.data.message
                             })
 
-                            
+
                         }
                         console.log(resultado.code)
                     }
 
-                   //TODO OK
+                    //TODO OK
                     if (resultado.data) {
-                        if (resultado.data.status === 200) {
+                        //se proceso correctamente la operacion
+                        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
                             Swal.fire(resultado.data.payload);
                         }
+
+                        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+                        if (resultado.data.status === 200 && resultado.data.paymentLink) {
+                            //redireccionar a otra pagina 
+                            const paymentLink = resultado.data.paymentLink.url;
+
+                            Swal.fire({
+                                title: 'Insuficient Funds',
+                                text: "The transaction is pending, but your balance is insuficient to complete the transaction",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Clic to refund',
+                                cancelButtonText: 'No'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.open(paymentLink, 'popup', 'width=600,height=600');
+                                }
+                            })
+                        }
+
+
+
+
                     }
 
-                
+
                     //Error pero aun responde el API
                     if (resultado.error) {
                         Swal.fire(resultado.message);
                     }
 
 
-                console.log(resultado)
-                //swal.close();
-            }
-        })
+                    console.log(resultado)
+                    //swal.close();
+                }
+            })
 
 
-         
+
         } catch (error) {
             console.log(error);
             // Swal.fire(resultado.response.data.message);

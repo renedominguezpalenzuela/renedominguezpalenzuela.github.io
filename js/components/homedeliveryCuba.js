@@ -183,12 +183,12 @@ export class HomeDeliveryCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
 
 
-      if (  this.allDatosBeneficiariosFromStorage) {
-      this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-        beneficiaryFullName: el.beneficiaryFullName,
-        _id: el._id,
-        CI: el.deliveryCI
-      }));
+      if (this.allDatosBeneficiariosFromStorage) {
+        this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+          beneficiaryFullName: el.beneficiaryFullName,
+          _id: el._id,
+          CI: el.deliveryCI
+        }));
       }
 
 
@@ -307,6 +307,9 @@ export class HomeDeliveryCuba extends Component {
   async onSendMoney() {
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
+    //Eliminar datos
+    delete this.beneficiario["deliveryCityID"];
+
     //TODO: Validaciones
     const datosTX = {
       service: service,
@@ -326,6 +329,14 @@ export class HomeDeliveryCuba extends Component {
     }
 
 
+    console.log("DATOS")
+
+
+    console.log(datosTX);
+    return
+
+
+
     try {
       const accessToken = window.sessionStorage.getItem('accessToken');
       const api = new API(accessToken);
@@ -333,9 +344,35 @@ export class HomeDeliveryCuba extends Component {
 
       //TODO OK
       if (resultado.data) {
-        if (resultado.data.status === 200) {
+        //se proceso correctamente la operacion
+        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
           Swal.fire(resultado.data.payload);
         }
+
+        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+        if (resultado.data.status === 200 && resultado.data.paymentLink) {
+          //redireccionar a otra pagina 
+          const paymentLink = resultado.data.paymentLink.url;
+
+          Swal.fire({
+            title: 'Insuficient Funds',
+            text: "The transaction is pending, but your balance is insuficient to complete the transaction",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Clic to refund',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.open(paymentLink, 'popup', 'width=600,height=600');
+            }
+          })
+        }
+
+
+
+
       }
 
       //Error pero aun responde el API
@@ -428,15 +465,15 @@ export class HomeDeliveryCuba extends Component {
 
 
   //Recibiendo los datos de la TX seleccionada
-  onChangeSelectedTX =async (datos) => {
-  
+  onChangeSelectedTX = async (datos) => {
+
     this.datosSelectedTX.txID = datos._id;
     this.datosSelectedTX.allData = { ...datos }
     this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
     this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
-   await this.onChangeSendInput()
+    await this.onChangeSendInput()
 
   }
 

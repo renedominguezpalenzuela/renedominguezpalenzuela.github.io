@@ -67,9 +67,9 @@ export class SendMoneyCuba extends Component {
     selectedCard: '-1',
     cardBankImage: '',
     cardNumber: '',
-    cardHolderName:'',
-    contactPhone:'',
-    deliveryAddress:'',
+    cardHolderName: '',
+    contactPhone: '',
+    deliveryAddress: '',
     receiverCity: '',          //Municipio
     receiverCityID: '',        //Municipio id 
     deliveryArea: '',           //Provincia
@@ -398,7 +398,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-    
+
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -432,7 +432,7 @@ export class SendMoneyCuba extends Component {
       accessToken,
       this.moneda_vs_USD
     )
-    
+
 
     this.fee.value = resultado.fee;
     this.feeSTR.value = resultado.feeSTR;
@@ -449,13 +449,16 @@ export class SendMoneyCuba extends Component {
     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
-    const beneficiario = {     
+    //Eliminar datos
+    delete this.beneficiario["deliveryCityID"];
+
+    const beneficiario = {
       cardNumber: this.beneficiarioData.selectedCard,
       cardHolderName: this.beneficiarioData.cardHolderName,
       contactPhone: this.beneficiarioData.contactPhone,
       deliveryAddress: this.beneficiarioData.deliveryAddress,
-      receiverCity:  this.beneficiarioData.receiverCity,          //Municipio      
-      deliveryArea:  this.beneficiarioData.deliveryArea,           //Provincia
+      receiverCity: this.beneficiarioData.receiverCity,          //Municipio      
+      deliveryArea: this.beneficiarioData.deliveryArea,           //Provincia
       deliveryCountry: 'Cuba',
       deliveryCountryCode: 'CU',
       receiverCountry: 'CUB',
@@ -480,7 +483,9 @@ export class SendMoneyCuba extends Component {
 
     console.log(datosTX);
 
-    
+
+
+
 
     if (!this.validarDatos(datosTX)) {
       console.log("Validation Errors");
@@ -498,9 +503,35 @@ export class SendMoneyCuba extends Component {
 
       //TODO OK
       if (resultado.data) {
-        if (resultado.data.status === 200) {
+        //se proceso correctamente la operacion
+        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
           Swal.fire(resultado.data.payload);
         }
+
+        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+        if (resultado.data.status === 200 && resultado.data.paymentLink) {
+          //redireccionar a otra pagina 
+          const paymentLink = resultado.data.paymentLink.url;
+
+          Swal.fire({
+            title: 'Insuficient Funds',
+            text: "The transaction is pending, but your balance is insuficient to complete the transaction",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Clic to refund',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              window.open(paymentLink, 'popup', 'width=600,height=600');
+            }
+          })
+        }
+
+
+
+
       }
 
       //Error pero aun responde el API
@@ -517,7 +548,7 @@ export class SendMoneyCuba extends Component {
 
 
   validarDatos(datos) {
-    console.log(datos)
+    // console.log(datos)
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
       Swal.fire({
@@ -596,7 +627,7 @@ export class SendMoneyCuba extends Component {
 
 
     const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
-    
+
 
 
 
@@ -629,13 +660,13 @@ export class SendMoneyCuba extends Component {
 
   setearBeneficiario = async (CIBeneficiario) => {
 
-    
+
 
     const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
 
     if (!beneficiarioName) { return }
 
-    
+
     this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
 
     this.setearDatosBeneficiario(beneficiarioName._id)
@@ -652,13 +683,13 @@ export class SendMoneyCuba extends Component {
   onChangeSelectedCard = async (event) => {
 
 
-    
+
 
     this.beneficiarioData.selectedCard = event.target.value
 
 
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
-    
+
 
     const cardData = this.beneficiarioData.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
@@ -667,8 +698,8 @@ export class SendMoneyCuba extends Component {
 
 
     if (cardData) {
-      console.log("Hay card data");
-      console.log(cardData);
+      //console.log("Hay card data");
+      //console.log(cardData);
       this.beneficiarioData.cardNumber = formatedCardNumber;
 
       this.beneficiarioData.cardHolderName = cardData.cardHolderName;
@@ -684,9 +715,9 @@ export class SendMoneyCuba extends Component {
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
 
     } else {
-      console.log("NO Hay card data");
-   
-      this.beneficiarioData.cardHolderName='';
+      //console.log("NO Hay card data");
+
+      this.beneficiarioData.cardHolderName = '';
       /*this.state.cardNumber = '';
       this.cardNumber.el.value='';
       */
@@ -697,7 +728,7 @@ export class SendMoneyCuba extends Component {
     //this.props.onChangeDatosBeneficiarios(this.state);
   }
 
-  
+
   onChangeSelectedBeneficiario = async (event) => {
     const selectedBeneficiaryId = event.target.value;
     this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
@@ -705,12 +736,12 @@ export class SendMoneyCuba extends Component {
 
     this.setearDatosBeneficiario(selectedBeneficiaryId);
 
-    
+
     //this.beneficiarioData.selectedBeneficiaryId: '-1',
-    this.beneficiarioData.selectedCard= '-1',
-    this.beneficiarioData.cardBankImage= '',
-    this.beneficiarioData.cardNumber= '',
-    this.beneficiarioData.cardHolderName=''
+    this.beneficiarioData.selectedCard = '-1',
+      this.beneficiarioData.cardBankImage = '',
+      this.beneficiarioData.cardNumber = '',
+      this.beneficiarioData.cardHolderName = ''
 
 
 
@@ -721,11 +752,11 @@ export class SendMoneyCuba extends Component {
 
     //Setear el select de tarjetas con la tarjeta de la operacion
 
-    
-   console.log("setear datos beneficiario")
+
+    // console.log("setear datos beneficiario")
 
     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
-    console.log(beneficiarioSelected)
+    // console.log(beneficiarioSelected)
 
     this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
 
@@ -733,53 +764,53 @@ export class SendMoneyCuba extends Component {
     this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
 
 
-    
-      //Inicializando provincia
-      const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === beneficiarioSelected.deliveryArea)[0];
-      if (selectedProvince) {
-        this.beneficiarioData.deliveryAreaID = selectedProvince.id;
-        this.beneficiarioData.deliveryArea = selectedProvince.nombre;
-      } else {
-        this.beneficiarioData.deliveryAreaID = "-1";
-        this.beneficiarioData.deliveryArea = "";
-        this.beneficiarioData.receiverCityID = -1;
-        this.beneficiarioData.receiverCity = '';
-        return;
-      }
 
-      //inicializando municipio
-      //this.municipios = selectedProvince.municipios;
-      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
+    //Inicializando provincia
+    const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === beneficiarioSelected.deliveryArea)[0];
+    if (selectedProvince) {
+      this.beneficiarioData.deliveryAreaID = selectedProvince.id;
+      this.beneficiarioData.deliveryArea = selectedProvince.nombre;
+    } else {
+      this.beneficiarioData.deliveryAreaID = "-1";
+      this.beneficiarioData.deliveryArea = "";
+      this.beneficiarioData.receiverCityID = -1;
+      this.beneficiarioData.receiverCity = '';
+      return;
+    }
 
-      // console.log("Beneficiario municipio:")
-      // console.log(selectedBenefiarioData.deliveryCity)
-      // console.log(selectedBenefiarioData)
+    //inicializando municipio
+    //this.municipios = selectedProvince.municipios;
+    this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
 
-      const selectedMuncipio = this.municipios.filter((unMunicipio) => {
-        const comparacion = UImanager.eliminarAcentos(beneficiarioSelected.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
-        return comparacion
-      })[0];
+    // console.log("Beneficiario municipio:")
+    // console.log(selectedBenefiarioData.deliveryCity)
+    // console.log(selectedBenefiarioData)
+
+    const selectedMuncipio = this.municipios.filter((unMunicipio) => {
+      const comparacion = UImanager.eliminarAcentos(beneficiarioSelected.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
+      return comparacion
+    })[0];
 
 
 
-      if (selectedMuncipio) {
-        this.beneficiarioData.receiverCityID = selectedMuncipio.id;
-        this.beneficiarioData.receiverCity = selectedMuncipio.nombre;
-        this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
-      } else {
-        this.beneficiarioData.receiverCityID = -1;
-        this.beneficiarioData.receiverCity = '';
-      }
+    if (selectedMuncipio) {
+      this.beneficiarioData.receiverCityID = selectedMuncipio.id;
+      this.beneficiarioData.receiverCity = selectedMuncipio.nombre;
+      this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
+    } else {
+      this.beneficiarioData.receiverCityID = -1;
+      this.beneficiarioData.receiverCity = '';
+    }
 
-    if (!this.datosSelectedTX.allData) { 
+    if (!this.datosSelectedTX.allData) {
       this.beneficiarioData.cardHolderName = '';
       return
-    
+
     }
     this.beneficiarioData.cardHolderName = this.datosSelectedTX.allData.metadata.cardHolderName;
     this.beneficiarioData.selectedCard = this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
     console.log("Operacion")
-    
+
     console.log(this.datosSelectedTX.allData);
 
 
@@ -787,20 +818,20 @@ export class SendMoneyCuba extends Component {
 
     //const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
 
-   
+
 
     //const selectedCard = this.props.cardsList.filter((unCard)=>unCard.number ===selectedCardNumber )[0];
-    
+
     //this.selectedCard.el.value = selectedCardNumber;
 
-    
+
 
 
     const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
-     await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-     
+    await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+
     //this.selectedCard.el.value="9225959875865500"
 
 
@@ -815,17 +846,17 @@ export class SendMoneyCuba extends Component {
     // const api = new API(this.accessToken);
     //const cardRegExp = await api.getCardRegExp();
 
-  
+
 
     for (const key in this.cardRegExp) {
 
       const regexp = new RegExp(this.cardRegExp[key]);
       //const card = this.state.cardNumber.replace(/ /g, "");
-    
+
       const resultado = regexp.test(CardNumber);
-     
+
       if (resultado) {
-       
+
         switch (key) {
           case 'BANDEC_CARD':
             //Poner imagen
@@ -870,26 +901,26 @@ export class SendMoneyCuba extends Component {
 
   //Al teclear el card en el input
   onCardInputKeyDown = API.debounce(async (event) => {
-    
+
     if (event.target.value.length === 19) {
       this.beneficiarioData.selectedCard = event.target.value.replace(/ /g, "");
       //this.beneficiarioData.cardNumber = event.target.value;
-     // this.cardNumber.el.value =  event.target.value;
+      // this.cardNumber.el.value =  event.target.value;
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
       //this.props.onChangeDatosBeneficiarios(this.state);
       //TODO: si es un card nuevo agregarlo?
     }
   }, API.tiempoDebounce);
 
-  
-  async onChangeCardInput  (event) {
-   
-     this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
-    
+
+  async onChangeCardInput(event) {
+
+    this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
+
 
   };
 
-  
+
   onChangeCardHolderInput = API.debounce(async (event) => {
     this.beneficiarioData.cardHolderName = event.target.value;
 
@@ -909,7 +940,7 @@ export class SendMoneyCuba extends Component {
   }, API.tiempoDebounce);
 
 
-  
+
 
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
@@ -930,7 +961,7 @@ export class SendMoneyCuba extends Component {
 
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
-   // this.cambioBeneficiario = true;
+    // this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
     let selectedMunicipio = this.municipios[selectedCityId];
@@ -938,7 +969,7 @@ export class SendMoneyCuba extends Component {
     if (selectedMunicipio) {
       this.beneficiarioData.receiverCity = selectedMunicipio.nombre;
       this.beneficiarioData.receiverCityID = selectedCityId;
-     // this.props.onChangeDatosBeneficiarios(this.state);
+      // this.props.onChangeDatosBeneficiarios(this.state);
     }
   };
 

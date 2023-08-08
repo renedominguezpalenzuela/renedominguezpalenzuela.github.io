@@ -60,7 +60,7 @@ export const Provincias = [{
     id: '13',
     nombre: 'Santiago de Cuba',
     municipios: [
-        'Contramaestre', 'Guamá', 'Julio Antonio Mella', 'Palma Soriano', 'San Luis', 'Santiago de Cuba', 'Segundo Frente', 'Songo la Maya', 'Tercer Frente']
+        'Contramaestre', 'Guamá', 'Julio Antonio Mella', 'Palma Soriano', 'San Luis', 'Santiago de Cuba', 'Segundo Frente', 'Songo La Maya', 'Tercer Frente']
 }, {
     id: '14',
     nombre: 'Guantánamo',

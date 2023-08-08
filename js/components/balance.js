@@ -37,7 +37,7 @@ export class Balance extends Component {
 
   async get_data_btn() {
     this.get_data(true).then((datos_saldos) => {
-      console.log(JSON.stringify(datos_saldos));
+      //console.log(JSON.stringify(datos_saldos));
       this.balance.saldos = datos_saldos;
     });
   }
@@ -51,7 +51,7 @@ export class Balance extends Component {
 
     const api = new API(accessToken);
     let datos = await api.getBalance(walletAddress);
-    console.log(datos)
+   // console.log(datos)
     if (datos) {
       if (update) {
         datos.balance.map((unDato, i) => {
@@ -104,8 +104,8 @@ export class Balance extends Component {
 
     // ----- Socket conectado  ---------------------------------------------------
     this.socket.on("connect", (datos) => {
-      console.log("Socket Balance conectado correctamente");
-      console.log("socket Balance id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
+      //console.log("Socket Balance conectado correctamente");
+      //console.log("socket Balance id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
 
       // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
       //Creando subscripcion a todas las transacciones de la wallet
@@ -128,13 +128,13 @@ export class Balance extends Component {
 
     // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
     this.socket.on('TRANSACTION_UPDATE', async (data) => {
-      console.log('TRANSACTION_UPDATE Socket Balance recibiendo datos servidor', data);
-      console.log('TR Status Socket Balance  ' + data.transactionStatus);
+      //console.log('TRANSACTION_UPDATE Socket Balance recibiendo datos servidor', data);
+      //console.log('TR Status Socket Balance  ' + data.transactionStatus);
       if (data.transactionStatus == "confirmed") {
         const saldos = await this.get_data(true);
         if (saldos) {
           this.balance.saldos = saldos;
-          console.log(JSON.stringify(this.balance));
+          //console.log(JSON.stringify(this.balance));
         }
       }
     });
@@ -145,14 +145,14 @@ export class Balance extends Component {
 
       if (!this.socketActivo) return;
 
-      console.log("Solicitando Balance al servidor")
+      //console.log("Solicitando Balance al servidor")
 
       const saldos = await this.get_data(false);
-      console.log("Balance recibido servidor")
+      //console.log("Balance recibido servidor")
 
       if (saldos) {
         this.balance.saldos = saldos;
-        console.log(JSON.stringify(this.balance));
+        //console.log(JSON.stringify(this.balance));
       }
 
 

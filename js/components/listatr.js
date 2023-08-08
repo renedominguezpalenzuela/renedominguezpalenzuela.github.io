@@ -190,33 +190,52 @@ export class ListaTR extends Component {
             // do something here
 
 
+            var tableId = "#container-listtr";
 
 
+            if (!this.tabla){
+                            //$('#container-listtr').DataTable().clear().destroy();
+
+           // this.tabla.clear();
+            //this.tabla.destroy();
+            //2nd empty html
+           // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+           // $(tableId + " thead").empty(); //LIMPIA EL HEADER
+            $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+
+
+            }
+
+            
 
             //CCreando la tabla
-            this.tabla = $('#container-listtr').DataTable({
+            this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'createdAt' },
-                    { data: 'transactionStatus'  },
-                    { data: 'transactionAmount'  },
+                    { data: 'createdAt', width: '13%' },
+                    { data: 'transactionStatus', width: '3%'  },
+                    { data: 'transactionAmount', width: '3%'  },
 
-                    { data: 'currency' },
-                    { data: 'type' },
-                    { data: 'type2'  },
-                    { data: 'transactionID'  },
+                    { data: 'currency' , width: '5%'},
+                    { data: 'type' , width: '15%'},
+                    { data: 'type2' , width: '15%' },
+                    { data: 'transactionID' , width: '10%' },
 
                 ],
-                
+                autoWidth: false,
                 "pageLength": 10,
                 order: [[0, 'desc']],
                 select: true,
                 responsive: true,
+                destroy: true,
+                //footer: false
                 
                 
             });
 
-            this.tabla.columns.adjust().draw();
+           
+
+           // this.tabla.columns.adjust().draw();
 
 
             //console.log(this.tabla)
@@ -304,9 +323,12 @@ export class ListaTR extends Component {
 
     actualizarDatos = async(datos)=>{
 
-        this.tabla.clear();
-        this.tabla.rows.add(datos);
-        this.tabla.draw();
+        if (this.tabla){
+
+            this.tabla.clear();
+            this.tabla.rows.add(datos);
+            this.tabla.draw();
+        }
 
 /*
         this.tabla.updateConfig({
