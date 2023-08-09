@@ -5,7 +5,8 @@ import { Beneficiarios } from "./homedeliveryCubaBeneficiario.js";
 
 import { Provincias } from "../../data/provincias_cu.js";
 import { ListaTR } from "./listatr.js";
-
+//ERROR: si se selecciona desde la lista de transacciones no pone bien el tipo de cambio
+//el total a enviar
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 export class HomeDeliveryCuba extends Component {
 
@@ -39,33 +40,34 @@ export class HomeDeliveryCuba extends Component {
     nameFull: "",
   })
 
-  
 
+
+  //Contendra los datos del beneficiario al que se le envia la transferencia
   beneficiario = useState({
 
   })
 
-  
+
   //moneda_vs_USD = 1;
 
-  
+
   totalSendCost = useState({ value: 0 });
   totalSendCostSTR = useState({ value: "0" });
 
 
   //conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
-  
+
 
   feeSTR = useState({ value: "0" });
   fee = useState({ value: 0 });
 
   monedas = useState({
-    enviada:"USD",
-    recibida:"CUP"
+    enviada: "USD",
+    recibida: "CUP"
   })
 
-  
+
 
   static template = xml` 
   <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
@@ -176,14 +178,14 @@ export class HomeDeliveryCuba extends Component {
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
-    
+
   }
 
   setup() {
     const accessToken = window.sessionStorage.getItem('accessToken');
     //const walletAddress = window.sessionStorage.getItem('walletAddress');
     //const userId = window.sessionStorage.getItem('userId');
-    
+
 
     onWillStart(async () => {
       const api = new API(accessToken);
@@ -193,13 +195,13 @@ export class HomeDeliveryCuba extends Component {
 
       //obteniendo todos los datos de los beneficiarios
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
-     // console.log(allDatosBeneficiarios)
+      // console.log(allDatosBeneficiarios)
 
       if (allDatosBeneficiarios) {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-    
+
 
       if (this.allDatosBeneficiariosFromStorage) {
         this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
@@ -209,10 +211,10 @@ export class HomeDeliveryCuba extends Component {
         }));
       }
 
-     
+
 
       this.tiposCambio = await api.getAllTiposDeCambio();
-     
+
 
 
 
@@ -223,56 +225,56 @@ export class HomeDeliveryCuba extends Component {
     });
 
     onMounted(() => {
-      
+
       const monedaEnviada = this.inputSendCurrencyRef.el.value;
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
-      
+
       this.monedas.enviada = monedaEnviada.toUpperCase();
-      
+
       this.monedas.recibida = monedaRecibida.toUpperCase();
 
-      
-     
-         
-      const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-     
 
-      
+
+
+      const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+
+
+
       this.conversionRate.value = tc;
 
-     
-      
+
+
 
     })
 
 
   }
 
-/*
-  async pedirTasadeCambio(sendCurrency, receiveCurrency) {
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const api = new API(accessToken);
+  /*
+    async pedirTasadeCambio(sendCurrency, receiveCurrency) {
+      const accessToken = window.sessionStorage.getItem('accessToken');
+      const api = new API(accessToken);
+  
+      if (receiveCurrency && sendCurrency) {
+        const exchangeRate = await api.getExchangeRate(sendCurrency);
+        this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
+        this.moneda_vs_USD = exchangeRate["USD"];
+        this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
+        this.feeSTR.value = '-';
+      }
+    }*/
 
-    if (receiveCurrency && sendCurrency) {
-      const exchangeRate = await api.getExchangeRate(sendCurrency);
-      this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
-      this.moneda_vs_USD = exchangeRate["USD"];
-      this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
-      this.feeSTR.value = '-';
-    }
-  }*/
-
-/*
-  async onChangeCurrency() {
-
-    this.inputReceiveRef.el.value = (0).toFixed(2);
-    this.inputSendRef.el.value = (0).toFixed(2);
-
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-  }*/
+  /*
+    async onChangeCurrency() {
+  
+      this.inputReceiveRef.el.value = (0).toFixed(2);
+      this.inputSendRef.el.value = (0).toFixed(2);
+  
+      const sendCurrency = this.inputSendCurrencyRef.el.value;
+      const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
+  
+      await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
+    }*/
 
   onChangeCurrencySend() {
     //this.onChangeCurrency();
@@ -354,11 +356,13 @@ export class HomeDeliveryCuba extends Component {
   */
 
 
+
+  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
+
   
-  async calculateAndShowFee( cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio ) {
-   
-    const service = `card${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiario.deliveryZona === 'La Habana' ? 'Habana':'Provincias';
+
+    const service = `delivery${monedaRecibida.toUpperCase()}`;
+    const zone = this.beneficiario.deliveryZona;
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
     const accessToken = API.getTokenFromSessionStorage();
@@ -366,15 +370,27 @@ export class HomeDeliveryCuba extends Component {
     console.log(service)
     console.log(zone)
     console.log(cantidadRecibida)
-   
+
     const api = new API(accessToken);
-    const feeResultUSD =await  api.getFee(service, zone, cantidadRecibida)
+    const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
     const feeUSD = feeResultUSD.fee;
     console.log("Fee USD")
     console.log(feeUSD)
     //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
-    const monedaEnviadaUSD ='USD';
-    const feeMonedaEnviada =  UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada );
+    const monedaEnviadaUSD = 'USD';
+
+    //Segun darian 
+    /*
+        monedaBase = monedaEnviada (EUR)
+        monedaAconvertir = USD
+
+         const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
+
+
+    */
+
+    //Version original mia: const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
+    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
 
@@ -390,20 +406,23 @@ export class HomeDeliveryCuba extends Component {
 
   onChangeSendInput = API.debounce(async () => {
 
-    const cantidadEnviada  = this.inputSendRef.el.value;
+    const cantidadEnviada = this.inputSendRef.el.value;
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
+    console.log(`Send input, moneda enviada`)
     this.monedas.enviada = monedaEnviada.toUpperCase()
+
+
     this.monedas.recibida = monedaRecibida.toUpperCase()
-   
-    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
 
 
     //Comun
-    const feeMonedaEnviada =await  this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
@@ -413,26 +432,26 @@ export class HomeDeliveryCuba extends Component {
 
   onChangeReceiveInput = API.debounce(async () => {
 
-    const cantidadRecibida  = this.inputReceiveRef.el.value;
+    const cantidadRecibida = this.inputReceiveRef.el.value;
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
-    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;   
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
     this.monedas.enviada = monedaEnviada.toUpperCase()
     this.monedas.recibida = monedaRecibida.toUpperCase()
-   
-    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
 
 
     //Comun
-    
-    const feeMonedaEnviada =await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+
+    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
- 
+
 
   }, 700);
   async onSendMoney() {
@@ -444,7 +463,7 @@ export class HomeDeliveryCuba extends Component {
     //TODO: Validaciones
     const datosTX = {
       service: service,
-      amount: this.inputSendRef.el.value,                                           //Cantidad a enviar, incluyendo el fee
+      amount: UImanager.roundDec(this.totalSendCost.value) ,                                           //Cantidad a enviar, incluyendo el fee
       currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
       deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
       deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
@@ -464,7 +483,7 @@ export class HomeDeliveryCuba extends Component {
 
 
     console.log(datosTX);
- 
+
 
 
 
@@ -608,7 +627,7 @@ export class HomeDeliveryCuba extends Component {
 
   }
 
-  
+
   setearBeneficiario = async (CIBeneficiario) => {
 
     const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];

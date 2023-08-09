@@ -917,15 +917,15 @@ export class UImanager {
   }
 
   
-  static aplicarTipoCambio2(cantidadRecibida, tipoCambio, monedaBase, monedaaObtener) {
+  static aplicarTipoCambio2(cantidadMonedaBase, tipoCambio, monedaBase, monedaaConvertir) {
   
-    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaObtener.toUpperCase()];
+    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
     console.log("tc2")
     console.log(tc)
     if (tc<=0) return 0;
-    const cantidadEnviada = cantidadRecibida / tc;
-    console.log(cantidadEnviada)
-    return cantidadEnviada
+    const cantidadConvertida = cantidadMonedaBase / tc;
+    console.log(cantidadConvertida)
+    return cantidadConvertida
   }
 
   
@@ -935,10 +935,18 @@ export class UImanager {
   }
 
 
-  static aplicarTipoCambio1(cantidadEnviada, tipoCambio, monedaBase, monedaaObtener) {
-    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaObtener.toUpperCase()];
-    const cantidadRecibida = tc * cantidadEnviada;
-    return cantidadRecibida
+  static aplicarTipoCambio1(cantidadMonedaBase, tipoCambio, monedaBase, monedaaConvertir) {
+
+    console.log(`Cantidad Moneda Base ${cantidadMonedaBase}`);
+    console.log(`Moneda Base ${monedaBase}`);
+    console.log(`Moneda Convertir ${monedaaConvertir}`);
+    console.log(tipoCambio)
+
+
+    
+    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
+    const cantidadConvertida = tc * cantidadMonedaBase;
+    return cantidadConvertida
   }
 
 

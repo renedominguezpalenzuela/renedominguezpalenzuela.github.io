@@ -387,8 +387,9 @@ export class SendMoneyCuba extends Component {
 
   async calculateAndShowFee( cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio ) {
    
+   
     const service = `card${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiarioData.deliveryArea === 'La Habana' ? 'Habana':'Provincias';
+    const zone = this.beneficiarioData.deliveryArea;
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
     const accessToken = API.getTokenFromSessionStorage();
