@@ -333,7 +333,7 @@ export class HomeDeliveryCuba extends Component {
 
 
     console.log(datosTX);
-    return
+ 
 
 
 

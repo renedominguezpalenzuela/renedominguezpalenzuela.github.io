@@ -337,6 +337,79 @@ export class SendMoneyCuba extends Component {
 
   }
 
+  //Evento al cambiar la moneda a enviar
+  onChangeCurrencySend() {
+    this.onChangeCurrency();
+  }
+
+  //Evento al cambiar la moneda a recibir
+  onChangeCurrencyRecib() {
+    this.onChangeCurrency();
+  }
+
+  //Evento al cambiar la moneda
+  async onChangeCurrency() {
+
+    //this.inputReceiveRef.el.value = (0).toFixed(2);
+    //this.inputSendRef.el.value = (0).toFixed(2);
+
+    const sendCurrency = this.inputSendCurrencyRef.el.value;
+    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
+
+    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
+
+    const sendAmount = this.inputSendRef.el.value;
+    const receiveAmount = this.inputSendRef.el.value;
+
+    const accessToken = window.sessionStorage.getItem('accessToken');
+
+    this.changingSendAmount = true;
+    this.changingReceiveAmount = true;
+
+    if (sendAmount > 0) {
+      const resultado = await UImanager.onChangeSendInput(
+        receiveCurrency,                            //moneda recibida
+        sendCurrency,                               //moneda del que envia
+        sendAmount,                 //cantidad a enviar
+        this.conversionRate.value,
+        accessToken,
+        this.moneda_vs_USD
+      )
+
+      this.fee.value = resultado.fee;
+      this.feeSTR.value = resultado.feeSTR;
+
+
+      this.inputReceiveRef.el.value = resultado.receiveAmount;
+      this.inputSendRef.el.value = UImanager.roundDec(sendAmount);
+
+    } else if (receiveAmount > 0) {
+
+      const resultado = await UImanager.onChangeReceiveInput(
+        this.inputReceiveCurrencyRef.el.value,
+        this.inputSendCurrencyRef.el.value,
+        this.inputReceiveRef.el.value,
+        this.conversionRate.value,
+        accessToken,
+        this.moneda_vs_USD
+      )
+
+      this.fee.value = resultado.fee;
+      this.feeSTR.value = resultado.feeSTR;
+
+      this.inputSendRef.el.value = resultado.sendAmount;
+      this.inputReceiveRef.el.value = UImanager.roundDec(receiveAmount);
+
+    }
+
+
+  
+
+    this.changingSendAmount = false;
+    this.changingReceiveAmount = false;
+
+  }
+
 
   async pedirTasadeCambio(sendCurrency, receiveCurrency) {
     const accessToken = window.sessionStorage.getItem('accessToken');
@@ -354,25 +427,6 @@ export class SendMoneyCuba extends Component {
   }
 
 
-  async onChangeCurrency() {
-
-    this.inputReceiveRef.el.value = (0).toFixed(2);
-    this.inputSendRef.el.value = (0).toFixed(2);
-
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-
-  }
-
-  onChangeCurrencySend() {
-    this.onChangeCurrency();
-  }
-
-  onChangeCurrencyRecib() {
-    this.onChangeCurrency();
-  }
 
 
 
@@ -445,6 +499,7 @@ export class SendMoneyCuba extends Component {
   }, 700);
 
 
+  //Boton: Enviar transaccion
   async onSendMoney() {
     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
@@ -536,6 +591,10 @@ export class SendMoneyCuba extends Component {
 
       //Error pero aun responde el API
       if (resultado.response) {
+        console.log(resultado)
+        /*"error": "BAD_REQUEST",
+        "message": "The externalID field is required",
+        "statusCode": 400*/
         Swal.fire(resultado.response.data.message);
       }
 

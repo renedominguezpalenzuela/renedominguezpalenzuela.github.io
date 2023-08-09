@@ -126,9 +126,14 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // Obtiene el fee a aplicar
   //------------------------------------------------------------------------------------------------
-  // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD
+  // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD --- moneda y servicio que se recibe
   // zone: Provincias | Habana
-  // amount: Total a enviar
+  // amount: Total a RECIBIR la moneda a recibir se especifica en service
+  // devuelve fee en USD
+  /*
+    "fee": 6,
+    "currencyFee": "USD"
+  */
   async getFee(service, zone, amount) {
 
     var config = {
@@ -707,7 +712,7 @@ export class UImanager {
   //SendInput manejar eventos on change de Cantidad enviada, pide el Fee, en funcion de la cantidad a enviar
   //--------------------------------------------------------------------------------------------------------------------
 
-  static async onChangeSendInput(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
+  static async onChangeSendInputOLD(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
 
     const resultado = {
       fee: 0,
@@ -752,11 +757,55 @@ export class UImanager {
 
 
 
-
   //----------------------------------------------------------------------------------
   //ReceiveInput: manejar eventos on change de inputs send
   //----------------------------------------------------------------------------------
   static async onChangeReceiveInput(receiveCurrency, sendCurrency, receiveAmount, conversionRate, accessToken, moneda_vs_USD) {
+
+    const resultado = {
+      fee: 0,
+      feeSTR: '',
+      sendAmount: 0
+    }
+
+    if (conversionRate <= 0) {
+      return resultado;
+    }
+
+    const service = `card${receiveCurrency.toUpperCase()}`;
+    const zone = "Habana"; //TODO: obtener de datos  
+
+
+
+    const sendAmount = (receiveAmount / conversionRate);
+
+    if (receiveAmount > 0) {
+      const api = new API(accessToken);
+      const feeData = await api.getFee(service, zone, sendAmount)
+      const fee = feeData.fee / moneda_vs_USD;
+      resultado.sendAmount = this.roundDec(sendAmount + fee);
+      resultado.fee = fee;
+
+      const feeSTR = fee.toFixed(2);
+      const CurrencySTR = sendCurrency.toUpperCase();
+      resultado.feeSTR = `${feeSTR} ${CurrencySTR}`; //TODO convertir a 2 decimales  
+
+
+    } else {
+      resultado.receiveAmount = this.roundDec(0);
+      resultado.sendAmount = this.roundDec(0);
+    }
+
+    return resultado;
+
+  }
+
+
+
+  //----------------------------------------------------------------------------------
+  //ReceiveInput: manejar eventos on change de inputs send
+  //----------------------------------------------------------------------------------
+  static async onChangeReceiveInputOLD(receiveCurrency, sendCurrency, receiveAmount, conversionRate, accessToken, moneda_vs_USD) {
 
     const resultado = {
       fee: 0,
