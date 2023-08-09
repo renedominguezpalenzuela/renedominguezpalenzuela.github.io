@@ -17,8 +17,8 @@ export class SendMoneyCuba extends Component {
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
-  changingSendAmount = false;
-  changingReceiveAmount = false;
+  //changingSendAmount = false;
+  //changingReceiveAmount = false;
 
   state = useState({
     firstName: "Rene",
@@ -26,6 +26,11 @@ export class SendMoneyCuba extends Component {
     avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
     address: "",
     nameFull: "",
+  })
+
+  monedas = useState({
+    enviada:"USD",
+    recibida:"CUP"
   })
 
   datosSelectedTX = useState({
@@ -46,14 +51,21 @@ export class SendMoneyCuba extends Component {
 
 
 
-  conversionRateSTR = useState({ value: "" });
-  conversionRate = useState({ value: 0 });
+  totalSendCost = useState({ value: 0 });
+  totalSendCostSTR = useState({ value: "0" });
 
-  feeSTR = useState({ value: "" });
+
+  //conversionRateSTR = useState({ value: "" });
+  conversionRate = useState({ value: 0 });
+  
+
+  feeSTR = useState({ value: "0" });
   fee = useState({ value: 0 });
 
 
-  moneda_vs_USD = 1;
+
+
+  //moneda_vs_USD = 1;
 
   tipo_operacion = {
     //name: "CASH_OUT_TRANSACTION"
@@ -95,24 +107,16 @@ export class SendMoneyCuba extends Component {
         <div class="card-body items-center  ">
             <div class="form-control  max-w-xs  ">
                 <label class="label">
-                  <span class="label-text">You Send</span>  
+                  <span class="label-text">You Send (before fee)</span>  
                 </label> 
 
                 <div class="join">                        
                   <div>   
                     <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>
-                    <label class="label">
-                      <span class="label-text-alt"></span>
-                      <span class="label-text-alt ">
-                        <div class=" text-right">
-                          Send Fee: <t t-esc="this.feeSTR.value"/> 
-                        </div>  
-                        <div class=" text-right">  
-                           <t t-esc="this.conversionRateSTR.value"/> 
-                        </div>
-                      </span>
-                    </label>
+           
                   </div>
+
+          
                  
                   <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                     <option value="usd">USD</option>
@@ -120,6 +124,38 @@ export class SendMoneyCuba extends Component {
                     <option value="cad">CAD</option>   
                   </select>
                 </div>
+
+                <div class="text-[0.8rem]  pr-[3vw] mt-[0.5rem]">
+              
+                  
+                 
+                      <div class=" text-right ">  
+                        <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
+                        <t t-esc="this.conversionRate.value"/> 
+                        <span class="ml-1"> 
+                           <t t-esc="this.monedas.recibida"/> 
+                        </span>
+                      </div>
+
+
+                      <div class=" text-right "> 
+                      <span class="mr-2"> Send Fee: </span>
+                        <t t-esc="this.feeSTR.value"/> 
+                        <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                      </div>
+
+
+
+                      <div class=" text-right  "> 
+                      <span class="mr-2"> Total Sending Cost (plus fee): </span>
+                        <t t-esc="this.totalSendCostSTR.value"/>
+                        <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                      </div>
+
+                     
+                  
+
+              </div>
             </div>
           
               <div class="form-control  max-w-xs   ">
@@ -289,14 +325,9 @@ export class SendMoneyCuba extends Component {
   setup() {
 
     const accessToken = API.getTokenFromSessionStorage();
-    //const walletAddress = window.sessionStorage.getItem('walletAddress');
-    //const userId = window.sessionStorage.getItem('userId');
-
+    
     onWillStart(async () => {
       const api = new API(accessToken);
-
-      //Pidiendo las tasas de conversion de monedas
-      await this.pedirTasadeCambio("usd", "cup");
 
       //obteniendo todos los datos de los beneficiarios desde el API
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
@@ -311,11 +342,7 @@ export class SendMoneyCuba extends Component {
           CI: el.deliveryCI
         }));
 
-
-
-
         this.beneficiarioData.cardsList = this.allDatosBeneficiariosFromStorage[0].creditCards;
-
       }
 
       this.provincias = Provincias;
@@ -323,6 +350,7 @@ export class SendMoneyCuba extends Component {
 
       this.cardRegExp = await api.getCardRegExp();
 
+      this.tiposCambio = await api.getAllTiposDeCambio();
 
     });
 
@@ -331,170 +359,110 @@ export class SendMoneyCuba extends Component {
     });
 
     onMounted(async () => {
-      this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
+      const monedaEnviada = this.inputSendCurrencyRef.el.value;
+      const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
+      this.monedas.enviada = monedaEnviada.toUpperCase();
+      this.monedas.recibida = monedaRecibida.toUpperCase();
+         
+      const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+      this.conversionRate.value = tc;
+
+      this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
     })
 
   }
 
   //Evento al cambiar la moneda a enviar
   onChangeCurrencySend() {
-    this.onChangeCurrency();
+    this.onChangeSendInput()
   }
 
   //Evento al cambiar la moneda a recibir
   onChangeCurrencyRecib() {
-    this.onChangeCurrency();
+    this.onChangeReceiveInput();
   }
-
-  //Evento al cambiar la moneda
-  async onChangeCurrency() {
-
-    //this.inputReceiveRef.el.value = (0).toFixed(2);
-    //this.inputSendRef.el.value = (0).toFixed(2);
-
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-
-    const sendAmount = this.inputSendRef.el.value;
-    const receiveAmount = this.inputSendRef.el.value;
-
-    const accessToken = window.sessionStorage.getItem('accessToken');
-
-    this.changingSendAmount = true;
-    this.changingReceiveAmount = true;
-
-    if (sendAmount > 0) {
-      const resultado = await UImanager.onChangeSendInput(
-        receiveCurrency,                            //moneda recibida
-        sendCurrency,                               //moneda del que envia
-        sendAmount,                 //cantidad a enviar
-        this.conversionRate.value,
-        accessToken,
-        this.moneda_vs_USD
-      )
-
-      this.fee.value = resultado.fee;
-      this.feeSTR.value = resultado.feeSTR;
-
-
-      this.inputReceiveRef.el.value = resultado.receiveAmount;
-      this.inputSendRef.el.value = UImanager.roundDec(sendAmount);
-
-    } else if (receiveAmount > 0) {
-
-      const resultado = await UImanager.onChangeReceiveInput(
-        this.inputReceiveCurrencyRef.el.value,
-        this.inputSendCurrencyRef.el.value,
-        this.inputReceiveRef.el.value,
-        this.conversionRate.value,
-        accessToken,
-        this.moneda_vs_USD
-      )
-
-      this.fee.value = resultado.fee;
-      this.feeSTR.value = resultado.feeSTR;
-
-      this.inputSendRef.el.value = resultado.sendAmount;
-      this.inputReceiveRef.el.value = UImanager.roundDec(receiveAmount);
-
-    }
-
 
   
 
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = false;
+  async calculateAndShowFee( cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio ) {
+   
+    const service = `card${monedaRecibida.toUpperCase()}`;
+    const zone = this.beneficiarioData.deliveryArea === 'La Habana' ? 'Habana':'Provincias';
+    //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
+    //pues el usuario puede haber cambiado la provincia
+    const accessToken = API.getTokenFromSessionStorage();
 
-  }
-
-
-  async pedirTasadeCambio(sendCurrency, receiveCurrency) {
-    const accessToken = window.sessionStorage.getItem('accessToken');
+    console.log(service)
+    console.log(zone)
+    console.log(cantidadRecibida)
+   
     const api = new API(accessToken);
+    const feeResultUSD =await  api.getFee(service, zone, cantidadRecibida)
+    const feeUSD = feeResultUSD.fee;
+    console.log("Fee USD")
+    console.log(feeUSD)
+    //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
+    const monedaEnviadaUSD ='USD';
+    const feeMonedaEnviada =  UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada );
+    console.log(`Fee en moneda ${monedaEnviada}`)
+    console.log(feeMonedaEnviada)
 
-    if (receiveCurrency && sendCurrency) {
-      const exchangeRate = await api.getExchangeRate(sendCurrency);
-      if (exchangeRate) {
-        this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
-        this.moneda_vs_USD = exchangeRate["USD"];
-        this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
-        this.feeSTR.value = '-';
-      }
-    }
+    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+
+    this.conversionRate.value = tc;
+    this.fee.value = feeMonedaEnviada;
+    this.feeSTR.value = UImanager.roundDec(this.fee.value)
+
+    return feeMonedaEnviada;
+
   }
-
-
-
-
 
   onChangeSendInput = API.debounce(async () => {
 
-    if (this.changingReceiveAmount) { return; }
-    this.changingSendAmount = true;
-    this.changingReceiveAmount = false;
+    const cantidadEnviada  = this.inputSendRef.el.value;
+    const monedaEnviada = this.inputSendCurrencyRef.el.value;
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
-    //ACtualizar variables de tasas de cambio
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
+    this.monedas.enviada = monedaEnviada.toUpperCase()
+    this.monedas.recibida = monedaRecibida.toUpperCase()
+   
+    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida); 
 
-    //Pide el fee y Calcula el resultado
-    //TODO: refactorizar, pedir el fee una funcion, calcular los resultados otra
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const resultado = await UImanager.onChangeSendInput(
-      receiveCurrency,                            //moneda recibida
-      sendCurrency,                               //moneda del que envia
-      this.inputSendRef.el.value,                 //cantidad a enviar
-      this.conversionRate.value,
-      accessToken,
-      this.moneda_vs_USD
-    )
+    this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
 
 
-    this.fee.value = resultado.fee;
-    this.feeSTR.value = resultado.feeSTR;
+    //Comun
+    const feeMonedaEnviada =await  this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
-    this.inputReceiveRef.el.value = resultado.receiveAmount;
-    this.inputSendRef.el.value = UImanager.roundDec(this.inputSendRef.el.value);
-
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = false;
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+    this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
   }, 700);
 
+
   onChangeReceiveInput = API.debounce(async () => {
 
-    if (this.changingSendAmount) { return; }
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = true;
+    const cantidadRecibida  = this.inputReceiveRef.el.value;
+    const monedaEnviada = this.inputSendCurrencyRef.el.value;
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;   
 
-    //ACtualizar variables de tasas de cambio
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
+    this.monedas.enviada = monedaEnviada.toUpperCase()
+    this.monedas.recibida = monedaRecibida.toUpperCase()
+   
+    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida); 
 
-    //LLAMADA
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const resultado = await UImanager.onChangeReceiveInput(
-      this.inputReceiveCurrencyRef.el.value,
-      this.inputSendCurrencyRef.el.value,
-      this.inputReceiveRef.el.value,
-      this.conversionRate.value,
-      accessToken,
-      this.moneda_vs_USD
-    )
+    this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
 
 
-    this.fee.value = resultado.fee;
-    this.feeSTR.value = resultado.feeSTR;
-    this.inputSendRef.el.value = resultado.sendAmount;
-    this.inputReceiveRef.el.value = UImanager.roundDec(this.inputReceiveRef.el.value);
+    //Comun
+    
+    const feeMonedaEnviada =await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = false;
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+    this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
+
+ 
 
   }, 700);
 
@@ -523,7 +491,7 @@ export class SendMoneyCuba extends Component {
     //TODO: Validaciones
     const datosTX = {
       service: service,
-      amount: this.inputSendRef.el.value,                                           //Cantidad a enviar, incluyendo el fee
+      amount: UImanager.roundDec(this.totalSendCost.value),                         //Cantidad a enviar, incluyendo el fee
       currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
       deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
       deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
@@ -683,56 +651,25 @@ export class SendMoneyCuba extends Component {
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
 
-
-
     const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
 
-
-
-
-
-
     this.setearBeneficiario(CIBeneficiariodeTX)
-
-
-
 
     await this.onChangeSendInput()
 
   }
 
-  /*
-
-  onChangeDatosBeneficiarios(IDBeneficiarioSeleccionado) {
-
-    
-    const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === IDBeneficiarioSeleccionado)[0];
-    
-
-    //this.beneficiario = datosBeneficiario;
-    this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
-
-    
-  }*/
-
-
+  
 
   setearBeneficiario = async (CIBeneficiario) => {
-
-
 
     const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
 
     if (!beneficiarioName) { return }
 
-
     this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
 
     this.setearDatosBeneficiario(beneficiarioName._id)
-
-
-
-
 
   }
 
@@ -741,50 +678,30 @@ export class SendMoneyCuba extends Component {
 
   onChangeSelectedCard = async (event) => {
 
-
-
-
     this.beneficiarioData.selectedCard = event.target.value
 
-
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
-
 
     const cardData = this.beneficiarioData.cardsList.filter((unaCard) =>
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
     )[0];
 
 
-
     if (cardData) {
       //console.log("Hay card data");
       //console.log(cardData);
       this.beneficiarioData.cardNumber = formatedCardNumber;
-
       this.beneficiarioData.cardHolderName = cardData.cardHolderName;
-
-
-      //cardHolderName
-      /*this.selectedCard.el.value = event.target.value; 
-      
-      this.state.cardNumber = formatedCardNumber;
-      
-     
-      */
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
 
     } else {
       //console.log("NO Hay card data");
 
       this.beneficiarioData.cardHolderName = '';
-      /*this.state.cardNumber = '';
-      this.cardNumber.el.value='';
-      */
+     
     }
 
 
-
-    //this.props.onChangeDatosBeneficiarios(this.state);
   }
 
 
@@ -792,18 +709,13 @@ export class SendMoneyCuba extends Component {
     const selectedBeneficiaryId = event.target.value;
     this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
 
-
     this.setearDatosBeneficiario(selectedBeneficiaryId);
 
-
     //this.beneficiarioData.selectedBeneficiaryId: '-1',
-    this.beneficiarioData.selectedCard = '-1',
+      this.beneficiarioData.selectedCard = '-1',
       this.beneficiarioData.cardBankImage = '',
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
-
-
-
   }
 
 
@@ -873,40 +785,15 @@ export class SendMoneyCuba extends Component {
     console.log(this.datosSelectedTX.allData);
 
 
-
-
-    //const selectedCardNumber = this.props.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "");
-
-
-
-    //const selectedCard = this.props.cardsList.filter((unCard)=>unCard.number ===selectedCardNumber )[0];
-
-    //this.selectedCard.el.value = selectedCardNumber;
-
-
-
-
     const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
     await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
 
-    //this.selectedCard.el.value="9225959875865500"
-
-
-
-
-
   }
 
   async buscarLogotipoBanco(CardNumber) {
-    // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
-
-    // const api = new API(this.accessToken);
-    //const cardRegExp = await api.getCardRegExp();
-
-
-
+   
     for (const key in this.cardRegExp) {
 
       const regexp = new RegExp(this.cardRegExp[key]);

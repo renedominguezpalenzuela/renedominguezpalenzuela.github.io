@@ -2490,13 +2490,6 @@ details.collapse summary::-webkit-details-marker {
   color: hsl(var(--bc) / var(--tw-text-opacity));
 }
 
-.label-text-alt {
-  font-size: 0.75rem;
-  line-height: 1rem;
-  --tw-text-opacity: 1;
-  color: hsl(var(--bc) / var(--tw-text-opacity));
-}
-
 .input[list]::-webkit-calendar-picker-indicator {
   line-height: 1em;
 }
@@ -3870,6 +3863,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 0.75rem;
 }
 
+.mt-\[0\.5rem\] {
+  margin-top: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -4204,6 +4201,10 @@ details.collapse summary::-webkit-details-marker {
   padding-left: 1rem;
 }
 
+.pr-\[3vw\] {
+  padding-right: 3vw;
+}
+
 .pt-10 {
   padding-top: 2.5rem;
 }
@@ -4223,6 +4224,10 @@ details.collapse summary::-webkit-details-marker {
 .text-3xl {
   font-size: 1.875rem;
   line-height: 2.25rem;
+}
+
+.text-\[0\.8rem\] {
+  font-size: 0.8rem;
 }
 
 .text-\[1\.5rem\] {

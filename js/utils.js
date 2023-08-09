@@ -49,14 +49,14 @@ export class API {
   static getTokenFromSessionStorage() {
     let token = '';
     try {
-      token = window.sessionStorage.getItem('accessToken');      
+      token = window.sessionStorage.getItem('accessToken');
     } catch (error) {
       console.log("Token not found on session storage");
-      console.log(error);      
+      console.log(error);
     }
 
     return token;
-    
+
   }
 
   //------------------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@ export class API {
   }
 
   //------------------------------------------------------------------------------------------------
-  // Obtiene el fee a aplicar
+  // Obtiene el fee a aplicar siempre lo devuelve en usd
   //------------------------------------------------------------------------------------------------
   // service: cardCUP |	cardUSD	| deliveryCUP | deliveryUSD --- moneda y servicio que se recibe
   // zone: Provincias | Habana
@@ -140,6 +140,12 @@ export class API {
       method: 'get',
       url: `${this.base_url}/api/private/fees/cu/${service}/${zone}?amount=${amount}`,
       headers: this.headers,
+    }
+
+    if (amount<=0){
+      return {
+        fee: 0
+      }
     }
 
     let datos = null;
@@ -183,6 +189,22 @@ export class API {
     return datos;
 
   }
+
+  //Pide todos los tipos de cambio
+  //1 usd = X CAD --> this.tiposCambio.USD.CAD
+  async getAllTiposDeCambio() {
+    const usdTC = await this.getExchangeRate('USD');
+    const eurTC = await this.getExchangeRate('EUR');
+    const cadTC = await this.getExchangeRate('CAD');
+
+    const resultado = {
+      'USD': usdTC,
+      'EUR': eurTC,
+      'CAD': cadTC
+    }
+    return resultado;
+  }
+
 
 
 
@@ -493,8 +515,8 @@ export class API {
   //----------------------------------------------------------------------------------------------
   async getTrData(total_tx) {
 
-    if(!total_tx) {
-      total_tx=10;
+    if (!total_tx) {
+      total_tx = 10;
     }
 
     const parametros = {
@@ -876,6 +898,47 @@ export class UImanager {
     if ((/^\d{0,16}$/).test(value)) {
       return value.replace(/(\d{4})/, '$1 ').replace(/(\d{4}) (\d{4})/, '$1 $2 ').replace(/(\d{4}) (\d{4}) (\d{4})/, '$1 $2 $3 ');
     }
+  }
+
+
+
+  static calcularCantidadEnviada(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida) {
+    console.log(cantidadRecibida)
+    console.log(tipoCambio)
+    console.log(monedaEnviada)
+    console.log(monedaRecibida)
+
+    
+    const cantidadEnviada = this.aplicarTipoCambio2(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida);
+
+
+    console.log(cantidadEnviada)
+    return cantidadEnviada;
+  }
+
+  
+  static aplicarTipoCambio2(cantidadRecibida, tipoCambio, monedaBase, monedaaObtener) {
+  
+    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaObtener.toUpperCase()];
+    console.log("tc2")
+    console.log(tc)
+    if (tc<=0) return 0;
+    const cantidadEnviada = cantidadRecibida / tc;
+    console.log(cantidadEnviada)
+    return cantidadEnviada
+  }
+
+  
+  static calcularCantidadRecibida(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida) {
+    const cantidad = this.aplicarTipoCambio1(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida);
+    return cantidad;
+  }
+
+
+  static aplicarTipoCambio1(cantidadEnviada, tipoCambio, monedaBase, monedaaObtener) {
+    const tc = tipoCambio[monedaBase.toUpperCase()][monedaaObtener.toUpperCase()];
+    const cantidadRecibida = tc * cantidadEnviada;
+    return cantidadRecibida
   }
 
 

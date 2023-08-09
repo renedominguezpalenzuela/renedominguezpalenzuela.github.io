@@ -22,8 +22,8 @@ export class HomeDeliveryCuba extends Component {
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
-  changingSendAmount = false;
-  changingReceiveAmount = false;
+  //changingSendAmount = false;
+  //changingReceiveAmount = false;
 
 
   datosSelectedTX = useState({
@@ -39,149 +39,167 @@ export class HomeDeliveryCuba extends Component {
     nameFull: "",
   })
 
+  
 
   beneficiario = useState({
 
   })
 
-  moneda_vs_USD = 1;
+  
+  //moneda_vs_USD = 1;
 
-  conversionRateSTR = useState({ value: "" });
+  
+  totalSendCost = useState({ value: 0 });
+  totalSendCostSTR = useState({ value: "0" });
+
+
+  //conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
+  
 
-  feeSTR = useState({ value: "" });
+  feeSTR = useState({ value: "0" });
   fee = useState({ value: 0 });
 
-  /*
-    <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2">
-        <div class="card-body items-center  ">
-          <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX"/>
-        </div>
-      </div>
-  */
+  monedas = useState({
+    enviada:"USD",
+    recibida:"CUP"
+  })
 
-  static template = xml`    
-    <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
-      
+  
+
+  static template = xml` 
+  <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
-        <div class="card-title flex flex-col rounded-lg">
-          <div>Amount to Send</div> 
-          
-        </div>
-
-        <div class="card-body items-center  ">
-          
-            <div class="form-control  max-w-xs  ">
-                <label class="label">
-                  <span class="label-text">You Send</span>  
-                </label> 
-
-                <div class="join">
-                              
-                  <div>
-                    
-                    <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>
-
-                    <label class="label">
-                      <span class="label-text-alt"></span>
-                      <span class="label-text-alt ">
-                        <div class=" text-right">
-                          Send Fee: <t t-esc="this.feeSTR.value"/> 
-                        </div>  
-                        <div class=" text-right">  
-                           <t t-esc="this.conversionRateSTR.value"/> 
-                        </div>
-                      </span>
-                    </label>
-                  </div>
-                 
-                  <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
-                    <option value="usd">USD</option>
-                    <option value="eur">EUR</option>
-                    <option value="cad">CAD</option>
-                    
-                  </select>
-                
-                </div>
-              </div>
-            
-              <div class="form-control  max-w-xs   ">
-              <label class="label">
-                <span class="label-text">Received Amount</span>  
-              </label> 
-
-              <div class="join">
-               
-                <div>           
-                  
-                  <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
-                   class="input input-bordered join-item text-right" placeholder="0.00"/>    
-
-                </div>
-                
-                <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
-                  <option value="cup">CUP</option>
-                  <option value="usd">USD</option>
-                </select>
-
-              </div>
-
-              <div class="form-control   row-start-4 col-span-2 w-full ">
-              <label class="label">
-                <span class="label-text">Concept</span>
-              </label>
-            
-              <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
-            </div>
-            </div>
-       
-          <div class="card-actions">
-            
+          <div class="card-title flex flex-col rounded-lg">
+              <div>Amount to Send</div>       
           </div>
-        </div>
-     
+          <div class="card-body items-center  ">
+              <div class="form-control  max-w-xs  ">
+                  <label class="label">
+                    <span class="label-text">You Send</span>  
+                  </label> 
+
+                  <div class="join">
+                    
+                      <div>
+
+                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>
+
+
+                      </div>
+
+                      <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
+                          <option value="usd">USD</option>
+                          <option value="eur">EUR</option>
+                          <option value="cad">CAD</option>
+
+                      </select>
+
+                  </div>
+                  <div class="text-[0.8rem]  pr-[3vw] mt-[0.5rem]">
+                  
+                      <div class=" text-right ">  
+                          <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
+                          <t t-esc="this.conversionRate.value"/> 
+                          <span class="ml-1"> 
+                          <t t-esc="this.monedas.recibida"/> 
+                          </span>
+                      </div>                    
+                      <div class=" text-right "> 
+                          <span class="mr-2"> Send Fee: </span>
+                          <t t-esc="this.feeSTR.value"/> 
+                          <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                      </div>
+                     
+                      <div class=" text-right  "> 
+                          <span class="mr-2"> Total Sending Cost (plus fee): </span>
+                          <t t-esc="this.totalSendCostSTR.value"/>
+                          <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                      </div>
+                      
+                  </div>
+
+                  <div class="form-control  max-w-xs   ">
+                      <label class="label">
+                        <span class="label-text">Received Amount</span>  
+                      </label> 
+        
+                      <div class="join">                     
+                        <div>                                
+                          <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
+                          class="input input-bordered join-item text-right" placeholder="0.00"/>    
+                        </div>
+                        
+                        <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                          <option value="cup">CUP</option>
+                          <option value="usd">USD</option>
+                        </select>
+                      </div>
+        
+                      <div class="form-control   row-start-4 col-span-2 w-full ">
+                        <label class="label">
+                          <span class="label-text">Concept</span>
+                        </label>
+                  
+                        <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
+                      </div>
+                </div>
+           
+             
+              </div>
+              <div class="card-actions">
+                    
+              </div>
+          </div>
       </div>
 
-        <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" />
-        <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>  
+    
+
+
+
+    
+
+
+      <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" />
+      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>  
         
       
 
-      <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">
-      
-      <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
-   
+      <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">     
+          <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+      </div>
+  
+
   </div>
-      
-    </div>
-
-
-   
       
   `;
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
+    
   }
 
   setup() {
     const accessToken = window.sessionStorage.getItem('accessToken');
-    const walletAddress = window.sessionStorage.getItem('walletAddress');
-    const userId = window.sessionStorage.getItem('userId');
+    //const walletAddress = window.sessionStorage.getItem('walletAddress');
+    //const userId = window.sessionStorage.getItem('userId');
+    
 
     onWillStart(async () => {
       const api = new API(accessToken);
 
       //Pidiendo las tasas de conversion de monedas
-      await this.pedirTasadeCambio("usd", "cup");
+      //await this.pedirTasadeCambio("usd", "cup");
 
       //obteniendo todos los datos de los beneficiarios
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+     // console.log(allDatosBeneficiarios)
+
       if (allDatosBeneficiarios) {
         window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
-
+    
 
       if (this.allDatosBeneficiariosFromStorage) {
         this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
@@ -190,6 +208,11 @@ export class HomeDeliveryCuba extends Component {
           CI: el.deliveryCI
         }));
       }
+
+     
+
+      this.tiposCambio = await api.getAllTiposDeCambio();
+     
 
 
 
@@ -200,13 +223,32 @@ export class HomeDeliveryCuba extends Component {
     });
 
     onMounted(() => {
+      
+      const monedaEnviada = this.inputSendCurrencyRef.el.value;
+      const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
+      
+      this.monedas.enviada = monedaEnviada.toUpperCase();
+      
+      this.monedas.recibida = monedaRecibida.toUpperCase();
+
+      
+     
+         
+      const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+     
+
+      
+      this.conversionRate.value = tc;
+
+     
+      
 
     })
 
 
   }
 
-
+/*
   async pedirTasadeCambio(sendCurrency, receiveCurrency) {
     const accessToken = window.sessionStorage.getItem('accessToken');
     const api = new API(accessToken);
@@ -218,9 +260,9 @@ export class HomeDeliveryCuba extends Component {
       this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
       this.feeSTR.value = '-';
     }
-  }
+  }*/
 
-
+/*
   async onChangeCurrency() {
 
     this.inputReceiveRef.el.value = (0).toFixed(2);
@@ -230,16 +272,19 @@ export class HomeDeliveryCuba extends Component {
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
 
     await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-  }
+  }*/
 
   onChangeCurrencySend() {
-    this.onChangeCurrency();
+    //this.onChangeCurrency();
+    this.onChangeSendInput()
   }
 
   onChangeCurrencyRecib() {
-    this.onChangeCurrency();
+    //this.onChangeCurrency();
+    this.onChangeReceiveInput();
   }
 
+  /*
   onChangeSendInput = API.debounce(async () => {
 
     if (this.changingReceiveAmount) { return; }
@@ -269,7 +314,9 @@ export class HomeDeliveryCuba extends Component {
     this.changingReceiveAmount = false;
 
   }, 700);
+  */
 
+  /*
   onChangeReceiveInput = API.debounce(async () => {
 
     if (this.changingSendAmount) { return; }
@@ -304,6 +351,90 @@ export class HomeDeliveryCuba extends Component {
   }, 700);
 
 
+  */
+
+
+  
+  async calculateAndShowFee( cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio ) {
+   
+    const service = `card${monedaRecibida.toUpperCase()}`;
+    const zone = this.beneficiario.deliveryZona === 'La Habana' ? 'Habana':'Provincias';
+    //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
+    //pues el usuario puede haber cambiado la provincia
+    const accessToken = API.getTokenFromSessionStorage();
+
+    console.log(service)
+    console.log(zone)
+    console.log(cantidadRecibida)
+   
+    const api = new API(accessToken);
+    const feeResultUSD =await  api.getFee(service, zone, cantidadRecibida)
+    const feeUSD = feeResultUSD.fee;
+    console.log("Fee USD")
+    console.log(feeUSD)
+    //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
+    const monedaEnviadaUSD ='USD';
+    const feeMonedaEnviada =  UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada );
+    console.log(`Fee en moneda ${monedaEnviada}`)
+    console.log(feeMonedaEnviada)
+
+    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+
+    this.conversionRate.value = tc;
+    this.fee.value = feeMonedaEnviada;
+    this.feeSTR.value = UImanager.roundDec(this.fee.value)
+
+    return feeMonedaEnviada;
+
+  }
+
+  onChangeSendInput = API.debounce(async () => {
+
+    const cantidadEnviada  = this.inputSendRef.el.value;
+    const monedaEnviada = this.inputSendCurrencyRef.el.value;
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
+
+    this.monedas.enviada = monedaEnviada.toUpperCase()
+    this.monedas.recibida = monedaRecibida.toUpperCase()
+   
+    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
+
+
+    //Comun
+    const feeMonedaEnviada =await  this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+    this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
+
+  }, 700);
+
+
+  onChangeReceiveInput = API.debounce(async () => {
+
+    const cantidadRecibida  = this.inputReceiveRef.el.value;
+    const monedaEnviada = this.inputSendCurrencyRef.el.value;
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;   
+
+    this.monedas.enviada = monedaEnviada.toUpperCase()
+    this.monedas.recibida = monedaRecibida.toUpperCase()
+   
+    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
+
+
+    //Comun
+    
+    const feeMonedaEnviada =await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+    this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
+
+ 
+
+  }, 700);
   async onSendMoney() {
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
@@ -474,6 +605,19 @@ export class HomeDeliveryCuba extends Component {
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
     await this.onChangeSendInput()
+
+  }
+
+  
+  setearBeneficiario = async (CIBeneficiario) => {
+
+    const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
+
+    if (!beneficiarioName) { return }
+
+    this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
+
+    this.setearDatosBeneficiario(beneficiarioName._id)
 
   }
 
