@@ -458,7 +458,7 @@ export class HomeDeliveryCuba extends Component {
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //Eliminar datos
-    delete this.beneficiario["deliveryCityID"];
+    //delete this.beneficiario["deliveryCityID"];
 
     //TODO: Validaciones
     const datosTX = {
@@ -477,6 +477,8 @@ export class HomeDeliveryCuba extends Component {
       console.log("Validation Errors");
       return;
     }
+
+    delete datosTX["deliveryCityID"];
 
 
     console.log("DATOS")

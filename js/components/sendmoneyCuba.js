@@ -474,7 +474,7 @@ export class SendMoneyCuba extends Component {
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //Eliminar datos
-    delete this.beneficiario["deliveryCityID"];
+    //
 
     const beneficiario = {
       cardNumber: this.beneficiarioData.selectedCard,
@@ -501,6 +501,8 @@ export class SendMoneyCuba extends Component {
       paymentLink: true,
       ...beneficiario
     }
+
+    delete datosTX["deliveryCityID"];
 
     console.log("DATOS")
 

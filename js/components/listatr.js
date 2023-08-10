@@ -41,14 +41,16 @@ export class ListaTR extends Component {
     <table  id="container-listtr" class="display nowrap " style="width:100%" >
     <thead>
         <tr>
-            <th >Created</th>
-            <th>Status</th>
-            <th data-priority="1">Amount</th>
+                <th data-priority="1">Transaction ID</th>    
+                <th >Type</th>
+                <th>Type2</th>
+                <th>Status</th>
             
-            <th data-priority="2" >Currency</th>
-            <th>Type</th>
-            <th>Type2</th>
-            <th>Transaction ID</th>
+            
+                <th data-priority="2">Amount</th>
+            
+                <th data-priority="3" >Currency</th>
+                <th >Created</th>    
            
         </tr>
     </thead>
@@ -212,14 +214,17 @@ export class ListaTR extends Component {
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'createdAt', width: '13%' },
+                    { data: 'transactionID' , width: '10%' },
+                    { data: 'type' , width: '15%'},
+                    { data: 'type2' , width: '15%' },
+                
                     { data: 'transactionStatus', width: '3%'  },
                     { data: 'transactionAmount', width: '3%'  },
 
                     { data: 'currency' , width: '5%'},
-                    { data: 'type' , width: '15%'},
-                    { data: 'type2' , width: '15%' },
-                    { data: 'transactionID' , width: '10%' },
+                    { data: 'createdAt', width: '13%' },
+               
+                   
 
                 ],
                 autoWidth: false,
