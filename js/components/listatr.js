@@ -226,7 +226,8 @@ export class ListaTR extends Component {
                 
                     { data: 'transactionStatus', width: '3%'  },
                     { data: 'transactionAmount', width: '3%'  },
-                    { data: 'feeusercurr', width: '13%' },
+
+                    { data: 'feeusercurr', width: '3%' },
                     //{ data: 'transactionAmount', width: '3%'  },
 
                     { data: 'currency' , width: '5%'},
