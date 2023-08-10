@@ -48,9 +48,12 @@ export class ListaTR extends Component {
             
             
                 <th data-priority="2">Amount</th>
+                <th data-priority="2">Fee</th>
             
                 <th data-priority="3" >Currency</th>
                 <th >Created</th>    
+                <th >Fee (USD)</th>   
+                
            
         </tr>
     </thead>
@@ -135,9 +138,12 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas en SOCKET")
 
+
             
 
             if (!raw_datos) { return }
+
+            console.log(raw_datos)
 
             this.datos = await this.transformarRawDatos(raw_datos);
             this.actualizarDatos(this.datos);
@@ -168,7 +174,7 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas")
 
-            //console.log(raw_datos)
+            console.log(raw_datos)
 
             if (!raw_datos) { return }
 
@@ -220,9 +226,13 @@ export class ListaTR extends Component {
                 
                     { data: 'transactionStatus', width: '3%'  },
                     { data: 'transactionAmount', width: '3%'  },
+                    { data: 'feeusercurr', width: '13%' },
+                    //{ data: 'transactionAmount', width: '3%'  },
 
                     { data: 'currency' , width: '5%'},
                     { data: 'createdAt', width: '13%' },
+                    { data: 'feeusd', width: '13%' },
+                    
                
                    
 
@@ -308,7 +318,10 @@ export class ListaTR extends Component {
             return {
                 fecha_creada: fecha,
                 type2: type2,
-                ...unDato
+                feeusd: unDato.metadata.feeAmount,
+                feeusercurr: unDato.metadata.feeAmountInUserCurrency,               
+                ...unDato,
+                transactionAmount: unDato.metadata.totalAmount -  unDato.metadata.feeAmountInUserCurrency,
             }
         })
 
