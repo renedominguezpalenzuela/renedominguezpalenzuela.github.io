@@ -316,13 +316,46 @@ export class ListaTR extends Component {
                 type2 = !unDato.metadata.method ? "-" : unDato.metadata.method
             }
 
+
+            let feeUSD = 0;
+            if (unDato.metadata){
+                feeUSD = !unDato.metadata.feeAmount? 0 :unDato.metadata.feeAmount
+            }
+
+            let feeUserCurr = 0;
+            if (unDato.metadata){
+                feeUserCurr = !unDato.metadata.feeAmountInUserCurrency? 0 : unDato.metadata.feeAmountInUserCurrency
+            }
+
+            let txAmount =0;
+            if (unDato.metadata){
+
+                let totalAmount = 0;
+                if (unDato.metadata.totalAmount) {
+                    totalAmount  = !unDato.metadata.totalAmount? 0 : unDato.metadata.totalAmount;
+                }
+
+                let feeAmountInUserCurrency=0
+                if (unDato.metadata.feeAmountInUserCurrency) {
+                    feeAmountInUserCurrency=!unDato.metadata.feeAmountInUserCurrency ? 0 : unDato.metadata.feeAmountInUserCurrency;
+                }
+
+
+
+                
+                txAmount =  totalAmount -  feeAmountInUserCurrency;
+            }
+
+
+
+
             return {
                 fecha_creada: fecha,
                 type2: type2,
-                feeusd: unDato.metadata.feeAmount,
-                feeusercurr: unDato.metadata.feeAmountInUserCurrency,               
+                feeusd: feeUSD, 
+                feeusercurr: feeUserCurr,               
                 ...unDato,
-                transactionAmount: unDato.metadata.totalAmount -  unDato.metadata.feeAmountInUserCurrency,
+                transactionAmount: txAmount
             }
         })
 
