@@ -174,7 +174,7 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas")
 
-            console.log(raw_datos)
+            //console.log(raw_datos)
 
             if (!raw_datos) { return }
 
