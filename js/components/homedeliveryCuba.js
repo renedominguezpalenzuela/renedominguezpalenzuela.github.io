@@ -134,7 +134,7 @@ export class HomeDeliveryCuba extends Component {
                         
                         <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                           <option value="cup">CUP</option>
-                          <option value="usd">USD</option>
+                          <option value="usd">MLC(USD)</option>
                         </select>
                       </div>
         
@@ -152,6 +152,23 @@ export class HomeDeliveryCuba extends Component {
               <div class="card-actions">
                     
               </div>
+              <select class="select">
+  <option value="1" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-1.jpg"
+    >One</option
+  >
+  <option value="2" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
+    >Two</option
+  >
+  <option value="3" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-3.jpg"
+    >Three</option
+  >
+  <option value="4" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-4.jpg"
+    >Four</option
+  >
+  <option value="5" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg"
+    >Five</option
+  >
+</select>
           </div>
       </div>
 

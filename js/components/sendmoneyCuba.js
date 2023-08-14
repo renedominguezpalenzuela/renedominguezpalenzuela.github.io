@@ -171,7 +171,7 @@ export class SendMoneyCuba extends Component {
                     
                     <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                       <option value="cup">CUP</option>
-                      <option value="usd">USD</option>
+                      <option value="usd">MLC(USD)</option>
                     </select>
                   </div>
 
@@ -186,12 +186,13 @@ export class SendMoneyCuba extends Component {
     
           <div class="card-actions">         
           </div>
+          
         </div>
    
     </div>
        <!-- Beneficiario -->
-          <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2">
-            <div class="card-title flex flex-col rounded-lg pt-2">
+          <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
+            <div class="card-title flex flex-col rounded-lg ">
               <div>Beneficiary</div> 
             </div>
 
