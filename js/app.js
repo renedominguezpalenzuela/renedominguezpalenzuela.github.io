@@ -93,7 +93,7 @@ class Root extends Component {
     console.log(loginOK)
 
     if (loginOK) {
-      const accessToken = window.sessionStorage.getItem('accessToken');
+      const accessToken = window.localStorage.getItem('accessToken');
       console.log(accessToken)
       const api = new API(accessToken);
 
@@ -103,10 +103,10 @@ class Root extends Component {
   
 
       if (allDatosBeneficiarios) {
-        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
 
-      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
+      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.localStorage.getItem('beneficiariesFullData'));      
       //console.log(allDatosBeneficiariosFromStorage);
 
 
@@ -118,17 +118,17 @@ class Root extends Component {
      // console.log(userData);
 
           if (userData._id) {
-            window.sessionStorage.setItem('userId', userData._id)
+            window.localStorage.setItem('userId', userData._id)
           }
 
 
           if (userData.walletAddress) {
-            window.sessionStorage.setItem('walletAddress', userData.walletAddress)
+            window.localStorage.setItem('walletAddress', userData.walletAddress)
           }
 
           //obteniendo lista de ids de beneficiarios
           if (userData.beneficiaries) {
-            window.sessionStorage.setItem('beneficiariesID', userData.beneficiaries)
+            window.localStorage.setItem('beneficiariesID', userData.beneficiaries)
           }
 
           const beneficiariosIDList = userData.beneficiaries;

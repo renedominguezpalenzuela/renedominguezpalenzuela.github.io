@@ -135,7 +135,7 @@ export class Beneficiarios extends Component {
  
   //"deliveryZone": "Provincias",| Habana
   setup() {
-    this.accessToken = window.sessionStorage.getItem('accessToken');
+    this.accessToken = window.localStorage.getItem('accessToken');
 
     onWillStart(async () => {
       this.provincias = Provincias;
@@ -265,7 +265,7 @@ export class Beneficiarios extends Component {
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
    
-    const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+    const allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
     if (selectedBenefiarioData) {

@@ -67,10 +67,13 @@ export class SendMoneyCuba extends Component {
 
   //moneda_vs_USD = 1;
 
-  tipo_operacion = {
+  /*tipo_operacion = {
     //name: "CASH_OUT_TRANSACTION"
     name: "CREDIT_CARD_TRANSACTION"
   }
+  */
+ tipo_operacion = 1;
+
 
   beneficiarioData = useState({
     beneficiariosNames: [],
@@ -311,7 +314,7 @@ export class SendMoneyCuba extends Component {
 
      <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">
       
-         <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+         <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       
      </div>
       
@@ -325,7 +328,7 @@ export class SendMoneyCuba extends Component {
   //CASH_OUT_TRANSACTION
   setup() {
 
-    const accessToken = API.getTokenFromSessionStorage();
+    const accessToken = API.getTokenFromlocalStorage();
     
     onWillStart(async () => {
       const api = new API(accessToken);
@@ -333,9 +336,9 @@ export class SendMoneyCuba extends Component {
       //obteniendo todos los datos de los beneficiarios desde el API
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
       if (allDatosBeneficiarios) {
-        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
-      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
       if (this.allDatosBeneficiariosFromStorage) {
         this.beneficiarioData.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
@@ -393,7 +396,7 @@ export class SendMoneyCuba extends Component {
     const zone = this.beneficiarioData.deliveryArea;
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
-    const accessToken = API.getTokenFromSessionStorage();
+    const accessToken = API.getTokenFromlocalStorage();
 
     console.log(service)
     console.log(zone)
@@ -524,7 +527,7 @@ export class SendMoneyCuba extends Component {
 
     try {
 
-      const accessToken = window.sessionStorage.getItem('accessToken');
+      const accessToken = window.localStorage.getItem('accessToken');
       const api = new API(accessToken);
       const resultado = await api.createTX(datosTX);
 

@@ -24,7 +24,7 @@ export class Menu extends Component {
 
                     <ul class="menu menu-horizontal px-1 z-50">
 
-                        <li>
+                      <!--  <li>
                             <a class="dropdown-item" href="#">TX List</a>
                         </li>
 
@@ -37,10 +37,10 @@ export class Menu extends Component {
                                     <li><a>Submenu 2</a></li>
                                 </ul>
                             </details>
-                        </li>
+                        </li> -->
 
                         <li>
-                            <a class="dropdown-item" href="#">User Balances</a>
+                            <a class="dropdown-item" href="#" t-on-click="logout">Logout</a>
                         </li>
                     </ul>
 
@@ -79,6 +79,13 @@ export class Menu extends Component {
         onRendered(() => {
             
         });
+
+    }
+
+    logout () {
+        console.log("Logout")
+        window.localStorage.clear();
+        window.location.assign("index.html");
 
     }
 }

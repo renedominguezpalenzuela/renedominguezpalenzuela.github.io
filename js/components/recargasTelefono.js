@@ -29,11 +29,13 @@ export class RecargasTelefono extends Component {
 
 
     //
-
+    /*
     tipo_operacion = {
         //name: "CASH_OUT_TRANSACTION"
         name: "DIRECT_TOPUP"
-    }
+    }*/
+
+    tipo_operacion=3;
 
 
     static components = { ListaTR };
@@ -154,7 +156,8 @@ export class RecargasTelefono extends Component {
     
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2  sm:col-span-2">
         <div class="card-body items-center  ">
-          <ListaTR tipooperacion="this.tipo_operacion.name" />
+          
+          <ListaTR tipooperacion="this.tipo_operacion" />
         </div>
       </div>
 
@@ -170,9 +173,9 @@ export class RecargasTelefono extends Component {
 
 
     setup() {
-        const accessToken = window.sessionStorage.getItem('accessToken');
-        const walletAddress = window.sessionStorage.getItem('walletAddress');
-        const userId = window.sessionStorage.getItem('userId');
+        const accessToken = window.localStorage.getItem('accessToken');
+        const walletAddress = window.localStorage.getItem('walletAddress');
+        const userId = window.localStorage.getItem('userId');
 
 
 
@@ -191,7 +194,7 @@ export class RecargasTelefono extends Component {
             this.seleccionPaises = this.paises.filter(unPais => ((unPais.show)));
 
 
-            console.log(this.seleccionPaises);
+           // console.log(this.seleccionPaises);
 
 
 
@@ -243,7 +246,7 @@ export class RecargasTelefono extends Component {
 
 
             //Inicializando
-            this.onChangePais(this.state.pais)
+            //this.onChangePais(this.state.pais)
 
         })
 
@@ -290,7 +293,7 @@ export class RecargasTelefono extends Component {
         $('.ui-selectmenu-text').html(nombre_pais)
 
 
-        const accessToken = window.sessionStorage.getItem('accessToken');
+        const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
 
 
@@ -379,7 +382,7 @@ export class RecargasTelefono extends Component {
 
         try {
 
-            const accessToken = window.sessionStorage.getItem('accessToken');
+            const accessToken = window.localStorage.getItem('accessToken');
             const api = new API(accessToken);
 
             let resultado = null;

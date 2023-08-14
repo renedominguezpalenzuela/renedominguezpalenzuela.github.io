@@ -10,9 +10,9 @@ import { ListaTR } from "./listatr.js";
 //TODO: Desacoplar la vista de los calculos para poder implementar prubas unitarias
 export class HomeDeliveryCuba extends Component {
 
-  tipo_operacion = {
+  /*tipo_operacion = {
     name: "DELIVERY_TRANSACTION"
-  }
+  }*/
 
   static components = { Beneficiarios, ListaTR };
 
@@ -66,6 +66,8 @@ export class HomeDeliveryCuba extends Component {
     enviada: "USD",
     recibida: "CUP"
   })
+
+  tipo_operacion = 2;
 
 
 
@@ -152,23 +154,7 @@ export class HomeDeliveryCuba extends Component {
               <div class="card-actions">
                     
               </div>
-              <select class="select">
-  <option value="1" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-1.jpg"
-    >One</option
-  >
-  <option value="2" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-2.jpg"
-    >Two</option
-  >
-  <option value="3" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-3.jpg"
-    >Three</option
-  >
-  <option value="4" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-4.jpg"
-    >Four</option
-  >
-  <option value="5" data-mdb-icon="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg"
-    >Five</option
-  >
-</select>
+             
           </div>
       </div>
 
@@ -185,7 +171,7 @@ export class HomeDeliveryCuba extends Component {
       
 
       <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">     
-          <ListaTR tipooperacion="this.tipo_operacion.name" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+          <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       </div>
   
 
@@ -199,9 +185,9 @@ export class HomeDeliveryCuba extends Component {
   }
 
   setup() {
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    //const walletAddress = window.sessionStorage.getItem('walletAddress');
-    //const userId = window.sessionStorage.getItem('userId');
+    const accessToken = window.localStorage.getItem('accessToken');
+    //const walletAddress = window.localStorage.getItem('walletAddress');
+    //const userId = window.localStorage.getItem('userId');
 
 
     onWillStart(async () => {
@@ -215,9 +201,9 @@ export class HomeDeliveryCuba extends Component {
       // console.log(allDatosBeneficiarios)
 
       if (allDatosBeneficiarios) {
-        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
-      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
 
       if (this.allDatosBeneficiariosFromStorage) {
@@ -269,7 +255,7 @@ export class HomeDeliveryCuba extends Component {
 
   /*
     async pedirTasadeCambio(sendCurrency, receiveCurrency) {
-      const accessToken = window.sessionStorage.getItem('accessToken');
+      const accessToken = window.localStorage.getItem('accessToken');
       const api = new API(accessToken);
   
       if (receiveCurrency && sendCurrency) {
@@ -316,7 +302,7 @@ export class HomeDeliveryCuba extends Component {
     const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
     await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
+    const accessToken = window.localStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
       this.inputSendCurrencyRef.el.value,
       this.inputSendRef.el.value,
@@ -350,7 +336,7 @@ export class HomeDeliveryCuba extends Component {
 
 
     //LLAMADA
-    const accessToken = window.sessionStorage.getItem('accessToken');
+    const accessToken = window.localStorage.getItem('accessToken');
     const resultado = await UImanager.onChangeReceiveInput(
       this.inputReceiveCurrencyRef.el.value,
       this.inputSendCurrencyRef.el.value,
@@ -382,7 +368,7 @@ export class HomeDeliveryCuba extends Component {
     const zone = this.beneficiario.deliveryZona;
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
-    const accessToken = API.getTokenFromSessionStorage();
+    const accessToken = API.getTokenFromlocalStorage();
 
     console.log(service)
     console.log(zone)
@@ -507,7 +493,7 @@ export class HomeDeliveryCuba extends Component {
 
 
     try {
-      const accessToken = window.sessionStorage.getItem('accessToken');
+      const accessToken = window.localStorage.getItem('accessToken');
       const api = new API(accessToken);
       const resultado = await api.createTXHomeDeliveryCuba(datosTX);
 

@@ -46,10 +46,10 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // Leer Token desde sesion Storage
   //------------------------------------------------------------------------------------------------
-  static getTokenFromSessionStorage() {
+  static getTokenFromlocalStorage() {
     let token = '';
     try {
-      token = window.sessionStorage.getItem('accessToken');
+      token = window.localStorage.getItem('accessToken');
     } catch (error) {
       console.log("Token not found on session storage");
       console.log(error);
@@ -213,7 +213,7 @@ export class API {
   //-------------------------------------------------------------------------------
   async createTX(datosTX) {
     //leer token desde local storage
-    //const accessToken = window.sessionStorage.getItem('accessToken');
+    //const accessToken = window.localStorage.getItem('accessToken');
 
 
     var body = JSON.stringify(datosTX);
@@ -249,7 +249,7 @@ export class API {
   //-------------------------------------------------------------------------------
   async createTXHomeDeliveryCuba(datosTX) {
     //leer token desde local storage
-    // const accessToken = window.sessionStorage.getItem('accessToken');
+    // const accessToken = window.localStorage.getItem('accessToken');
 
 
     var body = JSON.stringify(datosTX);
@@ -312,8 +312,8 @@ export class API {
 
     if (!this.accessToken) return null;
     //leer token desde local storage
-    // const accessToken = window.sessionStorage.getItem('accessToken');
-    // const walletAddress = window.sessionStorage.getItem('walletAddress');
+    // const accessToken = window.localStorage.getItem('accessToken');
+    // const walletAddress = window.localStorage.getItem('walletAddress');
 
     //console.log(walletAddress);
 
@@ -606,7 +606,7 @@ export async function login(usr, pass) {
       if (datos.accessToken) {
         resultado = true;
         //console.log(datos.accessToken);
-        window.sessionStorage.setItem('accessToken', datos.accessToken)
+        window.localStorage.setItem('accessToken', datos.accessToken)
       } else {
         Swal.fire({
           icon: 'error',
@@ -651,7 +651,7 @@ export async function login(usr, pass) {
 //-------------------------------------------------------------------------------
 export async function getTrData() {
   //leer token desde local storage
-  const accessToken = window.sessionStorage.getItem('accessToken');
+  const accessToken = window.localStorage.getItem('accessToken');
 
   var data = JSON.stringify({
     "filter": {
@@ -687,7 +687,7 @@ export async function getTrData() {
 //-------------------------------------------------------------------------------
 export async function getUsrInfo() {
   //leer token desde local storage
-  const accessToken = window.sessionStorage.getItem('accessToken');
+  const accessToken = window.localStorage.getItem('accessToken');
 
   var data = JSON.stringify({
     "filter": {
@@ -711,11 +711,11 @@ export async function getUsrInfo() {
     datos = response.data;
 
     if (datos.user._id) {
-      window.sessionStorage.setItem('userId', datos.user._id)
+      window.localStorage.setItem('userId', datos.user._id)
     }
 
     if (datos.user.walletAddress) {
-      window.sessionStorage.setItem('walletAddress', datos.user.walletAddress)
+      window.localStorage.setItem('walletAddress', datos.user.walletAddress)
     }
 
   }).catch(function (error) {

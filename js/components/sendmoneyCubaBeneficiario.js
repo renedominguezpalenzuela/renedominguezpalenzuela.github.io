@@ -105,7 +105,7 @@ export class Beneficiarios extends Component {
 
 
 
-    this.accessToken = API.getTokenFromSessionStorage();
+    this.accessToken = API.getTokenFromlocalStorage();
 
     onWillStart(async () => {
       this.provincias = Provincias;

@@ -46,8 +46,8 @@ export class Balance extends Component {
 
     if (!this.socketActivo) return;
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
-    const walletAddress = window.sessionStorage.getItem('walletAddress');
+    const accessToken = window.localStorage.getItem('accessToken');
+    const walletAddress = window.localStorage.getItem('walletAddress');
 
     const api = new API(accessToken);
     let datos = await api.getBalance(walletAddress);
@@ -73,10 +73,10 @@ export class Balance extends Component {
   setup() {
     if (!this.socketActivo) return;
 
-    const accessToken = window.sessionStorage.getItem('accessToken');
+    const accessToken = window.localStorage.getItem('accessToken');
 
-    const walletAddress = window.sessionStorage.getItem('walletAddress');
-    const userId = window.sessionStorage.getItem('userId');
+    const walletAddress = window.localStorage.getItem('walletAddress');
+    const userId = window.localStorage.getItem('userId');
     const subscriptionPath = "/api/subscription";
 
 

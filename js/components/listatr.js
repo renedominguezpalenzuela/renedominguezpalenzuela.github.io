@@ -4,6 +4,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 import { API } from "../utils.js";
+import { tipos_operaciones } from "../../data/tipos_operacion.js";
 
 
 
@@ -27,7 +28,10 @@ export class ListaTR extends Component {
         saldos: []
     });
 
-    total_tx_a_solicitar = 30;
+    total_tx_a_solicitar = 130;
+
+  
+    
 
 
 
@@ -39,11 +43,13 @@ export class ListaTR extends Component {
 
     
     <table  id="container-listtr" class="display nowrap " style="width:100%" >
-    <thead>
+    <thead class="bg-[#3750D1]">
         <tr>
                 <th data-priority="1">Transaction ID</th>    
+                <th>UserType</th>
                 <th >Type</th>
                 <th>Type2</th>
+               
                 <th>Status</th>
             
             
@@ -64,38 +70,47 @@ export class ListaTR extends Component {
    
   `;
 
-
+/*
     async get_data() {
         console.log("Iniciar button");
         this.datos = await getTrData(this.total_tx_a_solicitar);
         console.log("fin");
-    }
+    }*/
 
 
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
-    setup()  {
+    setup() {
 
 
-        const accessToken = API.getTokenFromSessionStorage();
+        const accessToken = API.getTokenFromlocalStorage();
         if (!accessToken) { return }
 
         this.api = new API(accessToken);
 
 
-        const walletAddress = window.sessionStorage.getItem('walletAddress');
-        const userId = window.sessionStorage.getItem('userId');
+        const walletAddress = window.localStorage.getItem('walletAddress');
+        const userId = window.localStorage.getItem('userId');
 
 
         const query = {
             token: accessToken
         }
 
+        
+        if ((this.props.tipooperacion) && (this.props.tipooperacion!=0)) {
+            this.tipos_operacion = tipos_operaciones.filter((una_operacion)=>una_operacion.cod_tipo===this.props.tipooperacion)[0]
+         
+           
+        }
+
+       
+
 
 
         // -----   Creando el socket  ------------------------------------------------
-        this.socket =  io(API.baseSocketURL, {
+        this.socket = io(API.baseSocketURL, {
             path: this.subscriptionPath,
             query: query,
         });
@@ -109,7 +124,7 @@ export class ListaTR extends Component {
         });
 
 
-        
+
         // ----- Socket conectado  ---------------------------------------------------
         this.socket.on("connect", (datos) => {
             console.log("Socket LIST TX conectado correctamente");
@@ -125,21 +140,22 @@ export class ListaTR extends Component {
             console.log('Socket LIST TX RE conectado ', this.socket.connected);
         });
 
-        
+
         // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
         this.socket.on('TRANSACTION_UPDATE', async (data) => {
             console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
             console.log('TR Status LIST TX ' + data.transactionStatus);
 
-           
+
 
             console.log("Solicitando lista de TX al servidor en SOCKET")
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas en SOCKET")
 
+          
 
-            
+
 
             if (!raw_datos) { return }
 
@@ -148,12 +164,17 @@ export class ListaTR extends Component {
             this.datos = await this.transformarRawDatos(raw_datos);
             this.actualizarDatos(this.datos);
 
-      
+          
+           
+
+        
+
+
             //this.tabla.config.plugin.remove("pagination");
             //this.tabla.config.plugin.remove("search");
-            
-        
-           
+
+
+
 
 
             /*if (data.transactionStatus == "confirmed") {
@@ -174,7 +195,11 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas")
 
-            //console.log(raw_datos)
+          
+
+            console.log("Tipo operacion a filtrar")
+            console.log(this.props.tipooperacion)
+
 
             if (!raw_datos) { return }
 
@@ -201,41 +226,43 @@ export class ListaTR extends Component {
             var tableId = "#container-listtr";
 
 
-            if (!this.tabla){
-                            //$('#container-listtr').DataTable().clear().destroy();
+            if (!this.tabla) {
+                //$('#container-listtr').DataTable().clear().destroy();
 
-           // this.tabla.clear();
-            //this.tabla.destroy();
-            //2nd empty html
-           // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
-           // $(tableId + " thead").empty(); //LIMPIA EL HEADER
-            $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+                // this.tabla.clear();
+                //this.tabla.destroy();
+                //2nd empty html
+                // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+                // $(tableId + " thead").empty(); //LIMPIA EL HEADER
+                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
 
 
             }
 
-            
+
 
             //CCreando la tabla
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'transactionID' , width: '10%' },
-                    { data: 'type' , width: '15%'},
-                    { data: 'type2' , width: '15%' },
-                
-                    { data: 'transactionStatus', width: '3%'  },
-                    { data: 'transactionAmount', width: '3%'  },
+                    { data: 'transactionID', width: '8%' },
+                    { data: 'userTextType', width: '5%' },
+                    { data: 'type', width: '15%' },
+                    { data: 'type2', width: '17%' },
+                    
+
+                    { data: 'transactionStatus', width: '3%' },
+                    { data: 'transactionAmount', width: '3%' },
 
                     { data: 'feeusercurr', width: '3%' },
                     //{ data: 'transactionAmount', width: '3%'  },
 
-                    { data: 'currency' , width: '5%'},
+                    { data: 'currency', width: '5%' },
                     { data: 'createdAt', width: '13%' },
                     { data: 'feeusd', width: '13%' },
-                    
-               
-                   
+
+
+
 
                 ],
                 autoWidth: false,
@@ -245,13 +272,13 @@ export class ListaTR extends Component {
                 responsive: true,
                 destroy: true,
                 //footer: false
-                
-                
+
+
             });
 
-           
 
-           // this.tabla.columns.adjust().draw();
+
+            // this.tabla.columns.adjust().draw();
 
 
             //console.log(this.tabla)
@@ -259,8 +286,8 @@ export class ListaTR extends Component {
 
             this.tabla.on('select', (e, dt, type, indexes) => {
                 if (type === 'row') {
-                    if ( this.props.onChangeSelectedTX) {
-                       this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
+                    if (this.props.onChangeSelectedTX) {
+                        this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
                     }
                 }
             });
@@ -273,8 +300,8 @@ export class ListaTR extends Component {
 
     }
 
-    async get_data() {
-        /*  console.log("Iniciar button");
+    /*async get_data() {
+          console.log("Iniciar button");
           this.datos = await getTrData(this.total_tx_a_solicitar);
       
           this.grid.config.plugin.remove("pagination");
@@ -285,15 +312,15 @@ export class ListaTR extends Component {
             search: true,
             pagination: true,
             data: this.datos
-          }).forceRender();*/
+          }).forceRender();
 
 
         console.log("fin");
-    }
+    }*/
 
 
     transformarRawDatos(raw_datos) {
-        
+
         const raw_datos1 = raw_datos.map((unDato) => {
 
 
@@ -318,76 +345,98 @@ export class ListaTR extends Component {
 
 
             let feeUSD = 0;
-            if (unDato.metadata){
-                feeUSD = !unDato.metadata.feeAmount? 0 :unDato.metadata.feeAmount
+            if (unDato.metadata) {
+                feeUSD = !unDato.metadata.feeAmount ? 0 : unDato.metadata.feeAmount
             }
 
             let feeUserCurr = 0;
-            if (unDato.metadata){
-                feeUserCurr = !unDato.metadata.feeAmountInUserCurrency? 0 : unDato.metadata.feeAmountInUserCurrency
+            if (unDato.metadata) {
+                feeUserCurr = !unDato.metadata.feeAmountInUserCurrency ? 0 : unDato.metadata.feeAmountInUserCurrency
             }
 
-            let txAmount =0;
-            if (unDato.metadata){
+            let txAmount = 0;
+            if (unDato.metadata) {
 
                 let totalAmount = 0;
                 if (unDato.metadata.totalAmount) {
-                    totalAmount  = !unDato.metadata.totalAmount? 0 : unDato.metadata.totalAmount;
+                    totalAmount = !unDato.metadata.totalAmount ? 0 : unDato.metadata.totalAmount;
                 }
 
-                let feeAmountInUserCurrency=0
+                let feeAmountInUserCurrency = 0
                 if (unDato.metadata.feeAmountInUserCurrency) {
-                    feeAmountInUserCurrency=!unDato.metadata.feeAmountInUserCurrency ? 0 : unDato.metadata.feeAmountInUserCurrency;
+                    feeAmountInUserCurrency = !unDato.metadata.feeAmountInUserCurrency ? 0 : unDato.metadata.feeAmountInUserCurrency;
                 }
 
 
 
-                
-                txAmount =  totalAmount -  feeAmountInUserCurrency;
+
+                txAmount = totalAmount - feeAmountInUserCurrency;
+            }
+
+            let userTextTypeObj = tipos_operaciones.filter((unTipo)=>(unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2) ))[0];
+            console.log('userTextyp')
+            
+            let userTextType='';
+            if (userTextTypeObj) {
+                //console.log(userTextTypeObj)
+                userTextType = userTextTypeObj.usertext;
+
             }
 
 
 
+            // console.log(unDato)
 
             return {
                 fecha_creada: fecha,
                 type2: type2,
-                feeusd: feeUSD, 
-                feeusercurr: feeUserCurr,               
+                feeusd: feeUSD,
+                feeusercurr: feeUserCurr,
                 ...unDato,
-                transactionAmount: txAmount
+                transactionAmount: txAmount,
+                userTextType: userTextType
             }
         })
 
+       
 
-        
+
         if (this.props.tipooperacion) {
+            console.log("filtro")
             //Filtrar solo para un tipo de operacion
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
-            return  raw_datos1.filter((unaOperacion) => (unaOperacion.type2 == this.props.tipooperacion))
+
+            
+            //console.log('Datos filtrador')
+            //console.log(d)
+            return  raw_datos1.filter(
+                (unaOperacion) => {                                       
+                    return (this.tipos_operacion.type1.includes(unaOperacion.type) && this.tipos_operacion.type2.includes(unaOperacion.type2) );                                                       
+                }          
+            )
         } else {
-             //mostrar todas las operaciones de la wallet
-            return  raw_datos1;
+            //mostrar todas las operaciones de la wallet
+            return raw_datos1;
         }
 
     }
 
 
-    actualizarDatos = async(datos)=>{
+    actualizarDatos = async (datos) => {
 
-        if (this.tabla){
+        if (this.tabla) {
 
             this.tabla.clear();
             this.tabla.rows.add(datos);
             this.tabla.draw();
         }
 
-/*
-        this.tabla.updateConfig({
-            search: true,
-            pagination: true,
-            data: datos
-          }).forceRender();*/
+        /*
+                this.tabla.updateConfig({
+                    search: true,
+                    pagination: true,
+                    data: datos
+                  }).forceRender();*/
     }
 
 
