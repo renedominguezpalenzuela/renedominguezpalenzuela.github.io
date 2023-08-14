@@ -30,8 +30,8 @@ export class ListaTR extends Component {
 
     total_tx_a_solicitar = 130;
 
-  
-    
+
+
 
 
 
@@ -70,12 +70,12 @@ export class ListaTR extends Component {
    
   `;
 
-/*
-    async get_data() {
-        console.log("Iniciar button");
-        this.datos = await getTrData(this.total_tx_a_solicitar);
-        console.log("fin");
-    }*/
+    /*
+        async get_data() {
+            console.log("Iniciar button");
+            this.datos = await getTrData(this.total_tx_a_solicitar);
+            console.log("fin");
+        }*/
 
 
     //TODO: Formatear la fecha
@@ -98,14 +98,15 @@ export class ListaTR extends Component {
             token: accessToken
         }
 
-        
-        if ((this.props.tipooperacion) && (this.props.tipooperacion!=0)) {
-            this.tipos_operacion = tipos_operaciones.filter((una_operacion)=>una_operacion.cod_tipo===this.props.tipooperacion)[0]
-         
-           
+
+        if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
+            this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
+
+
+
         }
 
-       
+
 
 
 
@@ -153,21 +154,21 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas en SOCKET")
 
-          
+
 
 
 
             if (!raw_datos) { return }
 
-            console.log(raw_datos)
+            //console.log(raw_datos)
 
             this.datos = await this.transformarRawDatos(raw_datos);
             this.actualizarDatos(this.datos);
 
-          
-           
 
-        
+
+
+
 
 
             //this.tabla.config.plugin.remove("pagination");
@@ -195,10 +196,10 @@ export class ListaTR extends Component {
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log("lista de TX recibidas")
 
-          
 
-            console.log("Tipo operacion a filtrar")
-            console.log(this.props.tipooperacion)
+
+            //console.log("Tipo operacion a filtrar")
+            //console.log(this.props.tipooperacion)
 
 
             if (!raw_datos) { return }
@@ -249,7 +250,7 @@ export class ListaTR extends Component {
                     { data: 'userTextType', width: '5%' },
                     { data: 'type', width: '15%' },
                     { data: 'type2', width: '17%' },
-                    
+
 
                     { data: 'transactionStatus', width: '3%' },
                     { data: 'transactionAmount', width: '3%' },
@@ -321,6 +322,19 @@ export class ListaTR extends Component {
 
     transformarRawDatos(raw_datos) {
 
+
+        //se busca el nombre de la operacoin
+        //this.props.tipooperacion
+        let userTextTypeObj = tipos_operaciones.filter((unTipo) => unTipo.cod_tipo === this.props.tipooperacion)[0];
+
+        this.userTextType = '';
+        if (userTextTypeObj) {
+            //console.log(userTextTypeObj)
+            this.userTextType = userTextTypeObj.usertext;
+
+        }
+
+
         const raw_datos1 = raw_datos.map((unDato) => {
 
 
@@ -373,15 +387,15 @@ export class ListaTR extends Component {
                 txAmount = totalAmount - feeAmountInUserCurrency;
             }
 
-            let userTextTypeObj = tipos_operaciones.filter((unTipo)=>(unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2) ))[0];
-            console.log('userTextyp')
-            
-            let userTextType='';
-            if (userTextTypeObj) {
-                //console.log(userTextTypeObj)
-                userTextType = userTextTypeObj.usertext;
-
-            }
+            /* let userTextTypeObj = tipos_operaciones.filter((unTipo)=>(unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2) ))[0];
+             console.log('userTextyp')
+             
+             let userTextType='';
+             if (userTextTypeObj) {
+                 //console.log(userTextTypeObj)
+                 userTextType = userTextTypeObj.usertext;
+ 
+             }*/
 
 
 
@@ -394,25 +408,29 @@ export class ListaTR extends Component {
                 feeusercurr: feeUserCurr,
                 ...unDato,
                 transactionAmount: txAmount,
-                userTextType: userTextType
+                userTextType: this.userTextType
             }
         })
 
-       
+
 
 
         if (this.props.tipooperacion) {
-            console.log("filtro")
+            //console.log("filtro")
             //Filtrar solo para un tipo de operacion
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
 
-            
-            //console.log('Datos filtrador')
-            //console.log(d)
-            return  raw_datos1.filter(
-                (unaOperacion) => {                                       
-                    return (this.tipos_operacion.type1.includes(unaOperacion.type) && this.tipos_operacion.type2.includes(unaOperacion.type2) );                                                       
-                }          
+
+       
+            return raw_datos1.filter(
+                (unaOperacion) => {
+
+                    if (this.tipos_operacion.type2 && this.tipos_operacion.type2.length > 0) {
+                        return (this.tipos_operacion.type1.includes(unaOperacion.type) && this.tipos_operacion.type2.includes(unaOperacion.type2));
+                    } else {
+                        return (this.tipos_operacion.type1.includes(unaOperacion.type))
+                    }
+                }
             )
         } else {
             //mostrar todas las operaciones de la wallet

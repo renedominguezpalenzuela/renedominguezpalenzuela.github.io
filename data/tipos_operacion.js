@@ -18,6 +18,12 @@ export const tipos_operaciones = [
         type1: ["TOPUP_RECHARGE"],
         type2: [ "DIRECT_TOPUP"],
         usertext: "Phone Recharge"
+    },
+    {
+        cod_tipo: 4,
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: [ ],
+        usertext: "Phone Recharge"
     }
 
 ]
