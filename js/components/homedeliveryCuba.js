@@ -76,19 +76,19 @@ export class HomeDeliveryCuba extends Component {
               <div>Amount to Send</div>       
           </div>
           <div class="card-body items-center  ">
-              <div class="form-control  max-w-xs  ">
+              <div class="form-control  w-full ">
                   <label class="label">
                     <span class="label-text">You Send</span>  
                   </label> 
 
                   <div class="join">
                     
-                      <div>
+                      
 
-                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right" placeholder="0.00"/>
+                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input w-full input-bordered join-item text-right" placeholder="0.00"/>
 
 
-                      </div>
+                      
 
                       <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                           <option value="usd">USD</option>
@@ -121,7 +121,7 @@ export class HomeDeliveryCuba extends Component {
                       
                   </div>
 
-                  <div class="form-control  max-w-xs   ">
+                  <div class="form-control    w-full">
                       <label class="label">
                         <span class="label-text">Received Amount</span>  
                       </label> 
@@ -129,7 +129,7 @@ export class HomeDeliveryCuba extends Component {
                       <div class="join">                     
                         <div>                                
                           <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
-                          class="input input-bordered join-item text-right" placeholder="0.00"/>    
+                          class="input input-bordered join-item text-right w-full" placeholder="0.00"/>    
                         </div>
                         
                         <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
