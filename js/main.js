@@ -61,7 +61,7 @@ class Root extends Component {
 
 
           <t t-elif="this.state.menuId === 4">
-            <SendMoneyCuba menuController.bind="leftMenuController"/>
+            <SendMoneyCuba menuController.bind="leftMenuController" urlHome=""/>
           </t>
 
           <t t-elif="this.state.menuId === 5">

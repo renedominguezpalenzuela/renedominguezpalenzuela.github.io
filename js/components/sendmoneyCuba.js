@@ -562,7 +562,7 @@ export class SendMoneyCuba extends Component {
           const urlHome = this.props.urlHome ? this.props.urlHome : null;
           console.log("URL HOME")
           console.log(urlHome)
-          debugger
+          //debugger
 
            UImanager.dialogoStripe(paymentLink, this.props.menuController, urlHome)
         }
