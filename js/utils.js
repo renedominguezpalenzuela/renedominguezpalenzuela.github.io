@@ -142,7 +142,7 @@ export class API {
       headers: this.headers,
     }
 
-    if (amount<=0){
+    if (amount <= 0) {
       return {
         fee: 0
       }
@@ -908,7 +908,7 @@ export class UImanager {
     console.log(monedaEnviada)
     console.log(monedaRecibida)
 
-    
+
     const cantidadEnviada = this.aplicarTipoCambio2(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida);
 
 
@@ -916,19 +916,19 @@ export class UImanager {
     return cantidadEnviada;
   }
 
-  
+
   static aplicarTipoCambio2(cantidadMonedaBase, tipoCambio, monedaBase, monedaaConvertir) {
-  
+
     const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
     console.log("tc2")
     console.log(tc)
-    if (tc<=0) return 0;
+    if (tc <= 0) return 0;
     const cantidadConvertida = cantidadMonedaBase / tc;
     console.log(cantidadConvertida)
     return cantidadConvertida
   }
 
-  
+
   static calcularCantidadRecibida(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida) {
     const cantidad = this.aplicarTipoCambio1(cantidadRecibida, tipoCambio, monedaEnviada, monedaRecibida);
     return cantidad;
@@ -943,10 +943,97 @@ export class UImanager {
     console.log(tipoCambio)
 
 
-    
+
     const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
     const cantidadConvertida = tc * cantidadMonedaBase;
     return cantidadConvertida
+  }
+
+  static dialogoStripe(paymentLink, menuController, homeURL) {
+
+    Swal.fire({
+      title: 'Insuficient Funds',
+      text: "The transaction is pending, but your balance is insuficient to complete the transaction",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Clic to refund',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.cerrando = false;
+        const stripeWindows = window.open(paymentLink, 'popup', 'width=600,height=840');
+        stripeWindows.focus();
+
+        var timer = setInterval(function () {
+          if (stripeWindows && stripeWindows.closed) {
+            clearInterval(timer);
+            Swal.fire({
+              title: '',
+              text: "Do you wan't to proccess another operation",
+              icon: 'question',
+              showCancelButton: true,
+              // confirmButtonColor: '#3085d6',
+              // cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                //no hacer nada
+                console.log("No hacer nada, procesar otra operacion")
+
+              } else {
+                //redireccionar al home page
+                if (!homeURL) {
+                  console.log("Redireccionar al home page solo si no esta el prop homeURL")
+                  const menuId = 7
+                  const menuName = 'Transactions List';
+                  if (menuController) {
+                     menuController(menuId, menuName)
+                  }
+                } else {
+                  console.log('redireccionar usando props')
+                  console.log(homeURL)
+                }
+              }
+
+            });
+          }
+        }, 600);
+
+
+        /*
+        this.stripeWindows.onunload = function () {
+          console.log("Cerrando")
+          //if (this.cerrando) {
+            this.cerrando = false;
+            Swal.fire({
+              title: '',
+              text: "Do you wan't to proccess another operation",
+              icon: 'question',
+              showCancelButton: true,
+              // confirmButtonColor: '#3085d6',
+              // cancelButtonColor: '#d33',
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'No'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                //no hacer nada
+                console.log("No hacer nada")
+              } else {
+                //redireccionar al home page
+                console.log("Procesar otra operacion")
+              }
+
+            });
+          //}
+
+        };*/
+
+
+      }
+    })
   }
 
 

@@ -366,6 +366,7 @@ export class HomeDeliveryCuba extends Component {
 
     const service = `delivery${monedaRecibida.toUpperCase()}`;
     const zone = this.beneficiario.deliveryZona;
+    
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
     const accessToken = API.getTokenFromlocalStorage();

@@ -29,8 +29,8 @@ export class SendMoneyCuba extends Component {
   })
 
   monedas = useState({
-    enviada:"USD",
-    recibida:"CUP"
+    enviada: "USD",
+    recibida: "CUP"
   })
 
   datosSelectedTX = useState({
@@ -57,7 +57,7 @@ export class SendMoneyCuba extends Component {
 
   //conversionRateSTR = useState({ value: "" });
   conversionRate = useState({ value: 0 });
-  
+
 
   feeSTR = useState({ value: "0" });
   fee = useState({ value: 0 });
@@ -72,7 +72,7 @@ export class SendMoneyCuba extends Component {
     name: "CREDIT_CARD_TRANSACTION"
   }
   */
- tipo_operacion = 1;
+  tipo_operacion = 1;
 
 
   beneficiarioData = useState({
@@ -329,7 +329,7 @@ export class SendMoneyCuba extends Component {
   setup() {
 
     const accessToken = API.getTokenFromlocalStorage();
-    
+
     onWillStart(async () => {
       const api = new API(accessToken);
 
@@ -368,7 +368,7 @@ export class SendMoneyCuba extends Component {
 
       this.monedas.enviada = monedaEnviada.toUpperCase();
       this.monedas.recibida = monedaRecibida.toUpperCase();
-         
+
       const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
       this.conversionRate.value = tc;
 
@@ -387,13 +387,18 @@ export class SendMoneyCuba extends Component {
     this.onChangeReceiveInput();
   }
 
-  
 
-  async calculateAndShowFee( cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio ) {
-   
-   
+
+  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
+
+
     const service = `card${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiarioData.deliveryArea;
+
+    const zone = this.beneficiarioData.deliveryZona;
+
+
+
+
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
     const accessToken = API.getTokenFromlocalStorage();
@@ -401,15 +406,15 @@ export class SendMoneyCuba extends Component {
     console.log(service)
     console.log(zone)
     console.log(cantidadRecibida)
-   
+
     const api = new API(accessToken);
-    const feeResultUSD =await  api.getFee(service, zone, cantidadRecibida)
+    const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
     const feeUSD = feeResultUSD.fee;
     console.log("Fee USD")
     console.log(feeUSD)
     //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
-    const monedaEnviadaUSD ='USD';
-    const feeMonedaEnviada =  UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada );
+    const monedaEnviadaUSD = 'USD';
+    const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
 
@@ -425,20 +430,20 @@ export class SendMoneyCuba extends Component {
 
   onChangeSendInput = API.debounce(async () => {
 
-    const cantidadEnviada  = this.inputSendRef.el.value;
+    const cantidadEnviada = this.inputSendRef.el.value;
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
     this.monedas.enviada = monedaEnviada.toUpperCase()
     this.monedas.recibida = monedaRecibida.toUpperCase()
-   
-    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
 
 
     //Comun
-    const feeMonedaEnviada =await  this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
@@ -448,32 +453,42 @@ export class SendMoneyCuba extends Component {
 
   onChangeReceiveInput = API.debounce(async () => {
 
-    const cantidadRecibida  = this.inputReceiveRef.el.value;
+    const cantidadRecibida = this.inputReceiveRef.el.value;
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
-    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;   
+    const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
     this.monedas.enviada = monedaEnviada.toUpperCase()
     this.monedas.recibida = monedaRecibida.toUpperCase()
-   
-    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida); 
+
+    const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
 
 
     //Comun
-    
-    const feeMonedaEnviada =await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+
+    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
- 
+
 
   }, 700);
 
 
   //Boton: Enviar transaccion
   async onSendMoney() {
+
+
+
+
+
+
+
+
+
+
     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
@@ -531,7 +546,9 @@ export class SendMoneyCuba extends Component {
       const api = new API(accessToken);
       const resultado = await api.createTX(datosTX);
 
-      //TODO OK
+
+
+      //TODO: refactorizar
       if (resultado.data) {
         //se proceso correctamente la operacion
         if (resultado.data.status === 200 && !resultado.data.paymentLink) {
@@ -542,21 +559,12 @@ export class SendMoneyCuba extends Component {
         if (resultado.data.status === 200 && resultado.data.paymentLink) {
           //redireccionar a otra pagina 
           const paymentLink = resultado.data.paymentLink.url;
+          const urlHome = this.props.urlHome ? this.props.urlHome : null;
+          console.log("URL HOME")
+          console.log(urlHome)
+          debugger
 
-          Swal.fire({
-            title: 'Insuficient Funds',
-            text: "The transaction is pending, but your balance is insuficient to complete the transaction",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Clic to refund',
-            cancelButtonText: 'No'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              window.open(paymentLink, 'popup', 'width=600,height=600');
-            }
-          })
+           UImanager.dialogoStripe(paymentLink, this.props.menuController, urlHome)
         }
 
 
@@ -666,7 +674,7 @@ export class SendMoneyCuba extends Component {
 
   }
 
-  
+
 
   setearBeneficiario = async (CIBeneficiario) => {
 
@@ -705,7 +713,7 @@ export class SendMoneyCuba extends Component {
       //console.log("NO Hay card data");
 
       this.beneficiarioData.cardHolderName = '';
-     
+
     }
 
 
@@ -719,7 +727,7 @@ export class SendMoneyCuba extends Component {
     this.setearDatosBeneficiario(selectedBeneficiaryId);
 
     //this.beneficiarioData.selectedBeneficiaryId: '-1',
-      this.beneficiarioData.selectedCard = '-1',
+    this.beneficiarioData.selectedCard = '-1',
       this.beneficiarioData.cardBankImage = '',
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
@@ -800,7 +808,7 @@ export class SendMoneyCuba extends Component {
   }
 
   async buscarLogotipoBanco(CardNumber) {
-   
+
     for (const key in this.cardRegExp) {
 
       const regexp = new RegExp(this.cardRegExp[key]);
