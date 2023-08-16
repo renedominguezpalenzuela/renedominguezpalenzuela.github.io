@@ -37,7 +37,7 @@ export class Beneficiarios extends Component {
             <div class="card-body items-center   ">              
               <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
                 
-                  <div class="form-control w-full ">
+                  <div class="form-control w-full sm:row-start-1 sm:row-col-1 ">
                     <label class="label">
                       <span class="label-text">Select Beneficiary</span>
                     </label>
@@ -47,7 +47,16 @@ export class Beneficiarios extends Component {
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                       </t>             
                     </select>
-                  </div>             
+                  </div>     
+                  
+                  
+                  <div class="form-control w-full sm:row-start-1 sm:row-col-1  row-start-10 ">
+                      <label class="label">
+                        <span class="label-text">Country</span>
+                      </label>
+                      <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                  </div>
+
 
                   <div class="w-full sm:grid  sm:grid-cols-3 sm:col-span-2  gap-x-2 ">  
                     <div class="form-control  w-full">
@@ -79,12 +88,20 @@ export class Beneficiarios extends Component {
                     <input type="text" t-att-value="this.state.deliveryID"   maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeID" />   
                   </div>
 
-                  <div class="form-control w-full   ">
+                 <!-- <div class="form-control w-full   ">
                     <label class="label">
                       <span class="label-text">Contact Phone</span>
                     </label>
                     <input type="text" t-att-value="this.state.deliveryPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhone" />   
-                  </div>
+                  </div> -->
+
+                  <div class="form-control w-full  ">
+                  <label class="label">
+                   <span class="label-text">Contact Phone</span>
+                  </label>
+                  <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhone" />
+                  
+                </div>
                   
                   <div class="form-control  sm:col-span-2 w-full ">
                       <label class="label">
@@ -117,12 +134,7 @@ export class Beneficiarios extends Component {
                       </select>
                   </div>
 
-                  <div class="form-control w-full max-w-xs ">
-                      <label class="label">
-                        <span class="label-text">Country</span>
-                      </label>
-                      <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
-                  </div>
+
                    <div class="hidden"> 
                   <t t-esc="this.props.datosSelectedTX.txID"/>
                   </div>
@@ -189,6 +201,28 @@ export class Beneficiarios extends Component {
 
     onMounted(() => {
    
+
+      
+      this.phoneInput = document.querySelector("#phone");
+      this.phonInputSelect = window.intlTelInput(this.phoneInput, {
+        // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+        autoInsertDialCode: true, //coloca el codigo del pais en el input
+        formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+
+        // autoPlaceholder: "polite",
+        // don't insert international dial codes
+        nationalMode: true, //permite poner 5465731 en ves de +53 54657331
+        initialCountry: "cu",
+
+
+
+
+        excludeCountries: ["in", "il"],
+        preferredCountries: ["cu"],
+        utilsScript: "js/libs/intlTelIutils.js"
+      });
+
+     
       this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
     });
    

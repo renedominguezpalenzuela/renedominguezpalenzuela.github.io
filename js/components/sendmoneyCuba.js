@@ -203,7 +203,7 @@ export class SendMoneyCuba extends Component {
             <div class="card-body items-center   ">
               <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
 
-                  <div class="form-control w-full sm:row-start-1 ">
+                  <div class="form-control w-full sm:row-start-1 sm:row-col-1 ">
                     <label class="label">
                       <span class="label-text">Select Beneficiary</span>
                     </label>
@@ -215,6 +215,13 @@ export class SendMoneyCuba extends Component {
                                 
                     </select>
                   </div> 
+
+                  <div class="form-control w-full max-w-xs sm:row-start-1 sm:row-col-1  row-start-10">
+                  <label class="label">
+                    <span class="label-text">Country</span>
+                  </label>
+                  <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                </div> 
                   
                   <div class="form-control w-full  sm:row-start-2 ">
                     <label class="label">
@@ -301,12 +308,7 @@ export class SendMoneyCuba extends Component {
              </select>
            </div>
 
-           <div class="form-control w-full max-w-xs sm:row-start-7 ">
-             <label class="label">
-               <span class="label-text">Country</span>
-             </label>
-             <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
-           </div> 
+        
 
               
                           
@@ -384,73 +386,24 @@ export class SendMoneyCuba extends Component {
       const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
       this.conversionRate.value = tc;
 
-      this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
-
+    
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
         // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
         autoInsertDialCode: true, //coloca el codigo del pais en el input
         formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
-
         // autoPlaceholder: "polite",
         // don't insert international dial codes
         nationalMode: true, //permite poner 5465731 en ves de +53 54657331
         initialCountry: "cu",
-
-
-
-
         excludeCountries: ["in", "il"],
         preferredCountries: ["cu"],
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-      // this.phoneInput.addEventListener("countrychange",function() {
-      //    console.log(  this.phonInputSelect)
-      //   // do something with iti.getSelectedCountryData()
-
-      // });
-
-
-
       this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
-
-
-
-
-
-
-      /* var input = document.querySelector("#phone");
- 
-      
- 
-       window.intlTelInput(input, {
-         // allowDropdown: false,
-         // autoInsertDialCode: true,
-         // autoPlaceholder: "off",
-         // dropdownContainer: document.body,
-         // excludeCountries: ["us"],
-         // formatOnDisplay: false,
-         // geoIpLookup: function(callback) {
-         //   fetch("https://ipapi.co/json")
-         //     .then(function(res) { return res.json(); })
-         //     .then(function(data) { callback(data.country_code); })
-         //     .catch(function() { callback("us"); });
-         // },
-         // hiddenInput: "full_number",
-         // initialCountry: "auto",
-         // localizedCountries: { 'de': 'Deutschland' },
-         // nationalMode: false,
-          onlyCountries: ['us', 'cu', 'ch', 'ca', 'do'],
-         // placeholderNumberType: "MOBILE",
-         // preferredCountries: ['cn', 'jp'],
-         // separateDialCode: true,
-         // showFlags: false,
-         //utilsScript:  "../libs/utils.js"
-         
-       });*/
-
+      this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
 
     })
 
