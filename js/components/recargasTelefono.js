@@ -13,7 +13,7 @@ export class RecargasTelefono extends Component {
     //TODO: poner imagen de espera con una ventana
 
     state = useState({
-        pais: 53,
+        pais: 53,                   //codigo telefonico del pais
         currency: "USD",
         producto: -1,
         listaProductos: [],
@@ -35,7 +35,7 @@ export class RecargasTelefono extends Component {
         name: "DIRECT_TOPUP"
     }*/
 
-    tipo_operacion=3;
+    tipo_operacion = 3;
 
 
     static components = { ListaTR };
@@ -63,8 +63,17 @@ export class RecargasTelefono extends Component {
                     <option value="CAD">CAD</option>            
                 </select>
             </div>    
+
+            <div class="form-control w-full sm:row-start-4 ">
+            <label class="label">
+             <span class="label-text">Phone to recharge</span>
+            </label>
+            <input t-att-value="this.state.phone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhone" />
+            <!-- <span id="valid-phone-msg" class="hide">✓ Valid</span>
+            <span id="error-phone-msg" class="hide"></span> -->
+          </div> 
                                 
-            <div class="form-control w-full   ">  
+          <!--  <div class="form-control w-full   ">  
                 <label class="label">
                     <span class="label-text">Country to send recharge </span>
                 </label>     
@@ -75,7 +84,8 @@ export class RecargasTelefono extends Component {
                         </option>
                     </t>             
                 </select>
-            </div>     
+            </div>    
+            --> 
 
            
             <div class="form-control w-full   ">  
@@ -95,13 +105,17 @@ export class RecargasTelefono extends Component {
                 </select>
             </div>   
 
+        
 
+<!--
                 <div class="form-control w-full   ">
                 <label class="label">
                   <span class="label-text">Phone to recharge</span>
                 </label>
                 <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="input input-bordered w-full " t-on-input="onChangePhone" />   
               </div>
+
+              -->
 
               <div class="form-control w-full   ">
               <label class="label">
@@ -180,21 +194,25 @@ export class RecargasTelefono extends Component {
 
 
         onWillStart(async () => {
+            this.seleccionCodigosPaises = [];
+            this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
 
-            this.paises = Paises.map((unPais, i) => ({
-                id: unPais.id,
-                name: unPais.name,
-                flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
-                currency: unPais.currency.code,
-                number: unPais.number,
-                show: unPais.show
-            }));
+                this.seleccionCodigosPaises.push(unPais.isoAlpha2)
+                return {
+                    id: unPais.id,
+                    name: unPais.name,
+                    // flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
+                    currency: unPais.currency.code,
+                    number: unPais.number,
+                    show: unPais.show,
+                    iso2: unPais.isoAlpha2,
+                    prefijo: unPais.prefijo
 
-            //solo mostrar los que tienen show = true
-            this.seleccionPaises = this.paises.filter(unPais => ((unPais.show)));
+                }
+            }
 
+            );
 
-           // console.log(this.seleccionPaises);
 
 
 
@@ -208,41 +226,63 @@ export class RecargasTelefono extends Component {
 
         onMounted(() => {
 
+            this.phoneInput = document.querySelector("#phone");
+            this.phonInputSelect = window.intlTelInput(this.phoneInput, {
+                separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+                autoInsertDialCode: true, //coloca el codigo del pais en el input
+                formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+                // autoPlaceholder: "polite",
+                // don't insert international dial codes
+                nationalMode: false, //permite poner 5465731 en ves de +53 54657331
+                initialCountry: "cu",
+                //excludeCountries: ["in", "il"],
+                preferredCountries: ["cu"],
+                // display only these countries
 
-            $.widget("custom.iconselectmenu", $.ui.selectmenu, {
-                _renderItem: function (ul, item) {
+                onlyCountries: this.seleccionCodigosPaises,
 
-                    console.log("SSSSSSS")
-
-
-                    var li = $("<li>"), wrapper = $("<div>", { text: item.label });
-
-                    if (item.disabled) {
-                        li.addClass("ui-state-disabled");
-                    }
-
-                    $("<span>", {
-                        style: item.element.attr("data-style"),
-                        "class": "ui-icon " + item.element.attr("data-class")
-                    }).appendTo(wrapper);
-
-                    return li.append(wrapper).appendTo(ul);
-                }
+                utilsScript: "js/libs/intlTelIutils.js"
             });
 
-            //Creando Select Menu de Easy UI 
-            //Creando Evento cuando se cambia de pais
-            $("#people").iconselectmenu({
-                change: (event, ui) => {
-                    const idPais = ui.item.value;
-                    this.onChangePais(idPais);
+            this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
-                }
-            }
-            ).iconselectmenu("menuWidget").addClass("ui-menu-icons");
+            //  console.log(window.intlTelInputGlobals.getCountryData())
 
-
-
+            /*
+                        $.widget("custom.iconselectmenu", $.ui.selectmenu, {
+                            _renderItem: function (ul, item) {
+            
+                                
+            
+            
+                                var li = $("<li>"), wrapper = $("<div>", { text: item.label });
+            
+                                if (item.disabled) {
+                                    li.addClass("ui-state-disabled");
+                                }
+            
+                                $("<span>", {
+                                    style: item.element.attr("data-style"),
+                                    "class": "ui-icon " + item.element.attr("data-class")
+                                }).appendTo(wrapper);
+            
+                                return li.append(wrapper).appendTo(ul);
+                            }
+                        });
+            
+                        //Creando Select Menu de Easy UI 
+                        //Creando Evento cuando se cambia de pais
+                        $("#people").iconselectmenu({
+                            change: (event, ui) => {
+                                const idPais = ui.item.value;
+                                this.onChangePais(idPais);
+            
+                            }
+                        }
+                        ).iconselectmenu("menuWidget").addClass("ui-menu-icons");
+            
+            
+            */
 
 
             //Inicializando
@@ -254,55 +294,70 @@ export class RecargasTelefono extends Component {
     }
 
 
-    onChangeProduct(event) {
+     onChangeProduct(event) {
         this.state.producto = event.target.value;
-        console.log(this.state.producto)
-        console.log(this.listaProductos)
+        if (this.listaProductos) {
+            const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
+            this.state.productoDesc = producto.description
+            this.state.salePrice = producto.salePrice.amount;
+            this.state.operator = producto.operator;
+            this.state.label = producto.label;
+        }
 
+        // console.log(this.state.producto)
+        // console.log(this.listaProductos)
 
-
-
-
-        const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
-
-        this.state.productoDesc = producto.description
-
-        console.log("Costo")
-        console.log(producto.salePrice.amount)
-        console.log(producto.salePrice.currency)
-
-        this.state.salePrice = producto.salePrice.amount;
-        this.state.operator = producto.operator;
-        this.state.label = producto.label;
-
-
-
+        // console.log("Costo")
+        // console.log(producto.salePrice.amount)
+        // console.log(producto.salePrice.currency)
 
 
     }
 
-    onChangePais = async (idPAis) => {
-        console.log("PAis" + idPAis);
-        this.state.pais = idPAis;
+    onChangePhone = API.debounce(async (event) => {
+
+        this.state.phone = event.target.value
+        console.log(this.state)
+
+        if (!this.listaProductos) {
+            console.log("pidiendo por primera ves los productos")
+            await this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
+        }
+
+    }, 700);
+
+
+    handleCountryChange = () => {
+        console.log(this.phonInputSelect.getSelectedCountryData().dialCode)
+        console.log(this.phonInputSelect.getSelectedCountryData().iso2)
+        console.log(this.phonInputSelect.getSelectedCountryData().name)
+        console.log("AAA");
+
+        this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
+    }
+
+
+    //se ejecuta al cambiar el pais, para pedir la lista de productos  
+    //prefijo  --- codigo telefonico del pais
+    //coincide con id en lista de paises 
+    onChangePais = async (prefijo) => {
+        console.log("PAis" + prefijo);
+        //this.state.pais = idPAis;
         this.state.productoDesc = ""
         this.state.salePrice = 0
 
         //Poniendo el nombre del pais en el control EasyUI
-        const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == idPAis)[0].name
-        console.log(nombre_pais)
-        $('.ui-selectmenu-text').html(nombre_pais)
-
+        //const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == idPAis)[0].name
+        //console.log(nombre_pais)
+        //$('.ui-selectmenu-text').html(nombre_pais)
 
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
+        const paisDatos = this.paises.find(unPais => unPais.prefijo == prefijo);
 
+        console.log(paisDatos)
 
-
-        const paisDatos = this.paises.find(unPais => unPais.id == idPAis);
-
-
-
-
+        
 
         Swal.fire({
             title: 'Please Wait..!',
@@ -314,8 +369,9 @@ export class RecargasTelefono extends Component {
             showCloseButton: true,
             didOpen: async () => {
                 swal.showLoading()
-                console.log("SSS")
+
                 console.log(this.state.currency);
+                console.log(paisDatos.number)
                 const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
                 console.log(operadores);
                 this.listaProductos = operadores.data.operators[0].products;
@@ -327,14 +383,6 @@ export class RecargasTelefono extends Component {
 
 
 
-
-
-
-
-
-
-
-
         //const exchangeRate = await api.getProductosRecargaTelefon("usd");
 
     }
@@ -342,9 +390,9 @@ export class RecargasTelefono extends Component {
 
     onChangeCurrencySend(event) {
         this.state.currency = event.target.value
-        console.log("Pais")
-        console.log(this.state.pais)
-        this.onChangePais(this.state.pais)
+        console.log("Prefio Pais")
+        console.log(this.phonInputSelect.getSelectedCountryData().dialCode)
+        this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
     }
 
 
@@ -365,21 +413,14 @@ export class RecargasTelefono extends Component {
 
         }
 
-
-
-
-
         console.log(datosTX);
-
-
 
         if (!this.validarDatos(datosTX)) {
             console.log("Validation Errors");
             return;
         }
 
-
-
+        
         try {
 
             const accessToken = window.localStorage.getItem('accessToken');
@@ -399,21 +440,21 @@ export class RecargasTelefono extends Component {
                     swal.showLoading()
                     resultado = await api.sendPhoneRecharge(datosTX);
 
-                    if (resultado.code) {
-                        if (resultado.code === "ERR_BAD_REQUEST") {
+                    /*  if (resultado.code) {
+                          if (resultado.code === "ERR_BAD_REQUEST") {
+  
+                              Swal.fire({
+                                  icon: 'error',
+                                  title: 'Error',
+                                  text: resultado.response.data.message
+                              })
+  
+  
+                          }
+                          console.log(resultado.code)
+                      }*/
 
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error',
-                                text: resultado.response.data.message
-                            })
 
-
-                        }
-                        console.log(resultado.code)
-                    }
-
-                   
 
 
                     const urlHome = this.props.urlHome ? this.props.urlHome : null;
@@ -435,9 +476,13 @@ export class RecargasTelefono extends Component {
     }
 
 
-    onChangePhone(event) {
+
+
+
+    /*onChangePhone(event) {
         this.state.phone = event.target.value
-    }
+    }*/
+
     onChangePhoneOwnerName(event) {
         this.state.phoneOwnerName = event.target.value
     }
