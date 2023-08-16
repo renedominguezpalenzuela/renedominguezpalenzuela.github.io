@@ -59,6 +59,7 @@ export class ListaTR extends Component {
                 <th data-priority="3" >Currency</th>
                 <th >Created</th>    
                 <th >Fee (USD)</th>   
+                <th>External ID</th>
                 
            
         </tr>
@@ -261,6 +262,8 @@ export class ListaTR extends Component {
                     { data: 'currency', width: '5%' },
                     { data: 'createdAt', width: '13%' },
                     { data: 'feeusd', width: '13%' },
+                    { data: 'externalID', width: '13%' },
+
 
 
 
@@ -301,23 +304,6 @@ export class ListaTR extends Component {
 
     }
 
-    /*async get_data() {
-          console.log("Iniciar button");
-          this.datos = await getTrData(this.total_tx_a_solicitar);
-      
-          this.grid.config.plugin.remove("pagination");
-          this.grid.config.plugin.remove("search");
-          
-      
-          this.grid.updateConfig({
-            search: true,
-            pagination: true,
-            data: this.datos
-          }).forceRender();
-
-
-        console.log("fin");
-    }*/
 
 
     transformarRawDatos(raw_datos) {
@@ -387,19 +373,12 @@ export class ListaTR extends Component {
                 txAmount = totalAmount - feeAmountInUserCurrency;
             }
 
-            /* let userTextTypeObj = tipos_operaciones.filter((unTipo)=>(unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2) ))[0];
-             console.log('userTextyp')
-             
-             let userTextType='';
-             if (userTextTypeObj) {
-                 //console.log(userTextTypeObj)
-                 userTextType = userTextTypeObj.usertext;
- 
-             }*/
+            let txtExternalID = '-'
+            if (unDato.externalID) {
+                txtExternalID = unDato.externalID;
+            }
 
-
-
-            // console.log(unDato)
+          
 
             return {
                 fecha_creada: fecha,
@@ -408,7 +387,8 @@ export class ListaTR extends Component {
                 feeusercurr: feeUserCurr,
                 ...unDato,
                 transactionAmount: txAmount,
-                userTextType: this.userTextType
+                userTextType: this.userTextType,
+                externalID: txtExternalID
             }
         })
 
@@ -421,7 +401,7 @@ export class ListaTR extends Component {
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
 
 
-       
+
             return raw_datos1.filter(
                 (unaOperacion) => {
 
@@ -449,12 +429,7 @@ export class ListaTR extends Component {
             this.tabla.draw();
         }
 
-        /*
-                this.tabla.updateConfig({
-                    search: true,
-                    pagination: true,
-                    data: datos
-                  }).forceRender();*/
+
     }
 
 
