@@ -949,6 +949,51 @@ export class UImanager {
     return cantidadConvertida
   }
 
+
+
+  static gestionResultado(resultado, urlHome, menuController) {
+
+
+    
+      //TODO: refactorizar
+      if (resultado.data) {
+        //se proceso correctamente la operacion
+        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
+          Swal.fire(resultado.data.payload);
+          return;
+        }
+
+        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+        if (resultado.data.status === 200 && resultado.data.paymentLink) {
+          //redireccionar a otra pagina 
+          const paymentLink = resultado.data.paymentLink.url;
+         
+          console.log("URL HOME")
+          console.log(urlHome)
+          //debugger
+
+          UImanager.dialogoStripe(paymentLink,menuController, urlHome)
+          return;
+        }
+
+
+
+
+      }
+
+      //Error pero aun responde el API
+      if (resultado.response) {
+        console.log(resultado)
+        /*"error": "BAD_REQUEST",
+        "message": "The externalID field is required",
+        "statusCode": 400*/
+        Swal.fire(resultado.response.data.message);
+      }
+
+  }
+
+
+
   static dialogoStripe(paymentLink, menuController, homeURL) {
 
     Swal.fire({
@@ -995,6 +1040,7 @@ export class UImanager {
                 } else {
                   console.log('redireccionar usando props')
                   console.log(homeURL)
+                  window.location.assign(homeURL);
                 }
               }
 

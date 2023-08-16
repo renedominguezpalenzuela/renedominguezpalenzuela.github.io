@@ -388,15 +388,15 @@ export class SendMoneyCuba extends Component {
 
 
       this.phoneInput = document.querySelector("#phone");
-      this.phonInputSelect = window.intlTelInput( this.phoneInput, {
+      this.phonInputSelect = window.intlTelInput(this.phoneInput, {
         // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
-         autoInsertDialCode:true, //coloca el codigo del pais en el input
-         formatOnDisplay:false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+        autoInsertDialCode: true, //coloca el codigo del pais en el input
+        formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
 
-       // autoPlaceholder: "polite",
+        // autoPlaceholder: "polite",
         // don't insert international dial codes
         nationalMode: true, //permite poner 5465731 en ves de +53 54657331
-        initialCountry:"cu",
+        initialCountry: "cu",
 
 
 
@@ -409,16 +409,16 @@ export class SendMoneyCuba extends Component {
       // this.phoneInput.addEventListener("countrychange",function() {
       //    console.log(  this.phonInputSelect)
       //   // do something with iti.getSelectedCountryData()
-      
+
       // });
 
-   
+
 
       this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
-      
 
-      
-     
+
+
+
 
 
       /* var input = document.querySelector("#phone");
@@ -456,9 +456,9 @@ export class SendMoneyCuba extends Component {
 
   }
 
-  handleCountryChange =()=>{
-    console.log(  this.phonInputSelect.getSelectedCountryData().iso2)
-    console.log(  this.phonInputSelect.getSelectedCountryData().name)
+  handleCountryChange = () => {
+    console.log(this.phonInputSelect.getSelectedCountryData().iso2)
+    console.log(this.phonInputSelect.getSelectedCountryData().name)
   }
 
   //Evento al cambiar la moneda a enviar
@@ -564,7 +564,7 @@ export class SendMoneyCuba extends Component {
   //Boton: Enviar transaccion
   async onSendMoney() {
 
-     //cardCUP	cardUSD
+    //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //Eliminar datos
@@ -599,22 +599,12 @@ export class SendMoneyCuba extends Component {
     delete datosTX["deliveryCityID"];
 
     console.log("DATOS")
-
-
     console.log(datosTX);
-
-   
-
-
-
-
 
     if (!this.validarDatos(datosTX)) {
       console.log("Validation Errors");
       return;
     }
-
-    
 
 
 
@@ -624,40 +614,11 @@ export class SendMoneyCuba extends Component {
       const api = new API(accessToken);
       const resultado = await api.createTX(datosTX);
 
+      const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+      UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
 
 
-      //TODO: refactorizar
-      if (resultado.data) {
-        //se proceso correctamente la operacion
-        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
-          Swal.fire(resultado.data.payload);
-        }
-
-        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
-        if (resultado.data.status === 200 && resultado.data.paymentLink) {
-          //redireccionar a otra pagina 
-          const paymentLink = resultado.data.paymentLink.url;
-          const urlHome = this.props.urlHome ? this.props.urlHome : null;
-          console.log("URL HOME")
-          console.log(urlHome)
-          //debugger
-
-          UImanager.dialogoStripe(paymentLink, this.props.menuController, urlHome)
-        }
-
-
-
-
-      }
-
-      //Error pero aun responde el API
-      if (resultado.response) {
-        console.log(resultado)
-        /*"error": "BAD_REQUEST",
-        "message": "The externalID field is required",
-        "statusCode": 400*/
-        Swal.fire(resultado.response.data.message);
-      }
 
     } catch (error) {
       console.log(error);
@@ -669,7 +630,7 @@ export class SendMoneyCuba extends Component {
 
   validarDatos(datos) {
     // console.log(datos)
-    
+
 
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
@@ -724,17 +685,17 @@ export class SendMoneyCuba extends Component {
       return false;
     }
 
-     //--------------------- Phone --------------------------------------------
-     
+    //--------------------- Phone --------------------------------------------
 
-     if (!datos.contactPhone || datos.contactPhone === '' || !this.phonInputSelect.isValidNumber()) {
-       Swal.fire({
-         icon: 'error', title: 'Error',
-         text: 'Incorrect phone number'
-       })
-       return false;
-     }
-     
+
+    if (!datos.contactPhone || datos.contactPhone === '' || !this.phonInputSelect.isValidNumber()) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Incorrect phone number'
+      })
+      return false;
+    }
+
 
     return true;
 

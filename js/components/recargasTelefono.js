@@ -413,47 +413,12 @@ export class RecargasTelefono extends Component {
                         console.log(resultado.code)
                     }
 
-                    //TODO OK
-                    if (resultado.data) {
-                        //se proceso correctamente la operacion
-                        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
-                            Swal.fire(resultado.data.payload);
-                        }
-
-                        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
-                        if (resultado.data.status === 200 && resultado.data.paymentLink) {
-                            //redireccionar a otra pagina 
-                            const paymentLink = resultado.data.paymentLink.url;
-
-                            Swal.fire({
-                                title: 'Insuficient Funds',
-                                text: "The transaction is pending, but your balance is insuficient to complete the transaction",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Clic to refund',
-                                cancelButtonText: 'No'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    window.open(paymentLink, 'popup', 'width=600,height=600');
-                                }
-                            })
-                        }
+                   
 
 
+                    const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
-
-                    }
-
-
-                    //Error pero aun responde el API
-                    if (resultado.error) {
-                        Swal.fire(resultado.message);
-                    }
-
-
-                    console.log(resultado)
+                    UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
                     //swal.close();
                 }
             })
