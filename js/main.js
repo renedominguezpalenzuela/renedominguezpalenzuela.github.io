@@ -15,7 +15,9 @@ class Root extends Component {
   static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono, ListaTR};
 
   //Opcion inicial del menu
-  state = useState({menuId: 5, title:'Home Delivery'});
+
+  
+  state = useState({menuId:6, title:'Phone Recharge'});
    
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -114,11 +116,14 @@ class Root extends Component {
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
 
+    
+
 
 
 
 
     onWillStart(() => {
+   
   
     });
 
@@ -128,6 +133,8 @@ class Root extends Component {
 
 
     onRendered(() => {
+      
+   
       
     });
 
@@ -144,7 +151,12 @@ class Root extends Component {
   }
 
 
-  
+   //   const menuInicial = 1;
+
+    // const menu_inicial = this.leftmenuItems.filter((unItem)=>unItem.id==menuInicial)[0]
+    // console.log(menu_inicial)
+    // this.state.title = menu_inicial.name;
+    // this.state.id = menuInicial.id;
 
   
 
