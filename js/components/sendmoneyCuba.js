@@ -3,6 +3,7 @@ import { API, UImanager } from "../utils.js";
 //import { Beneficiarios } from "./sendmoneyCubaBeneficiario.js";
 import { ListaTR } from "./listatr.js";
 import { Provincias } from "../../data/provincias_cu.js";
+// import  "../libs/utils.js"
 
 //TODO: refactorizar en un componente la parte de las monedas y el importe
 
@@ -252,12 +253,21 @@ export class SendMoneyCuba extends Component {
                 <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
                </div>
 
-               <div class="form-control w-full sm:row-start-4 ">
+             <!-- <div class="form-control w-full sm:row-start-4 ">
                <label class="label">
                  <span class="label-text">Contact Phone</span>
                </label>
                <input type="text" t-att-value="this.beneficiarioData.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
-              </div>
+              </div>-->
+
+              <div class="form-control w-full sm:row-start-4 ">
+                <label class="label">
+                 <span class="label-text">Contact Phone</span>
+                </label>
+                <input t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhoneInput" />
+                <!-- <span id="valid-phone-msg" class="hide">✓ Valid</span>
+                <span id="error-phone-msg" class="hide"></span> -->
+              </div> 
 
               
               <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
@@ -356,6 +366,8 @@ export class SendMoneyCuba extends Component {
 
       this.tiposCambio = await api.getAllTiposDeCambio();
 
+
+
     });
 
     onRendered(() => {
@@ -373,8 +385,80 @@ export class SendMoneyCuba extends Component {
       this.conversionRate.value = tc;
 
       this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
+
+
+      this.phoneInput = document.querySelector("#phone");
+      this.phonInputSelect = window.intlTelInput( this.phoneInput, {
+        // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+         autoInsertDialCode:true, //coloca el codigo del pais en el input
+         formatOnDisplay:false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+
+       // autoPlaceholder: "polite",
+        // don't insert international dial codes
+        nationalMode: true, //permite poner 5465731 en ves de +53 54657331
+        initialCountry:"cu",
+
+
+
+
+        excludeCountries: ["in", "il"],
+        preferredCountries: ["cu"],
+        utilsScript: "js/libs/intlTelIutils.js"
+      });
+
+      // this.phoneInput.addEventListener("countrychange",function() {
+      //    console.log(  this.phonInputSelect)
+      //   // do something with iti.getSelectedCountryData()
+      
+      // });
+
+   
+
+      this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
+      
+
+      
+     
+
+
+      /* var input = document.querySelector("#phone");
+ 
+      
+ 
+       window.intlTelInput(input, {
+         // allowDropdown: false,
+         // autoInsertDialCode: true,
+         // autoPlaceholder: "off",
+         // dropdownContainer: document.body,
+         // excludeCountries: ["us"],
+         // formatOnDisplay: false,
+         // geoIpLookup: function(callback) {
+         //   fetch("https://ipapi.co/json")
+         //     .then(function(res) { return res.json(); })
+         //     .then(function(data) { callback(data.country_code); })
+         //     .catch(function() { callback("us"); });
+         // },
+         // hiddenInput: "full_number",
+         // initialCountry: "auto",
+         // localizedCountries: { 'de': 'Deutschland' },
+         // nationalMode: false,
+          onlyCountries: ['us', 'cu', 'ch', 'ca', 'do'],
+         // placeholderNumberType: "MOBILE",
+         // preferredCountries: ['cn', 'jp'],
+         // separateDialCode: true,
+         // showFlags: false,
+         //utilsScript:  "../libs/utils.js"
+         
+       });*/
+
+
     })
 
+  }
+
+  handleCountryChange =()=>{
+    console.log(  this.phonInputSelect.getSelectedCountryData().iso2)
+    console.log(  this.phonInputSelect.getSelectedCountryData().name)
   }
 
   //Evento al cambiar la moneda a enviar
@@ -480,16 +564,7 @@ export class SendMoneyCuba extends Component {
   //Boton: Enviar transaccion
   async onSendMoney() {
 
-
-
-
-
-
-
-
-
-
-    //cardCUP	cardUSD
+     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
     //Eliminar datos
@@ -528,6 +603,8 @@ export class SendMoneyCuba extends Component {
 
     console.log(datosTX);
 
+   
+
 
 
 
@@ -537,6 +614,7 @@ export class SendMoneyCuba extends Component {
       return;
     }
 
+    
 
 
 
@@ -564,7 +642,7 @@ export class SendMoneyCuba extends Component {
           console.log(urlHome)
           //debugger
 
-           UImanager.dialogoStripe(paymentLink, this.props.menuController, urlHome)
+          UImanager.dialogoStripe(paymentLink, this.props.menuController, urlHome)
         }
 
 
@@ -591,6 +669,8 @@ export class SendMoneyCuba extends Component {
 
   validarDatos(datos) {
     // console.log(datos)
+    
+
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
       Swal.fire({
@@ -644,14 +724,17 @@ export class SendMoneyCuba extends Component {
       return false;
     }
 
-    //--------------------- Phone --------------------------------------------
-    if (!datos.contactPhone || datos.contactPhone === '') {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Please enter the phone number'
-      })
-      return false;
-    }
+     //--------------------- Phone --------------------------------------------
+     
+
+     if (!datos.contactPhone || datos.contactPhone === '' || !this.phonInputSelect.isValidNumber()) {
+       Swal.fire({
+         icon: 'error', title: 'Error',
+         text: 'Incorrect phone number'
+       })
+       return false;
+     }
+     
 
     return true;
 
@@ -896,6 +979,7 @@ export class SendMoneyCuba extends Component {
 
   onChangePhoneInput = API.debounce(async (event) => {
     this.beneficiarioData.contactPhone = event.target.value;
+    //console.log(event.target.value)
 
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);

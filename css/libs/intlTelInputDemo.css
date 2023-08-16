@@ -1,0 +1,96 @@
+
+/*.iti--separate-dial-code .iti__selected-flag {
+  background-color: rgba(255, 255, 255, 0.05);
+}*/
+/*
+.selectphone {
+
+  
+    flex-shrink: 1;
+    height: 3rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1rem;
+    line-height: 2;
+    line-height: 1.5rem;
+    border-width: 1px;
+    border-color: hsl(var(--bc) / var(--tw-border-opacity));
+    --tw-border-opacity: 0;
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b1) / var(--tw-bg-opacity));
+    border-radius: var(--rounded-btn, 0.5rem);
+
+
+}*/
+
+
+
+
+
+
+
+
+
+
+
+/** {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 20px;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #555;
+}
+
+pre {
+  margin: 0 !important;
+  display: inline-block;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string,
+.token.variable {
+  background: none;
+}
+
+input,
+button {
+  height: 35px;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 2px;
+  font-family: inherit;
+  font-size: 100%;
+  color: inherit;
+}
+input[disabled],
+button[disabled] {
+  background-color: #eee;
+}
+
+input,
+select {
+  border: 1px solid #ccc;
+  width: 250px;
+}
+
+::placeholder,
+:-ms-input-placeholder {
+  color: #bbb;
+}
+
+button {
+  color: #fff;
+  background-color: #428bca;
+  border: 1px solid #357ebd;
+}
+button:hover {
+  background-color: #3276b1;
+  border-color: #285e8e;
+  cursor: pointer;
+}*/

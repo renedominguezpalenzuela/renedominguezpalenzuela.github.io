@@ -3942,6 +3942,10 @@ details.collapse summary::-webkit-details-marker {
   height: 100%;
 }
 
+.h-2 {
+  height: 0.5rem;
+}
+
 .w-1 {
   width: 0.25rem;
 }
