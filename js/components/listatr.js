@@ -56,7 +56,7 @@ export class ListaTR extends Component {
                 <th data-priority="2">Fee <br/> </th>
             
                 <th data-priority="3" >Curr.</th>
-                <th class="centrar">Created</th>    
+                <th class="centrar">Created <br/> (yyyy/mm/dd) </th>    
                 <th class="centrar">Fee <br/> (USD)</th>   
               
                 <th >Type</th>
