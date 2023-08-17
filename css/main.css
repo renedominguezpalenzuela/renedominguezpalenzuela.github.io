@@ -100,10 +100,10 @@ table{
 }
 
 
-.state-requested {
+.state {
   
         width: 100%;
-        background-color: rgb(226, 230, 15);
+       
         padding: 2px 8px;
         color: rgb(255, 255, 255);
         cursor: default;
@@ -120,6 +120,16 @@ table{
         z-index: 100;
     
   }
+
+
+  .amount-value {
+    text-align: right;
+  }
+
+  .centrar {
+    text-align: center!important;
+  }
+
 
   table.dataTable tbody td {
     vertical-align: middle;

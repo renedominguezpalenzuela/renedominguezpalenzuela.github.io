@@ -3,7 +3,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 
-import { API } from "../utils.js";
+import { API, UImanager } from "../utils.js";
 import { tipos_operaciones } from "../../data/tipos_operacion.js";
 
 
@@ -47,18 +47,20 @@ export class ListaTR extends Component {
         <tr>
                 <th data-priority="1">Transaction ID</th>    
                 <th>UserType</th>
-                <!-- <th >Type</th>
-                <th>Type2</th> -->
+                
                
-                <th>Status</th>
+                <th class="centrar">Status</th>
             
             
-                <th data-priority="2">Amount</th>
-                <th data-priority="2">Fee</th>
+                <th data-priority="2">Amount <br/> (No fee)</th>
+                <th data-priority="2">Fee <br/> </th>
             
-                <th data-priority="3" >Currency</th>
-                <th >Created</th>    
-                <th >Fee (USD)</th>   
+                <th data-priority="3" >Curr.</th>
+                <th class="centrar">Created</th>    
+                <th class="centrar">Fee <br/> (USD)</th>   
+              
+                <th >Type</th>
+                <th>Type2</th> 
                 <th>External ID</th>
                 
            
@@ -242,64 +244,134 @@ export class ListaTR extends Component {
             }
 
 
-            function format(inputDate) { 
-                  let date, month, year, segundos, minutos, horas; 
-                  date = inputDate.getDate(); 
+            function format(inputDate) {
+                let date, month, year, segundos, minutos, horas;
+                date = inputDate.getDate();
 
-                  segundos = inputDate.getSeconds().toString().padStart(2, '0');
-                  minutos = inputDate.getMinutes().toString().padStart(2, '0');;
-                  horas = inputDate.getHours().toString().padStart(2, '0');;
-
-
+                segundos = inputDate.getSeconds().toString().padStart(2, '0');
+                minutos = inputDate.getMinutes().toString().padStart(2, '0');;
+                horas = inputDate.getHours().toString().padStart(2, '0');;
 
 
-                  month = inputDate.getMonth() + 1; 
-                  year = inputDate.getFullYear(); 
-                  date = date.toString().padStart(2, '0');
-                  month = month.toString().padStart(2, '0'); 
 
-                  
-                  return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`; 
+
+                month = inputDate.getMonth() + 1;
+                year = inputDate.getFullYear();
+                date = date.toString().padStart(2, '0');
+                month = month.toString().padStart(2, '0');
+
+
+                return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
+            }
+
+            function colorStatus(status) {
+                let color = ""
+                switch (status) {
+                    case "requested":
+                        color = "#658DF7"
+                        break;
+
+                    case "confirmed":
+                        color = "#78D1B5"
+                        break;
+
+                    case "pending":
+                        color = "#C07E00"
+                        break;
+
+                    case "failed":
+                        color = "#D70707"
+                        break;
+
+                    case "canceled":
+                        color = "#F83E54"
+                        break;
+
+                    case "processed":
+                        color = "#3750D1"
+                        break;
+
+                    case "rejected":
+                        color = "#F83E54"
+                        break;
+
+                    case "accepted":
+                        color = "#28A745"
+                        break;
+
+                    case "queued":
+                        color = "#28A215"
+                        break;
+
+
+                    default:
+                        color = "#A0AFD6"
+                        break;
                 }
+
+                return color;
+
+            }
 
             //CCreando la tabla
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'transactionID', width: '10%' },
-                    { data: 'userTextType', width: '12%' },
-                    /* { data: 'type', width: '15%' },
-                     { data: 'type2', width: '17%' },*/
+                    { data: 'transactionID', width: '12%' },
+                    { data: 'userTextType', width: '14%' },
 
 
-                    { data: 'transactionStatus', width: '6%' },
-                    { data: 'transactionAmount', width: '3%' },
 
-                    { data: 'feeusercurr', width: '3%' },
-                    //{ data: 'transactionAmount', width: '3%'  },
+                    {
+                        data: 'transactionStatus', width: '8%',
+                        render: function (data, type, row) {
+                            let color = colorStatus(data)
+                            return `<span class="state" style="background-color:${color};"> ${data} </span>`;
+                        }
+                    },
+                    {
+                        data: 'transactionAmount', width: '7%',className:"amount-value",
+                        render: function (data, type, row) {
+                            let valor = UImanager.roundDec(data);
+                            return `<span class="amount-value" > ${valor} </span>`;
+                        }
 
-                    { data: 'currency', width: '5%' },
+                    },
+
+                    {
+                        data: 'feeusercurr', width: '3%',className:"amount-value",
+                        render: function (data, type, row) {
+                            let valor = UImanager.roundDec(data);
+                            return `<span class="amount-value" > ${valor} </span>`;
+                        }
+                    },
+
+                    { data: 'currency', width: '5%', className:"centrar" },
                     {
                         data: 'createdAt', width: '13%',
                         render: function (data, type, row) {
-                            //const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-                            /* if(type === "sort" || type === "type"){
-                                 return data;
-                             }*/
 
 
-                            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                            //const options = { year: 'numeric', month: 'long', day: 'numeric' };
 
                             const fecha = new Date(data);
                             return format(fecha)
                             //fecha.toLocaleTimeString('en-EN', options)
                             //event.toLocaleDateString(undefined, options)
-
                             //moment(data).format("MM/DD/YYYY");
                         },
                     },
-                    { data: 'feeusd', width: '13%' },
+                    {
+                        data: 'feeusd', width: '4%', className:"amount-value",
+                            render: function (data, type, row) {
+                            let valor = UImanager.roundDec(data);
+                            return `<span class="" > ${valor} </span>`;
+                        }
+                    },
+                    { data: 'type', width: '15%' },
+                    { data: 'type2', width: '15%' },
                     { data: 'externalID', width: '13%' },
+
 
 
 
@@ -329,18 +401,18 @@ export class ListaTR extends Component {
                    // }
                   }*/
 
-                createdRow: (row, data, index) => {
-                    //console.log(data.transactionStatus)
-                    console.log("-------")
-                    console.log(row.querySelector('tr.child'))
-                    // console.log($(row).find('td:eq(3)'))
-                    if (data.transactionStatus === "confirmed") {
-                        row.querySelector(':nth-child(5)').classList.add('state-requested');
-                        //   row.querySelector('li:nth-child(1) > span.dtr-data').classList.add('state-requested');
-                        //tr.child > td > ul > li:nth-child(1) > span.dtr-data
-
-                    }
-                }
+                /* createdRow: (row, data, index) => {
+                     //console.log(data.transactionStatus)
+                     console.log("-------")
+                     console.log(row.querySelector('tr.child'))
+                     // console.log($(row).find('td:eq(3)'))
+                     if (data.transactionStatus === "confirmed") {
+                         row.querySelector(':nth-child(5)').classList.add('state-requested');
+                         //   row.querySelector('li:nth-child(1) > span.dtr-data').classList.add('state-requested');
+                         //tr.child > td > ul > li:nth-child(1) > span.dtr-data
+ 
+                     }
+                 }*/
 
                 /* "createdRow": function (row, data, dataIndex) {
                      console.log($('td', row).child)
