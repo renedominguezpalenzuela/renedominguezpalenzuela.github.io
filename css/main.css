@@ -98,3 +98,29 @@ table{
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 0;
 }
+
+
+.state-requested {
+  
+        width: 100%;
+        background-color: rgb(226, 230, 15);
+        padding: 2px 8px;
+        color: rgb(255, 255, 255);
+        cursor: default;
+        text-align: center;
+        border-radius: 5px;
+        height: 2rem;
+        line-height: calc(2rem - 4px);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        word-break: break-all;
+        z-index: 100;
+    
+  }
+
+  table.dataTable tbody td {
+    vertical-align: middle;
+  }

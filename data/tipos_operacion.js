@@ -1,29 +1,73 @@
 export const tipos_operaciones = [
 
     {
-        
         cod_tipo: 1,
-        type1: ["CASH_OUT_TRANSACTION", "PAYMENT_REQUEST"],
-        type2: ["CREDIT_CARD_TRANSACTION ","MLC_CREDIT_CARD_TRANSACTION", "PAYMENT_LINK"],
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: ["CREDIT_CARD_TRANSACTION"],
         usertext: "Send to Card"
     },
     {
         cod_tipo: 2,
-        type1: ["CASH_OUT_TRANSACTION", "PAYMENT_REQUEST"],
-        type2: ["DELIVERY_TRANSACTION", "DELIVERY_TRANSACTION_USD", "DELIVERY_TRANSACTION_EUR", "PAYMENT_LINK"],
-        usertext: "Home delivery"
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: ["MLC_CREDIT_CARD_TRANSACTION"],
+        usertext: "Send to Card MLC"
     },
     {
         cod_tipo: 3,
-        type1: ["TOPUP_RECHARGE", "PAYMENT_REQUEST"],
-        type2: [ "DIRECT_TOPUP", "PAYMENT_LINK"],
-        usertext: "Phone Recharge"
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: ["DELIVERY_TRANSACTION"],
+        usertext: "Home delivery"
     },
     {
         cod_tipo: 4,
         type1: ["CASH_OUT_TRANSACTION"],
-        type2: [ ],
+        type2: ["DELIVERY_TRANSACTION_EUR"],
+        usertext: "Home delivery EUR"
+    },
+    {
+        cod_tipo: 5,
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: ["DELIVERY_TRANSACTION_USD"],
+        usertext: "Home delivery USD"
+    },
+    {
+        cod_tipo: 6,
+        type1: ["TOPUP_RECHARGE"],
+        type2: ["DIRECT_TOPUP"],
         usertext: "Phone Recharge"
-    }
+    },
+    {
+        cod_tipo: 7,
+        type1: ["PAYMENT_REQUEST"],
+        type2: ["PAYMENT_LINK"],
+        usertext: "Stripe payment"
+    },
+    {
+        cod_tipo: 8,
+        type1: ["MLC_PAYMENT_REQUEST"],
+        type2: ["MLC_PAYMENT_REQUEST"],
+        usertext: "MLC Payment Request"
+    },
+    {
+        cod_tipo: 8,
+        type1: ["EMAIL_PAYMENT_REQUEST"],
+        type2: ["EMAIL_PAYMENT_REQUEST"],
+        usertext: "Mail Payment Request"
+    },
+    {
+        cod_tipo: 9,
+        type1: ["PAYMENT_REQUEST"],
+        type2: ["DIRECT_TOPUP"],
+        usertext: "Payment Request"
+    },
+    	
+    
+    
+    
+
+
+
 
 ]
+
+

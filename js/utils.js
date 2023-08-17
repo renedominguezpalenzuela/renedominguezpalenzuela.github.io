@@ -470,6 +470,7 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
+      console.log(response)
       datos = response.data;
     }).catch(function (error) {
       console.log(error);

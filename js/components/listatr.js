@@ -47,8 +47,8 @@ export class ListaTR extends Component {
         <tr>
                 <th data-priority="1">Transaction ID</th>    
                 <th>UserType</th>
-                <th >Type</th>
-                <th>Type2</th>
+                <!-- <th >Type</th>
+                <th>Type2</th> -->
                
                 <th>Status</th>
             
@@ -242,25 +242,62 @@ export class ListaTR extends Component {
             }
 
 
+            function format(inputDate) { 
+                  let date, month, year, segundos, minutos, horas; 
+                  date = inputDate.getDate(); 
+
+                  segundos = inputDate.getSeconds().toString().padStart(2, '0');
+                  minutos = inputDate.getMinutes().toString().padStart(2, '0');;
+                  horas = inputDate.getHours().toString().padStart(2, '0');;
+
+
+
+
+                  month = inputDate.getMonth() + 1; 
+                  year = inputDate.getFullYear(); 
+                  date = date.toString().padStart(2, '0');
+                  month = month.toString().padStart(2, '0'); 
+
+                  
+                  return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`; 
+                }
 
             //CCreando la tabla
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'transactionID', width: '8%' },
-                    { data: 'userTextType', width: '5%' },
-                    { data: 'type', width: '15%' },
-                    { data: 'type2', width: '17%' },
+                    { data: 'transactionID', width: '10%' },
+                    { data: 'userTextType', width: '12%' },
+                    /* { data: 'type', width: '15%' },
+                     { data: 'type2', width: '17%' },*/
 
 
-                    { data: 'transactionStatus', width: '3%' },
+                    { data: 'transactionStatus', width: '6%' },
                     { data: 'transactionAmount', width: '3%' },
 
                     { data: 'feeusercurr', width: '3%' },
                     //{ data: 'transactionAmount', width: '3%'  },
 
                     { data: 'currency', width: '5%' },
-                    { data: 'createdAt', width: '13%' },
+                    {
+                        data: 'createdAt', width: '13%',
+                        render: function (data, type, row) {
+                            //const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+                            /* if(type === "sort" || type === "type"){
+                                 return data;
+                             }*/
+
+
+                            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+                            const fecha = new Date(data);
+                            return format(fecha)
+                            //fecha.toLocaleTimeString('en-EN', options)
+                            //event.toLocaleDateString(undefined, options)
+
+                            //moment(data).format("MM/DD/YYYY");
+                        },
+                    },
                     { data: 'feeusd', width: '13%' },
                     { data: 'externalID', width: '13%' },
 
@@ -276,6 +313,41 @@ export class ListaTR extends Component {
                 responsive: true,
                 destroy: true,
                 //footer: false
+
+                /*'rowCallback': function(row, data, index){
+                    console.log(data.transactionStatus)
+                    console.log($(row).find('td:eq(3)')[0])
+                    if(data.transactionStatus==="pending"){
+                        $(row).find('td:eq(4)').css('color', 'white');
+                        $(row).find('td:eq(4)').css('background-color', 'blue');
+                        $(row).find('td:eq(4)').css('margin', '3px');
+                       // $(row).find('td:eq(3)').addClass('state-requested');
+                        //row.querySelector(':nth-child(3)').classList.add('state-requested');
+                    }
+                   // if(data[2].toUpperCase() == 'EE'){
+                   //     $(row).find('td:eq(2)').css('color', 'blue');
+                   // }
+                  }*/
+
+                createdRow: (row, data, index) => {
+                    //console.log(data.transactionStatus)
+                    console.log("-------")
+                    console.log(row.querySelector('tr.child'))
+                    // console.log($(row).find('td:eq(3)'))
+                    if (data.transactionStatus === "confirmed") {
+                        row.querySelector(':nth-child(5)').classList.add('state-requested');
+                        //   row.querySelector('li:nth-child(1) > span.dtr-data').classList.add('state-requested');
+                        //tr.child > td > ul > li:nth-child(1) > span.dtr-data
+
+                    }
+                }
+
+                /* "createdRow": function (row, data, dataIndex) {
+                     console.log($('td', row).child)
+                     if (data.transactionStatus==="pending") {
+                         $('td', row).eq(4).addClass('state-requested');
+                     }
+                 }*/
 
 
             });
@@ -311,17 +383,19 @@ export class ListaTR extends Component {
 
         //se busca el nombre de la operacoin
         //this.props.tipooperacion
-        let userTextTypeObj = tipos_operaciones.filter((unTipo) => unTipo.cod_tipo === this.props.tipooperacion)[0];
+        //let userTextTypeObj = tipos_operaciones.filter((unTipo) => unTipo.cod_tipo === this.props.tipooperacion)[0];
 
-        this.userTextType = '';
+        /*this.userTextType = '';
         if (userTextTypeObj) {
             //console.log(userTextTypeObj)
             this.userTextType = userTextTypeObj.usertext;
 
-        }
+        }*/
 
 
         const raw_datos1 = raw_datos.map((unDato) => {
+
+            // console.log(unDato)
 
 
 
@@ -378,7 +452,25 @@ export class ListaTR extends Component {
                 txtExternalID = unDato.externalID;
             }
 
-          
+            //Poniendole nombre a las operaciones
+
+
+            let userTypeObj = null;
+            if (unDato.type === "MLC_PAYMENT_REQUEST") {
+                userTypeObj = tipos_operaciones.filter((unTipo) => unTipo.type1.includes(unDato.type))[0];
+            } else {
+
+                userTypeObj = tipos_operaciones.filter((unTipo) => unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2))[0];
+                //console.log(userTypeObj)        
+
+            }
+
+            const userTextType = userTypeObj ? userTypeObj.usertext : '-'
+            const tipoOperacion = userTypeObj ? userTypeObj.cod_tipo : '-'
+
+
+
+
 
             return {
                 fecha_creada: fecha,
@@ -387,7 +479,8 @@ export class ListaTR extends Component {
                 feeusercurr: feeUserCurr,
                 ...unDato,
                 transactionAmount: txAmount,
-                userTextType: this.userTextType,
+                userTextType: userTextType,
+                tipoOperacion: tipoOperacion,
                 externalID: txtExternalID
             }
         })
@@ -395,6 +488,10 @@ export class ListaTR extends Component {
 
 
 
+
+        //filtrando las operaciones
+        //this.props.tipooperacion --- arreglo de tipos_operacion
+        //ejemplp [1,2]
         if (this.props.tipooperacion) {
             //console.log("filtro")
             //Filtrar solo para un tipo de operacion
@@ -405,12 +502,21 @@ export class ListaTR extends Component {
             return raw_datos1.filter(
                 (unaOperacion) => {
 
+                    return this.props.tipooperacion.includes(unaOperacion.tipoOperacion)
+
+                }
+
+
+                /*(unaOperacion) => {
+
+                    console.log(unaOperacion)
+
                     if (this.tipos_operacion.type2 && this.tipos_operacion.type2.length > 0) {
                         return (this.tipos_operacion.type1.includes(unaOperacion.type) && this.tipos_operacion.type2.includes(unaOperacion.type2));
                     } else {
                         return (this.tipos_operacion.type1.includes(unaOperacion.type))
                     }
-                }
+                }*/
             )
         } else {
             //mostrar todas las operaciones de la wallet

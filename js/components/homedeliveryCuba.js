@@ -67,7 +67,7 @@ export class HomeDeliveryCuba extends Component {
     recibida: "CUP"
   })
 
-  tipo_operacion = 2;
+  tipo_operacion = [3,4,5];
 
 
 

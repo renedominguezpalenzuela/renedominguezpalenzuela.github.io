@@ -73,7 +73,7 @@ export class SendMoneyCuba extends Component {
     name: "CREDIT_CARD_TRANSACTION"
   }
   */
-  tipo_operacion = 1;
+  tipo_operacion = [1,2];
 
 
   beneficiarioData = useState({
