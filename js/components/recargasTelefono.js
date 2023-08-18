@@ -297,6 +297,7 @@ export class RecargasTelefono extends Component {
 
     onChangeProduct(event) {
         this.state.producto = event.target.value;
+        this.promo_template.title='';
         if (this.listaProductos) {
             const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
 
@@ -306,7 +307,7 @@ export class RecargasTelefono extends Component {
             this.state.salePrice = producto.salePrice.amount;
             this.state.operator = producto.operator;
             this.state.label = producto.label;
-            console.log("Produccto Promociones")
+            console.log("Productos")
             console.log(producto)
              if (producto.promotions[0]) {
                 console.log("Promociones")
@@ -350,6 +351,8 @@ export class RecargasTelefono extends Component {
         console.log(this.phonInputSelect.getSelectedCountryData().name)
         console.log("AAA");
 
+        this.state.operator='';
+
         this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
     }
 
@@ -359,6 +362,8 @@ export class RecargasTelefono extends Component {
     //coincide con id en lista de paises 
     onChangePais = async (prefijo) => {
         console.log("PAis " + prefijo);
+
+        this.promo_template.title='';
 
         this.state.productoDesc = ""
         this.state.salePrice = 0
@@ -385,12 +390,28 @@ export class RecargasTelefono extends Component {
 
                 console.log(this.state.currency);
                 console.log(paisDatos.number)
-                const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
-                console.log("---- Operador ----- ")
-                console.log(operadores);
-                this.listaProductos = operadores.data.operators[0].products;
-                this.state.listaProductos = this.listaProductos;
-                swal.close();
+                try {
+                    
+                    const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
+                    console.log("---- Operador ----- ")
+                    console.log(operadores);
+                    this.listaProductos = operadores.data.operators[0].products;
+                    this.state.listaProductos = this.listaProductos;
+                    swal.close();
+                } catch (error) {
+                    console.log(error)
+                    this.state.listaProductos=[];
+                    this.listaProductos=[];
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error
+                    })
+                    
+                }
+                
+               
             }
         })
 
