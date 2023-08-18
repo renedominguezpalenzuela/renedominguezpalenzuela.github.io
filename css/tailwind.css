@@ -3862,6 +3862,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 0.5rem;
 }
 
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
 .block {
   display: block;
 }
@@ -4205,8 +4209,20 @@ details.collapse summary::-webkit-details-marker {
   font-size: 1rem;
 }
 
+.text-\[2rem\] {
+  font-size: 2rem;
+}
+
 .font-\[600\] {
   font-weight: 600;
+}
+
+.font-\[700\] {
+  font-weight: 700;
+}
+
+.font-\[500\] {
+  font-weight: 500;
 }
 
 .uppercase {

@@ -1,4 +1,4 @@
-const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart } = owl;
+const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart, markup } = owl;
 import { API, UImanager } from "../utils.js";
 import { Paises } from "../../data/paises.js";
 import { ListaTR } from "./listatr.js";
@@ -12,6 +12,12 @@ export class RecargasTelefono extends Component {
 
     //TODO: poner imagen de espera con una ventana
 
+    promo_template=useState({
+        title:'',
+        description:'',
+        content:''
+    });
+
     state = useState({
         pais: 53,                   //codigo telefonico del pais
         currency: "USD",
@@ -22,16 +28,19 @@ export class RecargasTelefono extends Component {
         operator: '',
         label: '',
         phone: '',
-        phoneOwnerName: ''
+        phoneOwnerName: '',
+        promoTitle:'',
+        promoContent:'',
+        promoDescrip:''
 
 
     })
 
-    
-  datosSelectedTX = useState({
-    txID: "",
-    allData: null
-  })
+
+    datosSelectedTX = useState({
+        txID: "",
+        allData: null
+    })
 
 
 
@@ -140,47 +149,72 @@ export class RecargasTelefono extends Component {
         </div>
 
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg">
-                Recharge Data
-               
+            <!-- <div class="card-title flex flex-col rounded-lg">
                 
-            </div>
+            </div> -->
             <div class="card-body items-center ">
-            <div>
+                    <div>
+                        <div t-if="this.state.operator">
+                            <div class="text-[1rem] font-[500]">
+                            Recharge Data  
+                            </div>
 
-            <div>
-            Operator:                   
-             <t t-esc="this.state.operator"/>
-            </div>
-           <div>
-           Description:                   
-                <t t-esc="this.state.productoDesc"/>
-           </div>
-           <div>                   
-                
-           </div>
-           <div>
-            Cost:
-                <t t-esc="this.state.salePrice"/>
-                <span class="mr-2"></span>
-                <t t-esc="this.state.currency"/>
-                <span class="mr-2"></span>
-                <div>
-                <t t-esc="this.state.label"/>
-                </div>
-           </div>
-        </div>
+                            <div class="ml-3">
+                                Operator: <t t-esc="this.state.operator"/>
+                            </div>
+                            <div class="ml-3">
+                            Description:  <t t-esc="this.state.productoDesc"/>
+                            </div>                        
+                            <div class="ml-3">
+                                Cost:
+                                <t t-esc="this.state.salePrice"/>
+                                <span class="mr-2"></span>
+                                <t t-esc="this.state.currency"/>
+                                <span class="mr-2"></span>
+                                <div>
+                                <t t-esc="this.state.label"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div  t-if="this.promo_template.title">
+                          <div class="text-[1rem] font-[500] mt-2 ">
+                             Promotions
+                          </div>   
+                          <div class="ml-3">
+                          
+                      
+                          <!-- <t t-esc="this.state.promoTitle"/> -->
+                          <!-- <t t-esc="this.promo_template.html_str"/> -->
+                          <!-- JSON.stringify(this.state.stringData);-->
+                          <!-- t-att-                        srcdoc -->
+                          <!-- <div>title</div> -->
+                          <t t-out="this.promo_template.title"/>
+
+                          <!--
+                          <div>description</div>
+                          <t t-out="this.promo_template.description"/>
+
+                          <div>content</div>
+                          <t t-out="this.promo_template.content"/>
+                          -->
+
+        
+                          </div>
+                        </div>
+
+
+                    </div>
                
             </div>
         </div>
 
     
         <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2  sm:col-span-2">
-        <div class="card-body items-center  ">
-          
-          <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+            <div class="card-body items-center  ">
+            
+            <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+            </div>
         </div>
-      </div>
 
     </div>
 
@@ -253,47 +287,7 @@ export class RecargasTelefono extends Component {
 
             this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
-            //  console.log(window.intlTelInputGlobals.getCountryData())
-
-            /*
-                        $.widget("custom.iconselectmenu", $.ui.selectmenu, {
-                            _renderItem: function (ul, item) {
-            
-                                
-            
-            
-                                var li = $("<li>"), wrapper = $("<div>", { text: item.label });
-            
-                                if (item.disabled) {
-                                    li.addClass("ui-state-disabled");
-                                }
-            
-                                $("<span>", {
-                                    style: item.element.attr("data-style"),
-                                    "class": "ui-icon " + item.element.attr("data-class")
-                                }).appendTo(wrapper);
-            
-                                return li.append(wrapper).appendTo(ul);
-                            }
-                        });
-            
-                        //Creando Select Menu de Easy UI 
-                        //Creando Evento cuando se cambia de pais
-                        $("#people").iconselectmenu({
-                            change: (event, ui) => {
-                                const idPais = ui.item.value;
-                                this.onChangePais(idPais);
-            
-                            }
-                        }
-                        ).iconselectmenu("menuWidget").addClass("ui-menu-icons");
-            
-            
-            */
-
-
-            //Inicializando
-            //this.onChangePais(this.state.pais)
+        
 
         })
 
@@ -301,14 +295,30 @@ export class RecargasTelefono extends Component {
     }
 
 
-     onChangeProduct(event) {
+    onChangeProduct(event) {
         this.state.producto = event.target.value;
         if (this.listaProductos) {
             const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
+
+            if (producto) {
+
             this.state.productoDesc = producto.description
             this.state.salePrice = producto.salePrice.amount;
             this.state.operator = producto.operator;
             this.state.label = producto.label;
+            console.log("Produccto Promociones")
+            console.log(producto)
+             if (producto.promotions[0]) {
+                console.log("Promociones")
+                console.log(producto.promotions[0])
+                //this.state.promoTitle = producto.promotions[0].title
+                this.promo_template.title = markup(producto.promotions[0].title);
+               // this.promo_template.description = markup(producto.promotions[0].description);
+               // this.promo_template.content = markup(producto.promotions[0].content);
+                
+                //this.render()
+             }
+            }
         }
 
         // console.log(this.state.producto)
@@ -348,15 +358,11 @@ export class RecargasTelefono extends Component {
     //prefijo  --- codigo telefonico del pais
     //coincide con id en lista de paises 
     onChangePais = async (prefijo) => {
-        console.log("PAis" + prefijo);
-        //this.state.pais = idPAis;
+        console.log("PAis " + prefijo);
+
         this.state.productoDesc = ""
         this.state.salePrice = 0
 
-        //Poniendo el nombre del pais en el control EasyUI
-        //const nombre_pais = this.seleccionPaises.filter((unPais) => unPais.id == idPAis)[0].name
-        //console.log(nombre_pais)
-        //$('.ui-selectmenu-text').html(nombre_pais)
 
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
@@ -364,7 +370,7 @@ export class RecargasTelefono extends Component {
 
         console.log(paisDatos)
 
-        
+
 
         Swal.fire({
             title: 'Please Wait..!',
@@ -380,7 +386,7 @@ export class RecargasTelefono extends Component {
                 console.log(this.state.currency);
                 console.log(paisDatos.number)
                 const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
-                console.log("Operador")
+                console.log("---- Operador ----- ")
                 console.log(operadores);
                 this.listaProductos = operadores.data.operators[0].products;
                 this.state.listaProductos = this.listaProductos;
@@ -428,7 +434,7 @@ export class RecargasTelefono extends Component {
             return;
         }
 
-        
+
         try {
 
             const accessToken = window.localStorage.getItem('accessToken');
@@ -567,8 +573,9 @@ export class RecargasTelefono extends Component {
         this.setearBeneficiario(CIBeneficiariodeTX)
     
         await this.onChangeSendInput()*/
-    
-      }
+
+    }
 
 }
+
 
