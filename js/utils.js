@@ -89,6 +89,44 @@ export class API {
 
   }
 
+  //------------------------------------------------------------------------------------------------
+  // Crear usuario
+  //------------------------------------------------------------------------------------------------
+  static async createUser(datosUsuario) {
+
+    var body = JSON.stringify(datosUsuario);
+
+
+    const headers = {
+      'x-api-key': this.x_api_key,
+      'Content-Type': 'application/json',
+    }
+
+    var config = {
+      method: 'post',
+      url: `${this.base_url}/api/private/users/register`,
+      headers: headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data.user;
+    }).catch(function (error) {
+      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: error.message,
+        text: 'Something went wrong requesting User Profile',
+        footer: '<h5> Inspect console for details </h5>'
+      })
+
+      datos = error;
+    });
+
+    return datos;
+
+  }
 
   //------------------------------------------------------------------------------------------------
   // Obtiene Expresiones Regulares para validar tarjetas

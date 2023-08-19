@@ -136,7 +136,7 @@ export class HomeDeliveryCuba extends Component {
                         
                         <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                           <option value="cup">CUP</option>
-                          <option value="usd">MLC</option>
+                          <option value="usd">USD</option>
                         </select>
                       </div>
         

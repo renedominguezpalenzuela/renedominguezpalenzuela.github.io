@@ -54,7 +54,7 @@ class Root extends Component {
         <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-full ">       
         
           <t t-if="this.state.menuId === 1">
-            <Profile/>
+            <Profile modificar="true"/>
           </t>
 
           <t t-elif="this.state.menuId === 2">

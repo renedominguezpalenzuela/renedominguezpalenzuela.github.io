@@ -16,9 +16,9 @@ export class Profile extends Component {
 
 
   state = useState({
-    firstName: "Rene",
-    lastName: "Dominguez",
-    avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
+    firstName: "",
+    lastName: "",
+    avatar: "/img/avatar.png",
     address: "",
     nameFull: ""
   })
@@ -117,11 +117,15 @@ export class Profile extends Component {
 
 
     onWillStart(async () => {
-      const accessToken = window.localStorage.getItem('accessToken');
-      const api = new API(accessToken);
-      const userData = await api.getUserProfile();
-      this.state = { ...userData };
-      this.state.avatar = userData.safeImage.image;
+      if (this.props.modificar === true) {
+        const accessToken = window.localStorage.getItem('accessToken');
+        const api = new API(accessToken);
+        const userData = await api.getUserProfile();
+        this.state = { ...userData };
+        this.state.avatar = userData.safeImage.image;
+      } else {
+        window.localStorage.clear();
+      }
     });
   }
 

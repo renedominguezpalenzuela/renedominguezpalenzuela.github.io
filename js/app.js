@@ -40,6 +40,8 @@ class Root extends Component {
               <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
             </div>
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
+
+            <div class="mt-10 flex justify-center">Don't have an account yet? <a class="ml-1" href="/register.html">Sign Up</a></div>
           </div>
 
           <div class="h-full w-[100%] hidden sm:block right p-5 ">
@@ -97,10 +99,10 @@ class Root extends Component {
       console.log(accessToken)
       const api = new API(accessToken);
 
-      
+
       //obteniendo todos los datos de los beneficiarios
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
-  
+
 
       if (allDatosBeneficiarios) {
         window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -115,40 +117,33 @@ class Root extends Component {
 
       // const userInfo = await getUsrInfo();
       const userData = await api.getUserProfile();
-     // console.log(userData);
+      // console.log(userData);
 
-          if (userData._id) {
-            window.localStorage.setItem('userId', userData._id)
-          }
-
-
-          if (userData.walletAddress) {
-            window.localStorage.setItem('walletAddress', userData.walletAddress)
-          }
-
-          //obteniendo lista de ids de beneficiarios
-          if (userData.beneficiaries) {
-            window.localStorage.setItem('beneficiariesID', userData.beneficiaries)
-          }
-
-          const beneficiariosIDList = userData.beneficiaries;
-          console.log(beneficiariosIDList);
+      if (userData._id) {
+        window.localStorage.setItem('userId', userData._id)
+      }
 
 
-     window.location.assign("main.html");
+      if (userData.walletAddress) {
+        window.localStorage.setItem('walletAddress', userData.walletAddress)
+      }
+
+      //obteniendo lista de ids de beneficiarios
+      if (userData.beneficiaries) {
+        window.localStorage.setItem('beneficiariesID', userData.beneficiaries)
+      }
+
+      const beneficiariosIDList = userData.beneficiaries;
+      console.log(beneficiariosIDList);
+
+
+      window.location.assign("main.html");
 
 
     }
 
 
-    /*datos = response.data;
 
-    
-*/
-
-
-
-    // if (userInfo) window.location.assign("main.html");
 
   }
 
