@@ -3850,6 +3850,10 @@ details.collapse summary::-webkit-details-marker {
   margin-top: 0.25rem;
 }
 
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
 .mt-2 {
   margin-top: 0.5rem;
 }
@@ -3860,14 +3864,6 @@ details.collapse summary::-webkit-details-marker {
 
 .mt-\[0\.5rem\] {
   margin-top: 0.5rem;
-}
-
-.mt-5 {
-  margin-top: 1.25rem;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
 }
 
 .block {
@@ -4138,6 +4134,14 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.bg-\[\#3750D1B4\] {
+  background-color: #3750D1B4;
+}
+
+.bg-\[\#3750D1AA\] {
+  background-color: #3750D1AA;
+}
+
 .p-1 {
   padding: 0.25rem;
 }
@@ -4213,6 +4217,14 @@ details.collapse summary::-webkit-details-marker {
   font-size: 1rem;
 }
 
+.text-\[1\.1rem\] {
+  font-size: 1.1rem;
+}
+
+.text-\[1\.05rem\] {
+  font-size: 1.05rem;
+}
+
 .font-\[500\] {
   font-weight: 500;
 }
@@ -4235,6 +4247,11 @@ details.collapse summary::-webkit-details-marker {
 
 .italic {
   font-style: italic;
+}
+
+.text-\[\#FFFFFF\] {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
 .text-\[\#ffffff\] {
