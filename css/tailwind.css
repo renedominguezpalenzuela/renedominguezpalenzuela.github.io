@@ -4099,9 +4099,8 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(0 154 255 / var(--tw-bg-opacity));
 }
 
-.bg-\[\#3750D1\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
+.bg-\[\#3750D1AA\] {
+  background-color: #3750D1AA;
 }
 
 .bg-\[\#4F50E9\] {
@@ -4134,12 +4133,9 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
-.bg-\[\#3750D1B4\] {
-  background-color: #3750D1B4;
-}
-
-.bg-\[\#3750D1AA\] {
-  background-color: #3750D1AA;
+.bg-\[\#3750D1\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
 }
 
 .p-1 {
@@ -4209,20 +4205,16 @@ details.collapse summary::-webkit-details-marker {
   font-size: 0.8rem;
 }
 
+.text-\[1\.05rem\] {
+  font-size: 1.05rem;
+}
+
 .text-\[1\.5rem\] {
   font-size: 1.5rem;
 }
 
 .text-\[1rem\] {
   font-size: 1rem;
-}
-
-.text-\[1\.1rem\] {
-  font-size: 1.1rem;
-}
-
-.text-\[1\.05rem\] {
-  font-size: 1.05rem;
 }
 
 .font-\[500\] {

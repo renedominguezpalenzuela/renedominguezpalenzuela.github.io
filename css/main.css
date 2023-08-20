@@ -134,3 +134,26 @@ table{
   table.dataTable tbody td {
     vertical-align: middle;
   }
+
+/*
+.table-striped > tbody > tr.selected > td,
+.table-striped > tbody > tr.selected > th {
+  background-color:rgb(58, 233, 42) !important;
+}
+
+ tr.odd.selected, tr.even.selected {
+  background-color:rgb(58, 233, 42) !important;
+ }
+
+ table.dataTable tbody tr.selected {
+  color: white !important;
+  background-color: #eeeeee !important;
+}
+*/
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > *  {
+    box-shadow: inset 0 0 0 9999px #acbad4 !important;
+    color: #333;
+    background-color: #fff;
+}
