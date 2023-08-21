@@ -3994,6 +3994,10 @@ details.collapse summary::-webkit-details-marker {
   width: 100%;
 }
 
+.w-6 {
+  width: 1.5rem;
+}
+
 .max-w-xs {
   max-width: 20rem;
 }
@@ -4099,8 +4103,9 @@ details.collapse summary::-webkit-details-marker {
   background-color: rgb(0 154 255 / var(--tw-bg-opacity));
 }
 
-.bg-\[\#3750D1AA\] {
-  background-color: #3750D1AA;
+.bg-\[\#3750D1\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
 }
 
 .bg-\[\#4F50E9\] {
@@ -4131,11 +4136,6 @@ details.collapse summary::-webkit-details-marker {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.bg-\[\#3750D1\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
 }
 
 .p-1 {

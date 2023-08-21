@@ -117,7 +117,43 @@ class Root extends Component {
 
       // const userInfo = await getUsrInfo();
       const userData = await api.getUserProfile();
-      // console.log(userData);
+//      console.log(userData);
+
+
+      if (userData.firstName) {
+        window.localStorage.setItem('firstName', userData.firstName)
+      }
+
+      if (userData.lastName) {
+        window.localStorage.setItem('lastName', userData.lastName)
+      }
+
+      if (userData.nameFull) {
+        window.localStorage.setItem('nameFull', userData.nameFull)
+      }
+
+      
+
+      if (userData.verified) {
+        /*
+          status : "To Verify"
+          validatedUser: true
+          verified :  false
+        */
+        window.localStorage.setItem('verified', userData.verified)
+      }
+
+      if (userData.avatar) {
+        //https://lh3.googleusercontent.com/a-/AOh14GiiEcL0fUG0CEdQb3V5X3Y21KYu3Q6QW4tFaNr2HA
+        window.localStorage.setItem('avatar', userData.avatar)
+
+        //userData.safeImage.image;
+      }
+      if (userData.safeImage) {
+        window.localStorage.setItem('safeImage', userData.safeImage.image)
+      }
+
+    
 
       if (userData._id) {
         window.localStorage.setItem('userId', userData._id)

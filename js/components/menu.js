@@ -2,6 +2,16 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 export class Menu extends Component {
+
+    state = useState({
+        firstName: "",
+        lastName: "",
+        avatar: "/img/avatar.png",
+        nameFull:""
+      })
+
+      
+
     static template = xml`
 
 
@@ -40,7 +50,33 @@ export class Menu extends Component {
                         </li> -->
 
                         <li>
-                            <a class="dropdown-item" href="#" t-on-click="logout">Logout</a>
+                            
+                            <details >
+                            <summary>
+                           
+                                <span class="avatar">
+                                    
+                                    <div class="w-6 mask mask-squircle">   
+                                      <t t-if="this.state.avatar">             
+                                        <img t-att-src="this.state.avatar" />
+                                      </t>  
+                                     
+                                    </div>
+                                </span>  
+
+                                <span>
+                                  <t t-esc="this.state.nameFull"/>
+                                </span>
+                            
+                            </summary>
+                            <ul>
+                              <li><a>Option 01</a></li>
+                              <li><a>Option 02</a></li>
+                              <li>
+                                 <a class="dropdown-item" href="#" t-on-click="logout">Logout</a>
+                              </li>
+                            </ul>
+                          </details>
                         </li>
                     </ul>
 
@@ -66,6 +102,14 @@ export class Menu extends Component {
         
 
         onWillStart(() => {
+
+            this.state.avatar = window.localStorage.getItem('avatar');
+
+            this.state.firstName = window.localStorage.getItem('firstName');
+            this.state.lastName = window.localStorage.getItem('lastName');
+            this.state.nameFull = window.localStorage.getItem('nameFull');
+
+            
             
             
 
