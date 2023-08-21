@@ -54,13 +54,11 @@ export class Menu extends Component {
                             <details >
                             <summary>
                            
-                                <span class="avatar">
-                                    
+                                <span class="avatar">                                   
                                     <div class="w-6 mask mask-squircle">   
                                       <t t-if="this.state.avatar">             
                                         <img t-att-src="this.state.avatar" />
-                                      </t>  
-                                     
+                                      </t>                                      
                                     </div>
                                 </span>  
 

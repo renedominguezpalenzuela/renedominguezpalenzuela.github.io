@@ -42,9 +42,9 @@ class Root extends Component {
 
   
 <div class="sm:grid  sm:grid-cols-[17%_82%]   w-full bg-[#F1F2F7]   ">
-    <div class="p-2 sm:h-full ">
+   <div class="p-2 sm:h-full "> 
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
-    </div>
+     </div> 
 
     <div class="p-2   ">
       <div class="sm:h-[4rem]">
@@ -52,6 +52,8 @@ class Root extends Component {
       </div>
       <main class="flex  justify-center  rounded-lg   ">       
         <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-full ">       
+
+        
         
           <t t-if="this.state.menuId === 1">
             <Profile modificar="true"/>
