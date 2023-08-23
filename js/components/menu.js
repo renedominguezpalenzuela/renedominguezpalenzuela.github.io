@@ -87,7 +87,8 @@ export class Menu extends Component {
 
         onWillStart(() => {
 
-            this.state.avatar = window.localStorage.getItem('avatar');
+            this.state.avatar =window.localStorage.getItem('avatar') ? window.localStorage.getItem('avatar') : this.state.avatar;
+            
 
             this.state.firstName = window.localStorage.getItem('firstName');
             this.state.lastName = window.localStorage.getItem('lastName');
