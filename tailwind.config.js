@@ -1,6 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  
   content: ["./src/**/*.{html,js}", "*.{html,js}", "./js/**/*.{html,js}"],
+  prefix: 'tw-',
   theme: {
     extend: {
       gridRowStart: {

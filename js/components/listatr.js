@@ -43,7 +43,7 @@ export class ListaTR extends Component {
 
     
     <table  id="container-listtr" class="display nowrap " style="width:100%" >
-    <thead class="bg-[#3750D1] text-[#FFFFFF] text-[1.05rem]">
+    <thead class="bg-[#3750D1] text-[#FFFFFF] text-[1.05rem] mt-1">
         <tr>
                 <th data-priority="1">Transaction ID</th>    
                 <th>UserType</th>
@@ -83,6 +83,7 @@ export class ListaTR extends Component {
 
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
+
 
     setup() {
 
@@ -223,6 +224,8 @@ export class ListaTR extends Component {
 
         });
 
+        
+       
         onMounted(async () => {
             // do something here
 
@@ -330,7 +333,7 @@ export class ListaTR extends Component {
                         }
                     },
                     {
-                        data: 'transactionAmount', width: '7%',className:"amount-value",
+                        data: 'transactionAmount', width: '7%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
@@ -339,14 +342,14 @@ export class ListaTR extends Component {
                     },
 
                     {
-                        data: 'feeusercurr', width: '3%',className:"amount-value",
+                        data: 'feeusercurr', width: '3%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
                         }
                     },
 
-                    { data: 'currency', width: '5%', className:"centrar" },
+                    { data: 'currency', width: '5%', className: "centrar" },
                     {
                         data: 'createdAt', width: '13%',
                         render: function (data, type, row) {
@@ -362,8 +365,8 @@ export class ListaTR extends Component {
                         },
                     },
                     {
-                        data: 'feeusd', width: '4%', className:"amount-value",
-                            render: function (data, type, row) {
+                        data: 'feeusd', width: '4%', className: "amount-value",
+                        render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="" > ${valor} </span>`;
                         }
@@ -445,6 +448,13 @@ export class ListaTR extends Component {
         onRendered(async () => {
 
         });
+
+
+       /* onWillUnmount(async()=>{
+            console.log("sss")
+        })*/
+
+       
 
     }
 

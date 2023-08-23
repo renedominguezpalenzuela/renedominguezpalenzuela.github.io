@@ -7,18 +7,18 @@ import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
 import { RecargasTelefono } from "./components/recargasTelefono.js";
-import { ListaTR } from  "./components/listatr.js";
+import { ListaTR } from "./components/listatr.js";
 
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono, ListaTR};
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono, ListaTR };
 
   //Opcion inicial del menu
 
-  
-  state = useState({menuId:7, title:'Transactions List'});
-   
+
+  state = useState({ menuId: 1, title: 'Profile' });
+
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
   // }
@@ -29,13 +29,13 @@ class Root extends Component {
     {
       id: 3, name: "Send Money To Cuba", type: 1, subitems: [
         { id: 4, name: "To Credit Card" },
-        { id: 5, name: "Home Delivery" },    
+        { id: 5, name: "Home Delivery" },
       ]
     },
     { id: 6, name: "Phone Recharge", type: 2 },
     { id: 7, name: "Transactions List", type: 2 },
 
-   
+
   ];
 
   static template = xml` 
@@ -118,49 +118,59 @@ class Root extends Component {
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
 
-    
+
 
 
 
 
 
     onWillStart(() => {
-   
-  
+
+
     });
 
     onMounted(() => {
-      
+
+
+
+
+
+
     });
 
 
     onRendered(() => {
-      
-   
-      
+      if (this.state.menuId != 7) {
+        console.log(this.state)
+        var tableId = "#container-listtr";
+        $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+      }
+
+
+
     });
 
   }
 
 
 
-    
-  
 
-  leftMenuController(menuId, menuName) { 
+
+
+  leftMenuController(menuId, menuName) {
     this.state.menuId = menuId;
-    this.state.title = menuName;   
+    this.state.title = menuName;
   }
 
 
-   //   const menuInicial = 1;
+  //   const menuInicial = 1;
 
-    // const menu_inicial = this.leftmenuItems.filter((unItem)=>unItem.id==menuInicial)[0]
-    // console.log(menu_inicial)
-    // this.state.title = menu_inicial.name;
-    // this.state.id = menuInicial.id;
+  // const menu_inicial = this.leftmenuItems.filter((unItem)=>unItem.id==menuInicial)[0]
+  // console.log(menu_inicial)
+  // this.state.title = menu_inicial.name;
+  // this.state.id = menuInicial.id;
 
-  
+
 
 
 
