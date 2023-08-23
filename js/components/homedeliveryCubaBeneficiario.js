@@ -29,19 +29,19 @@ export class Beneficiarios extends Component {
   })
 
   static template = xml`  
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg ">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg ">
                <div>Beneficiary</div> 
             </div>
 
-            <div class="card-body items-center   ">              
-              <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
+            <div class="tw-card-body tw-items-center   ">              
+              <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 tw-w-full tw-gap-y-0 tw-gap-x-2 ">
                 
-                  <div class="form-control w-full sm:row-start-1 sm:row-col-1 ">
-                    <label class="label">
-                      <span class="label-text">Select Beneficiary</span>
+                  <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-row-col-1 ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Select Beneficiary</span>
                     </label>
-                    <select t-att-value="this.state.selectedBeneficiaryId" class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                    <select t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
                       <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
@@ -50,83 +50,83 @@ export class Beneficiarios extends Component {
                   </div>     
                   
                   
-                  <div class="form-control w-full sm:row-start-1 sm:row-col-1  row-start-10 ">
-                      <label class="label">
-                        <span class="label-text">Country</span>
+                  <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-row-col-1  tw-row-start-10 ">
+                      <label class="tw-label">
+                        <span class="tw-label-text">Country</span>
                       </label>
-                      <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                      <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeCountryInput" />   
                   </div>
 
 
-                  <div class="w-full sm:grid  sm:grid-cols-3 sm:col-span-2  gap-x-2 ">  
-                    <div class="form-control  w-full">
-                      <label class="label">
-                        <span class="label-text">First Name</span>
+                  <div class="tw-w-full sm:tw-grid  sm:tw-grid-cols-3 sm:tw-col-span-2  tw-gap-x-2 ">  
+                    <div class="tw-form-control  tw-w-full">
+                      <label class="tw-label">
+                        <span class="tw-label-text">First Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliveryFirstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
+                      <input type="text" t-att-value="this.state.deliveryFirstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
                     </div>
 
-                    <div class="form-control   w-full ">
-                      <label class="label">
-                      <span class="label-text">Last Name</span>
+                    <div class="tw-form-control   tw-w-full ">
+                      <label class="tw-label">
+                      <span class="tw-label-text">Last Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliveryLastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
+                      <input type="text" t-att-value="this.state.deliveryLastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
                     </div>
 
-                    <div class="form-control w-full ">     
-                      <label class="label">
-                        <span class="label-text">Second Last Name</span>
+                    <div class="tw-form-control tw-w-full ">     
+                      <label class="tw-label">
+                        <span class="tw-label-text">Second Last Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliverySecondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
+                      <input type="text" t-att-value="this.state.deliverySecondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
                     </div>                              
                   </div>
 
-                  <div class="form-control w-full   ">
-                    <label class="label">
-                      <span class="label-text">ID</span>
+                  <div class="tw-form-control tw-w-full   ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">ID</span>
                     </label>
-                    <input type="text" t-att-value="this.state.deliveryID"   maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeID" />   
+                    <input type="text" t-att-value="this.state.deliveryID"   maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeID" />   
                   </div>
 
-                 <!-- <div class="form-control w-full   ">
-                    <label class="label">
-                      <span class="label-text">Contact Phone</span>
+                 <!-- <div class="tw-form-control tw-w-full   ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Contact Phone</span>
                     </label>
-                    <input type="text" t-att-value="this.state.deliveryPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhone" />   
+                    <input type="text" t-att-value="this.state.deliveryPhone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhone" />   
                   </div> -->
 
-                  <div class="form-control w-full  ">
-                  <label class="label">
-                   <span class="label-text">Contact Phone</span>
+                  <div class="tw-form-control tw-w-full  ">
+                  <label class="tw-label">
+                   <span class="tw-label-text">Contact Phone</span>
                   </label>
-                  <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhone" />
+                  <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
                   
                 </div>
                   
-                  <div class="form-control  sm:col-span-2 w-full ">
-                      <label class="label">
-                        <span class="label-text">Delivery Address</span>
+                  <div class="tw-form-control  sm:tw-col-span-2 tw-w-full ">
+                      <label class="tw-label">
+                        <span class="tw-label-text">Delivery Address</span>
                       </label>
                     
-                      <textarea  t-att-value="this.state.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+                      <textarea  t-att-value="this.state.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
                   </div>
 
-                  <div class="form-control w-full ">
-                      <label class="label">
-                        <span class="label-text">Province</span>
+                  <div class="tw-form-control tw-w-full ">
+                      <label class="tw-label">
+                        <span class="tw-label-text">Province</span>
                       </label>
-                      <select t-att-value="this.state.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
+                      <select t-att-value="this.state.deliveryAreaID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
                         <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                           <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                         </t>             
                       </select>
                   </div>
 
-                  <div class="form-control w-full ">
-                      <label class="label">
-                        <span class="label-text">City</span>
+                  <div class="tw-form-control tw-w-full ">
+                      <label class="tw-label">
+                        <span class="tw-label-text">City</span>
                       </label>
-                      <select t-att-value="this.state.deliveryCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
+                      <select t-att-value="this.state.deliveryCityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                       <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                         <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
                           <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
@@ -135,7 +135,7 @@ export class Beneficiarios extends Component {
                   </div>
 
 
-                   <div class="hidden"> 
+                   <div class="tw-hidden"> 
                   <t t-esc="this.props.datosSelectedTX.txID"/>
                   </div>
 

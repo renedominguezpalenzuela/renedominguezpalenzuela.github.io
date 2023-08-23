@@ -8,14 +8,14 @@ import {Balance} from "./balance.js";
 class MenuItemCollapsable extends Component {
     static  template=xml`
     <div class="tw-collapse  tw-collapse-arrow ">
-        <input type="checkbox" class="peer" /> 
+        <input type="checkbox" class="tw-peer" /> 
         
         <div class="tw-collapse-title ">
              <t t-esc="props.name"/>
         </div>
 
         <div class="tw-collapse-content"> 
-            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2 cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id, unitem.name)">
+            <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="tw-pl-2 tw-cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id, unitem.name)">
                  <t t-esc="unitem.name"  />
             </div>
         </div>

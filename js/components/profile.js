@@ -187,7 +187,7 @@ export class Profile extends Component {
                     <input type="text" t-model="this.state.street" placeholder="Street" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
 
-                <div class="tw-form-control tw-w-[20%]  tw-pl-1">
+                <div class="tw-form-control tw-w-auto  tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">House Number</span>
                     </label>

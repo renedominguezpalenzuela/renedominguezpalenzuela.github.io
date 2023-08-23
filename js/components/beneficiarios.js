@@ -47,9 +47,9 @@ export class Beneficiarios extends Component {
 
     //TODO: mask in input 0000-0000-0000-0000
     static template = xml`  
-    <div class="sm:grid sm:grid-cols-[54%_44%] sm:gap-2 h-full">
-    <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
-      <div class="card-title flex flex-col rounded-lg">
+    <div class="sm:tw-grid sm:tw-grid-cols-[54%_44%] sm:tw-gap-2 tw-h-full">
+    <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
+      <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
           
       </div>
 
@@ -57,17 +57,17 @@ export class Beneficiarios extends Component {
 
 
 
-      <div class="card-body items-center  ">
+      <div class="tw-card-body tw-items-center  ">
        
         
-                    <div class="sm:grid sm:grid-cols-1 sm:grid-cols-2 w-full sm:grid-rows-10  gap-y-0 sm:gap-x-2 ">
+                    <div class="sm:tw-grid sm:tw-grid-cols-1 sm:tw-grid-cols-2 tw-w-full sm:tw-grid-rows-10  tw-gap-y-0 sm:tw-gap-x-2 ">
                                 
                         <!-- Seleccionar beneficiario -->
-                        <div class="form-control w-full sm:row-start-1 sm:col-start-1  ">
-                            <label class="label">
-                                <span class="label-text">Select  Beneficiary</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-col-start-1  ">
+                            <label class="tw-label">
+                                <span class="tw-label-text">Select  Beneficiary</span>
                             </label>
-                            <select t-att-value="this.state.selectedBeneficiaryId" class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario">
+                            <select t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
                                 <option  t-att-value="-1" >Select or enter new data</option>
                                 <t t-foreach="this.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                                     <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
@@ -75,8 +75,8 @@ export class Beneficiarios extends Component {
                             </select>
                         </div> 
 
-                        <div class=" w-full sm:row-start-1 sm:col-start-2 flex justify-start items-end mt-3  ">
-                            <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onNewBeneficiario">New</button>
+                        <div class=" tw-w-full sm:tw-row-start-1 sm:tw-col-start-2 tw-flex tw-justify-start tw-items-end tw-mt-3  ">
+                            <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onNewBeneficiario">New</button>
                           
                             
                         </div>
@@ -85,86 +85,86 @@ export class Beneficiarios extends Component {
                 
                         <!-- Nombre -->
                     
-                        <div class="w-full  sm:row-start-3 sm:col-span-2 sm:col-start-1 sm:flex sm:justify-start      ">
-                            <div class="form-control  ">
-                                <label class="label">
-                                    <span class="label-text">First Name</span>
+                        <div class="tw-w-full  sm:tw-row-start-3 sm:tw-col-span-2 sm:tw-col-start-1 sm:tw-flex sm:tw-justify-start      ">
+                            <div class="tw-form-control  ">
+                                <label class="tw-label">
+                                    <span class="tw-label-text">First Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="input input-bordered w-full " />   
+                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
                             </div>
 
-                            <div class="form-control   sm:ml-2 ">
-                                <label class="label">
-                                    <span class="label-text">Last Name</span>
+                            <div class="tw-form-control   sm:tw-ml-2 ">
+                                <label class="tw-label">
+                                    <span class="tw-label-text">Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="input input-bordered  w-full " /> 
+                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
                             </div>
 
-                            <div class="form-control sm:ml-2">     
-                                <label class="label">
-                                    <span class="label-text">Second Last Name</span>
+                            <div class="tw-form-control sm:tw-ml-2">     
+                                <label class="tw-label">
+                                    <span class="tw-label-text">Second Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="input input-bordered w-full " />  
+                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
                             </div> 
                         </div>
 
                         <!-- Identificacion -->
-                        <div class="form-control w-full sm:row-start-4 sm:col-start-1">
-                            <label class="label">
-                                <span class="label-text">ID</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-4 sm:tw-col-start-1">
+                            <label class="tw-label">
+                                <span class="tw-label-text">ID</span>
                             </label>
-                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="input input-bordered w-full "  t-on-input="onChangeIDInput"  />   
+                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  />   
                         </div>
                     
                         <!-- Telefono -->
-                        <div class="form-control w-full sm:row-start-4 sm:col-start-2">
-                            <label class="label">
-                                <span class="label-text">Contact Phone</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-4 sm:tw-col-start-2">
+                            <label class="tw-label">
+                                <span class="tw-label-text">Contact Phone</span>
                             </label>
-                            <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
+                            <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput" />   
                         </div>
 
                     
                         <!-- Address -->
-                        <div class="w-full  sm:row-start-5 sm:col-span-2 sm:col-start-1 sm:flex sm:justify-start ">
-                            <div class="form-control  sm:w-[70%]">
-                                <label class="label">
-                                    <span class="label-text">Street Name</span>
+                        <div class="tw-w-full  sm:tw-row-start-5 sm:tw-col-span-2 sm:tw-col-start-1 sm:tw-flex sm:tw-justify-start ">
+                            <div class="tw-form-control  sm:tw-w-[70%]">
+                                <label class="tw-label">
+                                    <span class="tw-label-text">Street Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  maxlength="300" placeholder="Street Name" class="input input-bordered w-full " />   
+                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  maxlength="300" placeholder="Street Name" class="tw-input tw-input-bordered tw-w-full " />   
                             </div>
 
-                            <div class="form-control    sm:ml-2 ">
-                                <label class="label">
-                                    <span class="label-text">House Number</span>
+                            <div class="tw-form-control    sm:tw-ml-2 ">
+                                <label class="tw-label">
+                                    <span class="tw-label-text">House Number</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  maxlength="300" placeholder="House Number" class="input input-bordered  w-full " /> 
+                                <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  maxlength="300" placeholder="House Number" class="tw-input tw-input-bordered  tw-w-full " /> 
                             </div>
 
-                            <div class="form-control  sm:ml-2">     
-                                <label class="label">
-                                    <span class="label-text">Zip Code</span>
+                            <div class="tw-form-control  sm:tw-ml-2">     
+                                <label class="tw-label">
+                                    <span class="tw-label-text">Zip Code</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  maxlength="300" placeholder="Zip Code" class="input input-bordered w-full " />  
+                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
                             </div> 
                         </div>
 
                         <!-- Email -->
-                        <div class="form-control w-full sm:row-start-6 sm:col-start-1">
-                            <label class="label">
-                                <span class="label-text">Email Address</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-6 sm:tw-col-start-1">
+                            <label class="tw-label">
+                                <span class="tw-label-text">Email Address</span>
                             </label>
-                            <input type="text" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="input input-bordered w-full "  t-on-input="onChangeEmail" />   
+                            <input type="text" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeEmail" />   
                         </div>
 
 
                         
                         <!-- Provincia -->
-                        <div class="form-control w-full sm:row-start-7 sm:col-start-1">
-                        <label class="label">
-                            <span class="label-text">Province</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-7 sm:tw-col-start-1">
+                        <label class="tw-label">
+                            <span class="tw-label-text">Province</span>
                         </label>
-                        <select t-att-value="this.state.provinceID" class="select select-bordered w-full" t-on-input="onChangeProvince">
+                        <select t-att-value="this.state.provinceID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
                         <option t-att-disabled="true" t-att-value="-1" >Select Province</option>
                             <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                             <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
@@ -173,11 +173,11 @@ export class Beneficiarios extends Component {
                         </div>
 
                         <!-- Municipio -->
-                        <div class="form-control w-full sm:row-start-7 sm:col-start-2">
-                        <label class="label">
-                            <span class="label-text">City</span>
+                        <div class="tw-form-control tw-w-full sm:tw-row-start-7 sm:tw-col-start-2">
+                        <label class="tw-label">
+                            <span class="tw-label-text">City</span>
                         </label>
-                        <select t-att-value="this.state.municipalityID" class="select select-bordered w-full" t-on-input="onChangeCity">
+                        <select t-att-value="this.state.municipalityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                             <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                             <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
                             <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
@@ -186,11 +186,11 @@ export class Beneficiarios extends Component {
                         </div>
 
                         <!-- Pais -->
-                        <div class="form-control w-full  sm:row-start-8 sm:col-start-2 ">
-                            <label class="label">
-                                <span class="label-text">Country</span>
+                        <div class="tw-form-control tw-w-full  sm:tw-row-start-8 sm:tw-col-start-2 ">
+                            <label class="tw-label">
+                                <span class="tw-label-text">Country</span>
                             </label>
-                            <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                            <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeCountryInput" />   
                         </div>  
                     </div> 
 
@@ -200,16 +200,16 @@ export class Beneficiarios extends Component {
 
 
 
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
                 Card Data
             </div>
-            <div class="card-body items-center ">
-                <div class="form-control w-full  sm:row-start-8 sm:col-start-1">
-                    <label class="label">
-                        <span class="label-text">Select Card</span>
+            <div class="tw-card-body tw-items-center ">
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-8 sm:tw-col-start-1">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Select Card</span>
                     </label>
-                    <select  t-att-value="this.state.selectedCardId" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                    <select  t-att-value="this.state.selectedCardId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                         <option  t-att-value="-1" >Select or enter new data</option>
                         <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
                            <option t-att-value="unCard.id">
@@ -221,37 +221,37 @@ export class Beneficiarios extends Component {
 
                 
 
-                <div class="form-control w-full  sm:row-start-9 sm:col-start-1">
-                    <label class="label">
-                        <span class="label-text">Card Number</span>
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-9 sm:tw-col-start-1">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Card Number</span>
                     </label>
-                    <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
-                <div class="form-control w-full  sm:row-start-9 sm:col-start-2 ">
-                    <label class="label">
-                        <span class="label-text">Card Holder Name</span>
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-9 sm:tw-col-start-2 ">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Card Holder Name</span>
                     </label>
-                    <input type="text" readonly="true"  t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
+                    <input type="text" readonly="true"  t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
 
-                <div class=" flex items-center w-full sm:row-start-10 sm:col-start-2 mt-1">
-                    <img t-att-src="this.state.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                <div class=" tw-flex tw-items-center tw-w-full sm:tw-row-start-10 sm:tw-col-start-2 tw-mt-1">
+                    <img t-att-src="this.state.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
                 </div>
 
-                <div class="card-actions">
-                    <div class=" w-full flex justify-start  mt-3  ">
+                <div class="tw-card-actions">
+                    <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
                     
-                        <button class="btn   mr-3" t-on-click="onNewCard">New Card </button>
+                        <button class="tw-btn   tw-mr-3" t-on-click="onNewCard">New Card </button>
                        
                     </div>
                 </div>
 
             </div>
         </div>
-        <div class="card-actions">
-        <div class=" w-full flex justify-start  mt-3  ">
-          <button class="btn btn-primary  w-[38%] mr-3" t-on-click="onSaveBeneficiario">Save</button>
+        <div class="tw-card-actions">
+        <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
+          <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
         </div>
     </div>
 

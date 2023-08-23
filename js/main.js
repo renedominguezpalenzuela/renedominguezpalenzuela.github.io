@@ -17,7 +17,7 @@ class Root extends Component {
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 1, title: 'Profile' });
+  state = useState({ menuId: 5, title: 'Home Delivery' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -41,7 +41,7 @@ class Root extends Component {
   static template = xml` 
 
   
-<div class="sm:tw-grid  sm:tw-grid-cols-[17%_82%]   tw-w-full tw-bg-[#F1F2F7]   ">
+<div class="sm:tw-grid  sm:tw-grid-cols-[19%_82%]   tw-w-full tw-bg-[#F1F2F7]   ">
    <div class="tw-p-2 sm:tw-h-full "> 
       <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
      </div> 
@@ -141,7 +141,7 @@ class Root extends Component {
 
     onRendered(() => {
       if (this.state.menuId != 7) {
-        console.log(this.state)
+        // console.log(this.state)
         var tableId = "#container-listtr";
         $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
       }

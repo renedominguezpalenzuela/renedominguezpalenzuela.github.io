@@ -14,13 +14,13 @@ class Root extends Component {
   static template = xml` 
 
   
-<div class="  w-full bg-[#F1F2F7]   ">
+<div class="  tw-w-full tw-bg-[#F1F2F7]   ">
    
 
-    <div class="p-2   ">
+    <div class="tw-p-2   ">
       
-      <main class="flex  justify-center  rounded-lg   ">       
-        <div class="p-3 bg-[#FFFFFF] rounded-lg    w-full h-full ">       
+      <main class="tw-flex  tw-justify-center  tw-rounded-lg   ">       
+        <div class="tw-p-3 tw-bg-[#FFFFFF] tw-rounded-lg    tw-w-full tw-h-full ">       
         
          
             <Profile/>

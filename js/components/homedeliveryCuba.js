@@ -72,27 +72,27 @@ export class HomeDeliveryCuba extends Component {
 
 
   static template = xml` 
-  <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">
-      <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
-          <div class="card-title flex flex-col rounded-lg">
+  <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-y-0 tw-gap-x-2">
+      <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
+          <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
               <div>Amount to Send</div>       
           </div>
-          <div class="card-body items-center  ">
-              <div class="form-control  w-full ">
-                  <label class="label">
-                    <span class="label-text">You Send</span>  
+          <div class="tw-card-body tw-items-center  ">
+              <div class="tw-form-control  tw-w-full ">
+                  <label class="tw-label">
+                    <span class="tw-label-text">You Send</span>  
                   </label> 
 
-                  <div class="join">
+                  <div class="tw-join">
                     
                       
 
-                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input w-full input-bordered join-item text-right" placeholder="0.00"/>
+                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
 
 
                       
 
-                      <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
+                      <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                           <option value="usd">USD</option>
                           <option value="eur">EUR</option>
                           <option value="cad">CAD</option>
@@ -100,58 +100,58 @@ export class HomeDeliveryCuba extends Component {
                       </select>
 
                   </div>
-                  <div class="text-[0.8rem]  pr-[3vw] mt-[0.5rem]">
+                  <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
                   
-                      <div class=" text-right ">  
+                      <div class=" tw-text-right ">  
                           <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
                           <t t-esc="this.conversionRate.value"/> 
-                          <span class="ml-1"> 
+                          <span class="tw-ml-1"> 
                           <t t-esc="this.monedas.recibida"/> 
                           </span>
                       </div>                    
-                      <div class=" text-right "> 
-                          <span class="mr-2"> Send Fee: </span>
+                      <div class=" tw-text-right "> 
+                          <span class="tw-mr-2"> Send Fee: </span>
                           <t t-esc="this.feeSTR.value"/> 
-                          <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                          <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
                       </div>
                      
-                      <div class=" text-right  "> 
-                          <span class="mr-2"> Total Sending Cost (plus fee): </span>
+                      <div class=" tw-text-right  "> 
+                          <span class="tw-mr-2"> Total Sending Cost (plus fee): </span>
                           <t t-esc="this.totalSendCostSTR.value"/>
-                          <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                          <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
                       </div>
                       
                   </div>
 
-                  <div class="form-control    w-full">
-                      <label class="label">
-                        <span class="label-text">Received Amount</span>  
+                  <div class="tw-form-control    tw-w-full">
+                      <label class="tw-label">
+                        <span class="tw-label-text">Received Amount</span>  
                       </label> 
         
-                      <div class="join">                     
+                      <div class="tw-join">                     
                         <div>                                
                           <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
-                          class="input input-bordered join-item text-right w-full" placeholder="0.00"/>    
+                          class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
                         </div>
                         
-                        <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                        <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                           <option value="cup">CUP</option>
                           <option value="usd">USD</option>
                         </select>
                       </div>
         
-                      <div class="form-control   row-start-4 col-span-2 w-full ">
-                        <label class="label">
-                          <span class="label-text">Concept</span>
+                      <div class="tw-form-control   tw-row-start-4 tw-col-span-2 tw-w-full ">
+                        <label class="tw-label">
+                          <span class="tw-label-text">Concept</span>
                         </label>
                   
-                        <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
+                        <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
                       </div>
                 </div>
            
              
               </div>
-              <div class="card-actions">
+              <div class="tw-card-actions">
                     
               </div>
              
@@ -166,11 +166,11 @@ export class HomeDeliveryCuba extends Component {
 
 
       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" />
-      <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>  
+      <button class="tw-btn tw-btn-primary tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[30%]" t-on-click="onSendMoney">Send</button>  
         
       
 
-      <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">     
+      <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 sm:tw-row-start-3 tw-row-start-4 sm:tw-col-span-2 tw-p-3">     
           <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       </div>
   
