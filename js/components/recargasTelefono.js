@@ -61,54 +61,42 @@ export class RecargasTelefono extends Component {
 
 
     static template = xml`    
-    <div class="sm:grid sm:grid-cols-[34%_64%] gap-2 ">
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
-            <div class="card-title flex flex-col rounded-lg">
+    <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-2 ">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
             
             </div>
 
-            <div class="card-body items-center ">
+            <div class="tw-card-body tw-items-center ">
 
-            <div class="form-control w-full   ">
-                <label class="label">
-                    <span class="label-text">Currency to pay for recharge</span>
+            <div class="tw-form-control tw-w-full   ">
+                <label class="tw-label">
+                    <span class="tw-label-text">Currency to pay for recharge</span>
                 </label>
-                <select t-att-value="this.state.currency" class="select select-bordered join-item" t-on-input="onChangeCurrencySend"  >                    
+                <select t-att-value="this.state.currency" class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend"  >                    
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="CAD">CAD</option>            
                 </select>
             </div>    
 
-            <div class="form-control w-full sm:row-start-4 ">
-            <label class="label">
-             <span class="label-text">Phone to recharge</span>
+            <div class="tw-form-control tw-w-full sm:tw-row-start-4 ">
+            <label class="tw-label">
+             <span class="tw-label-text">Phone to recharge</span>
             </label>
-            <input t-att-value="this.state.phone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhone" />
-            <!-- <span id="valid-phone-msg" class="hide">✓ Valid</span>
-            <span id="error-phone-msg" class="hide"></span> -->
+            <input t-att-value="this.state.phone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+            <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
+            <span id="error-phone-msg" class="tw-hide"></span> -->
           </div> 
                                 
-          <!--  <div class="form-control w-full   ">  
-                <label class="label">
-                    <span class="label-text">Country to send recharge </span>
-                </label>     
-                <select   class="select select-bordered w-full"  name="people" id="people">            
-                    <t t-foreach="this.seleccionPaises" t-as="unPais" t-key="unPais.id">
-                        <option t-att-value="unPais.id" data-class="avatar" t-att-data-style="unPais.flag" >
-                                <span class="countryname"><t t-esc="unPais.name"/> </span>                            
-                        </option>
-                    </t>             
-                </select>
-            </div>    
-            --> 
+         
 
            
-            <div class="form-control w-full   ">  
-                <label class="label">
-                    <span class="label-text">Recharge type </span>
+            <div class="tw-form-control tw-w-full   ">  
+                <label class="tw-label">
+                    <span class="tw-label-text">Recharge type </span>
                 </label>  
-                <select  class="select select-bordered w-full" t-on-input="onChangeProduct" >  
+                <select  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProduct" >  
                     <option  t-att-value="-1" >Select Product</option>          
                     <t t-foreach="this.state.listaProductos" t-as="unProducto" t-key="unProducto.id">
                         <option t-att-value="unProducto.id"   >
@@ -123,64 +111,54 @@ export class RecargasTelefono extends Component {
 
         
 
-<!--
-                <div class="form-control w-full   ">
-                <label class="label">
-                  <span class="label-text">Phone to recharge</span>
-                </label>
-                <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="input input-bordered w-full " t-on-input="onChangePhone" />   
-              </div>
 
-              -->
 
-              <div class="form-control w-full   ">
-              <label class="label">
-                <span class="label-text">Phone owner full name</span>
+              <div class="tw-form-control tw-w-full   ">
+              <label class="tw-label">
+                <span class="tw-label-text">Phone owner full name</span>
               </label>
-              <input type="text" t-att-value="this.state.phoneOwnerName"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneOwnerName" />   
+              <input type="text" t-att-value="this.state.phoneOwnerName"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneOwnerName" />   
             </div>
 
               
-            <div class="card-actions">
-            <button class="btn btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
+            <div class="tw-card-actions">
+            <button class="tw-btn tw-btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
           </div>
                 
             </div>
         </div>
 
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <!-- <div class="card-title flex flex-col rounded-lg">
-                
-            </div> -->
-            <div class="card-body items-center ">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+
+            <div class="tw-card-body tw-items-center ">
                     <div>
                         <div t-if="this.state.operator">
-                            <div class="text-[1rem] font-[500]">
+                            <div class="tw-text-[1rem] tw-font-[500]">
                             Recharge Data  
                             </div>
 
-                            <div class="ml-3">
+                            <div class="tw-ml-3">
                                 Operator: <t t-esc="this.state.operator"/>
                             </div>
-                            <div class="ml-3">
+                            <div class="tw-ml-3">
                             Description:  <t t-esc="this.state.productoDesc"/>
                             </div>                        
-                            <div class="ml-3">
+                            <div class="tw-ml-3">
                                 Cost:
                                 <t t-esc="this.state.salePrice"/>
-                                <span class="mr-2"></span>
+                                <span class="tw-mr-2"></span>
                                 <t t-esc="this.state.currency"/>
-                                <span class="mr-2"></span>
+                                <span class="tw-mr-2"></span>
                                 <div>
                                 <t t-esc="this.state.label"/>
                                 </div>
                             </div>
                         </div>
                         <div  t-if="this.promo_template.title">
-                          <div class="text-[1rem] font-[500] mt-2 ">
+                          <div class="tw-text-[1rem] tw-font-[500] tw-mt-2 ">
                              Promotions
                           </div>   
-                          <div class="ml-3">
+                          <div class="tw-ml-3">
                           
                       
                           <!-- <t t-esc="this.state.promoTitle"/> -->
@@ -209,8 +187,8 @@ export class RecargasTelefono extends Component {
         </div>
 
     
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2  sm:col-span-2">
-            <div class="card-body items-center  ">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+            <div class="tw-card-body tw-items-center  ">
             
             <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
             </div>

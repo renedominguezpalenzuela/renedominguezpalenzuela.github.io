@@ -102,58 +102,58 @@ export class SendMoneyCuba extends Component {
 
   // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
-    <div class="sm:grid sm:grid-cols-[34%_64%] gap-y-0 gap-x-2">   
-      <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
-        <div class="card-title flex flex-col rounded-lg">
+    <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-y-0 tw-gap-x-2">   
+      <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
+        <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
           <div>Amount to Send</div>         
         </div>
 
-        <div class="card-body items-center  ">
-            <div class="form-control  w-full ">
-                <label class="label">
-                  <span class="label-text">You Send (before fee)</span>  
+        <div class="tw-card-body tw-items-center  ">
+            <div class="tw-form-control  tw-w-full ">
+                <label class="tw-label">
+                  <span class="tw-label-text">You Send (before fee)</span>  
                 </label> 
 
-                <div class="join">                        
+                <div class="tw-join">                        
                    
-                    <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="input input-bordered join-item text-right w-full" placeholder="0.00"/>
+                    <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
            
                   
 
           
                  
-                  <select class="select select-bordered join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
+                  <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                     <option value="usd">USD</option>
                     <option value="eur">EUR</option>
                     <option value="cad">CAD</option>   
                   </select>
                 </div>
 
-                <div class="text-[0.8rem]  pr-[3vw] mt-[0.5rem]">
+                <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
               
                   
                  
-                      <div class=" text-right ">  
+                      <div class=" tw-text-right ">  
                         <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
                         <t t-esc="this.conversionRate.value"/> 
-                        <span class="ml-1"> 
+                        <span class="tw-ml-1"> 
                            <t t-esc="this.monedas.recibida"/> 
                         </span>
                       </div>
 
 
-                      <div class=" text-right "> 
-                      <span class="mr-2"> Send Fee: </span>
+                      <div class=" tw-text-right "> 
+                      <span class="tw-mr-2"> Send Fee: </span>
                         <t t-esc="this.feeSTR.value"/> 
-                        <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                        <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
                       </div>
 
 
 
-                      <div class=" text-right  "> 
-                      <span class="mr-2"> Total Sending Cost (plus fee): </span>
+                      <div class=" tw-text-right  "> 
+                      <span class="tw-mr-2"> Total Sending Cost (plus fee): </span>
                         <t t-esc="this.totalSendCostSTR.value"/>
-                        <span class="ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                        <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
                       </div>
 
                      
@@ -162,52 +162,52 @@ export class SendMoneyCuba extends Component {
               </div>
             </div>
           
-              <div class="form-control w-full   ">
-                  <label class="label">
-                    <span class="label-text">Received Amount</span>  
+              <div class="tw-form-control tw-w-full   ">
+                  <label class="tw-label">
+                    <span class="tw-label-text">Received Amount</span>  
                   </label> 
 
-                  <div class="join">        
+                  <div class="tw-join">        
                                               
                       <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
-                      class="input input-bordered join-item text-right w-full" placeholder="0.00"/>    
+                      class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
                    
                     
-                    <select class="select select-bordered join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                    <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
                       <option value="cup">CUP</option>
                       <option value="usd">MLC</option>
                     </select>
                   </div>
 
-                  <div class="form-control   row-start-4 col-span-2 w-full ">
-                  <label class="label">
-                    <span class="label-text">Concept</span>
+                  <div class="tw-form-control   row-start-4 col-span-2 w-full ">
+                  <label class="tw-label">
+                    <span class="tw-label-text">Concept</span>
                   </label>
                 
-                  <textarea t-ref="concept" class="textarea textarea-bordered" placeholder=""  ></textarea>
+                  <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
                 </div>
               </div>
     
-          <div class="card-actions">         
+          <div class="tw-card-actions">         
           </div>
           
         </div>
    
     </div>
        <!-- Beneficiario -->
-          <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg ">
+          <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg ">
               <div>Beneficiary</div> 
             </div>
 
-            <div class="card-body items-center   ">
-              <div class="grid grid-cols-1 sm:grid-cols-2 w-full gap-y-0 gap-x-2 ">
+            <div class="tw-card-body tw-items-center   ">
+              <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 tw-w-full tw-gap-y-0 tw-gap-x-2 ">
 
-                  <div class="form-control w-full sm:row-start-1 sm:row-col-1 ">
-                    <label class="label">
-                      <span class="label-text">Select Beneficiary</span>
+                  <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-row-col-1 ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Select Beneficiary</span>
                     </label>
-                    <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="select select-bordered w-full" t-on-input="onChangeSelectedBeneficiario" >
+                    <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario" >
                       <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-foreach="this.beneficiarioData.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                         <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
@@ -216,19 +216,19 @@ export class SendMoneyCuba extends Component {
                     </select>
                   </div> 
 
-                  <div class="form-control w-full max-w-xs sm:row-start-1 sm:row-col-1  row-start-10">
-                  <label class="label">
-                    <span class="label-text">Country</span>
+                  <div class="tw-form-control tw-w-full tw-max-w-xs sm:tw-row-start-1 sm:tw-row-col-1  tw-row-start-10">
+                  <label class="tw-label">
+                    <span class="tw-label-text">Country</span>
                   </label>
-                  <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="input input-bordered w-full"  t-on-input="onChangeCountryInput" />   
+                  <input type="text" value="Cuba" readonly="true" maxlength="100" placeholder="Country" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeCountryInput" />   
                 </div> 
                   
-                  <div class="form-control w-full  sm:row-start-2 ">
-                    <label class="label">
-                        <span class="label-text">Select Card</span>
+                  <div class="tw-form-control tw-w-full  sm:tw-row-start-2 ">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Select Card</span>
                     </label>
                   
-                    <select t-att-value="this.beneficiarioData.selectedCard" class="select select-bordered w-full" t-on-input="onChangeSelectedCard">
+                    <select t-att-value="this.beneficiarioData.selectedCard" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                       <option  t-att-value="-1" >Select Card</option>
                       <t t-foreach="this.beneficiarioData.cardsList" t-as="unCard" t-key="unCard.number">
                         <option t-att-value="unCard.number">
@@ -241,66 +241,66 @@ export class SendMoneyCuba extends Component {
                 </div>
 
 
-                <div class="form-control w-full  sm:row-start-2 ">
-                    <label class="label">
-                      <span class="label-text">Card Number</span>
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-2 ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Card Number</span>
                     </label>
-                    <input type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="input input-bordered w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
-                <div class=" flex items-center w-full row-start-3 mt-1">
-                  <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="ml-3  sm:w-[10vw] w-[30vw]"/>
+                <div class=" tw-flex tw-items-center tw-w-full tw-row-start-3 tw-mt-1">
+                  <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
                 </div>
 
                 
-                <div class="form-control w-full  sm:row-start-4 ">
-                <label class="label">
-                  <span class="label-text">Card Holder Name</span>
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-4 ">
+                <label class="tw-label">
+                  <span class="tw-label-text">Card Holder Name</span>
                 </label>
-                <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangeCardHolderInput" />   
+                <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
                </div>
 
-             <!-- <div class="form-control w-full sm:row-start-4 ">
-               <label class="label">
-                 <span class="label-text">Contact Phone</span>
+             <!-- <div class="tw-form-control tw-w-full sm:tw-row-start-4 ">
+               <label class="tw-label">
+                 <span class="tw-label-text">Contact Phone</span>
                </label>
-               <input type="text" t-att-value="this.beneficiarioData.contactPhone"  maxlength="300" placeholder="" class="input input-bordered w-full "  t-on-input="onChangePhoneInput" />   
+               <input type="text" t-att-value="this.beneficiarioData.contactPhone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput" />   
               </div>-->
 
-              <div class="form-control w-full sm:row-start-4 ">
-                <label class="label">
-                 <span class="label-text">Contact Phone</span>
+              <div class="tw-form-control tw-w-full sm:tw-row-start-4 ">
+                <label class="tw-label">
+                 <span class="tw-label-text">Contact Phone</span>
                 </label>
-                <input t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full" t-on-input="onChangePhoneInput" />
-                <!-- <span id="valid-phone-msg" class="hide">✓ Valid</span>
-                <span id="error-phone-msg" class="hide"></span> -->
+                <input t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhoneInput" />
+                <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
+                <span id="error-phone-msg" class="tw-hide"></span> -->
               </div> 
 
               
-              <div class="form-control  sm:col-span-2 w-full sm:row-start-5">
-              <label class="label">
-                <span class="label-text">Delivery Address</span>
+              <div class="tw-form-control  sm:tw-col-span-2 tw-w-full sm:tw-row-start-5">
+              <label class="tw-label">
+                <span class="tw-label-text">Delivery Address</span>
               </label>           
-              <textarea t-att-value="this.beneficiarioData.deliveryAddress" class="textarea textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+              <textarea t-att-value="this.beneficiarioData.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
              </div>
 
 
-             <div class="form-control w-full sm:row-start-6 ">
-             <label class="label">
-               <span class="label-text">Province</span>
+             <div class="tw-form-control tw-w-full sm:tw-row-start-6 ">
+             <label class="tw-label">
+               <span class="tw-label-text">Province</span>
              </label>
-             <select t-att-value="this.beneficiarioData.deliveryAreaID" class="select select-bordered w-full" t-on-input="onChangeProvince">
+             <select t-att-value="this.beneficiarioData.deliveryAreaID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
                <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                  <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                </t>             
              </select>
            </div>
 
-           <div class="form-control w-full sm:row-start-6 ">
-             <label class="label">
-               <span class="label-text">City</span>
+           <div class="tw-form-control tw-w-full sm:tw-row-start-6 ">
+             <label class="tw-label">
+               <span class="tw-label-text">City</span>
              </label>
-             <select t-att-value="this.beneficiarioData.receiverCityID" class="select select-bordered w-full" t-on-input="onChangeCity">
+             <select t-att-value="this.beneficiarioData.receiverCityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
                  <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
@@ -321,10 +321,10 @@ export class SendMoneyCuba extends Component {
         <!-- Beneficiario END -->
 
 
-       <button class="btn btn-primary mt-2 sm:row-start-2 row-start-3 w-[30%]" t-on-click="onSendMoney">Send</button>
+       <button class="tw-btn tw-btn-primary tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[30%]" t-on-click="onSendMoney">Send</button>
 
 
-     <div class="card  w-full bg-base-100 shadow-xl rounded-lg mt-2 sm:row-start-3 row-start-4 sm:col-span-2 p-3">
+     <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 sm:tw-row-start-3 tw-row-start-4 sm:tw-col-span-2 p-3">
       
          <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       
