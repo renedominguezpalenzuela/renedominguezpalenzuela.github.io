@@ -150,9 +150,12 @@ table{
   background-color: #eeeeee !important;
 }
 */
-table.tw-display.dataTable > tbody > tr.selected > *,
-table.tw-display.dataTable > tbody > tr.odd.selected > *,
-table.tw-display.dataTable > tbody > tr.selected:hover > *  {
+
+
+/*Color del selector de la tabla*/
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > *  {
     box-shadow: inset 0 0 0 9999px #acbad4 !important;
     color: #333;
     background-color: #fff;
