@@ -38,6 +38,14 @@
   border-radius: 10px;
 }
 
+/* Landscape phones and portrait tablets */
+@media (max-width: 576px) {
+  .border-rounded-2 {
+    border-radius: 10px;
+  }
+}
+
+
 .left input {
   border: none;
   width: 80%;

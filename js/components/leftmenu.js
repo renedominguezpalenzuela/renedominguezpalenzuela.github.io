@@ -7,14 +7,14 @@ import {Balance} from "./balance.js";
 
 class MenuItemCollapsable extends Component {
     static  template=xml`
-    <div class="collapse  collapse-arrow ">
+    <div class="tw-collapse  tw-collapse-arrow ">
         <input type="checkbox" class="peer" /> 
         
-        <div class="collapse-title ">
+        <div class="tw-collapse-title ">
              <t t-esc="props.name"/>
         </div>
 
-        <div class="collapse-content"> 
+        <div class="tw-collapse-content"> 
             <div t-foreach="props.items" t-as="unitem" t-key="unitem.id" class="pl-2 cursor-pointer" t-on-click="()=>props.leftMenuController(unitem.id, unitem.name)">
                  <t t-esc="unitem.name"  />
             </div>
@@ -28,7 +28,7 @@ class MenuItemCollapsable extends Component {
 class MenuItemSingle extends Component {
     static  template=xml`
     
-        <div class="pl-4 cursor-pointer" t-on-click="()=>props.leftMenuController(props.id, props.name)">
+        <div class="tw-pl-4 tw-cursor-pointer" t-on-click="()=>props.leftMenuController(props.id, props.name)">
              <t t-esc="props.name"/><t />
         </div>
 
@@ -45,23 +45,23 @@ export class LeftMenu extends Component {
 
 
     static template=xml`       
-            <div class="bg-[#009AFF] rounded-lg text-white text-[1rem] sm:h-full pb-5">            
+            <div class="tw-bg-[#009AFF] tw-rounded-lg tw-text-white tw-text-[1rem] sm:tw-h-full tw-pb-5">            
 
-                <a class="flex items-center justify-center p-3" href="/">
-                    <img src="../img/logo-white.png" height="1.6rem"  alt="Logo" loading="lazy"  class="img-logo"  />
+                <a class="tw-flex tw-items-center tw-justify-center tw-p-3" href="/">
+                    <img class="img-logo" src="../img/logo-white.png" height="1.6rem"  alt="Logo" loading="lazy"    />
                 </a>
 
                 
  
 
-                <div class="collapse  collapse-arrow ">
-                    <input type="checkbox" class="peer" /> 
+                <div class="tw-collapse  tw-collapse-arrow ">
+                    <input type="checkbox" class="tw-peer" /> 
                     
-                    <div class="collapse-title ">
+                    <div class="tw-collapse-title ">
                          Balance
                     </div>
             
-                    <div class="collapse-content"> 
+                    <div class="tw-collapse-content"> 
                       <Balance/>
                     </div>
                 

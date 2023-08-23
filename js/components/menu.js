@@ -15,47 +15,33 @@ export class Menu extends Component {
     static template = xml`
 
 
-            <div class="navbar hidden sm:flex ">
-                <div class="navbar-start ">
+            <div class="tw-navbar tw-hidden sm:tw-flex ">
+                <div class="tw-navbar-start ">
                     
-                    <div class="text-[1.5rem]  font-[600] pl-1 ">
+                    <div class="tw-text-[1.5rem]  tw-font-[600] tw-pl-1 ">
                         <t t-esc="props.title"/>
                     </div>
                             
                               
                 </div>
 
-                <div class="navbar-center ">
+                <div class="tw-navbar-center ">
               
                     
                 </div>
 
-                <div class="navbar-end  ">
+                <div class="tw-navbar-end  ">
 
-                    <ul class="menu menu-horizontal px-1 z-50">
+                    <ul class="tw-menu tw-menu-horizontal tw-px-1 tw-z-50">
 
-                      <!--  <li>
-                            <a class="dropdown-item" href="#">TX List</a>
-                        </li>
-
-                        <li tabindex="0">
-                            <details>
-                                <summary>Send Money</summary>
-                                <ul class="p-2">
-                                    <li><a class="dropdown-item" href="#">Send Money Cuba</a></li>
-                                    <li><a>Submenu 1</a></li>
-                                    <li><a>Submenu 2</a></li>
-                                </ul>
-                            </details>
-                        </li> -->
-
+                     
                         <li>
                             
                             <details >
                             <summary>
                            
-                                <span class="avatar">                                   
-                                    <div class="w-6 mask mask-squircle">   
+                                <span class="tw-avatar">                                   
+                                    <div class="tw-w-6 tw-mask tw-mask-squircle">   
                                       <t t-if="this.state.avatar">             
                                         <img t-att-src="this.state.avatar" />
                                       </t>                                      
@@ -71,7 +57,7 @@ export class Menu extends Component {
                               <li><a>Option 01</a></li>
                               <li><a>Option 02</a></li>
                               <li>
-                                 <a class="dropdown-item" href="#" t-on-click="logout">Logout</a>
+                                 <a class="tw-dropdown-item" href="#" t-on-click="logout">Logout</a>
                               </li>
                             </ul>
                           </details>

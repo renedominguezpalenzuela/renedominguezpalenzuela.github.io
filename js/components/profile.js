@@ -65,34 +65,34 @@ export class Profile extends Component {
   })
 
   static template = xml`    
-    <div class="sm:grid sm:grid-cols-[50%_50%] gap-2 h-[100vh]">
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg">
+    <div class="sm:tw-grid sm:tw-grid-cols-[50%_50%] tw-gap-2 tw-h-[100vh]">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
         <!-- ************************************************************************* -->
         <!--                 Foto                                                      -->
         <!-- ************************************************************************* -->
-        <div class="card-title flex flex-col rounded-lg">
-            <div class="px-10 pt-10 ">
+        <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
+            <div class="tw-px-10 tw-pt-10 ">
                 <t t-if="this.state.avatar">
-                  <div class="avatar">
-                    <div class="w-24 mask mask-squircle">                
+                  <div class="tw-avatar">
+                    <div class="tw-w-24 tw-mask tw-mask-squircle">                
                         <img t-att-src="this.state.avatar" />
                     </div>
                   </div>  
                 </t>
                 <t t-else="">
-                  <div class="avatar placeholder">
-                    <div class="bg-neutral-focus text-neutral-content rounded-full w-24">
-                      <span class="text-3xl">?</span>
+                  <div class="tw-avatar tw-placeholder">
+                    <div class="tw-bg-neutral-focus tw-text-neutral-content tw-rounded-full tw-w-24">
+                      <span class="tw-text-3xl">?</span>
                     </div>
                   </div>
                 </t>
             </div>
 
-            <div class="form-control  max-w-xs  ">
-                <label class="label">
-                  <span class="label-text">Pick a file</span>  
+            <div class="tw-form-control  tw-max-w-xs  ">
+                <label class="tw-label">
+                  <span class="tw-label-text">Pick a file</span>  
                 </label>       
-                <input t-on-input="onChangeAvatarInput" t-ref="inputAvatar"  type="file" class="file-input file-input-sm file-input-bordered w-full max-w-xs"  accept="image/jpeg, image/png, image/jpg"/>            
+                <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangeAvatarInput" t-ref="inputAvatar"  type="file"   accept="image/jpeg, image/png, image/jpg"/>            
             </div>
         </div>
 
@@ -100,43 +100,43 @@ export class Profile extends Component {
 
 
 
-        <div class="card-body items-center ">
+        <div class="tw-card-body tw-items-center ">
             <!-- ************************************************************************* -->
             <!--               Nombre y primer apellido                                    -->
             <!-- ************************************************************************* -->
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-full  ">
-                    <label class="label">
-                       <span class="label-text">First Name</span>
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-full  ">
+                    <label class="tw-label">
+                       <span class="tw-label-text">First Name</span>
                     </label>
-                    <input type="text" t-model="this.state.firstName" placeholder="First Name" class="input input-bordered w-full "  /> 
+                    <input class="tw-input tw-input-bordered tw-w-full " type="text" t-model="this.state.firstName" placeholder="First Name"   /> 
                 </div>
 
-                <div class="form-control w-full  pl-1">
-                    <label class="label">
-                       <span class="label-text">Last Name</span>
+                <div class="tw-form-control tw-w-full  tw-pl-1">
+                    <label class="tw-label">
+                       <span class="tw-label-text">Last Name</span>
                     </label>
-                    <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="input input-bordered w-full"  />   
+                    <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="tw-input tw-input-bordered tw-w-full"  />   
                 </div>
             </div>  
 
             <!-- ************************************************************************* -->
             <!--               Telefono e Email                                            -->
             <!-- ************************************************************************* -->
-            <!-- t-on-input="onChangePhone" -->
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-full  ">
-                    <label class="label">
-                      <span class="label-text">Phone</span>
+           
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-full  ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Phone</span>
                     </label>                    
-                    <input t-model="this.state.phone"  id="phone" name="phone" type="tel" class="selectphone input input-bordered w-full"  />
+                    <input t-model="this.state.phone"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full"  />
                 </div>
 
-                <div class="form-control w-full  pl-1">
-                    <label class="label">
-                      <span class="label-text">eMail</span>
+                <div class="tw-form-control tw-w-full  tw-pl-1">
+                    <label class="tw-label">
+                      <span class="tw-label-text">eMail</span>
                     </label>
-                    <input type="text" t-model="this.state.providerValue" placeholder="eMail" class="input input-bordered w-full "  />   
+                    <input type="text" t-model="this.state.providerValue" placeholder="eMail" class="tw-input tw-input-bordered tw-w-full "  />   
                 </div>
             </div>  
 
@@ -145,24 +145,24 @@ export class Profile extends Component {
             <!--              ID y BirthDay                                                -->
             <!-- ************************************************************************* -->
      
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-full  ">
-                    <label class="label">
-                      <span class="label-text">ID Number</span>
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-full  ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">ID Number</span>
                     </label>                    
-                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="input input-bordered w-full "  />                       
+                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
 
-                <div class="form-control w-full  pl-1">
-                    <label class="label">
-                      <span class="label-text">Birth Date</span>
+                <div class="tw-form-control tw-w-full  tw-pl-1">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Birth Date</span>
                     </label>
-                    <input type="date" t-model="this.state.birthDate" placeholder="Birth Date" class="input input-bordered w-full "  /> 
+                    <input type="date" t-model="this.state.birthDate" placeholder="Birth Date" class="tw-input tw-input-bordered tw-w-full "  /> 
                     <!-- <input type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" />  -->
                 </div>
             </div>  
 
-            <div class="card-actions">
+            <div class="tw-card-actions">
               
             </div>
         </div>
@@ -170,28 +170,28 @@ export class Profile extends Component {
 
 
         <!-- Card de la derecha -->
-        <div class="card  w-full bg-base-100 shadow-xl rounded-lg ">
-            <div class="card-title flex flex-col rounded-lg">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
                 Address
             </div>
-            <div class="card-body items-center ">
+            <div class="tw-card-body tw-items-center ">
             <!-- ************************************************************************* -->
             <!--             Street and number                                             -->
             <!-- ************************************************************************* -->
      
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-[80%]  ">
-                    <label class="label">
-                      <span class="label-text">Street</span>
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-[80%]  ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Street</span>
                     </label>                    
-                    <input type="text" t-model="this.state.street" placeholder="Street" class="input input-bordered w-full "  />                       
+                    <input type="text" t-model="this.state.street" placeholder="Street" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
 
-                <div class="form-control w-[20%]  pl-1">
-                    <label class="label">
-                      <span class="label-text">House Number</span>
+                <div class="tw-form-control tw-w-[20%]  tw-pl-1">
+                    <label class="tw-label">
+                      <span class="tw-label-text">House Number</span>
                     </label>
-                    <input type="text" t-model="this.state.houseNumber" placeholder="House Number" class="input input-bordered w-full "  /> 
+                    <input type="text" t-model="this.state.houseNumber" placeholder="House Number" class="tw-input tw-input-bordered tw-w-full "  /> 
                     
                 </div>
             </div>  
@@ -200,19 +200,19 @@ export class Profile extends Component {
             <!--            Country and Province                                           -->
             <!-- ************************************************************************* -->
      
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-full  ">
-                    <label class="label">
-                      <span class="label-text">Province</span>
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-full  ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Province</span>
                     </label>                    
-                    <input type="text" t-model="this.state.province" placeholder="Province" class="input input-bordered w-full "  />                       
+                    <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
 
-                <div class="form-control w-full  pl-1">
-                    <label class="label">
-                      <span class="label-text">Country</span>
+                <div class="tw-form-control tw-w-full  tw-pl-1">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Country</span>
                     </label>
-                    <input type="text" t-model="this.state.country" placeholder="Country" class="input input-bordered w-full "  /> 
+                    <input type="text" t-model="this.state.country" placeholder="Country" class="tw-input tw-input-bordered tw-w-full "  /> 
                     
                 </div>
             </div>  
@@ -221,25 +221,25 @@ export class Profile extends Component {
             <!--            Zip Code    and Currency                                       -->
             <!-- ************************************************************************* -->
      
-            <div class="sm:flex sm:flex-row  w-full">
-                <div class="form-control w-[30%]  ">
-                    <label class="label">
-                      <span class="label-text">Zip Code</span>
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                <div class="tw-form-control tw-w-[30%]  ">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Zip Code</span>
                     </label>                    
-                    <input type="text" t-model="this.state.zipcode" placeholder="Zip Code" class="input input-bordered w-full "  />                       
+                    <input type="text" t-model="this.state.zipcode" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
 
-               <!-- <div class="form-control w-full  pl-1">
-                    <label class="label">
-                      <span class="label-text">Country</span>
+               <!-- <div class="tw-form-control tw-w-full  tw-pl-1">
+                    <label class="tw-label">
+                      <span class="tw-label-text">Country</span>
                     </label>
-                    <input type="text" t-model="this.state.country" placeholder="Country" class="input input-bordered w-full "  /> 
+                    <input type="text" t-model="this.state.country" placeholder="Country" class="tw-input tw-input-bordered tw-w-full "  /> 
                     
                 </div> -->
             </div>  
 
 
-           <!-- <div class="card-title flex flex-col rounded-lg mt-5">
+           <!-- <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg tw-mt-5">
              Passport and License
             </div> -->
 
@@ -248,7 +248,7 @@ export class Profile extends Component {
         </div>
 
 
-        <button class="btn btn-primary w-[30%]" t-on-click="onSafeAllData">Save</button>
+        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSafeAllData">Save</button>
 
     </div>
       

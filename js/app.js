@@ -25,26 +25,28 @@ class Root extends Component {
   static template = xml`
    
 
-      <div class="main-back grid place-items-center  ">
-        <div class="sm:hidden ">
+      <div class="main-back tw-grid tw-place-items-center  ">
+        <div class="sm:tw-hidden ">
             <img src="img/logo.png" alt="" class="img-size"/>
         </div>
 
-        <div class=" h-[34rem] w-[80vw] sm:w-[62vw] bg-white shadow-lg flex border-rounded ">
-          <div class="h-full w-[90%] sm:w-[45vw] left p-5  ">             
+        <div class=" tw-h-[34rem] tw-w-[80vw] sm:tw-w-[62vw] tw-bg-white tw-shadow-lg tw-flex border-rounded ">
+          <div class="tw-h-full  sm:tw-w-[45vw] left tw-p-5 border-rounded-2 ">             
             <h3>SIGN IN</h3>
             <input type="text" placeholder="USERNAME" id="usr" t-ref="input_user"/>
             <input type="password" placeholder="PASSWORD" id="pass" t-ref="input_pass"/>                
-            <div class="flex">                 
+            <div class="tw-flex">                 
               <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           
               <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
             </div>
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
 
-            <div class="mt-10 flex justify-center">Don't have an account yet? <a class="ml-1" href="/register.html">Sign Up</a></div>
+            <div class="tw-mt-10 tw-flex tw-justify-center">Don't have an account yet?
+             <a class="tw-ml-1" href="/register.html">Sign Up</a>
+            </div>
           </div>
 
-          <div class="h-full w-[100%] hidden sm:block right p-5 ">
+          <div class="tw-h-full tw-w-[100%] tw-hidden sm:tw-block right tw-p-5 ">
             <div class="right-text">
               <h2>Volttus</h2>
               <h5>Lorem, ipsum dolor sit amet consectetur </h5>

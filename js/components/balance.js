@@ -22,12 +22,12 @@ export class Balance extends Component {
   static template = xml`  
 
 
-    <div class=" bg-[#4F50E9] p-2 mt-1  text-[#ffffff]  rounded-md">
+    <div class=" tw-bg-[#4F50E9] tw-p-2 tw-mt-1  tw-text-[#ffffff]  tw-rounded-md">
        <t t-if="balance.saldos">
         <t t-foreach="balance.saldos" t-as="undato" t-key="undato.currency">                
-          <div class="flex flex-row  ">
-                <div class="w-[30%] "> <t t-esc="undato.currency"/></div> 
-                <div  class="w-[60%]  text-end"> <t t-esc="undato.amount"/></div> 
+          <div class="tw-flex tw-flex-row  ">
+                <div class="tw-w-[30%] "> <t t-esc="undato.currency"/></div> 
+                <div  class="tw-w-[60%]  text-end"> <t t-esc="undato.amount"/></div> 
           
           </div>
         </t>
