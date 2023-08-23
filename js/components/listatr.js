@@ -42,8 +42,8 @@ export class ListaTR extends Component {
     static template = xml`  
 
     
-    <table  id="container-listtr" class="display nowrap " style="width:100%" >
-    <thead class="bg-[#3750D1] text-[#FFFFFF] text-[1.05rem] mt-1">
+    <table  id="container-listtr" class="tw-display tw-nowrap " style="width:100%" >
+    <thead class="tw-bg-[#3750D1] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
         <tr>
                 <th data-priority="1">Transaction ID</th>    
                 <th>UserType</th>

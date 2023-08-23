@@ -1773,6 +1773,12 @@ details.tw-collapse summary::-webkit-details-marker {
   color: hsl(var(--bc) / 0.4);
 }
 
+.tw-mockup-phone .tw-display {
+  overflow: hidden;
+  border-radius: 40px;
+  margin-top: -25px;
+}
+
 @keyframes progress-loading {
   50% {
     left: 107%;
@@ -2348,6 +2354,11 @@ details.tw-collapse summary::-webkit-details-marker {
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
 
+.tw-bg-\[\#3750D1\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
+}
+
 .tw-p-2 {
   padding: 0.5rem;
 }
@@ -2415,6 +2426,10 @@ details.tw-collapse summary::-webkit-details-marker {
   font-size: 0.8rem;
 }
 
+.tw-text-\[1\.05rem\] {
+  font-size: 1.05rem;
+}
+
 .tw-font-\[600\] {
   font-weight: 600;
 }
@@ -2434,6 +2449,11 @@ details.tw-collapse summary::-webkit-details-marker {
 }
 
 .tw-text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.tw-text-\[\#FFFFFF\] {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
