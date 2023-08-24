@@ -12,11 +12,13 @@ export class RecargasTelefono extends Component {
 
     //TODO: poner imagen de espera con una ventana
 
-    promo_template=useState({
-        title:'',
-        description:'',
-        content:''
+    promo_template = useState({
+        title: '',
+        description: '',
+        content: ''
     });
+
+    selectProduct = useRef("selectProduct");
 
     state = useState({
         pais: 53,                   //codigo telefonico del pais
@@ -29,9 +31,9 @@ export class RecargasTelefono extends Component {
         label: '',
         phone: '',
         phoneOwnerName: '',
-        promoTitle:'',
-        promoContent:'',
-        promoDescrip:''
+        promoTitle: '',
+        promoContent: '',
+        promoDescrip: ''
 
 
     })
@@ -96,7 +98,7 @@ export class RecargasTelefono extends Component {
                 <label class="tw-label">
                     <span class="tw-label-text">Recharge type </span>
                 </label>  
-                <select  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProduct" >  
+                <select t-ref="selectProduct"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProduct" >  
                     <option  t-att-value="-1" >Select Product</option>          
                     <t t-foreach="this.state.listaProductos" t-as="unProducto" t-key="unProducto.id">
                         <option t-att-value="unProducto.id"   >
@@ -211,6 +213,9 @@ export class RecargasTelefono extends Component {
         const userId = window.localStorage.getItem('userId');
 
 
+      //  this.select_product.el.value=-1;
+
+
 
         onWillStart(async () => {
             this.seleccionCodigosPaises = [];
@@ -226,7 +231,6 @@ export class RecargasTelefono extends Component {
                     show: unPais.show,
                     iso2: unPais.isoAlpha2,
                     prefijo: unPais.prefijo
-
                 }
             }
 
@@ -244,7 +248,6 @@ export class RecargasTelefono extends Component {
         });
 
         onMounted(() => {
-
             this.phoneInput = document.querySelector("#phone");
             this.phonInputSelect = window.intlTelInput(this.phoneInput, {
                 separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
@@ -257,104 +260,62 @@ export class RecargasTelefono extends Component {
                 //excludeCountries: ["in", "il"],
                 preferredCountries: ["cu"],
                 // display only these countries
-
                 onlyCountries: this.seleccionCodigosPaises,
-
                 utilsScript: "js/libs/intlTelIutils.js"
             });
-
-            this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
-
-        
-
+            //this.phoneInput.addEventListener('countrychange', this.handlePhoneChange);
         })
 
-
     }
 
-
-    onChangeProduct(event) {
-        this.state.producto = event.target.value;
-        this.promo_template.title='';
-        if (this.listaProductos) {
-            const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
-
-            if (producto) {
-
-            this.state.productoDesc = producto.description
-            this.state.salePrice = producto.salePrice.amount;
-            this.state.operator = producto.operator;
-            this.state.label = producto.label;
-            console.log("Productos")
-            console.log(producto)
-             if (producto.promotions[0]) {
-                console.log("Promociones")
-                console.log(producto.promotions[0])
-                //this.state.promoTitle = producto.promotions[0].title
-                this.promo_template.title = markup(producto.promotions[0].title);
-               // this.promo_template.description = markup(producto.promotions[0].description);
-               // this.promo_template.content = markup(producto.promotions[0].content);
-                
-                //this.render()
-             }
-            }
-        }
-
-        // console.log(this.state.producto)
-        // console.log(this.listaProductos)
-
-        // console.log("Costo")
-        // console.log(producto.salePrice.amount)
-        // console.log(producto.salePrice.currency)
-
-
-    }
+   
 
     onChangePhone = API.debounce(async (event) => {
+        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+       // console.log(cod_pais)
 
         this.state.phone = event.target.value
-        console.log(this.state)
+        //console.log(this.state)
 
-        if (!this.listaProductos) {
-            console.log("pidiendo por primera ves los productos")
-            await this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
+        const moneda = this.state.currency;
+        const telefono = cod_pais + this.state.phone;
+        //console.log(telefono)
+
+        const isValidNumber = libphonenumber.isValidNumber(telefono)
+
+        if (!isValidNumber) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Invalid phone number ' + telefono
+            })
+            return;
+            //console.log(respuesta)
         }
 
-    }, 700);
+        await this.handlePhoneChange(telefono, moneda)
+       
 
-
-    handleCountryChange = () => {
-        console.log(this.phonInputSelect.getSelectedCountryData().dialCode)
-        console.log(this.phonInputSelect.getSelectedCountryData().iso2)
-        console.log(this.phonInputSelect.getSelectedCountryData().name)
-        console.log("AAA");
-
-        this.state.operator='';
-
-        this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
-    }
-
+    }, 900);
 
     //se ejecuta al cambiar el pais, para pedir la lista de productos  
     //prefijo  --- codigo telefonico del pais
     //coincide con id en lista de paises 
-    onChangePais = async (prefijo) => {
-        console.log("PAis " + prefijo);
+    handlePhoneChange = async (telefono, moneda) => {
 
-        this.promo_template.title='';
+        // console.log(libphonenumber.parsePhoneNumber('9098765432', 'IN'))
+
+        this.promo_template.title = '';
 
         this.state.productoDesc = ""
         this.state.salePrice = 0
-
+        this.state.operator = null;
+        this.state.producto = -1;
+        this.selectProduct.el.value=-1;
 
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
-        const paisDatos = this.paises.find(unPais => unPais.prefijo == prefijo);
-
-        console.log(paisDatos)
-
-
-
+      
         Swal.fire({
             title: 'Please Wait..!',
             text: 'Retrieving product list...',
@@ -366,30 +327,62 @@ export class RecargasTelefono extends Component {
             didOpen: async () => {
                 swal.showLoading()
 
-                console.log(this.state.currency);
-                console.log(paisDatos.number)
+                //console.log(this.state.currency);
+                //console.log(paisDatos.number)
                 try {
-                    
-                    const operadores = await api.getProductosRecargaTelefon(paisDatos.number, this.state.currency);
-                    console.log("---- Operador ----- ")
-                    console.log(operadores);
-                    this.listaProductos = operadores.data.operators[0].products;
-                    this.state.listaProductos = this.listaProductos;
-                    swal.close();
+
+                    const respuesta = await api.getProductosRecargaTelefon(telefono, moneda);
+                    //console.log(respuesta)
+
+                    let cod_respuesta = 0;
+
+                    if (respuesta.status) {
+                        cod_respuesta = respuesta.status;
+                    } else if (respuesta.response && respuesta.response.status) {
+                        cod_respuesta = respuesta.response.status;
+                    } else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Unspected error, see browser logs for details'
+                        })
+                        console.log(respuesta)
+
+                    }
+                    //console.log(respuesta.response.status)
+
+
+                    if (cod_respuesta == 200) {
+                        //console.log(respuesta)
+                        //console.log("---- Respuesta OK ----- ")
+                        this.listaProductos = respuesta.data.data.operators[0].products;
+                        this.state.listaProductos = this.listaProductos;
+                        //console.log(this.listaProductos);
+                        swal.close();
+                    } else if (cod_respuesta == 400) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: respuesta.response.data.message
+                        })
+                        //console.log(respuesta)
+                    }
+
                 } catch (error) {
                     console.log(error)
-                    this.state.listaProductos=[];
-                    this.listaProductos=[];
-                    
+                    this.state.listaProductos = [];
+                    this.listaProductos = [];
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
                         text: error
                     })
-                    
+
                 }
-                
-               
+
+
             }
         })
 
@@ -400,12 +393,90 @@ export class RecargasTelefono extends Component {
 
     }
 
+    //Evento disparado al selecionar un producto
+    onChangeProduct(event) {
+        this.state.producto = event.target.value;
+        this.promo_template.title = '';
+       
 
-    onChangeCurrencySend(event) {
-        this.state.currency = event.target.value
-        console.log("Prefio Pais")
-        console.log(this.phonInputSelect.getSelectedCountryData().dialCode)
-        this.onChangePais(this.phonInputSelect.getSelectedCountryData().dialCode)
+      
+
+
+        if (this.listaProductos) {
+            const producto = this.listaProductos.filter((unProducto) => unProducto.id == this.state.producto)[0]
+
+            if (producto) {
+
+                this.state.productoDesc = producto.description
+                this.state.salePrice = producto.salePrice.amount;
+                this.state.operator = producto.operator;
+                this.state.label = producto.label;
+                //console.log("Productos")
+                //console.log(producto)
+                if (producto.promotions[0]) {
+                   // console.log("Promociones")
+                   // console.log(producto.promotions[0])
+                    //this.state.promoTitle = producto.promotions[0].title
+
+                    if (producto.promotions[0].content) {
+                        this.promo_template.title = markup(producto.promotions[0].content);
+                    } else if (producto.promotions[0].description) {
+                        this.promo_template.title = markup(producto.promotions[0].description);
+                    } else if (producto.promotions[0].title) {
+                        this.promo_template.title = markup(producto.promotions[0].title);
+
+                    }
+                    //this.promo_template.title = markup(producto.promotions[0].title);
+                    // this.promo_template.description = markup(producto.promotions[0].description);
+                    // this.promo_template.content = markup(producto.promotions[0].content);
+
+                    //this.render()
+                }
+            }
+        }
+
+        // this.promo_template.title = '';
+
+        // this.state.productoDesc = ""
+        // this.state.salePrice = 0
+        // this.state.operator = null;
+      
+
+        // console.log(this.state.producto)
+        // console.log(this.listaProductos)
+
+        // console.log("Costo")
+        // console.log(producto.salePrice.amount)
+        // console.log(producto.salePrice.currency)
+
+
+    }
+
+
+
+
+
+
+    async onChangeCurrencySend(event) {
+        
+        const moneda =  event.target.value
+        this.state.currency = moneda;
+        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+
+        const telefono = cod_pais+this.state.phone;
+        console.log(telefono)
+
+
+        const isValidNumber = libphonenumber.isValidNumber(telefono)
+
+
+        if (isValidNumber) {
+
+            // if (!this.listaProductos) {
+            //   console.log("pidiendo por primera ves los productos")
+            await this.handlePhoneChange(telefono, moneda)
+        }
+
     }
 
 

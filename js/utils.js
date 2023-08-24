@@ -508,10 +508,10 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      console.log(response)
-      datos = response.data;
+      //console.log(response)
+      datos = response;
     }).catch(function (error) {
-      console.log(error);
+      //console.log(error);
       datos = error;
     });
 
