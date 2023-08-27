@@ -70,7 +70,7 @@ export class Profile extends Component {
 
 
     birthDate: "",
-
+    password: '',
     // password: "$2y$10$EiZYJxdFvdTBfY97uTfU1e11U5vAFmxTnAQ5M.d0q8zU9",
     areConditionsAccepted: true
   })
@@ -370,7 +370,7 @@ export class Profile extends Component {
         </div>
 
 
-        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSafeAllData">Save</button>
+        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSaveAllData">Save</button>
 
     </div>
       
@@ -413,7 +413,7 @@ export class Profile extends Component {
 
       );
 
-      if (this.props.modificar === true) {
+      if (this.props.newUser === false) {
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
@@ -590,36 +590,51 @@ export class Profile extends Component {
 
 
 
-  onSafeAllData() {
-    delete this.state["beneficiaries"];
-    console.log(this.state)
-
-    if (!this.validarDatos(this.state)) {
-      console.log("Validation Errors");
-      return;
-  }
 
 
-    Swal.fire('Not implemented yet,  more details about data is needed');
-  }
-
-  
   validarDatos(datos) {
-    console.log(datos)
+    //console.log(datos)
 
 
-  
+
 
     //--------------------- Phone number --------------------------------------------
     //TODO: Validar que sea un numero correcto
-    
+
     if (!libphonenumber.isValidNumber(datos.phone)) {
-        Swal.fire({
-            icon: 'error', title: 'Error',
-            text: 'Phone number is not correct'
-        })
-        return false;
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Phone number is not correct'
+      })
+      return false;
     }
+
+    if ((this.inputPass1.el.value != this.inputPass2.el.value) || !this.state.password.trim()) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Passwords are not the same or are empty, please check'
+      })
+      return false;
+    }
+
+
+    if (!this.state.firstName.trim()) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: "First Name can't be empty, please check"
+      })
+      return false;
+    }
+
+    if (!this.state.lastName.trim()) {
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: "Last Name can't be empty, please check"
+      })
+      return false;
+    }
+
+
 
     /*
     if (!datos.destinations[0] || datos.destinations[0] === '') {
@@ -654,7 +669,7 @@ export class Profile extends Component {
 
     return true;
 
-}
+  }
 
 
   toggler_visibility() {
@@ -665,16 +680,15 @@ export class Profile extends Component {
       this.iconPassVisibility1.el.classList.add('fa-eye-slash');
       this.iconPassVisibility2.el.classList.add('fa-eye-slash');
 
-      
     } else {
       this.inputPass1.el.setAttribute('type', 'password');
       this.inputPass2.el.setAttribute('type', 'password');
       this.iconPassVisibility1.el.classList.remove('fa-eye-slash');
       this.iconPassVisibility2.el.classList.remove('fa-eye-slash');
-     
+
     }
 
-   
+
   }
 
 
@@ -683,13 +697,157 @@ export class Profile extends Component {
     console.log(cod_pais)
 
     this.state.phoneToShow = event.target.value
-    this.state.phone =cod_pais+  event.target.value
+    this.state.phone = cod_pais + event.target.value
+    console.log(this.state)
+
+
+
+
+  }, 900);
+
+
+
+  async onSaveAllData() {
+    delete this.state["beneficiaries"];
     console.log(this.state)
 
     
-   
+    
 
-}, 900);
+    if (!this.validarDatos(this.state)) {
+      console.log("Validation Errors");
+      return;
+    }
+    // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
+
+
+
+
+    try {
+
+
+      let respuesta = null;
+      if (this.props.newUser) {
+        //creando nuevo usuario
+        respuesta = await API.createUser(this.state)
+      } else {
+        //modificando usuario
+
+      }
+
+      console.log(respuesta)
+
+      let cod_respuesta = 0;
+
+      if (respuesta.status) {
+        cod_respuesta = respuesta.status;
+      } else if (respuesta.response && respuesta.response.status) {
+        cod_respuesta = respuesta.response.status;
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Unspected response, see browser logs for details'
+        })
+      }
+
+      if (cod_respuesta == 200) {
+        console.log(respuesta)
+        //console.log("---- Respuesta OK ----- ")
+        //this.listaProductos = respuesta.data.data.operators[0].products;
+        //this.state.listaProductos = this.listaProductos;
+        //console.log(this.listaProductos);
+        // swal.close();
+
+        Swal.fire('User data have been saved');
+        if (this.props.newUser) {
+          this.verificarUsuario();
+        }
+
+
+
+
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error: ' + cod_respuesta,
+          text: respuesta.response.data.message
+        })
+        //console.log(respuesta)
+      }
+
+    } catch (error) {
+      console.log(error)
+
+      Swal.fire({
+        icon: 'error',
+        title: 'Unexpected Error',
+        text: error.message
+      })
+
+    }
+
+    //Swal.fire('Not implemented yet,  more details about data is needed');
+  }
+
+  verificarUsuario(IDUsuario) {
+    Swal.fire({
+      title: 'A message with a verification code has been sent to your email address. Enter the code to continue',
+      input: 'text',
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      showLoaderOnConfirm: true,
+      preConfirm: (verificationCode) => {
+
+        console.log("Obtener dato")
+        console.log(verificationCode)
+
+        return {
+
+          code:verificationCode
+        }
+
+        /*
+         return fetch(`//api.github.com/users/${login}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            console.log("preConfirm")
+            console.log(response)
+            return response.json()
+          })
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Request failed: ${error}`
+            )
+          })
+          */
+
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      console.log("then")
+      console.log(result.value.code)
+      console.log(IDUsuario)
+      if (result.isConfirmed) {
+        //si usuario le dio al boton confirmar
+        /*value: {
+          contiene la respuesta del paso anterior
+          result.value.code
+        }*/
+
+        Swal.fire({
+          title: `${result.value.login}'s avatar`,
+          imageUrl: result.value.avatar_url
+        })
+      }
+    })
+  }
 
 
 

@@ -56,7 +56,7 @@ class Root extends Component {
         
         
           <t t-if="this.state.menuId === 1">
-            <Profile modificar="true"/>
+            <Profile newUser="false"/>
           </t>
 
           <t t-elif="this.state.menuId === 2">

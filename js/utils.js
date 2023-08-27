@@ -90,6 +90,50 @@ export class API {
   }
 
   //------------------------------------------------------------------------------------------------
+  // Confirmar usuario
+  //------------------------------------------------------------------------------------------------
+  static async confirmUser(userID, verificationCode) {
+
+  
+
+
+    var raw = JSON.stringify({
+      "userID": userID,
+      "activationCode": verificationCode
+    });
+
+    const headers = {
+      'x-api-key': this.x_api_key,
+      'Content-Type': 'application/json',
+    }
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/verify`,
+      headers: headers,
+      data: raw
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response;
+    }).catch(function (error) {
+      console.log(error);
+      // Swal.fire({
+      //   icon: 'error',
+      //   title: error.message,
+      //   text: 'Something went wrong',
+      //   footer: '<h5> Inspect console for details </h5>'
+      // })
+
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+   //------------------------------------------------------------------------------------------------
   // Crear usuario
   //------------------------------------------------------------------------------------------------
   static async createUser(datosUsuario) {
@@ -104,7 +148,7 @@ export class API {
 
     var config = {
       method: 'post',
-      url: `${this.base_url}/api/private/users/register`,
+      url: `${base_url}/api/private/users/register`,
       headers: headers,
       data: body
     }
@@ -113,13 +157,13 @@ export class API {
     await axios(config).then(function (response) {
       datos = response.data.user;
     }).catch(function (error) {
-      console.log(error);
-      Swal.fire({
-        icon: 'error',
-        title: error.message,
-        text: 'Something went wrong requesting User Profile',
-        footer: '<h5> Inspect console for details </h5>'
-      })
+     // console.log(error);
+      // Swal.fire({
+      //   icon: 'error',
+      //   title: error.message,
+      //   text: 'Something went wrong',
+      //   footer: '<h5> Inspect console for details </h5>'
+      // })
 
       datos = error;
     });
@@ -127,6 +171,7 @@ export class API {
     return datos;
 
   }
+
 
 
   //------------------------------------------------------------------------------------------------

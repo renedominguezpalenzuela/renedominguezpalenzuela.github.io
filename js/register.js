@@ -23,7 +23,7 @@ class Root extends Component {
         <div class="tw-p-3 tw-bg-[#FFFFFF] tw-rounded-lg    tw-w-full tw-h-full ">       
         
          
-            <Profile/>
+            <Profile newUser="true"/>
          
             
           
