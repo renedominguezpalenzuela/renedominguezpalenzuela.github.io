@@ -2208,6 +2208,10 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 100%;
 }
 
+.tw-w-\[15\%\] {
+  width: 15%;
+}
+
 .tw-w-\[30\%\] {
   width: 30%;
 }
@@ -2224,10 +2228,6 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 60%;
 }
 
-.tw-w-\[77\%\] {
-  width: 77%;
-}
-
 .tw-w-\[80\%\] {
   width: 80%;
 }
@@ -2236,24 +2236,16 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 80vw;
 }
 
+.tw-w-\[85\%\] {
+  width: 85%;
+}
+
 .tw-w-auto {
   width: auto;
 }
 
 .tw-w-full {
   width: 100%;
-}
-
-.tw-w-\[15\%\] {
-  width: 15%;
-}
-
-.tw-w-\[83\%\] {
-  width: 83%;
-}
-
-.tw-w-\[85\%\] {
-  width: 85%;
 }
 
 .tw-max-w-xs {
