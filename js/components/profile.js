@@ -14,12 +14,19 @@ export class Profile extends Component {
 
 
   inputAvatar = useRef("inputAvatar");
+  inputPassport = useRef("inputPassport");
+  inputDriverLicence = useRef("inputDriverLicence");
 
+
+  inputPass1 = useRef("inputPass1");
+  inputPass2 = useRef("inputPass2");
+
+  iconPassVisibility1 = useRef("iconPassVisibility1");
+  iconPassVisibility2 = useRef("iconPassVisibility2");
 
 
 
   state = useState({
-
 
     appVersion: "0.1",
     language: "EN",
@@ -27,45 +34,49 @@ export class Profile extends Component {
 
     firstName: "",
     lastName: "",
-    phone: "+1-202-555-0106",
-    providerValue: "john.doe@test.ducapp.net",  //Correo
-    identityNumber: "035742265",
+    phone: "",
+    phoneToShow: "",
+    providerValue: "",  //Correo
+    identityNumber: "",
     avatar: "/img/avatar.png",   //Variable temporal no enviar al endpoint
 
     //direccion
-    street: "Schoenersville Rd",
-    houseNumber: "2118",
-    city: "PA",
-    country: "United States",
-    country_iso_code: "US",
-    province: "Pennsylvania",
-    zipcode: "18017",
+    street: "",
+    houseNumber: "",
+    city: "",
+    country: "",
+    country_iso_code: "",
+    province: "",
+    zipcode: "",
+    password: "",
 
 
-
-
-    image: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATQAAAEzCAIAAAAw5mh...",
+    image: "",
     source1: {
-      url: "https://www.someimage.com/url/passportImage.jpg",
-      name: "passportPicture",
-      type: "mime/jpg",
-      size: "50"
+      url: "",
+      name: "",
+      type: "",
+      size: ""
     },
     source2: {
-      url: "https://www.someimage.com/url/licenceImage.jpg",
-      name: "drivingLicence",
-      type: "mime/jpg",
-      size: "50"
+      url: "",
+      name: "",
+      type: "",
+      size: ""
     },
 
-    birthDate: "1984-11-20",
+    passportImg: "",
+    driverlicenseImg: "",
 
-    password: "$2y$10$EiZYJxdFvdTBfY97uTfU1e11U5vAFmxTnAQ5M.d0q8zU9",
+
+    birthDate: "",
+
+    // password: "$2y$10$EiZYJxdFvdTBfY97uTfU1e11U5vAFmxTnAQ5M.d0q8zU9",
     areConditionsAccepted: true
   })
 
   static template = xml`    
-    <div class="sm:tw-grid sm:tw-grid-cols-[50%_50%] tw-gap-2 tw-h-[100vh]">
+    <div class="sm:tw-grid sm:tw-grid-cols-[49%_49%] tw-gap-2 tw-h-full">
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
         <!-- ************************************************************************* -->
         <!--                 Foto                                                      -->
@@ -96,11 +107,52 @@ export class Profile extends Component {
             </div>
         </div>
 
-
-
+      
 
 
         <div class="tw-card-body tw-items-center ">
+
+        <!-- ************************************************************************* -->
+        <!--               Password                                                    -->
+        <!-- ************************************************************************* -->
+       
+          <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+     
+
+          <div class="tw-form-control tw-w-full  ">
+          <label class="tw-label">
+             <span class="tw-label-text">Password</span>
+          </label>
+            <div class="tw-join ">
+                  <input  type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%] " placeholder="Password" t-ref="inputPass1"  t-model="this.state.password"/>
+                  <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility">
+                    <i id="toggler1" class="far  fa-eye " t-ref="iconPassVisibility1"></i>
+                  </button>
+                    
+              
+            </div>
+          </div>
+
+          <div class="tw-form-control tw-w-full  tw-pl-1">
+            <label class="tw-label">
+            <span class="tw-label-text">Confirm Password</span>
+            </label>
+            <div class="tw-join  ">
+
+            <input type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" placeholder="Confirm Password" t-ref="inputPass2"/>
+            <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
+            <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
+            </button>
+
+
+            </div>
+          </div>
+        </div>       
+
+     
+
+
+
             <!-- ************************************************************************* -->
             <!--               Nombre y primer apellido                                    -->
             <!-- ************************************************************************* -->
@@ -129,7 +181,7 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Phone</span>
                     </label>                    
-                    <input t-model="this.state.phone"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full"  />
+                    <input t-model="this.state.phoneToShow"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
                 </div>
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
@@ -239,9 +291,79 @@ export class Profile extends Component {
             </div>  
 
 
-           <!-- <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg tw-mt-5">
+           <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg tw-mt-5">
              Passport and License
-            </div> -->
+            </div> 
+
+            <!-- ************************************************************************* -->
+            <!--                 Passport                                                    -->
+            <!-- ************************************************************************* -->
+            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+                      <div class="tw-p-1 tw-text-center">
+                        
+                        <div class="tw-px-10 tw-pt-10 ">
+                            <t t-if="this.state.passportImg">
+                                <div class="tw-avatar">
+                                    <div class="tw-w-24 tw-mask tw-mask-squircle">                
+                                      <img t-att-src="this.state.passportImg" />
+                                    </div>
+                                </div>  
+                            </t>
+                            <t t-else="">
+                                <div class="tw-avatar tw-placeholder">
+                                    <div class="tw-bg-neutral-focus tw-text-neutral-content tw-rounded-md tw-w-24">
+                                      <span class="tw-text-3xl">?</span>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                        </div>
+
+                        <div class="tw-form-control  tw-max-w-xs  ">
+                            <label class="tw-label">
+                            <span class="tw-label-text">Pick a file</span>  
+                            </label>       
+                            <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangePassportImg" t-ref="inputPassport"  type="file"   accept="image/jpeg, image/png, image/jpg"/>            
+                        </div>
+
+                        <div> Passport </div>
+                      </div>
+
+                      <div class="tw-p-1 tw-text-center">
+                        
+                          <div class="tw-px-10 tw-pt-10 ">
+                              <t t-if="this.state.driverlicenseImg">
+                                  <div class="tw-avatar">
+                                      <div class="tw-w-24 tw-mask tw-mask-squircle">                
+                                        <img t-att-src="this.state.driverlicenseImg" />
+                                      </div>
+                                  </div>  
+                              </t>
+                              <t t-else="">
+                                  <div class="tw-avatar tw-placeholder">
+                                      <div class="tw-bg-neutral-focus tw-text-neutral-content tw-rounded-md tw-w-24">
+                                        <span class="tw-text-3xl">?</span>
+                                      </div>
+                                  </div>
+                              </t>
+                              
+                          </div>
+
+                          <div class="tw-form-control  tw-max-w-xs  ">
+                              <label class="tw-label">
+                              <span class="tw-label-text">Pick a file</span>  
+                              </label>       
+                              <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangeDriverLicenceImg" t-ref="inputDriverLicence"  type="file"   accept="image/jpeg, image/png, image/jpg"/>            
+                          </div>
+
+                          <div> Driver License </div>
+                    </div>
+
+                      
+
+               
+            </div>
+    
 
 
             </div>
@@ -276,38 +398,37 @@ export class Profile extends Component {
       this.seleccionCodigosPaises = [];
       this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
 
-          this.seleccionCodigosPaises.push(unPais.isoAlpha2)
-          return {
-              id: unPais.id,
-              name: unPais.name,
-              // flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
-              currency: unPais.currency.code,
-              number: unPais.number,
-              show: unPais.show,
-              iso2: unPais.isoAlpha2,
-              prefijo: unPais.prefijo
-
-          }
+        this.seleccionCodigosPaises.push(unPais.isoAlpha2)
+        return {
+          id: unPais.id,
+          name: unPais.name,
+          // flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
+          currency: unPais.currency.code,
+          number: unPais.number,
+          show: unPais.show,
+          iso2: unPais.isoAlpha2,
+          prefijo: unPais.prefijo
+        }
       }
 
       );
- 
+
       if (this.props.modificar === true) {
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
+        console.log("User profile")
         console.log(userData)
 
-        //this.state = { ...userData }; //linea original
-        //var {this.state.firstName, lastName} = userData;
-        //this.state = { ...userData }; //linea original
-        //const {c, d, ...partialObject} = object;
+
+        const kyc = JSON.parse(userData.kyc.gatheredInfo);
+        console.log(kyc);
 
         this.state.firstName = userData.firstName
         this.state.lastName = userData.lastName;
 
-        this.state.phone = userData.phone;
-        this.state.providerValue = userData.providerValue;
+        this.state.phoneToShow = userData.phone;
+        this.state.providerValue = userData.email;
         this.state.identityNumber = userData.identityNumber;
 
         //direccion
@@ -316,7 +437,7 @@ export class Profile extends Component {
         this.state.city = userData.city;
         this.state.country = userData.country;
         this.state.country_iso_code = userData.country_iso_code;
-        this.state.province = userData.province;
+        this.state.province = kyc.Location.City;
         this.state.zipcode = userData.zipcode;
 
         this.state.birthDate = userData.birthDate;
@@ -325,7 +446,10 @@ export class Profile extends Component {
         //this.state.source1 = userData.source1;
         //this.state.source2 = userData.source2;
         this.state.avatar = userData.safeImage.image;
-        this.state.image = userData.safeImage.image;
+
+        this.state.birthDate = kyc.PersonInfo.YearOfBirth + "-" + kyc.PersonInfo.MonthOfBirth + "-" + kyc.PersonInfo.DayOfBirth;
+
+
 
       } else {
         window.localStorage.clear();
@@ -336,27 +460,27 @@ export class Profile extends Component {
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
-          separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
-          autoInsertDialCode: true, //coloca el codigo del pais en el input
-          formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
-          // autoPlaceholder: "polite",
-          // don't insert international dial codes
-          nationalMode: false, //permite poner 5465731 en ves de +53 54657331
-          initialCountry: "cu",
-          //excludeCountries: ["in", "il"],
-          preferredCountries: ["cu"],
-          // display only these countries
+        separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+        autoInsertDialCode: true, //coloca el codigo del pais en el input
+        formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+        // autoPlaceholder: "polite",
+        // don't insert international dial codes
+        nationalMode: false, //permite poner 5465731 en ves de +53 54657331
+        initialCountry: "cu",
+        //excludeCountries: ["in", "il"],
+        preferredCountries: ["cu"],
+        // display only these countries
 
-          onlyCountries: this.seleccionCodigosPaises,
+        onlyCountries: this.seleccionCodigosPaises,
 
-          utilsScript: "js/libs/intlTelIutils.js"
+        utilsScript: "js/libs/intlTelIutils.js"
       });
 
-   //   this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
+      //   this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
-  
 
-  })
+
+    })
   }
 
 
@@ -369,25 +493,205 @@ export class Profile extends Component {
   onChangeAvatarInput() {
 
     let file = this.inputAvatar.el.files[0];
+    const fileInput = this.inputAvatar.el;
+
+    const fileSize = fileInput.files[0].size / 1024 / 1024;
+
+    if (fileSize > 5) {
+      console.log("File to big")
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'File size must be less then 5 Mb',
+
+      })
+      return;
+    }
+
+
+
+    //this.state.image = "";
+
     let reader = new FileReader();
     reader.onloadend = () => {
       this.changeAvatarImage(reader.result);
+
+      console.log(reader)
+      this.state.image = reader.result;
+    }
+
+    reader.readAsDataURL(file);
+
+
+  }
+
+
+  changePassportImg(newImage) {
+    this.state.passportImg = newImage;
+    this.render();
+  }
+
+  async onChangePassportImg() {
+
+    let file = this.inputPassport.el.files[0];
+    const fileInput = this.inputPassport.el;
+    const respuesta = await API.uploadFileToAWS(fileInput);
+
+
+    if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
+      return;
+    }
+
+
+    this.state.source1.url = respuesta.defaultUrl;
+    this.state.source1.name = respuesta.fileName;
+    this.state.source1.type = respuesta.type;
+    this.state.source1.size = respuesta.size;
+
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      this.changePassportImg(reader.result);
+    }
+
+    reader.readAsDataURL(file);
+
+  }
+
+
+  changeDriverLicenceImg(newImage) {
+    this.state.driverlicenseImg = newImage;
+    this.render();
+  }
+
+  async onChangeDriverLicenceImg() {
+
+    let file = this.inputDriverLicence.el.files[0];
+    const fileInput = this.inputPassport.el;
+    const respuesta = await API.uploadFileToAWS(fileInput);
+    if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
+      return;
+    }
+
+    this.state.source2.url = respuesta.defaultUrl;
+    this.state.source2.name = respuesta.fileName;
+    this.state.source2.type = respuesta.type;
+    this.state.source2.size = respuesta.size;
+
+
+    let reader = new FileReader();
+    reader.onloadend = () => {
+      this.changeDriverLicenceImg(reader.result);
     }
     reader.readAsDataURL(file);
 
 
   }
 
+
+
+
   onSafeAllData() {
     delete this.state["beneficiaries"];
     console.log(this.state)
 
+    if (!this.validarDatos(this.state)) {
+      console.log("Validation Errors");
+      return;
+  }
+
+
     Swal.fire('Not implemented yet,  more details about data is needed');
   }
 
+  
+  validarDatos(datos) {
+    console.log(datos)
+
+
+  
+
+    //--------------------- Phone number --------------------------------------------
+    //TODO: Validar que sea un numero correcto
+    
+    if (!libphonenumber.isValidNumber(datos.phone)) {
+        Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Phone number is not correct'
+        })
+        return false;
+    }
+
+    /*
+    if (!datos.destinations[0] || datos.destinations[0] === '') {
+        Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please enter the phone number to recharge'
+        })
+        return false;
+    }
+
+    //--------------------- Receiver Name --------------------------------------------
+    if (!datos.receiverName || datos.receiverName === '') {
+        Swal.fire({
+            icon: 'error', title: 'Error',
+            text: "Please enter receiver's name"
+        })
+        return false;
+    }
+
+    //--------------------- Currency --------------------------------------------
+    if (!datos.currency || datos.currency === '') {
+        Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please select currency'
+        })
+        return false;
+    }
+    */
+
+
+
+
+    return true;
+
+}
+
+
+  toggler_visibility() {
+
+    if (this.inputPass1.el.type == 'password') {
+      this.inputPass1.el.setAttribute('type', 'text');
+      this.inputPass2.el.setAttribute('type', 'text');
+      this.iconPassVisibility1.el.classList.add('fa-eye-slash');
+      this.iconPassVisibility2.el.classList.add('fa-eye-slash');
+
+      
+    } else {
+      this.inputPass1.el.setAttribute('type', 'password');
+      this.inputPass2.el.setAttribute('type', 'password');
+      this.iconPassVisibility1.el.classList.remove('fa-eye-slash');
+      this.iconPassVisibility2.el.classList.remove('fa-eye-slash');
+     
+    }
+
+   
+  }
+
+
+  onChangePhone = API.debounce(async (event) => {
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    console.log(cod_pais)
+
+    this.state.phoneToShow = event.target.value
+    this.state.phone =cod_pais+  event.target.value
+    console.log(this.state)
+
+    
+   
+
+}, 900);
 
 
 
 }
 
-//mount(Root, document.body);

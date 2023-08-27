@@ -128,6 +128,65 @@ export class API {
 
   }
 
+
+  //------------------------------------------------------------------------------------------------
+  // Subir fichero a AWS
+  //------------------------------------------------------------------------------------------------
+  static async uploadFileToAWS(fileInput) {
+
+    const fileSize = fileInput.files[0].size /  1024 / 1024;
+
+    if (fileSize>5) {
+      console.log("File to big")
+      Swal.fire({
+        icon: 'error',
+        title:'Error',
+        text: 'File size must be less then 5 Mb',
+    
+      })
+
+      const respuesta = {
+        cod_respuesta:"error"
+      }
+      return ;
+
+    }
+
+
+    var formdata = new FormData();
+    formdata.append("name", "TestUpload"); //filename?
+    //formdata.append("file", fileInput.files[0], "/E:/img/Rey Mono/c09c723d986141d2b36ce40e8dcb3c09.jpg");
+    formdata.append("file", fileInput.files[0]);
+    formdata.append("action", "user-avatars");
+    formdata.append("userId", "0123456");
+
+
+    const headers = {
+      'x-api-key': this.x_api_key,
+      'Content-Type': 'multipart/form-data',
+    }
+
+    
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/upload/`,
+      headers: headers,
+      data: formdata
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response;
+    }).catch(function (error) {
+      datos = error;
+    });
+
+  
+
+    return datos;
+
+  }
+
   //------------------------------------------------------------------------------------------------
   // Obtiene Expresiones Regulares para validar tarjetas
   //------------------------------------------------------------------------------------------------
@@ -993,41 +1052,41 @@ export class UImanager {
   static gestionResultado(resultado, urlHome, menuController) {
 
 
-    
-      //TODO: refactorizar
-      if (resultado.data) {
-        //se proceso correctamente la operacion
-        if (resultado.data.status === 200 && !resultado.data.paymentLink) {
-          Swal.fire(resultado.data.payload);
-          return;
-        }
 
-        //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
-        if (resultado.data.status === 200 && resultado.data.paymentLink) {
-          //redireccionar a otra pagina 
-          const paymentLink = resultado.data.paymentLink.url;
-         
-          console.log("URL HOME")
-          console.log(urlHome)
-          //debugger
-
-          UImanager.dialogoStripe(paymentLink,menuController, urlHome)
-          return;
-        }
-
-
-
-
+    //TODO: refactorizar
+    if (resultado.data) {
+      //se proceso correctamente la operacion
+      if (resultado.data.status === 200 && !resultado.data.paymentLink) {
+        Swal.fire(resultado.data.payload);
+        return;
       }
 
-      //Error pero aun responde el API
-      if (resultado.response) {
-        console.log(resultado)
-        /*"error": "BAD_REQUEST",
-        "message": "The externalID field is required",
-        "statusCode": 400*/
-        Swal.fire(resultado.response.data.message);
+      //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+      if (resultado.data.status === 200 && resultado.data.paymentLink) {
+        //redireccionar a otra pagina 
+        const paymentLink = resultado.data.paymentLink.url;
+
+        console.log("URL HOME")
+        console.log(urlHome)
+        //debugger
+
+        UImanager.dialogoStripe(paymentLink, menuController, urlHome)
+        return;
       }
+
+
+
+
+    }
+
+    //Error pero aun responde el API
+    if (resultado.response) {
+      console.log(resultado)
+      /*"error": "BAD_REQUEST",
+      "message": "The externalID field is required",
+      "statusCode": 400*/
+      Swal.fire(resultado.response.data.message);
+    }
 
   }
 
@@ -1074,7 +1133,7 @@ export class UImanager {
                   const menuId = 7
                   const menuName = 'Transactions List';
                   if (menuController) {
-                     menuController(menuId, menuName)
+                    menuController(menuId, menuName)
                   }
                 } else {
                   console.log('redireccionar usando props')
