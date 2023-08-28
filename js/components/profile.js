@@ -259,13 +259,24 @@ export class Profile extends Component {
                     </label>                    
                     <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  />                       
                 </div>
-
+                <!--
                 <div class="tw-form-control tw-w-full  tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">Country</span>
                     </label>
                     <input type="text" t-model="this.state.country" placeholder="Country" class="tw-input tw-input-bordered tw-w-full "  /> 
                     
+                </div>
+                -->
+
+                <div class="tw-form-control tw-w-full  tw-pl-1">
+                  <label class="tw-label">
+                    <span class="tw-label-text">Country</span>
+                  </label>  
+                  <input type="text" id="country" class=" tw-input tw-input-bordered tw-w-full"/>      
+                  <input type="hidden" id="country_code" />          
+              <!--    <input  id="country_selector" name="country" type="text"   class=" tw-input tw-input-bordered tw-w-full"  />-->
+                
                 </div>
             </div>  
 
@@ -398,7 +409,7 @@ export class Profile extends Component {
       this.seleccionCodigosPaises = [];
       this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
 
-        this.seleccionCodigosPaises.push(unPais.isoAlpha2)
+        this.seleccionCodigosPaises.push(unPais.isoAlpha2.toLowerCase())
         return {
           id: unPais.id,
           name: unPais.name,
@@ -476,6 +487,29 @@ export class Profile extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
+    
+
+     this.country =  $("#country").countrySelect({
+
+/*        initialCountry: "cu",    
+        preferredCountries: ["cu"],
+        onlyCountries: this.seleccionCodigosPaises,
+				preferredCountries: ['ca', 'gb', 'us']*/
+        defaultCountry: "cu",        
+        onlyCountries: this.seleccionCodigosPaises,
+        preferredCountries: ['ca',  'cu'],
+        responsiveDropdown: true
+			});
+
+      console.log(this.seleccionCodigosPaises)
+
+   
+
+
+     
+
+    //  this.countryInput.addEventListener('countrychange', this.handleCountryChange);
+
       //   this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
 
@@ -488,6 +522,12 @@ export class Profile extends Component {
   changeAvatarImage(newImage) {
     this.state.avatar = newImage;
     this.render();
+  }
+
+  handleCountryChange = () => {
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData()
+    console.log(cod_pais)
+
   }
 
   onChangeAvatarInput() {
@@ -707,12 +747,23 @@ export class Profile extends Component {
 
 
 
+
+
   async onSaveAllData() {
     delete this.state["beneficiaries"];
     console.log(this.state)
 
+    //var countryData = $.fn.countrySelect.getCountryData();
     
+
+    var countryData = $("#country").countrySelect("getSelectedCountryData");
+
     
+    this.state.country = countryData.name;
+    this.state.country_iso_code = countryData.iso2;
+
+
+
 
     if (!this.validarDatos(this.state)) {
       console.log("Validation Errors");
@@ -808,7 +859,7 @@ export class Profile extends Component {
 
         return {
 
-          code:verificationCode
+          code: verificationCode
         }
 
         /*

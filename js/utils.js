@@ -103,7 +103,7 @@ export class API {
     });
 
     const headers = {
-      'x-api-key': this.x_api_key,
+      'x-api-key': x_api_key,
       'Content-Type': 'application/json',
     }
 
@@ -142,7 +142,7 @@ export class API {
 
 
     const headers = {
-      'x-api-key': this.x_api_key,
+      'x-api-key': x_api_key,
       'Content-Type': 'application/json',
     }
 
