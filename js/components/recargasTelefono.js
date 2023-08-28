@@ -86,7 +86,7 @@ export class RecargasTelefono extends Component {
             <label class="tw-label">
              <span class="tw-label-text">Phone to recharge</span>
             </label>
-            <input t-att-value="this.state.phone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+            <input   t-att-value="this.state.phone"  id="phone" name="phone" type="number" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
             <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
             <span id="error-phone-msg" class="tw-hide"></span> -->
           </div> 
@@ -133,7 +133,7 @@ export class RecargasTelefono extends Component {
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
 
             <div class="tw-card-body tw-items-center ">
-                    <div>
+                    <div class="tw-form-control tw-w-full">
                         <div t-if="this.state.operator">
                             <div class="tw-text-[1rem] tw-font-[500]">
                             Recharge Data  
@@ -156,27 +156,22 @@ export class RecargasTelefono extends Component {
                                 </div>
                             </div>
                         </div>
+
+                        </div>
+
+
+                        <div class="tw-form-control tw-w-full ">
                         <div  t-if="this.promo_template.title">
                           <div class="tw-text-[1rem] tw-font-[500] tw-mt-2 ">
                              Promotions
                           </div>   
-                          <div class="tw-ml-3">
+                          <div class="tw-ml-3 " style="overflow: scroll;">
                           
                       
-                          <!-- <t t-esc="this.state.promoTitle"/> -->
-                          <!-- <t t-esc="this.promo_template.html_str"/> -->
-                          <!-- JSON.stringify(this.state.stringData);-->
-                          <!-- t-att-                        srcdoc -->
-                          <!-- <div>title</div> -->
+                       
                           <t t-out="this.promo_template.title"/>
 
-                          <!--
-                          <div>description</div>
-                          <t t-out="this.promo_template.description"/>
-
-                          <div>content</div>
-                          <t t-out="this.promo_template.content"/>
-                          -->
+                         
 
         
                           </div>
@@ -213,7 +208,7 @@ export class RecargasTelefono extends Component {
         const userId = window.localStorage.getItem('userId');
 
 
-      //  this.select_product.el.value=-1;
+        //  this.select_product.el.value=-1;
 
 
 
@@ -268,11 +263,18 @@ export class RecargasTelefono extends Component {
 
     }
 
-   
 
     onChangePhone = API.debounce(async (event) => {
+
+        // if  (event.charCode < 48 || event.charCode > 57){
+        //     return false;
+        //    }
+
+
+
+
         const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
-       // console.log(cod_pais)
+        // console.log(cod_pais)
 
         this.state.phone = event.target.value
         //console.log(this.state)
@@ -294,9 +296,9 @@ export class RecargasTelefono extends Component {
         }
 
         await this.handlePhoneChange(telefono, moneda)
-       
 
-    }, 900);
+
+    }, 1100);
 
     //se ejecuta al cambiar el pais, para pedir la lista de productos  
     //prefijo  --- codigo telefonico del pais
@@ -311,11 +313,11 @@ export class RecargasTelefono extends Component {
         this.state.salePrice = 0
         this.state.operator = null;
         this.state.producto = -1;
-        this.selectProduct.el.value=-1;
+        this.selectProduct.el.value = -1;
 
         const accessToken = window.localStorage.getItem('accessToken');
         const api = new API(accessToken);
-      
+
         Swal.fire({
             title: 'Please Wait..!',
             text: 'Retrieving product list...',
@@ -397,9 +399,9 @@ export class RecargasTelefono extends Component {
     onChangeProduct(event) {
         this.state.producto = event.target.value;
         this.promo_template.title = '';
-       
 
-      
+
+
 
 
         if (this.listaProductos) {
@@ -414,8 +416,8 @@ export class RecargasTelefono extends Component {
                 //console.log("Productos")
                 //console.log(producto)
                 if (producto.promotions[0]) {
-                   // console.log("Promociones")
-                   // console.log(producto.promotions[0])
+                    // console.log("Promociones")
+                    // console.log(producto.promotions[0])
                     //this.state.promoTitle = producto.promotions[0].title
 
                     if (producto.promotions[0].content) {
@@ -440,7 +442,7 @@ export class RecargasTelefono extends Component {
         // this.state.productoDesc = ""
         // this.state.salePrice = 0
         // this.state.operator = null;
-      
+
 
         // console.log(this.state.producto)
         // console.log(this.listaProductos)
@@ -458,12 +460,12 @@ export class RecargasTelefono extends Component {
 
 
     async onChangeCurrencySend(event) {
-        
-        const moneda =  event.target.value
+
+        const moneda = event.target.value
         this.state.currency = moneda;
         const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
 
-        const telefono = cod_pais+this.state.phone;
+        const telefono = cod_pais + this.state.phone;
         console.log(telefono)
 
 
@@ -480,8 +482,12 @@ export class RecargasTelefono extends Component {
     }
 
 
-    async onSendRecharge() {
+
+
+    async ejecutarRecarga() {
+        console.log("Ejecutando recarga")
         console.log(this.state);
+
 
         //TODO: Validaciones
         const datosTX = {
@@ -554,6 +560,59 @@ export class RecargasTelefono extends Component {
             console.log(error);
             // Swal.fire(resultado.response.data.message);
         }
+    }
+
+
+    async onSendRecharge() {
+
+        //this.state.productoDesc = producto.description
+        //        this.state.salePrice = producto.salePrice.amount;
+
+        Swal.fire({
+            title: 'do you really want to send this recharge',
+            icon: 'warning',
+            html:`
+            <div> To: ${this.state.phoneOwnerName}</div>
+            <div>
+
+
+            
+                                Operator: ${this.state.operator}
+                            </div>
+                            <div class="tw-ml-3">
+                            Description:  ${this.state.productoDesc}
+                            </div>                        
+                            <div class="tw-ml-3">
+                                Cost:
+                                ${this.state.salePrice}
+                                <span class="tw-mr-2"></span>
+                                ${this.state.currency}
+                                <span class="tw-mr-2"></span>
+                                <div>
+                                ${this.state.label}
+                                </div>
+                            </div>
+              
+            
+            
+            
+            `,
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: true,
+            reverseButtons: false,
+            
+            cancelButtonText:`No`,
+            confirmButtonText:`Yes`
+          }).then((result) => {
+            if (result.value) {
+                
+             this.ejecutarRecarga()
+            }
+          }); 
+
+
+       
 
 
 
@@ -645,6 +704,17 @@ export class RecargasTelefono extends Component {
         await this.onChangeSendInput()*/
 
     }
+
+
+    /*
+        onPhoneKeyPress = (event)=> {
+            console.log(event.charCode)
+            if(event.charCode >= 48 && event.charCode <= 57){
+                return true;
+               }
+               return false;
+        }*/
+
 
 }
 

@@ -516,6 +516,8 @@ export class ListaTR extends Component {
                 let totalAmount = 0;
                 if (unDato.metadata.totalAmount) {
                     totalAmount = !unDato.metadata.totalAmount ? 0 : unDato.metadata.totalAmount;
+                } else {
+                    totalAmount = unDato.transactionAmount;
                 }
 
                 let feeAmountInUserCurrency = 0
