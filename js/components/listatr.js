@@ -57,11 +57,11 @@ export class ListaTR extends Component {
             
                 <th data-priority="3" >Curr.</th>
                 <th class="centrar">Created <br/> (yyyy/mm/dd) </th>    
-                <th class="centrar">Fee <br/> (USD)</th>   
+                <!-- <th class="centrar">Fee <br/> (USD)</th>   
               
                 <th >Type</th>
                 <th>Type2</th> 
-                <th>External ID</th>
+                <th>External ID</th> -->
                 
            
         </tr>
@@ -364,7 +364,7 @@ export class ListaTR extends Component {
                             //moment(data).format("MM/DD/YYYY");
                         },
                     },
-                    {
+                    /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
@@ -373,7 +373,7 @@ export class ListaTR extends Component {
                     },
                     { data: 'type', width: '15%' },
                     { data: 'type2', width: '15%' },
-                    { data: 'externalID', width: '13%' },
+                    { data: 'externalID', width: '13%' },*/
 
 
 
