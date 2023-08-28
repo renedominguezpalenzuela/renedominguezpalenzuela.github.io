@@ -165,7 +165,7 @@ export class RecargasTelefono extends Component {
                           <div class="tw-text-[1rem] tw-font-[500] tw-mt-2 ">
                              Promotions
                           </div>   
-                          <div class="tw-ml-3 " style="overflow: scroll;">
+                          <div class="tw-ml-3 promotion-overflow" >
                           
                       
                        
