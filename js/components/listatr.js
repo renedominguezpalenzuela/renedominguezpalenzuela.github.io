@@ -383,7 +383,7 @@ export class ListaTR extends Component {
                 ],
                 autoWidth: false,
                 "pageLength": 10,
-                order: [[0, 'desc']],
+                order: [[6, 'desc']],
                 select: true,
                 responsive: true,
                 destroy: true,

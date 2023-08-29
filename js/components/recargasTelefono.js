@@ -38,6 +38,10 @@ export class RecargasTelefono extends Component {
 
     })
 
+    errores = useState({
+        phoneField:false
+    })
+
 
     datosSelectedTX = useState({
         txID: "",
@@ -87,8 +91,12 @@ export class RecargasTelefono extends Component {
              <span class="tw-label-text">Phone to recharge</span>
             </label>
             <input   t-att-value="this.state.phone"  id="phone" name="phone" type="number" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
-            <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
-            <span id="error-phone-msg" class="tw-hide"></span> -->
+
+            <span t-if="this.errores.phoneField==true" class="error">
+              Invalid number!!!
+            </span>
+            <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span> -->
+            
           </div> 
                                 
          
@@ -286,13 +294,16 @@ export class RecargasTelefono extends Component {
         const isValidNumber = libphonenumber.isValidNumber(telefono)
 
         if (!isValidNumber) {
-            Swal.fire({
+           this.errores.phoneField = true;
+           /* Swal.fire({
                 icon: 'error',
                 title: 'Error',
                 text: 'Invalid phone number ' + telefono
-            })
+            })*/
             return;
             //console.log(respuesta)
+        } else {
+            this.errores.phoneField = false;
         }
 
         await this.handlePhoneChange(telefono, moneda)

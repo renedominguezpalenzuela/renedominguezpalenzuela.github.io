@@ -2613,8 +2613,4 @@ details.tw-collapse summary::-webkit-details-marker {
     -moz-column-gap: 0.5rem;
          column-gap: 0.5rem;
   }
-
-  .sm\:tw-overflow-scroll {
-    overflow: scroll;
-  }
 }
