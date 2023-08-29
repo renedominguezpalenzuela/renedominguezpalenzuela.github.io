@@ -295,11 +295,7 @@ export class RecargasTelefono extends Component {
 
         if (!isValidNumber) {
            this.errores.phoneField = true;
-           /* Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Invalid phone number ' + telefono
-            })*/
+          
             return;
             //console.log(respuesta)
         } else {
