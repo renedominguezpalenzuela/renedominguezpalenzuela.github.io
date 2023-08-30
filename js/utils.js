@@ -1227,6 +1227,28 @@ export class UImanager {
 
 
 
+   static formatDate(inputDate) {
+    let date, month, year, segundos, minutos, horas;
+    date = inputDate.getDate();
+
+    segundos = inputDate.getSeconds().toString().padStart(2, '0');
+    minutos = inputDate.getMinutes().toString().padStart(2, '0');;
+    horas = inputDate.getHours().toString().padStart(2, '0');;
+
+
+
+
+    month = inputDate.getMonth() + 1;
+    year = inputDate.getFullYear();
+    date = date.toString().padStart(2, '0');
+    month = month.toString().padStart(2, '0');
+
+
+    return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
+}
+
+
+
 }
 
 

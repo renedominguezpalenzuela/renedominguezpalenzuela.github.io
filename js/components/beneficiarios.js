@@ -4,10 +4,14 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { API, UImanager } from "../utils.js";
 import { Provincias } from "../../data/provincias_cu.js";
 
+import { ListaBeneficiarios } from "./listaBeneficiarios.js";
+
 
 
 
 export class Beneficiarios extends Component {
+
+    static components = { ListaBeneficiarios };
 
     tiempoDebounce = 1000; //milisegundos
 
@@ -253,9 +257,17 @@ export class Beneficiarios extends Component {
         <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
           <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
         </div>
-    </div>
+
+      
+        </div>
+
+
+      
 
   </div>
+
+  <ListaBeneficiarios  listaBeneficiarios="this.allDatosBeneficiariosFromStorage" 
+        onChangeSelectedBeneficiary.bind="this.onChangeSelectedBeneficiary"/>
     
 
     
@@ -841,6 +853,16 @@ export class Beneficiarios extends Component {
         }
 
     }*/
+
+
+
+    onChangeSelectedBeneficiary = async (datos) => {
+       // this.datosSelectedTX.txID = datos._id;
+        // this.state = { ...datos }
+        this.inicializarDatosBeneficiario(datos._id);
+        //console.log(datos)
+    }
+
 
 
 
