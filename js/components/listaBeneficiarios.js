@@ -75,8 +75,26 @@ export class ListaBeneficiarios extends Component {
 
 
         onWillStart(async () => {
-       
-            this.datos =  this.props.listaBeneficiarios;
+
+           // this.datos = this.props.listaBeneficiarios;
+
+
+
+            const raw_datos1 = this.props.listaBeneficiarios.map((unDato) => {
+
+                
+                const email = !unDato.email ? "-" : unDato.email
+                return {
+                   
+                    ...unDato,
+                    email
+                }
+                
+            });
+
+
+            this.datos = raw_datos1;
+
 
         });
 
@@ -102,8 +120,8 @@ export class ListaBeneficiarios extends Component {
                     { data: 'beneficiaryFullName', width: '30%' },
                     { data: 'deliveryCI', width: '15%' },
                     { data: 'deliveryPhone', width: '15%' },
-                    { data: 'email', width: '15%' },   
-                    { data: 'country', width: '14%' },  
+                    { data: 'email', width: '15%' },
+                    { data: 'country', width: '14%' },
                 ],
                 autoWidth: false,
                 "pageLength": 10,
