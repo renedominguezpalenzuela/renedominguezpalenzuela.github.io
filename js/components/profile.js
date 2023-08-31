@@ -581,17 +581,19 @@ export class Profile extends Component {
     let file = this.inputPassport.el.files[0];
     const fileInput = this.inputPassport.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
-console.log(respuesta)
 
-    if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
+    if (respuesta.status!=200) {
       return;
     }
 
 
-    this.state.source1.url = respuesta.defaultUrl;
-    this.state.source1.name = respuesta.fileName;
-    this.state.source1.type = respuesta.type;
-    this.state.source1.size = respuesta.size;
+
+    this.state.source1.url = respuesta.data.defaultUrl;
+    this.state.source1.name = respuesta.data.fileName;
+    this.state.source1.type = respuesta.data.type;
+    this.state.source1.size = respuesta.data.size;
+
+
 
     let reader = new FileReader();
     reader.onloadend = () => {
@@ -611,17 +613,17 @@ console.log(respuesta)
   async onChangeDriverLicenceImg() {
 
     let file = this.inputDriverLicence.el.files[0];
-    const fileInput = this.inputPassport.el;
+    const fileInput = this.inputDriverLicence.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
-    console.log(respuesta)
-    if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
+
+    if (respuesta.status!=200) {
       return;
     }
 
-    this.state.source2.url = respuesta.defaultUrl;
-    this.state.source2.name = respuesta.fileName;
-    this.state.source2.type = respuesta.type;
-    this.state.source2.size = respuesta.size;
+    this.state.source2.url = respuesta.data.defaultUrl;
+    this.state.source2.name = respuesta.data.fileName;
+    this.state.source2.type = respuesta.data.type;
+    this.state.source2.size = respuesta.data.size;
 
 
     let reader = new FileReader();
@@ -782,7 +784,7 @@ console.log(respuesta)
     delete this.state["driverlicenseImg"];
     delete this.state["passportImg"];
 
-    
+    console.log(this.state.source1)
 
     if (!this.state.source1.url) {
       delete this.state["source1"];
@@ -792,7 +794,7 @@ console.log(respuesta)
       delete this.state["source2"];
     }
 
-    console.log(this.state)
+   
 
     //var countryData = $.fn.countrySelect.getCountryData();
 
@@ -806,6 +808,8 @@ console.log(respuesta)
     this.state.city = this.state.province.substring(0, 2);
 
 
+    console.log(this.state)
+   
 
 
     if (!this.validarDatos(this.state)) {
@@ -814,7 +818,7 @@ console.log(respuesta)
     }
     // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
 
-
+  
 
 
     try {
