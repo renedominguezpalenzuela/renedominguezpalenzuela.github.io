@@ -24,7 +24,9 @@ export class Profile extends Component {
   iconPassVisibility1 = useRef("iconPassVisibility1");
   iconPassVisibility2 = useRef("iconPassVisibility2");
 
-
+  errores = useState({
+    phoneField: false
+  })
 
   state = useState({
 
@@ -182,6 +184,9 @@ export class Profile extends Component {
                       <span class="tw-label-text">Phone</span>
                     </label>                    
                     <input t-model="this.state.phoneToShow"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+                    <span t-if="this.errores.phoneField==true" class="error">
+                       Invalid number!!!
+                    </span>
                 </div>
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
@@ -487,28 +492,28 @@ export class Profile extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-    
 
-     this.country =  $("#country").countrySelect({
 
-/*        initialCountry: "cu",    
-        preferredCountries: ["cu"],
+      this.country = $("#country").countrySelect({
+
+        /*        initialCountry: "cu",    
+                preferredCountries: ["cu"],
+                onlyCountries: this.seleccionCodigosPaises,
+                preferredCountries: ['ca', 'gb', 'us']*/
+        defaultCountry: "cu",
         onlyCountries: this.seleccionCodigosPaises,
-				preferredCountries: ['ca', 'gb', 'us']*/
-        defaultCountry: "cu",        
-        onlyCountries: this.seleccionCodigosPaises,
-        preferredCountries: ['ca',  'cu'],
+        preferredCountries: ['ca', 'cu'],
         responsiveDropdown: true
-			});
-
-      console.log(this.seleccionCodigosPaises)
-
-   
-
+      });
 
      
 
-    //  this.countryInput.addEventListener('countrychange', this.handleCountryChange);
+
+
+
+
+
+      //  this.countryInput.addEventListener('countrychange', this.handleCountryChange);
 
       //   this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
@@ -526,7 +531,7 @@ export class Profile extends Component {
 
   handleCountryChange = () => {
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData()
-    console.log(cod_pais)
+   
 
   }
 
@@ -556,7 +561,7 @@ export class Profile extends Component {
     reader.onloadend = () => {
       this.changeAvatarImage(reader.result);
 
-      console.log(reader)
+     
       this.state.image = reader.result;
     }
 
@@ -576,7 +581,7 @@ export class Profile extends Component {
     let file = this.inputPassport.el.files[0];
     const fileInput = this.inputPassport.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
-
+console.log(respuesta)
 
     if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
       return;
@@ -608,6 +613,7 @@ export class Profile extends Component {
     let file = this.inputDriverLicence.el.files[0];
     const fileInput = this.inputPassport.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
+    console.log(respuesta)
     if (respuesta.cod_respuesta && respuesta.cod_respuesta === 'error') {
       return;
     }
@@ -633,7 +639,8 @@ export class Profile extends Component {
 
 
   validarDatos(datos) {
-    //console.log(datos)
+  
+
 
 
 
@@ -734,11 +741,30 @@ export class Profile extends Component {
 
   onChangePhone = API.debounce(async (event) => {
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
-    console.log(cod_pais)
+   
 
     this.state.phoneToShow = event.target.value
     this.state.phone = cod_pais + event.target.value
-    console.log(this.state)
+    
+
+
+
+
+
+
+
+    const isValidNumber = libphonenumber.isValidNumber(this.state.phone)
+
+    if (!isValidNumber) {
+      this.errores.phoneField = true;
+
+      return;
+   
+    } else {
+      this.errores.phoneField = false;
+    }
+
+
 
 
 
@@ -751,16 +777,33 @@ export class Profile extends Component {
 
   async onSaveAllData() {
     delete this.state["beneficiaries"];
+    delete this.state["avatar"];
+
+    delete this.state["driverlicenseImg"];
+    delete this.state["passportImg"];
+
+    
+
+    if (!this.state.source1.url) {
+      delete this.state["source1"];
+    }
+
+    if (!this.state.source2.url) {
+      delete this.state["source2"];
+    }
+
     console.log(this.state)
 
     //var countryData = $.fn.countrySelect.getCountryData();
-    
+
 
     var countryData = $("#country").countrySelect("getSelectedCountryData");
 
-    
+
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
+
+    this.state.city = this.state.province.substring(0, 2);
 
 
 
@@ -820,12 +863,12 @@ export class Profile extends Component {
 
 
       } else {
-        Swal.fire({
+       /* Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
-          text: respuesta.response.data.message
-        })
-        //console.log(respuesta)
+          text: respuesta.response.data/
+        })*/
+        console.log(respuesta)
       }
 
     } catch (error) {

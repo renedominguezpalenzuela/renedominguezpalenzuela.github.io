@@ -119,13 +119,6 @@ export class API {
       datos = response;
     }).catch(function (error) {
       console.log(error);
-      // Swal.fire({
-      //   icon: 'error',
-      //   title: error.message,
-      //   text: 'Something went wrong',
-      //   footer: '<h5> Inspect console for details </h5>'
-      // })
-
       datos = error;
     });
 
@@ -154,19 +147,21 @@ export class API {
     }
 
     let datos = null;
-    await axios(config).then(function (response) {
+    /*await axios(config).then(function (response) {
       datos = response.data.user;
     }).catch(function (error) {
-     // console.log(error);
-      // Swal.fire({
-      //   icon: 'error',
-      //   title: error.message,
-      //   text: 'Something went wrong',
-      //   footer: '<h5> Inspect console for details </h5>'
-      // })
 
       datos = error;
-    });
+    });*/
+
+    try {
+       datos = await axios(config);
+    } catch(error) {
+      datos = error;
+      
+    }
+
+    console.log(datos)
 
     return datos;
 

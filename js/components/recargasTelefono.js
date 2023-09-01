@@ -628,11 +628,6 @@ export class RecargasTelefono extends Component {
 
 
 
-
-    /*onChangePhone(event) {
-        this.state.phone = event.target.value
-    }*/
-
     onChangePhoneOwnerName(event) {
         this.state.phoneOwnerName = event.target.value
     }
