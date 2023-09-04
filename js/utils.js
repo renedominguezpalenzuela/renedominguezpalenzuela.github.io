@@ -161,7 +161,7 @@ export class API {
       
     }
 
-    console.log(datos)
+   
 
     return datos;
 

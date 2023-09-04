@@ -25,7 +25,23 @@ export class Profile extends Component {
   iconPassVisibility2 = useRef("iconPassVisibility2");
 
   errores = useState({
-    phoneField: false
+    phoneField: false,
+    firstName: false,
+    lastName: false,
+    providerValue: false,
+    identityNumber: false,
+    street: false,
+    houseNumber: false,
+    city: false,
+    country: false,
+    country_iso_code: false,
+    province: false,
+    zipcode: false,
+    password: false,
+    image: false,
+    source1: false,
+    source2: false,
+    birthDate: false
   })
 
   state = useState({
@@ -163,14 +179,20 @@ export class Profile extends Component {
                     <label class="tw-label">
                        <span class="tw-label-text">First Name</span>
                     </label>
-                    <input class="tw-input tw-input-bordered tw-w-full " type="text" t-model="this.state.firstName" placeholder="First Name"   /> 
+                    <input class="tw-input tw-input-bordered tw-w-full " type="text" t-model="this.state.firstName" placeholder="First Name"   t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName" /> 
+                    <span t-if="this.errores.firstName==true" class="error">
+                      Required field!!!
+                    </span>
                 </div>
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
                     <label class="tw-label">
                        <span class="tw-label-text">Last Name</span>
                     </label>
-                    <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="tw-input tw-input-bordered tw-w-full"  />   
+                    <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeLastName" t-on-blur="onBlurLastName"  />   
+                    <span t-if="this.errores.lastName==true" class="error">
+                       Required field!!!
+                    </span>
                 </div>
             </div>  
 
@@ -193,7 +215,10 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">eMail</span>
                     </label>
-                    <input type="text" t-model="this.state.providerValue" placeholder="eMail" class="tw-input tw-input-bordered tw-w-full "  />   
+                    <input type="text" t-model="this.state.providerValue" placeholder="eMail" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeProviderValue" t-on-blur="onBlurProviderValue"   />   
+                    <span t-if="this.errores.providerValue==true" class="error">
+                      Required field!!!
+                    </span>
                 </div>
             </div>  
 
@@ -207,15 +232,21 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">ID Number</span>
                     </label>                    
-                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="tw-input tw-input-bordered tw-w-full "  />                       
+                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeIdentityNumber" t-on-blur="onBlurIdentityNumber"   />                       
+                    <span t-if="this.errores.identityNumber==true" class="error">
+                       Required field!!!
+                    </span>
                 </div>
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">Birth Date</span>
                     </label>
-                    <input type="date" t-model="this.state.birthDate" placeholder="Birth Date" class="tw-input tw-input-bordered tw-w-full "  /> 
-                    <!-- <input type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31" />  -->
+                    <input type="date" t-model="this.state.birthDate" placeholder="Birth Date" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangebirthDate" t-on-blur="onBlurbirthDate" /> 
+                 
+                    <span t-if="this.errores.birthDate==true" class="error">
+                    Required field!!!
+                    </span>
                 </div>
             </div>  
 
@@ -241,15 +272,20 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Street</span>
                     </label>                    
-                    <input type="text" t-model="this.state.street" placeholder="Street" class="tw-input tw-input-bordered tw-w-full "  />                       
+                    <input type="text" t-model="this.state.street" placeholder="Street" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangestreet" t-on-blur="onBlurstreet" />                       
+                    <span t-if="this.errores.street==true" class="error">
+                       Required field!!!
+                    </span>
                 </div>
 
                 <div class="tw-form-control tw-w-auto  tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">House Number</span>
                     </label>
-                    <input type="text" t-model="this.state.houseNumber" placeholder="House Number" class="tw-input tw-input-bordered tw-w-full "  /> 
-                    
+                    <input type="text" t-model="this.state.houseNumber" placeholder="House Number" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangehouseNumber" t-on-blur="onBlurhouseNumber"  /> 
+                    <span t-if="this.errores.houseNumber==true" class="error">
+                       Required field!!!
+                    </span>
                 </div>
             </div>  
 
@@ -262,25 +298,23 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Province</span>
                     </label>                    
-                    <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  />                       
+                    <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeprovince" t-on-blur="onBlurprovince"  />                       
+                    <span t-if="this.errores.province==true" class="error">
+                       Required field!!!
+                    </span>
                 </div>
-                <!--
-                <div class="tw-form-control tw-w-full  tw-pl-1">
-                    <label class="tw-label">
-                      <span class="tw-label-text">Country</span>
-                    </label>
-                    <input type="text" t-model="this.state.country" placeholder="Country" class="tw-input tw-input-bordered tw-w-full "  /> 
-                    
-                </div>
-                -->
+        
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
                   <label class="tw-label">
                     <span class="tw-label-text">Country</span>
                   </label>  
-                  <input type="text" id="country" class=" tw-input tw-input-bordered tw-w-full"/>      
-                  <input type="hidden" id="country_code" />          
-              <!--    <input  id="country_selector" name="country" type="text"   class=" tw-input tw-input-bordered tw-w-full"  />-->
+                  <input type="text" id="country" class=" tw-input tw-input-bordered tw-w-full" t-on-input="onChangecountry" t-on-blur="onBlurcountry"  />      
+                  <input type="hidden" id="country_code" />  
+                  <span t-if="this.errores.country==true" class="error">
+                     Required field!!!
+                  </span>        
+              
                 
                 </div>
             </div>  
@@ -294,16 +328,13 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Zip Code</span>
                     </label>                    
-                    <input type="text" t-model="this.state.zipcode" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full "  />                       
+                    <input type="text" t-model="this.state.zipcode" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangezipcode" t-on-blur="onBlurzipcode"   />   
+                    <span t-if="this.errores.zipcode==true" class="error">
+                    Required field!!!
+                  </span>                    
                 </div>
 
-               <!-- <div class="tw-form-control tw-w-full  tw-pl-1">
-                    <label class="tw-label">
-                      <span class="tw-label-text">Country</span>
-                    </label>
-                    <input type="text" t-model="this.state.country" placeholder="Country" class="tw-input tw-input-bordered tw-w-full "  /> 
-                    
-                </div> -->
+            
             </div>  
 
 
@@ -506,7 +537,7 @@ export class Profile extends Component {
         responsiveDropdown: true
       });
 
-     
+
 
 
 
@@ -531,7 +562,7 @@ export class Profile extends Component {
 
   handleCountryChange = () => {
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData()
-   
+
 
   }
 
@@ -561,7 +592,7 @@ export class Profile extends Component {
     reader.onloadend = () => {
       this.changeAvatarImage(reader.result);
 
-     
+
       this.state.image = reader.result;
     }
 
@@ -582,7 +613,7 @@ export class Profile extends Component {
     const fileInput = this.inputPassport.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
 
-    if (respuesta.status!=200) {
+    if (respuesta.status != 200) {
       return;
     }
 
@@ -616,7 +647,7 @@ export class Profile extends Component {
     const fileInput = this.inputDriverLicence.el;
     const respuesta = await API.uploadFileToAWS(fileInput);
 
-    if (respuesta.status!=200) {
+    if (respuesta.status != 200) {
       return;
     }
 
@@ -641,7 +672,25 @@ export class Profile extends Component {
 
 
   validarDatos(datos) {
-  
+
+
+    //Validaciones si es update
+    if (!this.props.newUser) {
+
+      if (this.inputPass1.el.value || this.inputPass2.el.value && (this.inputPass1.el.value != this.inputPass2.el.value)) {
+        Swal.fire({
+          icon: 'error', title: 'Error',
+          text: 'Passwords are not the same or are empty, please check'
+        })
+        return false;
+      }
+
+
+
+      return true;
+
+    }
+
 
 
 
@@ -743,82 +792,48 @@ export class Profile extends Component {
 
   onChangePhone = API.debounce(async (event) => {
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
-   
 
     this.state.phoneToShow = event.target.value
     this.state.phone = cod_pais + event.target.value
-    
-
-
-
-
-
-
 
     const isValidNumber = libphonenumber.isValidNumber(this.state.phone)
 
     if (!isValidNumber) {
       this.errores.phoneField = true;
-
       return;
-   
     } else {
       this.errores.phoneField = false;
     }
 
-
-
-
-
-
-  }, 900);
+  }, 400);
 
 
 
 
 
   async onSaveAllData() {
-    delete this.state["beneficiaries"];
-    delete this.state["avatar"];
-
-    delete this.state["driverlicenseImg"];
-    delete this.state["passportImg"];
-
-    console.log(this.state.source1)
-
-    if (!this.state.source1.url) {
-      delete this.state["source1"];
-    }
-
-    if (!this.state.source2.url) {
-      delete this.state["source2"];
-    }
-
-   
-
-    //var countryData = $.fn.countrySelect.getCountryData();
-
 
     var countryData = $("#country").countrySelect("getSelectedCountryData");
-
-
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
+    this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
-    this.state.city = this.state.province.substring(0, 2);
+    const datosAEnviar = this.prepararDatosaEnviar(this.state);
+    console.log(datosAEnviar)
 
-
+    console.log("Datos enviados 2:")
     console.log(this.state)
-   
+
+    
 
 
-    if (!this.validarDatos(this.state)) {
+    if (!this.validarDatos(datosAEnviar)) {
       console.log("Validation Errors");
       return;
     }
     // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
 
-  
+
 
 
     try {
@@ -827,13 +842,18 @@ export class Profile extends Component {
       let respuesta = null;
       if (this.props.newUser) {
         //creando nuevo usuario
-        respuesta = await API.createUser(this.state)
+        respuesta = await API.createUser(datosAEnviar)
       } else {
         //modificando usuario
+        //Solo enviar campos que no estan vacios
+
+        //respuesta = await API.actualizarUser(datosparaUpdate)
+
+
 
       }
 
-      console.log(respuesta)
+      // console.log(respuesta)
 
       let cod_respuesta = 0;
 
@@ -850,32 +870,32 @@ export class Profile extends Component {
       }
 
       if (cod_respuesta == 200) {
+        console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
-        //console.log("---- Respuesta OK ----- ")
-        //this.listaProductos = respuesta.data.data.operators[0].products;
-        //this.state.listaProductos = this.listaProductos;
-        //console.log(this.listaProductos);
-        // swal.close();
 
+      
         Swal.fire('User data have been saved');
-        if (this.props.newUser) {
+        /*if (this.props.newUser) {
           this.verificarUsuario();
-        }
+        }*/
+        //ir hacia el login si es crear usuario
 
 
 
 
 
       } else {
-       /* Swal.fire({
+        Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
-          text: respuesta.response.data/
-        })*/
+          text: respuesta.response.data.message
+        })
+        console.log("----ERROR: Respuesta del API----- ")
         console.log(respuesta)
       }
 
     } catch (error) {
+      console.log("----ERROR: Sin Respuesta del API----- ")
       console.log(error)
 
       Swal.fire({
@@ -940,12 +960,170 @@ export class Profile extends Component {
         }*/
 
         Swal.fire({
-          title: `${result.value.login}'s avatar`,
-          imageUrl: result.value.avatar_url
+          title: `Codigo de verificacion: ${result.value.code}`
+
         })
       }
     })
   }
+
+
+  prepararDatosaEnviar(datosIniciales) {
+    let datos = { ...datosIniciales }
+
+    delete datos["beneficiaries"];
+    delete datos["avatar"];
+
+    delete datos["driverlicenseImg"];
+    delete datos["passportImg"];
+    delete datos["phoneToShow"];
+
+    if (!datos.firstName) delete datos["firstName"];
+    if (!datos.lastName) delete datos["lastName"];
+
+    if (!datos.phone) delete datos["phone"];
+    if (!datos.providerValue) delete datos["providerValue"];
+    if (!datos.identityNumber) delete datos["identityNumber"];
+
+    if (!datos.street) delete datos["street"];
+    if (!datos.houseNumber) delete datos["houseNumber"];
+    if (!datos.country) delete datos["country"];
+    if (!datos.country_iso_code) delete datos["country_iso_code"];
+    if (!datos.province) delete datos["province"];
+    if (!datos.zipcode) delete datos["zipcode"];
+
+    if (!datos.password) delete datos["password"];
+    if (!datos.image) delete datos["image"];
+
+
+    if (datos.source1 && !datos.source1.url) delete datos["source1"];
+    if (datos.source2 && !datos.source2.url) delete datos["source2"];
+
+    if (!datos.birthDate) delete datos["birthDate"];
+
+
+
+
+    return datos
+  }
+
+
+  
+  validarSiVacio(dato) {
+    let error = false;
+    if (this.props.newUser && !dato) {
+       error = true;
+    }
+    return error;
+
+  }
+
+
+  timeToBlur = 500;
+  onBlurFirstName = (event)=>{  
+      this.errores.firstName = this.validarSiVacio(event.target.value);
+  }
+
+  onChangeFirstName = API.debounce(async (event) => {
+    this.errores.firstName = this.validarSiVacio(event.target.value);
+  }, this.timeToBlur);
+
+
+  
+  onBlurLastName = (event)=>{  
+    this.errores.lastName = this.validarSiVacio(event.target.value);
+  }
+
+  onChangeLastName = API.debounce(async (event) => {
+    this.errores.lastName = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+    
+  onBlurProviderValue = (event)=>{  
+    this.errores.providerValue = this.validarSiVacio(event.target.value);
+  }
+
+  onChangeProviderValue = API.debounce(async (event) => {
+    this.errores.providerValue = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  
+    
+  onChangeIdentityNumber = API.debounce(async (event) => {
+    this.errores.identityNumber = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurIdentityNumber = (event)=>{  
+    this.errores.identityNumber = this.validarSiVacio(event.target.value);
+  }
+
+    
+  onChangebirthDate = API.debounce(async (event) => {
+    this.errores.birthDate = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurbirthDate = (event)=>{  
+    this.errores.birthDate = this.validarSiVacio(event.target.value);
+  }
+
+  onChangestreet = API.debounce(async (event) => {
+    this.errores.street = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurstreet = (event)=>{  
+    this.errores.street = this.validarSiVacio(event.target.value);
+  }
+
+
+  onChangehouseNumber = API.debounce(async (event) => {
+    this.errores.houseNumber = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurhouseNumber = (event)=>{  
+    this.errores.houseNumber = this.validarSiVacio(event.target.value);
+  }
+
+  
+  onChangeprovince = API.debounce(async (event) => {
+    this.errores.province = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurprovince = (event)=>{  
+    this.errores.province = this.validarSiVacio(event.target.value);
+  }
+
+  onChangecountry = API.debounce(async (event) => {
+    this.errores.country = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurcountry = (event)=>{  
+    this.errores.country = this.validarSiVacio(event.target.value);
+  }
+
+
+  onChangezipcode = API.debounce(async (event) => {
+    this.errores.zipcode = this.validarSiVacio(event.target.value);
+  },  this.timeToBlur);
+
+
+  onBlurzipcode = (event)=>{  
+    this.errores.zipcode = this.validarSiVacio(event.target.value);
+  }
+
+
+
+
+
+
+
 
 
 
