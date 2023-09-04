@@ -492,7 +492,7 @@ export class Profile extends Component {
 
         //
         this.state.avatar = userData.avatar ? userData.avatar : null;
-        this.state.image =  userData.image ? userData.image : null;
+        this.state.image = userData.image ? userData.image : null;
         //userData.avatar;
 
 
@@ -675,6 +675,8 @@ export class Profile extends Component {
 
   validarDatos(datos) {
 
+   
+
 
     //Validaciones si es update
     if (!this.props.newUser) {
@@ -695,74 +697,45 @@ export class Profile extends Component {
 
 
 
+ 
+
+
+
+    this.errores.firstName = this.validarSiVacio(datos.firstName)
+    this.errores.lastName = this.validarSiVacio(datos.lastName)
+    this.errores.providerValue = this.validarSiVacio(datos.providerValue)
+    this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+    this.errores.street = this.validarSiVacio(datos.street)
+    
+    this.errores.houseNumber = this.validarSiVacio(datos.houseNumber)
+    this.errores.city = this.validarSiVacio(datos.city)
+    this.errores.country = this.validarSiVacio(datos.country)
+
+    this.errores.country_iso_code = this.validarSiVacio(datos.country_iso_code)
+    this.errores.province = this.validarSiVacio(datos.province)
+    this.errores.zipcode = this.validarSiVacio(datos.zipcode)
+    this.errores.birthDate = this.validarSiVacio(datos.birthDate)
+    this.errores.phoneField = this.validarSiVacio(datos.phone)
+
+    for (let clave in this.errores){
+      if (this.errores[clave]==false) return false;
+    }
+
 
 
 
     //--------------------- Phone number --------------------------------------------
     //TODO: Validar que sea un numero correcto
 
-    if (!libphonenumber.isValidNumber(datos.phone)) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Phone number is not correct'
-      })
+    if (datos.phone && !libphonenumber.isValidNumber(datos.phone)) {
+      this.errores.phoneField = true;
       return false;
     }
 
     if ((this.inputPass1.el.value != this.inputPass2.el.value) || !this.state.password.trim()) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Passwords are not the same or are empty, please check'
-      })
+      this.errores.password = true;
       return false;
     }
-
-
-    if (!this.state.firstName.trim()) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: "First Name can't be empty, please check"
-      })
-      return false;
-    }
-
-    if (!this.state.lastName.trim()) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: "Last Name can't be empty, please check"
-      })
-      return false;
-    }
-
-
-
-    /*
-    if (!datos.destinations[0] || datos.destinations[0] === '') {
-        Swal.fire({
-            icon: 'error', title: 'Error',
-            text: 'Please enter the phone number to recharge'
-        })
-        return false;
-    }
-
-    //--------------------- Receiver Name --------------------------------------------
-    if (!datos.receiverName || datos.receiverName === '') {
-        Swal.fire({
-            icon: 'error', title: 'Error',
-            text: "Please enter receiver's name"
-        })
-        return false;
-    }
-
-    //--------------------- Currency --------------------------------------------
-    if (!datos.currency || datos.currency === '') {
-        Swal.fire({
-            icon: 'error', title: 'Error',
-            text: 'Please select currency'
-        })
-        return false;
-    }
-    */
 
 
 
@@ -824,10 +797,10 @@ export class Profile extends Component {
     console.log("Datos a enviar")
     console.log(datosAEnviar)
 
-  
 
-   // console.log("Datos enviados 2:")
-   // console.log(this.state)
+
+    // console.log("Datos enviados 2:")
+    // console.log(this.state)
 
 
 
@@ -856,7 +829,7 @@ export class Profile extends Component {
 
         delete datosAEnviar["image"];
         respuesta = await api.updateUser(datosAEnviar)
-        
+
 
 
       }
@@ -925,7 +898,7 @@ export class Profile extends Component {
           title: 'Error: ' + cod_respuesta,
           text: respuestatxt
         })
-     
+
       }
 
     } catch (error) {
@@ -986,7 +959,7 @@ export class Profile extends Component {
   }
 
 
-
+ //DEvuelve true si esta vacio
   validarSiVacio(dato) {
     let error = false;
     if (this.props.newUser && !dato) {
