@@ -468,7 +468,7 @@ export class Profile extends Component {
         console.log(userData)
 
 
-        if(userData.kyc) {
+        if (userData.kyc) {
           const kyc = JSON.parse(userData.kyc.gatheredInfo);
           console.log(kyc);
           this.state.province = kyc.Location.City;
@@ -488,16 +488,16 @@ export class Profile extends Component {
         this.state.city = userData.city;
         this.state.country = userData.country;
         this.state.country_iso_code = userData.country_iso_code;
-      
+
         this.state.zipcode = userData.zipcode;
 
         this.state.birthDate = userData.birthDate;
-  
+
         //
-        this.state.avatar = userData.safeImage ? userData.safeImage.image: null;
+        this.state.avatar = userData.safeImage ? userData.safeImage.image : null;
         //userData.avatar;
 
-       
+
 
 
 
@@ -827,7 +827,7 @@ export class Profile extends Component {
     console.log("Datos enviados 2:")
     console.log(this.state)
 
-    
+
 
 
     if (!this.validarDatos(datosAEnviar)) {
@@ -876,12 +876,34 @@ export class Profile extends Component {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
-      
-        Swal.fire('User data have been saved');
+        Swal.fire({
+          title: '',
+          text: "User data have been saved",
+          icon: 'success',
+          showCancelButton: false,
+          // confirmButtonColor: '#3085d6',
+          // cancelButtonColor: '#d33',
+          confirmButtonText: 'Ok',
+          cancelButtonText: 'No'
+        }).then((result) => {
+          if (result.isConfirmed) {
+
+            if (this.props.newUser) {
+              window.location.assign("index.html");
+            }
+
+          }
+
+        });
+
+
+        //Swal.fire('User data have been saved');
         /*if (this.props.newUser) {
           this.verificarUsuario();
         }*/
         //ir hacia el login si es crear usuario
+
+
 
 
 
@@ -1011,11 +1033,11 @@ export class Profile extends Component {
   }
 
 
-  
+
   validarSiVacio(dato) {
     let error = false;
     if (this.props.newUser && !dato) {
-       error = true;
+      error = true;
     }
     return error;
 
@@ -1023,8 +1045,8 @@ export class Profile extends Component {
 
 
   timeToBlur = 500;
-  onBlurFirstName = (event)=>{  
-      this.errores.firstName = this.validarSiVacio(event.target.value);
+  onBlurFirstName = (event) => {
+    this.errores.firstName = this.validarSiVacio(event.target.value);
   }
 
   onChangeFirstName = API.debounce(async (event) => {
@@ -1032,92 +1054,92 @@ export class Profile extends Component {
   }, this.timeToBlur);
 
 
-  
-  onBlurLastName = (event)=>{  
+
+  onBlurLastName = (event) => {
     this.errores.lastName = this.validarSiVacio(event.target.value);
   }
 
   onChangeLastName = API.debounce(async (event) => {
     this.errores.lastName = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-    
-  onBlurProviderValue = (event)=>{  
+
+  onBlurProviderValue = (event) => {
     this.errores.providerValue = this.validarSiVacio(event.target.value);
   }
 
   onChangeProviderValue = API.debounce(async (event) => {
     this.errores.providerValue = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  
-    
+
+
   onChangeIdentityNumber = API.debounce(async (event) => {
     this.errores.identityNumber = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurIdentityNumber = (event)=>{  
+  onBlurIdentityNumber = (event) => {
     this.errores.identityNumber = this.validarSiVacio(event.target.value);
   }
 
-    
+
   onChangebirthDate = API.debounce(async (event) => {
     this.errores.birthDate = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurbirthDate = (event)=>{  
+  onBlurbirthDate = (event) => {
     this.errores.birthDate = this.validarSiVacio(event.target.value);
   }
 
   onChangestreet = API.debounce(async (event) => {
     this.errores.street = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurstreet = (event)=>{  
+  onBlurstreet = (event) => {
     this.errores.street = this.validarSiVacio(event.target.value);
   }
 
 
   onChangehouseNumber = API.debounce(async (event) => {
     this.errores.houseNumber = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurhouseNumber = (event)=>{  
+  onBlurhouseNumber = (event) => {
     this.errores.houseNumber = this.validarSiVacio(event.target.value);
   }
 
-  
+
   onChangeprovince = API.debounce(async (event) => {
     this.errores.province = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurprovince = (event)=>{  
+  onBlurprovince = (event) => {
     this.errores.province = this.validarSiVacio(event.target.value);
   }
 
   onChangecountry = API.debounce(async (event) => {
     this.errores.country = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurcountry = (event)=>{  
+  onBlurcountry = (event) => {
     this.errores.country = this.validarSiVacio(event.target.value);
   }
 
 
   onChangezipcode = API.debounce(async (event) => {
     this.errores.zipcode = this.validarSiVacio(event.target.value);
-  },  this.timeToBlur);
+  }, this.timeToBlur);
 
 
-  onBlurzipcode = (event)=>{  
+  onBlurzipcode = (event) => {
     this.errores.zipcode = this.validarSiVacio(event.target.value);
   }
 
