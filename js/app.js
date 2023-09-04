@@ -91,10 +91,12 @@ class Root extends Component {
   }
 
   async login_btn() {
+    window.localStorage.clear();
 
-    console.log("Login...");
+    console.log("Login a... ");
     const loginOK = await login(this.inputUsr.el.value, this.inputPass.el.value);
     console.log(loginOK)
+
 
     if (loginOK) {
       const accessToken = window.localStorage.getItem('accessToken');
@@ -119,7 +121,35 @@ class Root extends Component {
 
       // const userInfo = await getUsrInfo();
       const userData = await api.getUserProfile();
-//      console.log(userData);
+      console.log("User Data")
+      console.log(userData);
+
+      
+      if (userData._id) {
+        window.localStorage.setItem('userId', userData._id)
+      }
+
+
+      if (userData.verified) {
+        /*
+          status : "To Verify"
+          validatedUser: true
+          verified :  false
+        */
+         console.log("Usuario verificado")
+        window.localStorage.setItem('verified', userData.verified)
+      } else {
+        console.log("Usuario NO verificado")
+        const ususarioVerificadoOK = await api.verificarUsuario(userData._id);
+
+        if (!ususarioVerificadoOK) {
+          return;
+        }
+
+      }
+
+     
+
 
 
       if (userData.firstName) {
@@ -134,16 +164,8 @@ class Root extends Component {
         window.localStorage.setItem('nameFull', userData.nameFull)
       }
 
-      
 
-      if (userData.verified) {
-        /*
-          status : "To Verify"
-          validatedUser: true
-          verified :  false
-        */
-        window.localStorage.setItem('verified', userData.verified)
-      }
+
 
       if (userData.avatar) {
         //https://lh3.googleusercontent.com/a-/AOh14GiiEcL0fUG0CEdQb3V5X3Y21KYu3Q6QW4tFaNr2HA
@@ -155,11 +177,8 @@ class Root extends Component {
         window.localStorage.setItem('safeImage', userData.safeImage.image)
       }
 
-    
 
-      if (userData._id) {
-        window.localStorage.setItem('userId', userData._id)
-      }
+
 
 
       if (userData.walletAddress) {

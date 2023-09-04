@@ -73,13 +73,7 @@ export class ListaTR extends Component {
    
   `;
 
-    /*
-        async get_data() {
-            console.log("Iniciar button");
-            this.datos = await getTrData(this.total_tx_a_solicitar);
-            console.log("fin");
-        }*/
-
+   
 
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
@@ -206,6 +200,7 @@ export class ListaTR extends Component {
             //console.log(this.props.tipooperacion)
 
 
+            this.datos =[];
             if (!raw_datos) { return }
 
             this.datos = await this.transformarRawDatos(raw_datos);
@@ -317,6 +312,9 @@ export class ListaTR extends Component {
             }
 
             //CCreando la tabla
+
+           
+
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [

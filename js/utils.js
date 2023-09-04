@@ -94,7 +94,7 @@ export class API {
   //------------------------------------------------------------------------------------------------
   static async confirmUser(userID, verificationCode) {
 
-  
+
 
 
     var raw = JSON.stringify({
@@ -126,7 +126,7 @@ export class API {
 
   }
 
-   //------------------------------------------------------------------------------------------------
+  //------------------------------------------------------------------------------------------------
   // Crear usuario
   //------------------------------------------------------------------------------------------------
   static async createUser(datosUsuario) {
@@ -155,13 +155,50 @@ export class API {
     });*/
 
     try {
-       datos = await axios(config);
-    } catch(error) {
+      datos = await axios(config);
+    } catch (error) {
       datos = error;
-      
+
     }
 
-   
+
+
+    return datos;
+
+  }
+
+
+  //------------------------------------------------------------------------------------------------
+  // Update usuario
+  //------------------------------------------------------------------------------------------------
+   async updateUser(datosUsuario) {
+
+    var body = JSON.stringify(datosUsuario);
+
+
+    var config = {
+      method: 'patch',
+      url: `${base_url}/api/private/users/update`,
+      headers: this.headers,
+      data: body
+    }
+
+    let datos = null;
+    /*await axios(config).then(function (response) {
+      datos = response.data.user;
+    }).catch(function (error) {
+
+      datos = error;
+    });*/
+
+    try {
+      datos = await axios(config);
+    } catch (error) {
+      datos = error;
+
+    }
+
+
 
     return datos;
 
@@ -174,21 +211,21 @@ export class API {
   //------------------------------------------------------------------------------------------------
   static async uploadFileToAWS(fileInput) {
 
-    const fileSize = fileInput.files[0].size /  1024 / 1024;
+    const fileSize = fileInput.files[0].size / 1024 / 1024;
 
-    if (fileSize>5) {
+    if (fileSize > 5) {
       console.log("File to big")
       Swal.fire({
         icon: 'error',
-        title:'Error',
+        title: 'Error',
         text: 'File size must be less then 5 Mb',
-    
+
       })
 
       const respuesta = {
-        cod_respuesta:"error"
+        cod_respuesta: "error"
       }
-      return ;
+      return;
 
     }
 
@@ -206,7 +243,7 @@ export class API {
       'Content-Type': 'multipart/form-data',
     }
 
-    
+
     var config = {
       method: 'post',
       url: `${base_url}/api/upload/`,
@@ -221,7 +258,7 @@ export class API {
       datos = error;
     });
 
-  
+
 
     return datos;
 
@@ -688,6 +725,104 @@ export class API {
 
   }
 
+  //----------------------------------------------------------------------------------------------
+  // Verificar usuario
+  //----------------------------------------------------------------------------------------------
+  async verificarUsuario(IDUsuario) {
+
+    Swal.fire({
+      title: 'A message with a verification code has been sent to your email address. Enter the code to continue',
+      input: 'text',
+      inputAttributes: { autocapitalize: 'off' },
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      showLoaderOnConfirm: true,
+      preConfirm: async (verificationCode) => {
+
+        console.log("Obtener dato")
+        console.log(verificationCode)
+
+        /*return {
+          code: verificationCode
+        }*/
+
+        const respuesta = await API.confirmUser(IDUsuario, verificationCode)
+
+        return respuesta;
+
+        /*
+         return fetch(`//api.github.com/users/${login}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error(response.statusText)
+            }
+            console.log("preConfirm")
+            console.log(response)
+            return response.json()
+          })
+          .catch(error => {
+            Swal.showValidationMessage(
+              `Request failed: ${error}`
+            )
+          })
+          */
+
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      //console.log("then")
+      //console.log(result.value.code)
+      //console.log(IDUsuario)
+      if (result.isConfirmed) {   //si usuario le dio al boton confirmar
+
+
+
+        const respuesta = result.value;
+        console.log(respuesta)
+
+
+        if (respuesta.validatedUser && respuesta.validatedUser == true) {
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Activating user',
+            text: respuesta.message
+          })
+
+
+          return true;
+
+
+        } else {
+
+          const cod_error = respuesta.response ? respuesta.response.data.message : "Error activating user"
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Activating user error',
+            text: cod_error
+          })
+
+          return false;
+        }
+
+
+
+
+        /*value: {
+          contiene la respuesta del paso anterior
+          result.value.code
+        }*/
+
+        /*Swal.fire({
+          title: `Codigo de verificacion: ${result.value.code}`
+
+        })*/
+      }
+    })
+  }
+
+
 }
 
 
@@ -743,7 +878,7 @@ export async function login(usr, pass) {
       const datos = response.data;
       if (datos.accessToken) {
         resultado = true;
-        //console.log(datos.accessToken);
+        console.log(datos);
         window.localStorage.setItem('accessToken', datos.accessToken)
       } else {
         Swal.fire({
@@ -1222,7 +1357,7 @@ export class UImanager {
 
 
 
-   static formatDate(inputDate) {
+  static formatDate(inputDate) {
     let date, month, year, segundos, minutos, horas;
     date = inputDate.getDate();
 
@@ -1240,7 +1375,7 @@ export class UImanager {
 
 
     return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
-}
+  }
 
 
 

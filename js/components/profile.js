@@ -851,19 +851,18 @@ export class Profile extends Component {
       } else {
         //modificando usuario
         //Solo enviar campos que no estan vacios
+        const accessToken = window.localStorage.getItem('accessToken');
+        const api = new API(accessToken);
 
-        //respuesta = await API.actualizarUser(datosparaUpdate)
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Not implemented yet'
-        })
-
+        delete datosAEnviar["image"];
+        respuesta = await api.updateUser(datosAEnviar)
+        
 
 
       }
 
-      // console.log(respuesta)
+      console.log("Respuesta Create / Update")
+      console.log(respuesta)
 
       let cod_respuesta = 0;
 
@@ -879,7 +878,7 @@ export class Profile extends Component {
         })
       }
 
-      if (cod_respuesta == 200) {
+      if (cod_respuesta == 200 || cod_respuesta == 201) {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
@@ -919,12 +918,12 @@ export class Profile extends Component {
       } else {
         console.log("----ERROR: Respuesta del API----- ")
         console.log(respuesta)
-        const respuesta = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
+        const respuestatxt = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
 
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
-          text: respuesta
+          text: respuestatxt
         })
      
       }
@@ -944,63 +943,6 @@ export class Profile extends Component {
     //Swal.fire('Not implemented yet,  more details about data is needed');
   }
 
-  verificarUsuario(IDUsuario) {
-    Swal.fire({
-      title: 'A message with a verification code has been sent to your email address. Enter the code to continue',
-      input: 'text',
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      showCancelButton: true,
-      confirmButtonText: 'OK',
-      showLoaderOnConfirm: true,
-      preConfirm: (verificationCode) => {
-
-        console.log("Obtener dato")
-        console.log(verificationCode)
-
-        return {
-
-          code: verificationCode
-        }
-
-        /*
-         return fetch(`//api.github.com/users/${login}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            console.log("preConfirm")
-            console.log(response)
-            return response.json()
-          })
-          .catch(error => {
-            Swal.showValidationMessage(
-              `Request failed: ${error}`
-            )
-          })
-          */
-
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
-      console.log("then")
-      console.log(result.value.code)
-      console.log(IDUsuario)
-      if (result.isConfirmed) {
-        //si usuario le dio al boton confirmar
-        /*value: {
-          contiene la respuesta del paso anterior
-          result.value.code
-        }*/
-
-        Swal.fire({
-          title: `Codigo de verificacion: ${result.value.code}`
-
-        })
-      }
-    })
-  }
 
 
   prepararDatosaEnviar(datosIniciales) {
