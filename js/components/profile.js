@@ -468,8 +468,12 @@ export class Profile extends Component {
         console.log(userData)
 
 
-        const kyc = JSON.parse(userData.kyc.gatheredInfo);
-        console.log(kyc);
+        if(userData.kyc) {
+          const kyc = JSON.parse(userData.kyc.gatheredInfo);
+          console.log(kyc);
+          this.state.province = kyc.Location.City;
+          this.state.birthDate = kyc.PersonInfo.YearOfBirth + "-" + kyc.PersonInfo.MonthOfBirth + "-" + kyc.PersonInfo.DayOfBirth;
+        }
 
         this.state.firstName = userData.firstName
         this.state.lastName = userData.lastName;
@@ -484,17 +488,16 @@ export class Profile extends Component {
         this.state.city = userData.city;
         this.state.country = userData.country;
         this.state.country_iso_code = userData.country_iso_code;
-        this.state.province = kyc.Location.City;
+      
         this.state.zipcode = userData.zipcode;
 
         this.state.birthDate = userData.birthDate;
-        //this.state.areConditionsAccepted = userData.areConditionsAccepted;
+  
+        //
+        this.state.avatar = userData.safeImage ? userData.safeImage.image: null;
+        //userData.avatar;
 
-        //this.state.source1 = userData.source1;
-        //this.state.source2 = userData.source2;
-        this.state.avatar = userData.safeImage.image;
-
-        this.state.birthDate = kyc.PersonInfo.YearOfBirth + "-" + kyc.PersonInfo.MonthOfBirth + "-" + kyc.PersonInfo.DayOfBirth;
+       
 
 
 
