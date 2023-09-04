@@ -56,8 +56,8 @@ export class Profile extends Component {
     phoneToShow: "",
     providerValue: "",  //Correo
     identityNumber: "",
-    avatar: "/img/avatar.png",   //Variable temporal no enviar al endpoint
-
+    avatar: "/img/avatar.png",   //es el avatar
+    image: "", //imagen para el reconocimiento facial
     //direccion
     street: "",
     houseNumber: "",
@@ -67,9 +67,6 @@ export class Profile extends Component {
     province: "",
     zipcode: "",
     password: "",
-
-
-    image: "",
     source1: {
       url: "",
       name: "",
@@ -494,7 +491,8 @@ export class Profile extends Component {
         this.state.birthDate = userData.birthDate;
 
         //
-        this.state.avatar = userData.safeImage ? userData.safeImage.image : null;
+        this.state.avatar = userData.avatar ? userData.avatar : null;
+        this.state.image =  userData.image ? userData.image : null;
         //userData.avatar;
 
 
@@ -597,6 +595,7 @@ export class Profile extends Component {
 
 
       this.state.image = reader.result;
+      this.state.avatar = reader.result;
     }
 
     reader.readAsDataURL(file);
@@ -822,10 +821,13 @@ export class Profile extends Component {
     this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
     const datosAEnviar = this.prepararDatosaEnviar(this.state);
+    console.log("Datos a enviar")
     console.log(datosAEnviar)
 
-    console.log("Datos enviados 2:")
-    console.log(this.state)
+  
+
+   // console.log("Datos enviados 2:")
+   // console.log(this.state)
 
 
 
@@ -851,6 +853,11 @@ export class Profile extends Component {
         //Solo enviar campos que no estan vacios
 
         //respuesta = await API.actualizarUser(datosparaUpdate)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Not implemented yet'
+        })
 
 
 
@@ -910,13 +917,16 @@ export class Profile extends Component {
 
 
       } else {
+        console.log("----ERROR: Respuesta del API----- ")
+        console.log(respuesta)
+        const respuesta = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
+
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
-          text: respuesta.response.data.message
+          text: respuesta
         })
-        console.log("----ERROR: Respuesta del API----- ")
-        console.log(respuesta)
+     
       }
 
     } catch (error) {
@@ -997,7 +1007,7 @@ export class Profile extends Component {
     let datos = { ...datosIniciales }
 
     delete datos["beneficiaries"];
-    delete datos["avatar"];
+    //delete datos["avatar"];
 
     delete datos["driverlicenseImg"];
     delete datos["passportImg"];
@@ -1019,6 +1029,7 @@ export class Profile extends Component {
 
     if (!datos.password) delete datos["password"];
     if (!datos.image) delete datos["image"];
+    if (!datos.avatar) delete datos["avatar"];
 
 
     if (datos.source1 && !datos.source1.url) delete datos["source1"];
