@@ -92,6 +92,7 @@ class Root extends Component {
 
   async login_btn() {
     window.localStorage.clear();
+  
 
     console.log("Login a... ");
     const loginOK = await login(this.inputUsr.el.value, this.inputPass.el.value);
@@ -140,11 +141,11 @@ class Root extends Component {
         window.localStorage.setItem('verified', userData.verified)
       } else {
         console.log("Usuario NO verificado")
-        const ususarioVerificadoOK = await api.verificarUsuario(userData._id);
+        /*const ususarioVerificadoOK = await api.verificarUsuario(userData._id);
 
         if (!ususarioVerificadoOK) {
           return;
-        }
+        }*/
 
       }
 

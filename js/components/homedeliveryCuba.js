@@ -69,6 +69,8 @@ export class HomeDeliveryCuba extends Component {
 
   tipo_operacion = [3,4,5];
 
+  beneficiariosNames =[]
+
 
 
   static template = xml` 
@@ -165,15 +167,15 @@ export class HomeDeliveryCuba extends Component {
     
 
 
-      <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" />
+       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" /> 
       <button class="tw-btn tw-btn-primary tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[30%]" t-on-click="onSendMoney">Send</button>  
         
-      
+    
+
 
       <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 sm:tw-row-start-3 tw-row-start-4 sm:tw-col-span-2 tw-p-3">     
           <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       </div>
-  
 
   </div>
       
@@ -191,7 +193,9 @@ export class HomeDeliveryCuba extends Component {
 
 
     onWillStart(async () => {
+     
       const api = new API(accessToken);
+     
 
       //Pidiendo las tasas de conversion de monedas
       //await this.pedirTasadeCambio("usd", "cup");
@@ -206,7 +210,10 @@ export class HomeDeliveryCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
 
-      if (this.allDatosBeneficiariosFromStorage) {
+      this.beneficiarioData =[]
+      
+      
+      if (this.allDatosBeneficiariosFromStorage  && this.allDatosBeneficiariosFromStorage.size>0 )  {
         this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
           _id: el._id,
@@ -228,56 +235,17 @@ export class HomeDeliveryCuba extends Component {
     });
 
     onMounted(() => {
-
       const monedaEnviada = this.inputSendCurrencyRef.el.value;
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
-
       this.monedas.enviada = monedaEnviada.toUpperCase();
-
       this.monedas.recibida = monedaRecibida.toUpperCase();
-
-
-
-
       const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-
-
-
       this.conversionRate.value = tc;
-
-
-
-
     })
 
 
   }
 
-  /*
-    async pedirTasadeCambio(sendCurrency, receiveCurrency) {
-      const accessToken = window.localStorage.getItem('accessToken');
-      const api = new API(accessToken);
-  
-      if (receiveCurrency && sendCurrency) {
-        const exchangeRate = await api.getExchangeRate(sendCurrency);
-        this.conversionRate.value = exchangeRate[receiveCurrency.toUpperCase()];
-        this.moneda_vs_USD = exchangeRate["USD"];
-        this.conversionRateSTR.value = `1 ${sendCurrency.toUpperCase()} = ${this.conversionRate.value} ${receiveCurrency.toUpperCase()}`;
-        this.feeSTR.value = '-';
-      }
-    }*/
-
-  /*
-    async onChangeCurrency() {
-  
-      this.inputReceiveRef.el.value = (0).toFixed(2);
-      this.inputSendRef.el.value = (0).toFixed(2);
-  
-      const sendCurrency = this.inputSendCurrencyRef.el.value;
-      const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-  
-      await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-    }*/
 
   onChangeCurrencySend() {
     //this.onChangeCurrency();

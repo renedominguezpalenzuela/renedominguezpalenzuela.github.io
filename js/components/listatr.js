@@ -73,13 +73,15 @@ export class ListaTR extends Component {
    
   `;
 
-   
+
 
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
 
     setup() {
+
+
 
 
         const accessToken = API.getTokenFromlocalStorage();
@@ -140,6 +142,8 @@ export class ListaTR extends Component {
         });
 
 
+
+
         // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
         this.socket.on('TRANSACTION_UPDATE', async (data) => {
             console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
@@ -156,12 +160,15 @@ export class ListaTR extends Component {
 
 
 
-            if (!raw_datos) { return }
+          
 
             //console.log(raw_datos)
+            this.datos = [];
 
             this.datos = await this.transformarRawDatos(raw_datos);
-            this.actualizarDatos(this.datos);
+            if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }
 
 
 
@@ -188,7 +195,9 @@ export class ListaTR extends Component {
 
 
 
+
         onWillStart(async () => {
+
             console.log("Solicitando lista de TX al servidor")
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
@@ -200,8 +209,8 @@ export class ListaTR extends Component {
             //console.log(this.props.tipooperacion)
 
 
-            this.datos =[];
-            if (!raw_datos) { return }
+            this.datos = [];
+                     
 
             this.datos = await this.transformarRawDatos(raw_datos);
 
@@ -219,8 +228,8 @@ export class ListaTR extends Component {
 
         });
 
-        
-       
+
+
         onMounted(async () => {
             // do something here
 
@@ -313,8 +322,8 @@ export class ListaTR extends Component {
 
             //CCreando la tabla
 
-           
 
+           
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
@@ -385,6 +394,10 @@ export class ListaTR extends Component {
                 select: true,
                 responsive: true,
                 destroy: true,
+                /*language: {
+                    emptyTable: "No data",
+                    infoEmpty : "No entries to show"
+                  }*/
                 //footer: false
 
                 /*'rowCallback': function(row, data, index){
@@ -432,14 +445,18 @@ export class ListaTR extends Component {
 
             //console.log(this.tabla)
 
-
-            this.tabla.on('select', (e, dt, type, indexes) => {
-                if (type === 'row') {
-                    if (this.props.onChangeSelectedTX) {
-                        this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
+            if (this.tabla) {
+                this.tabla.on('select', (e, dt, type, indexes) => {
+                    if (type === 'row') {
+                        if (this.props.onChangeSelectedTX) {
+                            this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
+                        }
                     }
-                }
-            });
+                });
+            }
+
+
+
         });
 
 
@@ -448,17 +465,29 @@ export class ListaTR extends Component {
         });
 
 
-       /* onWillUnmount(async()=>{
-            console.log("sss")
-        })*/
+        /* onWillUnmount(async()=>{
+             console.log("sss")
+         })*/
 
-       
+
 
     }
 
 
 
     transformarRawDatos(raw_datos) {
+
+     
+
+
+        if (!raw_datos || !raw_datos.status) { 
+            return [];     
+        } else if (!(raw_datos.status!=200 || raw_datos.status!=201 )) {
+            return [];
+        } else if (!raw_datos.data) {
+            return [];
+        }
+
 
 
         //se busca el nombre de la operacoin
@@ -473,11 +502,9 @@ export class ListaTR extends Component {
         }*/
 
 
-        const raw_datos1 = raw_datos.map((unDato) => {
+        const raw_datos1 = raw_datos.data.data.map((unDato) => {
 
-            // console.log(unDato)
-
-
+           
 
             //const fecha = new Date(unDato.createdAt).toLocaleDateString('en-US');
             const fecha = new Date(unDato.createdAt).

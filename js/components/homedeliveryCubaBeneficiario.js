@@ -7,9 +7,9 @@ export class Beneficiarios extends Component {
   accessToken = '';
   cambioBeneficiario = false;
 
-  
 
-  
+
+
 
   state = useState({
     deliveryID: '',
@@ -30,26 +30,30 @@ export class Beneficiarios extends Component {
 
   static template = xml`  
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
+
+
             <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg ">
                <div>Beneficiary</div> 
             </div>
 
             <div class="tw-card-body tw-items-center   ">              
               <div class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 tw-w-full tw-gap-y-0 tw-gap-x-2 ">
-                
+          
                   <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-row-col-1 ">
                     <label class="tw-label">
                       <span class="tw-label-text">Select Beneficiary</span>
                     </label>
                     <select t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
                       <option  t-att-value="-1" >Select Beneficiary</option>
-                      <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
-                        <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
-                      </t>             
+                      <t t-if="this.props.beneficiariosNames.size>0">
+                          <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
+                            <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
+                          </t>              
+                      </t>
                     </select>
                   </div>     
                   
-                  
+                 
                   <div class="tw-form-control tw-w-full sm:tw-row-start-1 sm:tw-row-col-1  tw-row-start-10 ">
                       <label class="tw-label">
                         <span class="tw-label-text">Country</span>
@@ -87,13 +91,6 @@ export class Beneficiarios extends Component {
                     </label>
                     <input type="text" t-att-value="this.state.deliveryID"   maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeID" />   
                   </div>
-
-                 <!-- <div class="tw-form-control tw-w-full   ">
-                    <label class="tw-label">
-                      <span class="tw-label-text">Contact Phone</span>
-                    </label>
-                    <input type="text" t-att-value="this.state.deliveryPhone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhone" />   
-                  </div> -->
 
                   <div class="tw-form-control tw-w-full  ">
                   <label class="tw-label">
@@ -138,71 +135,77 @@ export class Beneficiarios extends Component {
                    <div class="tw-hidden"> 
                   <t t-esc="this.props.datosSelectedTX.txID"/>
                   </div>
+                 
+
+
 
               </div>
-            </div>           
+             
+            </div>    
+            
+           
         </div>    
   `;
 
- 
+
   //"deliveryZone": "Provincias",| Habana
   setup() {
+
+   
+   
     this.accessToken = window.localStorage.getItem('accessToken');
 
     onWillStart(async () => {
+      
       this.provincias = Provincias;
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
     });
 
     onRendered(() => {
 
+      
+
       if (this.cambioBeneficiario) {
-        this.cambioBeneficiario=false;
+        this.cambioBeneficiario = false;
         return;
       }
 
-      console.log("RENDER")
-
-      console.log("Datos que llegan a beneficiario")
-      console.log(this.props.datosSelectedTX)
+          
 
       //Buscar el CI
       if (this.props.datosSelectedTX.allData) {
         const CI = this.props.datosSelectedTX.allData.metadata.deliveryCI;
         console.log(CI)
 
-      const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario)=>
-        
-        unBeneficiario.CI === CI 
-      )[0]
+        const beneficiario = this.props.beneficiariosNames.filter((unBeneficiario) =>
+          unBeneficiario.CI === CI
+        )[0]
 
-      console.log("Beneficiario")
-      console.log(beneficiario)
     
-      
-      if (beneficiario) {
-        this.inicializarDatosBeneficiario(beneficiario._id);
-        //ERROR: no inicializa correctamente el SELECT -- DONE
 
-      } else {
-        //TODO: inicializar todos los controles
+        if (beneficiario) {
+          this.inicializarDatosBeneficiario(beneficiario._id);
+          //ERROR: no inicializa correctamente el SELECT -- DONE
+
+        } else {
+          //TODO: inicializar todos los controles
+        }
+
+
       }
-      
 
-      }
-     
 
-     
-  
 
-     
+
+
+
 
     });
 
     onMounted(() => {
-   
 
-      
+
+
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
         // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
@@ -222,10 +225,16 @@ export class Beneficiarios extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-     
-      this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
+      
+      
+      if (this.props.beneficiariosNames.size>0) {
+        this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
+      }
+
     });
+
    
+
   }
 
 
@@ -243,7 +252,7 @@ export class Beneficiarios extends Component {
       this.state.deliveryArea = selectedProvince.nombre;
       this.state.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       this.props.onChangeDatosBeneficiarios(this.state);
-    } 
+    }
   };
 
   //Evento al cambiar de municipio
@@ -298,6 +307,7 @@ export class Beneficiarios extends Component {
 
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
+
    
     const allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
@@ -318,7 +328,7 @@ export class Beneficiarios extends Component {
         this.state.deliveryArea = selectedProvince.nombre;
       } else {
         this.state.deliveryAreaID = "-1";
-        this.state.deliveryArea ="";
+        this.state.deliveryArea = "";
         this.state.deliveryCityID = -1;
         this.state.deliveryCity = '';
         return;
@@ -351,7 +361,7 @@ export class Beneficiarios extends Component {
       this.props.onChangeDatosBeneficiarios(this.state);
       this.inicializando = false;
 
-     
+
 
     }
 
