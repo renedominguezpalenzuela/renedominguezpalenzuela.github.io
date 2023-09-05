@@ -210,7 +210,7 @@ export class SendMoneyCuba extends Component {
                     </label>
                     <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario" >
                       <option  t-att-value="-1" >Select Beneficiary</option>
-                      <t t-if="this.beneficiarioData.size>0">
+                      <t t-if="this.beneficiarioData.length>0">
                         <t  t-foreach="this.beneficiarioData.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                               <option t-att-value="unBeneficiario._id">
                                   <t t-esc="unBeneficiario.beneficiaryFullName"/>
@@ -236,7 +236,7 @@ export class SendMoneyCuba extends Component {
                     <select t-att-value="this.beneficiarioData.selectedCard" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                       <option  t-att-value="-1" >Select Card</option>
                       
-                      <t t-if="this.beneficiarioData.size>0">
+                      <t t-if="this.beneficiarioData.cardsList.length>0">
                           <t t-foreach="this.beneficiarioData.cardsList" t-as="unCard" t-key="unCard.number">
                             <option t-att-value="unCard.number">
                               
@@ -361,7 +361,7 @@ export class SendMoneyCuba extends Component {
 
       this.beneficiarioData =[]
       
-      if (this.allDatosBeneficiariosFromStorage && this.allDatosBeneficiariosFromStorage.size>0 ) {
+      if (this.allDatosBeneficiariosFromStorage && this.allDatosBeneficiariosFromStorage.length>0 ) {
 
         this.beneficiarioData.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
@@ -418,7 +418,7 @@ export class SendMoneyCuba extends Component {
 
       this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
-      if (this.beneficiarioData.size>0) {
+      if (this.beneficiarioData.length>0) {
         this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
       }
 

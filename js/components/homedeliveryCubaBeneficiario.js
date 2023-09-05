@@ -45,7 +45,7 @@ export class Beneficiarios extends Component {
                     </label>
                     <select t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
                       <option  t-att-value="-1" >Select Beneficiary</option>
-                      <t t-if="this.props.beneficiariosNames.size>0">
+                      <t t-if="this.props.beneficiariosNames.length>0">
                           <t t-foreach="this.props.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                             <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
                           </t>              
@@ -227,7 +227,7 @@ export class Beneficiarios extends Component {
 
       
       
-      if (this.props.beneficiariosNames.size>0) {
+      if (this.props.beneficiariosNames.length>0) {
         this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
       }
 

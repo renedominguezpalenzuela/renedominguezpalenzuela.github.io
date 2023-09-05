@@ -213,7 +213,7 @@ export class HomeDeliveryCuba extends Component {
       this.beneficiarioData =[]
       
       
-      if (this.allDatosBeneficiariosFromStorage  && this.allDatosBeneficiariosFromStorage.size>0 )  {
+      if (this.allDatosBeneficiariosFromStorage  && this.allDatosBeneficiariosFromStorage.length>0 )  {
         this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
           _id: el._id,
