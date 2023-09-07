@@ -715,10 +715,18 @@ export class Profile extends Component {
     this.errores.province = this.validarSiVacio(datos.province)
     this.errores.zipcode = this.validarSiVacio(datos.zipcode)
     this.errores.birthDate = this.validarSiVacio(datos.birthDate)
-    this.errores.phoneField = this.validarSiVacio(datos.phone)
+    this.errores.phoneField = !libphonenumber.isValidNumber(datos.phone)
+    //this.validarSiVacio(datos.phone)
+    console.log(datos.phone)
+    console.log(libphonenumber.isValidNumber(datos.phone))
 
     for (let clave in this.errores){
-      if (this.errores[clave]==false) return false;
+      if (this.errores[clave]==true)  {
+        console.log(clave)
+        return  false;
+
+      }
+      
     }
 
 
@@ -727,10 +735,10 @@ export class Profile extends Component {
     //--------------------- Phone number --------------------------------------------
     //TODO: Validar que sea un numero correcto
 
-    if (datos.phone && !libphonenumber.isValidNumber(datos.phone)) {
+    /*if (datos.phone && !libphonenumber.isValidNumber(datos.phone)) {
       this.errores.phoneField = true;
       return false;
-    }
+    }*/
 
     if ((this.inputPass1.el.value != this.inputPass2.el.value) || !this.state.password.trim()) {
       this.errores.password = true;

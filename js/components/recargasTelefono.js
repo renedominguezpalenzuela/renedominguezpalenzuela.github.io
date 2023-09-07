@@ -18,6 +18,10 @@ export class RecargasTelefono extends Component {
         content: ''
     });
 
+
+    selectedCountryCuba = true;
+    pedirProductos = true;
+
     selectProduct = useRef("selectProduct");
 
     state = useState({
@@ -90,7 +94,7 @@ export class RecargasTelefono extends Component {
             <label class="tw-label">
              <span class="tw-label-text">Phone to recharge</span>
             </label>
-            <input   t-att-value="this.state.phone"  id="phone" name="phone" type="number" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+            <input   t-att-value="this.state.phone"  id="phone" name="phone" type="phone" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
 
             <span t-if="this.errores.phoneField==true" class="error">
               Invalid number!!!
@@ -266,8 +270,33 @@ export class RecargasTelefono extends Component {
                 onlyCountries: this.seleccionCodigosPaises,
                 utilsScript: "js/libs/intlTelIutils.js"
             });
-            //this.phoneInput.addEventListener('countrychange', this.handlePhoneChange);
+            this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
         })
+
+    }
+
+    handleCountryChange = (event) => {
+
+        const cod_pais = this.phonInputSelect.getSelectedCountryData().dialCode;
+
+        //selectedContryCuba = true;
+        //productosCubaPedidos = false;
+
+
+        if (cod_pais == 53 ) {
+
+            if (!this.selectedCountryCuba) {
+                this.pedirProductos = true;
+            }
+            
+            this.selectedCountryCuba = true;
+        } else {
+            this.selectedCountryCuba = false; 
+            this.pedirProductos = true;
+        }
+        
+        console.log(`Selected Cuba ${this.selectedCountryCuba}`)
+        console.log(`Pedir productos ${this.pedirProductos}`)
 
     }
 
@@ -311,6 +340,13 @@ export class RecargasTelefono extends Component {
     //prefijo  --- codigo telefonico del pais
     //coincide con id en lista de paises 
     handlePhoneChange = async (telefono, moneda) => {
+
+        if (!this.pedirProductos) {
+            console.log("No pedir productos")
+            return;
+        }
+
+        console.log("Pidiendo productos")
 
         // console.log(libphonenumber.parsePhoneNumber('9098765432', 'IN'))
 
@@ -363,6 +399,10 @@ export class RecargasTelefono extends Component {
 
 
                     if (cod_respuesta == 200) {
+
+                        if (this.selectedCountryCuba && this.pedirProductos) {
+                            this.pedirProductos = false;
+                        }
                         //console.log(respuesta)
                         //console.log("---- Respuesta OK ----- ")
                         this.listaProductos = respuesta.data.data.operators[0].products;
@@ -422,7 +462,7 @@ export class RecargasTelefono extends Component {
                 this.state.label = producto.label;
                 //console.log("Productos")
                 //console.log(producto)
-                if (producto.promotions[0]) {
+                if (producto.promotions && producto.promotions.zize>0 && producto.promotions[0]) {
                     // console.log("Promociones")
                     // console.log(producto.promotions[0])
                     //this.state.promoTitle = producto.promotions[0].title
