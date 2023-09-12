@@ -303,7 +303,8 @@ export class SendMoneyCuba extends Component {
                <span class="tw-label-text">Province</span>
              </label>
              <select t-att-value="this.beneficiarioData.deliveryAreaID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
-               <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
+             <option t-att-disabled="true" t-att-value="-1" >Select Province</option>  
+             <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                  <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                </t>             
              </select>
@@ -743,13 +744,26 @@ export class SendMoneyCuba extends Component {
     const selectedBeneficiaryId = event.target.value;
     this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
 
-    this.setearDatosBeneficiario(selectedBeneficiaryId);
+    if (selectedBeneficiaryId!=-1) {
+      this.setearDatosBeneficiario(selectedBeneficiaryId);
+    } else {
+      this.cardsList.cards = []
 
-    //this.beneficiarioData.selectedBeneficiaryId: '-1',
+      
+      this.beneficiarioData.deliveryAreaID = "-1";  //Provincia
+      this.beneficiarioData.deliveryArea = "";
+      this.beneficiarioData.receiverCityID = -1;   //Municipio
+      this.beneficiarioData.receiverCity = '';
+    }
+
+    
+
+    
     this.beneficiarioData.selectedCard = '-1',
       this.beneficiarioData.cardBankImage = '',
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
+    
   }
 
 //TEST: seleccionar beneficiario X, comprobar que los datos del beneficiario X, se ponen en cada uno de los controles
@@ -940,12 +954,16 @@ export class SendMoneyCuba extends Component {
     if (selectedProvince) {
       this.municipios.names = UImanager.addKeyToMunicipios(selectedProvince.municipios);
       console.log(this.municipios)
-      this.beneficiarioData.receiverCityID = -1; //Municipio id 
-      this.beneficiarioData.receiverCity = '';    //Municipio
+      
       this.beneficiarioData.deliveryArea = selectedProvince.nombre;
       this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       //this.props.onChangeDatosBeneficiarios(this.state);
+    } else {
+
     }
+
+    this.beneficiarioData.receiverCityID = -1; //Municipio id 
+      this.beneficiarioData.receiverCity = '';    //Municipio
   };
 
   //Evento al cambiar de municipio
