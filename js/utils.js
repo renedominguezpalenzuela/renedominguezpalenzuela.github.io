@@ -1007,6 +1007,45 @@ export class UImanager {
   //--------------------------------------------------------------------------------------------------------------------
   //SendInput manejar eventos on change de Cantidad enviada, pide el Fee, en funcion de la cantidad a enviar
   //--------------------------------------------------------------------------------------------------------------------
+  //delivery
+  static  async calculateAndShowFee(servicio, cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio, zone) {
+    const service = `${servicio}${monedaRecibida.toUpperCase()}`;
+    if (!zone) {
+      zone="Habana"
+    }
+    //const zone = this.beneficiario.deliveryZona;  
+    //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
+    //pues el usuario puede haber cambiado la provincia
+    const accessToken = API.getTokenFromlocalStorage();
+    console.log(service)
+    console.log(zone)
+    console.log(cantidadRecibida)
+    const api = new API(accessToken);
+    const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
+    const feeUSD = feeResultUSD.fee;
+    console.log("Fee USD")
+    console.log(feeUSD)
+    //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
+    const monedaEnviadaUSD = 'USD';
+    //Segun darian    
+    //    monedaBase = monedaEnviada (EUR)
+    //    monedaAconvertir = USD
+    //    const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
+    //Version original mia: const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
+    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
+    console.log(`Fee en moneda ${monedaEnviada}`)
+    console.log(feeMonedaEnviada)
+    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+   // this.conversionRate.value = tc;
+   // this.fee.value = feeMonedaEnviada;
+   // this.feeSTR.value = UImanager.roundDec(this.fee.value)
+    return {
+      feeMonedaEnviada: feeMonedaEnviada,
+      conversionRate: tc,
+      feeSTR: UImanager.roundDec(feeMonedaEnviada)
+    }
+    
+  }
 
   static async onChangeSendInputOLD(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
 

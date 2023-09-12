@@ -257,92 +257,18 @@ export class HomeDeliveryCuba extends Component {
     this.onChangeReceiveInput();
   }
 
-  /*
-  onChangeSendInput = API.debounce(async () => {
-
-    if (this.changingReceiveAmount) { return; }
-    this.changingSendAmount = true;
-    this.changingReceiveAmount = false;
-
-
-    //ACtualizar variables de tasas de cambio
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-
-    const accessToken = window.localStorage.getItem('accessToken');
-    const resultado = await UImanager.onChangeSendInput(this.inputReceiveCurrencyRef.el.value,
-      this.inputSendCurrencyRef.el.value,
-      this.inputSendRef.el.value,
-      this.conversionRate.value,
-      accessToken,
-      this.moneda_vs_USD
-    )
-    this.fee.value = resultado.fee;
-    this.feeSTR.value = resultado.feeSTR;
-    this.inputReceiveRef.el.value = resultado.receiveAmount;
-    this.inputSendRef.el.value = UImanager.roundDec(this.inputSendRef.el.value);
-
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = false;
-
-  }, 700);
-  */
-
-  /*
-  onChangeReceiveInput = API.debounce(async () => {
-
-    if (this.changingSendAmount) { return; }
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = true;
-
-
-    //ACtualizar variables de tasas de cambio
-    const sendCurrency = this.inputSendCurrencyRef.el.value;
-    const receiveCurrency = this.inputReceiveCurrencyRef.el.value;
-    await this.pedirTasadeCambio(sendCurrency, receiveCurrency);
-
-
-    //LLAMADA
-    const accessToken = window.localStorage.getItem('accessToken');
-    const resultado = await UImanager.onChangeReceiveInput(
-      this.inputReceiveCurrencyRef.el.value,
-      this.inputSendCurrencyRef.el.value,
-      this.inputReceiveRef.el.value,
-      this.conversionRate.value,
-      accessToken,
-      this.moneda_vs_USD
-    )
-    this.fee.value = resultado.fee;
-    this.feeSTR.value = resultado.feeSTR;
-    this.inputSendRef.el.value = resultado.sendAmount;
-    this.inputReceiveRef.el.value = UImanager.roundDec(this.inputReceiveRef.el.value);
-
-    this.changingSendAmount = false;
-    this.changingReceiveAmount = false;
-
-  }, 700);
-
-
-  */
-
-
-
-  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
-
   
 
+/*
+  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
     const service = `delivery${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiario.deliveryZona;
-    
+    const zone = this.beneficiario.deliveryZona;  
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
     const accessToken = API.getTokenFromlocalStorage();
-
     console.log(service)
     console.log(zone)
     console.log(cantidadRecibida)
-
     const api = new API(accessToken);
     const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
     const feeUSD = feeResultUSD.fee;
@@ -350,31 +276,20 @@ export class HomeDeliveryCuba extends Component {
     console.log(feeUSD)
     //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
     const monedaEnviadaUSD = 'USD';
-
-    //Segun darian 
-    /*
-        monedaBase = monedaEnviada (EUR)
-        monedaAconvertir = USD
-
-         const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
-
-
-    */
-
+    //Segun darian    
+    //    monedaBase = monedaEnviada (EUR)
+    //    monedaAconvertir = USD
+    //    const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
     //Version original mia: const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
     const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
-
     const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-
     this.conversionRate.value = tc;
     this.fee.value = feeMonedaEnviada;
     this.feeSTR.value = UImanager.roundDec(this.fee.value)
-
     return feeMonedaEnviada;
-
-  }
+  }*/
 
   onChangeSendInput = API.debounce(async () => {
 
@@ -394,9 +309,16 @@ export class HomeDeliveryCuba extends Component {
 
 
     //Comun
-    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+//    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    const feeOBJ = await UImanager.calculateAndShowFee('delivery',cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    console.log("FEE OBJ")
+console.log(feeOBJ)
+    this.fee.value  =  feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value =feeOBJ.conversionRate;
+    this.feeSTR.value = feeOBJ.feeSTR;
 
-    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(this.fee.value);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
   }, 700);
@@ -418,7 +340,15 @@ export class HomeDeliveryCuba extends Component {
 
     //Comun
 
-    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+    //const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+    const feeOBJ = await UImanager.calculateAndShowFee('delivery', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    console.log("FEE OBJ")
+    console.log(feeOBJ)
+    this.fee.value  =  feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value =feeOBJ.conversionRate;
+    this.feeSTR.value = feeOBJ.feeSTR;
+
+
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
