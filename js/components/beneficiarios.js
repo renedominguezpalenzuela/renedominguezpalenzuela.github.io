@@ -6,6 +6,8 @@ import { Provincias } from "../../data/provincias_cu.js";
 
 import { ListaBeneficiarios } from "./listaBeneficiarios.js";
 
+import { Paises } from "../../data/paises.js";
+
 
 
 
@@ -43,9 +45,25 @@ export class Beneficiarios extends Component {
         selectedBeneficiaryId: '-1',
         selectedCardId: '-1',
         creditCards: []
+    })
 
+    errores = useState({
+        identityNumber: '',
+        firstName: '',
+        lastName: '',
+        secondLastName: '',
+        phone: '',
+        streetName: '',
+        houseNumber: '',
+        zipcode: '',
+        email: '',
+        province: '',
+        municipality: '',
 
     })
+
+
+
 
     cardsList = useState({});
 
@@ -94,21 +112,30 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">First Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName"   maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <span t-if="this.errores.firstName==true" class="error">
+                                  Required field!!!
+                                </span>
                             </div>
 
                             <div class="tw-form-control   sm:tw-ml-2 ">
                                 <label class="tw-label">
                                     <span class="tw-label-text">Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
+                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  t-on-blur="onBlurLastName" maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
+                                <span t-if="this.errores.lastName==true" class="error">
+                                  Required field!!!
+                                </span>
                             </div>
 
                             <div class="tw-form-control sm:tw-ml-2">     
                                 <label class="tw-label">
                                     <span class="tw-label-text">Second Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
+                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName" t-on-blur="onBlurSecondLastName" maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
+                                <span t-if="this.errores.secondLastName==true" class="error">
+                                  Required field!!!
+                                </span>
                             </div> 
                         </div>
 
@@ -117,7 +144,11 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">ID</span>
                             </label>
-                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  />   
+                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  t-on-blur="onBlurIDInput"  />   
+                            <span t-if="this.errores.identityNumber==true" class="error">
+                              Required field!!!
+                            </span>
+
                         </div>
                     
                         <!-- Telefono -->
@@ -125,7 +156,10 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">Contact Phone</span>
                             </label>
-                            <input type="text" t-att-value="this.state.phone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput" />   
+                            <input   id="phone" name="phone" type="tel"   t-att-value="this.state.phone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput"  t-on-blur="onBlurPhone" />   
+                            <span t-if="this.errores.phone==true" class="error">
+                               Incorrect Phone number!!!
+                            </span>
                         </div>
 
                     
@@ -254,7 +288,7 @@ export class Beneficiarios extends Component {
             </div>
         </div>
         <div class="tw-card-actions">
-        <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
+        <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3 tw-mb-2  ">
           <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
         </div>
 
@@ -284,6 +318,25 @@ export class Beneficiarios extends Component {
             this.provincias = Provincias;
             this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
+            this.seleccionCodigosPaises = [];
+            this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
+
+                this.seleccionCodigosPaises.push(unPais.isoAlpha2)
+                return {
+                    id: unPais.id,
+                    name: unPais.name,
+                    // flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
+                    currency: unPais.currency.code,
+                    number: unPais.number,
+                    show: unPais.show,
+                    iso2: unPais.isoAlpha2,
+                    prefijo: unPais.prefijo
+                }
+            }
+
+            );
+
+
             //obteniendo todos los datos de los beneficiarios desde el API
             const api = new API(this.accessToken);
             const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
@@ -295,12 +348,12 @@ export class Beneficiarios extends Component {
             }
             this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
-            if (  this.allDatosBeneficiariosFromStorage) {
-            this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-                beneficiaryFullName: el.beneficiaryFullName,
-                _id: el._id
-            }));
-        }
+            if (this.allDatosBeneficiariosFromStorage) {
+                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+                    beneficiaryFullName: el.beneficiaryFullName,
+                    _id: el._id
+                }));
+            }
 
 
 
@@ -315,9 +368,26 @@ export class Beneficiarios extends Component {
 
         onMounted(() => {
             //this.state.selectedCardId = "-1";
-            
-             //this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
-             this.onNewBeneficiario();
+
+            //this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
+            this.onNewBeneficiario();
+
+            this.phoneInput = document.querySelector("#phone");
+            this.phonInputSelect = window.intlTelInput(this.phoneInput, {
+                separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+                autoInsertDialCode: true, //coloca el codigo del pais en el input
+                formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+                // autoPlaceholder: "polite",
+                // don't insert international dial codes
+                nationalMode: false, //permite poner 5465731 en ves de +53 54657331
+                initialCountry: "cu",
+                //excludeCountries: ["in", "il"],
+               //preferredCountries: ["cu"],
+                // display only these countries
+              //  onlyCountries: this.seleccionCodigosPaises,
+              onlyCountries: ["cu"],
+                utilsScript: "js/libs/intlTelIutils.js"
+            });
         });
 
     }
@@ -383,27 +453,84 @@ export class Beneficiarios extends Component {
 
 
 
+    validarSiVacio(dato) {
+        let error = false;
+        if (!dato) {
+            error = true;
+        }
+        return error;
+
+    }
+
+
 
 
     onChangeFirstName = API.debounce(async (event) => {
         this.state.firstName = event.target.value;
+        this.errores.firstName = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
+
+    onBlurFirstName = (event) => {
+        this.errores.firstName = this.validarSiVacio(event.target.value);
+    }
 
     onChangeLastName = API.debounce(async (event) => {
         this.state.lastName = event.target.value;
+        this.errores.lastName = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
+
+    onBlurFirstName = (event) => {
+        this.errores.lastName = this.validarSiVacio(event.target.value);
+    }
 
     onChangeSecondLastName = API.debounce(async (event) => {
         this.state.secondLastName = event.target.value;
+        this.errores.secondLastName = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
+
+    onBlurFirstName = (event) => {
+        this.errores.secondLastName = this.validarSiVacio(event.target.value);
+    }
+
+
 
     onChangeIDInput = API.debounce(async (event) => {
         this.state.identityNumber = event.target.value;
+        this.errores.identityNumber = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
+
+    onBlurIDInput = (event) => {
+        console.log("sss")
+        this.errores.identityNumber = this.validarSiVacio(event.target.value);
+    }
 
     onChangePhoneInput = API.debounce(async (event) => {
         this.state.phone = event.target.value;
+        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+        const moneda = this.state.currency;
+        const telefono = cod_pais + this.state.phone;
+        const isValidNumber = libphonenumber.isValidNumber(telefono)
+        if (!isValidNumber) {
+           this.errores.phone = true;       
+            return;
+        } else {
+            this.errores.phone = false;
+        }
     }, API.tiempoDebounce);
+
+    onBlurPhone = (event) => {
+        this.state.phone = event.target.value;
+        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+        const moneda = this.state.currency;
+        const telefono = cod_pais + this.state.phone;
+        const isValidNumber = libphonenumber.isValidNumber(telefono)
+        if (!isValidNumber) {
+           this.errores.phone = true;       
+            return;
+        } else {
+            this.errores.phone = false;
+        }
+    }
 
     onChangeStreetName = API.debounce(async (event) => {
         this.state.streetName = event.target.value;
@@ -524,7 +651,7 @@ export class Beneficiarios extends Component {
 
     inicializarDatosBeneficiario = async (idBeneficiario) => {
         this.state.selectedBeneficiaryId = idBeneficiario;
-       
+
 
         if (idBeneficiario === '-1') {
             this.creandoNuevoBeneficiario = true;
@@ -543,7 +670,7 @@ export class Beneficiarios extends Component {
             this.state.municipalityID = -1;
             this.state.municipality = '';
             this.state.creditCards = [];
-           
+
             return;
 
         }
@@ -627,7 +754,7 @@ export class Beneficiarios extends Component {
             console.log('Cards del beneficiario')
             console.log(this.cardsList)
             this.state.cardNumber = '';
-           
+
             this.inicializando = false;
 
         }
@@ -667,7 +794,52 @@ export class Beneficiarios extends Component {
 
 
 
+    validarDatos(datos) {
+
+        this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+        this.errores.firstName = this.validarSiVacio(datos.firstName);
+        this.errores.lastName = this.validarSiVacio(datos.lastName);
+       this.errores.secondLastName = this.validarSiVacio(datos.secondLastName);
+
+       const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+       const telefono = cod_pais + this.state.phone;
+       //console.log(telefono)
+
+       const isValidNumber = libphonenumber.isValidNumber(telefono)
+
+       if (!isValidNumber) {
+          this.errores.phone = true;
+       }
+
+
+        for (let clave in this.errores) {
+            if (this.errores[clave] == true) {
+                console.log(clave)
+                return false;
+
+            }
+
+        }
+
+        return true;
+    }
+
+
     async salvar() {
+
+        if (!this.validarDatos(this.state)) {
+            Swal.fire({
+                icon: 'error', title: 'Error',
+                text: 'Validation errors'
+              })
+
+          
+            console.log("Validation Errors");
+
+            return;
+        }
+
+
         console.log('Modificando datos de beneficiario')
         console.log(this.state)
         let respuesta = false;
@@ -758,12 +930,12 @@ export class Beneficiarios extends Component {
             }
 
             this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
-            if (  this.allDatosBeneficiariosFromStorage) {
-            this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-                beneficiaryFullName: el.beneficiaryFullName,
-                _id: el._id
-            }));
-        }
+            if (this.allDatosBeneficiariosFromStorage) {
+                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+                    beneficiaryFullName: el.beneficiaryFullName,
+                    _id: el._id
+                }));
+            }
 
             if (this.creandoNuevoBeneficiario) {
                 this.creandoNuevoBeneficiario = false;
@@ -782,7 +954,7 @@ export class Beneficiarios extends Component {
     async onNewCard() {
         this.state.cardNumber = '';
         this.state.cardBankImage = '';
-       // this.state.selectedCardId = '-1'
+        // this.state.selectedCardId = '-1'
     }
 
     /*async onSaveCard() {
@@ -857,7 +1029,7 @@ export class Beneficiarios extends Component {
 
 
     onChangeSelectedBeneficiary = async (datos) => {
-       // this.datosSelectedTX.txID = datos._id;
+        // this.datosSelectedTX.txID = datos._id;
         // this.state = { ...datos }
         this.inicializarDatosBeneficiario(datos._id);
         //console.log(datos)

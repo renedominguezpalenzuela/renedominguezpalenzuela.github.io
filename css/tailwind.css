@@ -2132,6 +2132,10 @@ details.tw-collapse summary::-webkit-details-marker {
   grid-row-start: 4;
 }
 
+.tw-mb-2 {
+  margin-bottom: 0.5rem;
+}
+
 .tw-ml-1 {
   margin-left: 0.25rem;
 }
