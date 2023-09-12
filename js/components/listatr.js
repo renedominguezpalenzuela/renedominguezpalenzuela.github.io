@@ -28,7 +28,7 @@ export class ListaTR extends Component {
         saldos: []
     });
 
-    total_tx_a_solicitar = 130;
+    total_tx_a_solicitar = 50;
 
 
 

@@ -22,7 +22,7 @@ export class Beneficiarios extends Component {
     deliveryAreaID: '',
     deliveryCity: '',
     deliveryCityID: '',
-    deliveryZona: 'Provincias',
+    deliveryZona: 'Habana',
     deliveryCountry: 'Cuba',
     deliveryCountryCode: 'CU',
     selectedBeneficiaryId: "-1"

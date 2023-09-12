@@ -19,9 +19,11 @@ export class SendMoneyCuba extends Component {
   inputSendCurrencyRef = useRef("inputSendCurrencyRef");
   inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
-  //changingSendAmount = false;
-  //changingReceiveAmount = false;
-
+  inputContactPhone = useRef("inputContactPhone");
+  inputdeliveryAddress = useRef("inputdeliveryAddress");
+  inputcardNumber = useRef("inputcardNumber");
+  inputcardHolderName = useRef("inputcardHolderName");
+ 
   state = useState({
     firstName: "Rene",
     lastName: "Dominguez",
@@ -57,7 +59,7 @@ export class SendMoneyCuba extends Component {
   totalSendCostSTR = useState({ value: "0" });
 
 
-  //conversionRateSTR = useState({ value: "" });
+
   conversionRate = useState({ value: 0 });
 
 
@@ -67,19 +69,25 @@ export class SendMoneyCuba extends Component {
 
 
 
-  //moneda_vs_USD = 1;
+  tipo_operacion = [1, 2];
 
-  /*tipo_operacion = {
-    //name: "CASH_OUT_TRANSACTION"
-    name: "CREDIT_CARD_TRANSACTION"
-  }
-  */
-  tipo_operacion = [1,2];
 
+  beneficiariosNames = useState({
+    names: []
+  })
+
+
+  cardsList = useState({
+    cards: []
+  });
+
+  municipios = useState({
+    names:[]
+  })
 
   beneficiarioData = useState({
-    beneficiariosNames: [],
-    cardsList: [],
+
+    
     selectedBeneficiaryId: '-1',
     selectedCard: '-1',
     cardBankImage: '',
@@ -94,14 +102,14 @@ export class SendMoneyCuba extends Component {
     deliveryCountry: 'Cuba',
     deliveryCountryCode: 'CU',
     receiverCountry: 'CUB',
+    deliveryZona: 'Habana'
 
 
 
   })
 
+  
 
-
-  // <!-- step="0.01" min="-9999999999.99" max="9999999999.99" -->
   static template = xml`    
     <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-y-0 tw-gap-x-2">   
       <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
@@ -198,7 +206,7 @@ export class SendMoneyCuba extends Component {
        <!-- Beneficiario -->
           <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
             <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg ">
-              <div>Beneficiary</div> 
+              <div>Beneficiary</div>                         
             </div>
 
             <div class="tw-card-body tw-items-center   ">
@@ -210,10 +218,11 @@ export class SendMoneyCuba extends Component {
                     </label>
                     <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario" >
                       <option  t-att-value="-1" >Select Beneficiary</option>
-                      <t t-if="this.beneficiarioData.length>0">
-                        <t  t-foreach="this.beneficiarioData.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
+                      <t t-if="this.beneficiariosNames.names.length>0">
+                        <t  t-foreach="this.beneficiariosNames.names" t-as="unBeneficiario" t-key="unBeneficiario._id">
                               <option t-att-value="unBeneficiario._id">
                                   <t t-esc="unBeneficiario.beneficiaryFullName"/>
+                                  
                               </option>
                         </t>     
                       </t>     
@@ -236,8 +245,8 @@ export class SendMoneyCuba extends Component {
                     <select t-att-value="this.beneficiarioData.selectedCard" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                       <option  t-att-value="-1" >Select Card</option>
                       
-                      <t t-if="this.beneficiarioData.cardsList.length>0">
-                          <t t-foreach="this.beneficiarioData.cardsList" t-as="unCard" t-key="unCard.number">
+                      <t t-if="this.cardsList.cards.length>0">
+                          <t t-foreach="this.cardsList.cards" t-as="unCard" t-key="unCard.number">
                             <option t-att-value="unCard.number">
                               
                               <t t-esc="unCard.currency"/> -
@@ -254,7 +263,7 @@ export class SendMoneyCuba extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Card Number</span>
                     </label>
-                    <input type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input t-ref="inputcardNumber" type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
                 <div class=" tw-flex tw-items-center tw-w-full tw-row-start-3 tw-mt-1">
@@ -266,7 +275,7 @@ export class SendMoneyCuba extends Component {
                 <label class="tw-label">
                   <span class="tw-label-text">Card Holder Name</span>
                 </label>
-                <input type="text"   t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
+                <input type="text" t-ref="inputcardHolderName"  t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
                </div>
 
     
@@ -275,7 +284,7 @@ export class SendMoneyCuba extends Component {
                 <label class="tw-label">
                  <span class="tw-label-text">Contact Phone</span>
                 </label>
-                <input t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhoneInput" />
+                <input t-ref="inputContactPhone" t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhoneInput" />
                 <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
                 <span id="error-phone-msg" class="tw-hide"></span> -->
               </div> 
@@ -285,7 +294,7 @@ export class SendMoneyCuba extends Component {
               <label class="tw-label">
                 <span class="tw-label-text">Delivery Address</span>
               </label>           
-              <textarea t-att-value="this.beneficiarioData.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+              <textarea t-ref="inputdeliveryAddress" t-att-value="this.beneficiarioData.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
              </div>
 
 
@@ -306,7 +315,7 @@ export class SendMoneyCuba extends Component {
              </label>
              <select t-att-value="this.beneficiarioData.receiverCityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                <option t-att-disabled="true" t-att-value="-1" >Select city</option>
-               <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
+               <t t-foreach="this.municipios.names" t-as="unMunicipio" t-key="unMunicipio.id">
                  <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
                </t>             
              </select>
@@ -341,15 +350,22 @@ export class SendMoneyCuba extends Component {
 
 
 
+
+
+
   //CASH_OUT_TRANSACTION
   setup() {
 
     const accessToken = API.getTokenFromlocalStorage();
 
     onWillStart(async () => {
-      
+
+      this.provincias = Provincias;
+      this.municipios.names = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
+
+
       const api = new API(accessToken);
-      
+
 
       //obteniendo todos los datos de los beneficiarios desde el API
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
@@ -359,24 +375,22 @@ export class SendMoneyCuba extends Component {
 
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
-      this.beneficiarioData =[]
-      
-      if (this.allDatosBeneficiariosFromStorage && this.allDatosBeneficiariosFromStorage.length>0 ) {
+      this.beneficiarioData = []
 
-        this.beneficiarioData.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+      if (this.allDatosBeneficiariosFromStorage && this.allDatosBeneficiariosFromStorage.length > 0) {
+
+        this.beneficiariosNames.names = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
           _id: el._id,
           CI: el.deliveryCI
         }));
 
-        this.beneficiarioData.cardsList = this.allDatosBeneficiariosFromStorage[0].creditCards;
+        this.cardsList.cards = this.allDatosBeneficiariosFromStorage[0].creditCards;
       }
       console.log("Beneficiarios")
       console.log(this.beneficiarioData)
-      
-      this.provincias = Provincias;
-      this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
+    
       this.cardRegExp = await api.getCardRegExp();
 
       this.tiposCambio = await api.getAllTiposDeCambio();
@@ -390,7 +404,7 @@ export class SendMoneyCuba extends Component {
     });
 
     onMounted(async () => {
-      
+
       const monedaEnviada = this.inputSendCurrencyRef.el.value;
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
@@ -400,7 +414,7 @@ export class SendMoneyCuba extends Component {
       const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
       this.conversionRate.value = tc;
 
-    
+
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
@@ -416,20 +430,20 @@ export class SendMoneyCuba extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-      this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
+      //this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
 
-      if (this.beneficiarioData.length>0) {
-        this.setearBeneficiario(this.beneficiarioData.beneficiariosNames[0].CI);
+      if (this.beneficiariosNames.names.length > 0) {
+        this.setearBeneficiario(this.beneficiariosNames.names[0].CI);
       }
 
     })
 
   }
 
-  handleCountryChange = () => {
-    console.log(this.phonInputSelect.getSelectedCountryData().iso2)
-    console.log(this.phonInputSelect.getSelectedCountryData().name)
-  }
+  //  handleCountryChange = () => {
+  //console.log(this.phonInputSelect.getSelectedCountryData().iso2)
+  //console.log(this.phonInputSelect.getSelectedCountryData().name)
+  // }
 
   //Evento al cambiar la moneda a enviar
   onChangeCurrencySend() {
@@ -533,6 +547,8 @@ export class SendMoneyCuba extends Component {
 
   //Boton: Enviar transaccion
   async onSendMoney() {
+
+
 
     //cardCUP	cardUSD
     const service = `card${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
@@ -679,59 +695,47 @@ export class SendMoneyCuba extends Component {
     this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
-
     const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
-    
-
     this.setearBeneficiario(CIBeneficiariodeTX)
-
     await this.onChangeSendInput()
+  }
+
+  onChangeSelectedCard = async (event) => {
+    this.beneficiarioData.selectedCard = event.target.value
+    const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
+    const cardData = this.cardsList.cards.filter((unaCard) =>
+      UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
+    )[0];
+
+    if (cardData) {
+      console.log("Hay card data");
+      console.log(cardData);
+      this.beneficiarioData.cardNumber = formatedCardNumber;
+      this.beneficiarioData.cardHolderName = cardData.cardHolderName;
+
+      this.inputcardNumber.el.value = this.beneficiarioData.cardNumber;
+      this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
+      
+      await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+    } else {
+      console.log("NO Hay card data");
+      this.beneficiarioData.cardHolderName = '';
+      this.beneficiarioData.cardNumber = '';
+      this.inputcardHolderName.el.value ='';
+      this.inputcardNumber.el.value ='';
+    }
 
   }
+
+
 
 
 
   setearBeneficiario = async (CIBeneficiario) => {
-
-    const beneficiarioName = this.beneficiarioData.beneficiariosNames.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
-
+    const beneficiarioName = this.beneficiariosNames.names.filter((unBeneficiario) => unBeneficiario.CI === CIBeneficiario)[0];
     if (!beneficiarioName) { return }
-
     this.beneficiarioData.selectedBeneficiaryId = beneficiarioName._id;
-
     this.setearDatosBeneficiario(beneficiarioName._id)
-
-  }
-
-
-
-
-  onChangeSelectedCard = async (event) => {
-
-    this.beneficiarioData.selectedCard = event.target.value
-
-    const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
-
-    const cardData = this.beneficiarioData.cardsList.filter((unaCard) =>
-      UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
-    )[0];
-
-
-    if (cardData) {
-      //console.log("Hay card data");
-      //console.log(cardData);
-      this.beneficiarioData.cardNumber = formatedCardNumber;
-      this.beneficiarioData.cardHolderName = cardData.cardHolderName;
-      await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-
-    } else {
-      //console.log("NO Hay card data");
-
-      this.beneficiarioData.cardHolderName = '';
-
-    }
-
-
   }
 
 
@@ -748,26 +752,25 @@ export class SendMoneyCuba extends Component {
       this.beneficiarioData.cardHolderName = ''
   }
 
-
+//TEST: seleccionar beneficiario X, comprobar que los datos del beneficiario X, se ponen en cada uno de los controles
+//IDEAL: Agregar los datos del beneficiario antes del test, eliminar datos beneficiario luego del test
+//REAL: no permite eliminar --> leer datos de un beneficiario, comprobar con los datos leidos desde la BD
   setearDatosBeneficiario = async (idBeneficiario) => {
-
     //Setear el select de tarjetas con la tarjeta de la operacion
 
-
-    // console.log("setear datos beneficiario")
-
     const beneficiarioSelected = this.allDatosBeneficiariosFromStorage.filter((unBeneficiario) => unBeneficiario._id === idBeneficiario)[0];
-    // console.log(beneficiarioSelected)
 
-    this.beneficiarioData.cardsList = beneficiarioSelected.creditCards;
+    this.cardsList.cards = beneficiarioSelected.creditCards;
 
     this.beneficiarioData.contactPhone = beneficiarioSelected.deliveryPhone;
+    this.inputContactPhone.el.value = this.beneficiarioData.contactPhone;
+
     this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
-
-
+    this.inputdeliveryAddress.el.value = this.beneficiarioData.deliveryAddress
 
     //Inicializando provincia
     const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === beneficiarioSelected.deliveryArea)[0];
+
     if (selectedProvince) {
       this.beneficiarioData.deliveryAreaID = selectedProvince.id;
       this.beneficiarioData.deliveryArea = selectedProvince.nombre;
@@ -779,15 +782,17 @@ export class SendMoneyCuba extends Component {
       return;
     }
 
+
+
     //inicializando municipio
     //this.municipios = selectedProvince.municipios;
-    this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
+    this.municipios.names = UImanager.addKeyToMunicipios(selectedProvince.municipios);
 
     // console.log("Beneficiario municipio:")
     // console.log(selectedBenefiarioData.deliveryCity)
     // console.log(selectedBenefiarioData)
 
-    const selectedMuncipio = this.municipios.filter((unMunicipio) => {
+    const selectedMuncipio = this.municipios.names.filter((unMunicipio) => {
       const comparacion = UImanager.eliminarAcentos(beneficiarioSelected.deliveryCity) == UImanager.eliminarAcentos(unMunicipio.nombre);
       return comparacion
     })[0];
@@ -819,6 +824,8 @@ export class SendMoneyCuba extends Component {
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
     await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+
+
 
   }
 
@@ -892,6 +899,7 @@ export class SendMoneyCuba extends Component {
   async onChangeCardInput(event) {
 
     this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
+    
 
 
   };
@@ -911,7 +919,7 @@ export class SendMoneyCuba extends Component {
 
   onChangePhoneInput = API.debounce(async (event) => {
     this.beneficiarioData.contactPhone = event.target.value;
-    //console.log(event.target.value)
+    console.log(this.beneficiarioData.contactPhone)
 
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
@@ -922,14 +930,18 @@ export class SendMoneyCuba extends Component {
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
     //this.cambioBeneficiario = true;
+    
     if (this.inicializando) return;
     const selectedProvinceId = event.target.value;
     this.beneficiarioData.deliveryAreaID = event.target.value;
     let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
+
+    console.log(selectedProvince)
     if (selectedProvince) {
-      this.municipios = UImanager.addKeyToMunicipios(selectedProvince.municipios);
-      this.beneficiarioData.receiverCityID = -1;
-      this.beneficiarioData.receiverCity = '';
+      this.municipios.names = UImanager.addKeyToMunicipios(selectedProvince.municipios);
+      console.log(this.municipios)
+      this.beneficiarioData.receiverCityID = -1; //Municipio id 
+      this.beneficiarioData.receiverCity = '';    //Municipio
       this.beneficiarioData.deliveryArea = selectedProvince.nombre;
       this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       //this.props.onChangeDatosBeneficiarios(this.state);
@@ -941,7 +953,7 @@ export class SendMoneyCuba extends Component {
     // this.cambioBeneficiario = true;
     if (this.inicializando) return;
     const selectedCityId = event.target.value;
-    let selectedMunicipio = this.municipios[selectedCityId];
+    let selectedMunicipio = this.municipios.names[selectedCityId];
     console.log(selectedMunicipio)
     if (selectedMunicipio) {
       this.beneficiarioData.receiverCity = selectedMunicipio.nombre;
