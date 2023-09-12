@@ -119,8 +119,8 @@ export class ListaBeneficiarios extends Component {
                 columns: [
                     { data: 'beneficiaryFullName', width: '30%' },
                     { data: 'deliveryCI', width: '15%' },
-                    { data: 'deliveryPhone', width: '15%' },
                     { data: 'email', width: '15%' },
+                    { data: 'deliveryPhone', width: '15%' },
                     { data: 'country', width: '14%' },
                 ],
                 autoWidth: false,
