@@ -295,16 +295,18 @@ export class Beneficiarios extends Component {
                     <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                 </div>
 
-                <div class="tw-form-control tw-w-full  sm:tw-row-start-9 sm:tw-col-start-2 ">
+                <div class=" tw-flex tw-items-center tw-w-full sm:tw-row-start-9 sm:tw-col-start-2 tw-mt-1">
+                <img t-att-src="this.state.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
+            </div>
+
+                <div class="tw-form-control tw-w-full  sm:tw-row-start-10 sm:tw-col-start-2 ">
                     <label class="tw-label">
                         <span class="tw-label-text">Card Holder Name</span>
                     </label>
                     <input type="text" readonly="true"  t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
                 </div>
 
-                <div class=" tw-flex tw-items-center tw-w-full sm:tw-row-start-10 sm:tw-col-start-2 tw-mt-1">
-                    <img t-att-src="this.state.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
-                </div>
+               
 
                 <div class="tw-card-actions">
                     <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
