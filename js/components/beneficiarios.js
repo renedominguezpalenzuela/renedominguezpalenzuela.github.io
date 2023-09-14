@@ -56,17 +56,17 @@ export class Beneficiarios extends Component {
     })
 
     errores = useState({
-        identityNumber: '',
-        firstName: '',
-        lastName: '',
-        secondLastName: '',
-        phone: '',
-        streetName: '',
-        houseNumber: '',
-        zipcode: '',
-        email: '',
-        province: '',
-        municipality: '',
+        identityNumber: false,
+        firstName: false,
+        lastName: false,
+        secondLastName: false,
+        phone: false,
+        streetName: false,
+        houseNumber: false,
+        zipcode: false,
+        email: false,
+        province: false,
+        municipality: false,
 
     })
 
@@ -177,21 +177,31 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">Street Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  maxlength="300" placeholder="Street Name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  t-on-blur="onBlurStreetName"  maxlength="300" placeholder="Street Name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <span t-if="this.errores.streetName==true" class="error">
+                                    Required field!!!
+                                </span>
+
                             </div>
 
                             <div class="tw-form-control    sm:tw-ml-2 ">
                                 <label class="tw-label">
                                     <span class="tw-label-text">House Number</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  maxlength="300" placeholder="House Number" class="tw-input tw-input-bordered  tw-w-full " /> 
+                                <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  t-on-blur="onBlurHouseNumber" maxlength="300" placeholder="House Number" class="tw-input tw-input-bordered  tw-w-full " /> 
+                                <span t-if="this.errores.houseNumber==true" class="error">
+                                    Required field!!!
+                                </span>
                             </div>
 
                             <div class="tw-form-control  sm:tw-ml-2">     
                                 <label class="tw-label">
                                     <span class="tw-label-text">Zip Code</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
+                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  t-on-blur="onBlurZipCode" maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
+                                <span t-if="this.errores.zipcode==true" class="error">
+                                    Required field!!!
+                                </span>
 
                             </div> 
                         </div>
@@ -221,6 +231,9 @@ export class Beneficiarios extends Component {
                             <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                             </t>             
                         </select>
+                        <span t-if="this.errores.province==true" class="error">
+                           Required field!!!
+                        </span>
                         </div>
 
                         <!-- Municipio -->
@@ -234,6 +247,9 @@ export class Beneficiarios extends Component {
                             <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
                             </t>             
                         </select>
+                        <span t-if="this.errores.municipality==true" class="error">
+                           Required field!!!
+                        </span>
                         </div>
 
                         <!-- Pais -->
@@ -253,7 +269,7 @@ export class Beneficiarios extends Component {
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
             <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
-                Card Data
+                Card Data (optional)
             </div>
             <div class="tw-card-body tw-items-center ">
                 <div class="tw-form-control tw-w-full  sm:tw-row-start-8 sm:tw-col-start-1">
@@ -513,7 +529,6 @@ export class Beneficiarios extends Component {
     }, API.tiempoDebounce);
 
     onBlurIDInput = (event) => {
-        console.log("sss")
         this.errores.identityNumber = this.validarSiVacio(event.target.value);
     }
 
@@ -547,15 +562,32 @@ export class Beneficiarios extends Component {
 
     onChangeStreetName = API.debounce(async (event) => {
         this.state.streetName = event.target.value;
+        this.errores.streetName = this.validarSiVacio(this.state.streetName);
     }, API.tiempoDebounce);
+
+    onBlurStreetName = (event) => {
+        this.errores.streetName = this.validarSiVacio(event.target.value);
+    }
 
     onChangeHouseNumber = API.debounce(async (event) => {
         this.state.houseNumber = event.target.value;
+        this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber );
     }, API.tiempoDebounce);
+
+    onBlurHouseNumber = (event) => {
+        this.errores.houseNumber = this.validarSiVacio(event.target.value);
+    }
+
+
 
     onChangeZipCode = API.debounce(async (event) => {
         this.state.zipcode = event.target.value;
+        this.errores.zipcode = this.validarSiVacio(this.state.zipcode);
     }, API.tiempoDebounce);
+
+    onBlurZipCode = (event) => {
+        this.errores.zipcode = this.validarSiVacio(event.target.value);
+    }
 
     onChangeEmail = API.debounce(async (event) => {
         
@@ -582,6 +614,7 @@ export class Beneficiarios extends Component {
             this.state.municipality = '';
             this.state.province = selectedProvince.nombre;
             this.state.zone = selectedProvince.id === "4" ? "Habana" : "Provincias";
+            this.errores.province = false;
 
         }
     };
@@ -596,6 +629,7 @@ export class Beneficiarios extends Component {
             this.state.municipality = selectedMunicipio.nombre;
             this.state.municipalityID = selectedCityId;
             this.state.zone = this.state.provinceID === "4" ? "Habana" : "Provincias";
+            this.errores.municipality = true;
         }
     };
 
@@ -720,7 +754,7 @@ export class Beneficiarios extends Component {
             //this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
 
 
-
+            this.errores.email = !UImanager.validMail(this.state.email);
 
 
             this.state.cardHolderName = '';
@@ -772,8 +806,8 @@ export class Beneficiarios extends Component {
                 })
             )
 
-            console.log('Cards del beneficiario')
-            console.log(this.cardsList)
+            //console.log('Cards del beneficiario')
+            //console.log(this.cardsList)
             this.state.cardNumber = '';
 
             this.inicializando = false;
@@ -822,6 +856,13 @@ export class Beneficiarios extends Component {
         this.errores.lastName = this.validarSiVacio(datos.lastName);
        this.errores.secondLastName = this.validarSiVacio(datos.secondLastName);
 
+       this.errores.streetName = this.validarSiVacio(this.state.streetName);
+       this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber );
+       this.errores.zipcode = this.validarSiVacio(this.state.zipcode);
+
+       this.errores.municipality = this.state.municipalityID==-1 ? true : false;
+       this.errores.province = this.state.provinceID==-1 ? true : false;
+
        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
        const telefono = cod_pais + this.state.phone;
        //console.log(telefono)
@@ -831,6 +872,8 @@ export class Beneficiarios extends Component {
        if (!isValidNumber) {
           this.errores.phone = true;
        }
+
+
 
        this.errores.email = !UImanager.validMail(datos.email);
 
