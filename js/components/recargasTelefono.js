@@ -509,6 +509,9 @@ export class RecargasTelefono extends Component {
     async onChangeCurrencySend(event) {
 
         const moneda = event.target.value
+        if (this.state.currency !=moneda) {
+            this.pedirProductos = true;
+        }
         this.state.currency = moneda;
         const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
 
