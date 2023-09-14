@@ -23,6 +23,7 @@ export class Beneficiarios extends Component {
 
 
     inputCardNumber = useRef("inputCardNumber");
+    inputCardHolderName = useRef("inputCardHolderName");
 
     //"creditCards": ["9225 1234 1234 1234"]
 
@@ -44,7 +45,8 @@ export class Beneficiarios extends Component {
         country: "Cuba",
         selectedBeneficiaryId: '-1',
         selectedCardId: '-1',
-        creditCards: []
+        creditCards: [],
+
     })
 
     errores = useState({
@@ -63,7 +65,7 @@ export class Beneficiarios extends Component {
     })
 
     allDatosBeneficiariosFromStorage = useState({
-        datos:[]
+        datos: []
     })
 
 
@@ -276,12 +278,13 @@ export class Beneficiarios extends Component {
                         <option  t-att-value="-1" >Select or enter new data</option>
                         <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
                            <option t-att-value="unCard.id">
-                            <t t-esc="unCard.cardHolderName"/>: <t t-esc="unCard.currency"/><t t-esc="unCard.number"/>
+                            <t t-esc="unCard.cardHolderName"/>  <t t-esc="unCard.number"/>
                            </option>
+                          
                         </t>             
                     </select>
                 </div>
-
+                <!-- <t t-esc="unCard.currency"/> -->
                 
 
                 <div class="tw-form-control tw-w-full  sm:tw-row-start-9 sm:tw-col-start-1">
@@ -299,25 +302,28 @@ export class Beneficiarios extends Component {
                     <label class="tw-label">
                         <span class="tw-label-text">Card Holder Name</span>
                     </label>
-                    <input type="text" readonly="true"  t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
+                    <input type="text" t-ref="inputCardHolderName" t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
+                   
                 </div>
 
                
 
                 <div class="tw-card-actions">
-                    <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3  ">
-                    
-                        <button class="tw-btn   tw-mr-3" t-on-click="onNewCard">New Card </button>
-                       
+                    <div class="tw-flex">    
+                        <button class="tw-btn   tw-mr-3" t-on-click="onNewCard">New Card </button>             
+                        <button class="tw-btn  tw-mr-3" t-on-click="onSaveCard">Save Card </button>                    
                     </div>
+                
+                  
                 </div>
 
             </div>
         </div>
+
         <div class="tw-card-actions">
-        <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3 tw-mb-2  ">
-          <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
-        </div>
+                <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3 tw-mb-2  ">
+                      <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                </div>
 
       
         </div>
@@ -394,6 +400,7 @@ export class Beneficiarios extends Component {
         });
 
         onMounted(() => {
+
             //this.state.selectedCardId = "-1";
 
             //this.inicializarDatosBeneficiario(this.beneficiariosNames[0]._id);
@@ -409,15 +416,17 @@ export class Beneficiarios extends Component {
                 nationalMode: false, //permite poner 5465731 en ves de +53 54657331
                 initialCountry: "cu",
                 //excludeCountries: ["in", "il"],
-               //preferredCountries: ["cu"],
+                //preferredCountries: ["cu"],
                 // display only these countries
-              //  onlyCountries: this.seleccionCodigosPaises,
-              onlyCountries: ["cu"],
+                //  onlyCountries: this.seleccionCodigosPaises,
+                onlyCountries: ["cu"],
                 utilsScript: "js/libs/intlTelIutils.js"
             });
+
         });
 
     }
+
 
 
     async buscarLogotipoBanco(CardNumber) {
@@ -425,6 +434,7 @@ export class Beneficiarios extends Component {
 
         const api = new API(this.accessToken);
         const cardRegExp = await api.getCardRegExp();
+        //console.log(cardRegExp)
 
 
 
@@ -440,6 +450,7 @@ export class Beneficiarios extends Component {
                         //Poner imagen
                         this.state.cardBankImage = "img/logo-bandec.png";
                         this.state.bankName = "BANDEC";
+                        return true;
 
                         break;
 
@@ -447,6 +458,7 @@ export class Beneficiarios extends Component {
                         //Poner imagen
                         this.state.cardBankImage = "img/logo-metro.png";
                         this.state.bankName = "METROPOLITANO";
+                        return true;
 
                         break;
 
@@ -454,10 +466,12 @@ export class Beneficiarios extends Component {
                         //Poner imagen
                         this.state.cardBankImage = "img/logo-bpa.png";
                         this.state.bankName = "BPA";
+                        return true;
 
                         break;
 
                     default:
+                        return false;
                         break;
                 }
             }
@@ -537,7 +551,7 @@ export class Beneficiarios extends Component {
         const telefono = cod_pais + this.state.phone;
         const isValidNumber = libphonenumber.isValidNumber(telefono)
         if (!isValidNumber) {
-           this.errores.phone = true;       
+            this.errores.phone = true;
             return;
         } else {
             this.errores.phone = false;
@@ -551,7 +565,7 @@ export class Beneficiarios extends Component {
         const telefono = cod_pais + this.state.phone;
         const isValidNumber = libphonenumber.isValidNumber(telefono)
         if (!isValidNumber) {
-           this.errores.phone = true;       
+            this.errores.phone = true;
             return;
         } else {
             this.errores.phone = false;
@@ -569,7 +583,7 @@ export class Beneficiarios extends Component {
 
     onChangeHouseNumber = API.debounce(async (event) => {
         this.state.houseNumber = event.target.value;
-        this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber );
+        this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber);
     }, API.tiempoDebounce);
 
     onBlurHouseNumber = (event) => {
@@ -588,13 +602,13 @@ export class Beneficiarios extends Component {
     }
 
     onChangeEmail = API.debounce(async (event) => {
-        
+
         this.state.email = event.target.value;
         this.errores.email = !UImanager.validMail(this.state.email);
     }, API.tiempoDebounce);
 
-    onBlurEmail= (event) => {
-       
+    onBlurEmail = (event) => {
+
         this.errores.email = !UImanager.validMail(this.state.email);
     }
 
@@ -678,27 +692,18 @@ export class Beneficiarios extends Component {
 
 
 
-        const cardData = this.cardsList.filter((unaCard) =>
-
-            unaCard.id == id
-
-        )[0];
-
+        const cardData = this.cardsList.filter((unaCard) => unaCard.id == id)[0];
 
         if (cardData) {
             const formatedCardNumber = UImanager.formatCardNumber(cardData.number)
-
-
             this.state.cardNumber = formatedCardNumber;
             this.state.cardHolderName = cardData.cardHolderName;
             await this.buscarLogotipoBanco(this.state.cardNumber);
-        } else {
-
-            this.state.cardNumber = '';
-            this.state.cardHolderName = '';
         }
-
-
+        //else {
+        //    this.state.cardNumber = '';
+        //    this.state.cardHolderName = '';
+        //}
     }
 
 
@@ -727,7 +732,7 @@ export class Beneficiarios extends Component {
             return;
 
         }
-       this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+        this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
         const selectedBenefiarioData = this.allDatosBeneficiariosFromStorage.datos.filter(unDato => unDato._id === idBeneficiario)[0];
 
 
@@ -804,8 +809,8 @@ export class Beneficiarios extends Component {
                 })
             )
 
-            //console.log('Cards del beneficiario')
-            //console.log(this.cardsList)
+            console.log('Cards del beneficiario')
+            console.log(this.cardsList)
             this.state.cardNumber = '';
 
             this.inicializando = false;
@@ -852,28 +857,28 @@ export class Beneficiarios extends Component {
         this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
         this.errores.firstName = this.validarSiVacio(datos.firstName);
         this.errores.lastName = this.validarSiVacio(datos.lastName);
-       this.errores.secondLastName = this.validarSiVacio(datos.secondLastName);
+        this.errores.secondLastName = this.validarSiVacio(datos.secondLastName);
 
-       this.errores.streetName = this.validarSiVacio(this.state.streetName);
-       this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber );
-       this.errores.zipcode = this.validarSiVacio(this.state.zipcode);
+        this.errores.streetName = this.validarSiVacio(this.state.streetName);
+        this.errores.houseNumber = this.validarSiVacio(this.state.houseNumber);
+        this.errores.zipcode = this.validarSiVacio(this.state.zipcode);
 
-       this.errores.municipality = this.state.municipalityID==-1 ? true : false;
-       this.errores.province = this.state.provinceID==-1 ? true : false;
+        this.errores.municipality = this.state.municipalityID == -1 ? true : false;
+        this.errores.province = this.state.provinceID == -1 ? true : false;
 
-       const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
-       const telefono = cod_pais + this.state.phone;
-       //console.log(telefono)
+        const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+        const telefono = cod_pais + this.state.phone;
+        //console.log(telefono)
 
-       const isValidNumber = libphonenumber.isValidNumber(telefono)
+        const isValidNumber = libphonenumber.isValidNumber(telefono)
 
-       if (!isValidNumber) {
-          this.errores.phone = true;
-       }
+        if (!isValidNumber) {
+            this.errores.phone = true;
+        }
 
 
 
-       this.errores.email = !UImanager.validMail(datos.email);
+        this.errores.email = !UImanager.validMail(datos.email);
 
 
         for (let clave in this.errores) {
@@ -895,9 +900,9 @@ export class Beneficiarios extends Component {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Validation errors'
-              })
+            })
 
-          
+
             console.log("Validation Errors");
 
             return;
@@ -948,34 +953,16 @@ export class Beneficiarios extends Component {
 
         return respuesta;
     }
+
+
+
     //Boton salvar datos del beneficiario
     //mantener inactivo hasta que se haga un cambio en un campo
     async onSaveBeneficiario() {
+
         const nuevaCard = this.state.cardNumber;
-        console.log('Card  a salvar')
-        console.log(nuevaCard);
-        if (nuevaCard) {
-            if (this.cardsList && this.cardsList.length > 0) {
+        this.salvarNuevaCard(nuevaCard)
 
-                //la busco en cardList
-                const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
-                console.log('Comprobando si Card Existe:')
-                console.log(cardExisteenLista)
-
-                if (!cardExisteenLista && cardExisteenLista != '') {
-                    this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
-                    this.state.creditCards.push(nuevaCard.split(" ").join(""))
-
-                }
-
-            } else {
-
-                this.state.creditCards.push(nuevaCard.split(" ").join(""))
-                console.log("Salvando")
-                console.log(this.state.creditCards)
-
-            }
-        }
 
 
         const respuesta = await this.salvar();
@@ -1001,7 +988,7 @@ export class Beneficiarios extends Component {
                 }));
             }
 
-          
+
             if (this.creandoNuevoBeneficiario) {
                 this.creandoNuevoBeneficiario = false;
                 console.log('nuevo')
@@ -1018,14 +1005,7 @@ export class Beneficiarios extends Component {
 
     }
 
-    //al iniciar mantener todos los campos disabled hasta que se presione el boton new
-    async onNewCard() {
-        this.state.cardNumber = '';
-        this.state.cardBankImage = '';
-        // this.state.selectedCardId = '-1'
-    }
 
-   
     onChangeSelectedBeneficiary = async (datos) => {
         // this.datosSelectedTX.txID = datos._id;
         // this.state = { ...datos }
@@ -1033,7 +1013,107 @@ export class Beneficiarios extends Component {
         //console.log(datos)
     }
 
+    //al iniciar mantener todos los campos disabled hasta que se presione el boton new
+    onNewCard() {
+        this.state.selectedCardId = '-1'
+        this.state.cardNumber = '';
+        this.state.cardBankImage = '';
+        this.inputCardHolderName.el.value = '';
+        this.state.cardHolderName = ''
+        //this.inputCardNumber.el.value
 
+    }
+
+    async onSaveCard() {
+
+        if (!this.state.cardHolderName) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Card holder name is needed',
+
+                // currency: this.state.currency
+
+            })
+
+            return;
+        }
+
+        const nuevaCard = this.state.cardNumber;
+        if (await this.buscarLogotipoBanco(nuevaCard)) {
+            if (this.salvarNuevaCard(nuevaCard)) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Card can be saved ',
+                    text: 'Save beneficiary to save the new card'
+                })
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Card exist, not need to save again',
+                    text: nuevaCard
+                })
+
+            }
+
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Incorrect card format',
+                text: nuevaCard
+            })
+
+        }
+    }
+
+
+
+    addCardToComboBox(card) {
+
+        this.cardsList.push({
+            id: this.cardsList.length + 1,
+            number: card.split(" ").join(""),
+            bankName: this.state.bankName,
+            cardHolderName: this.state.cardHolderName
+        })
+        console.log("Combo box")
+        console.log(this.cardsList)
+    }
+
+
+    salvarNuevaCard(nuevaCard) {
+
+        console.log('Card  a salvar')
+        console.log(nuevaCard);
+        if (nuevaCard) {
+            if (this.cardsList && this.cardsList.length > 0) {
+
+                //la busco en cardList
+                const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
+                console.log('Comprobando si Card Existe:')
+                console.log(cardExisteenLista)
+
+                if (!cardExisteenLista) { //no existe puede salvarse
+
+                    this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
+                    this.state.creditCards.push(nuevaCard.split(" ").join(""))
+                    this.addCardToComboBox(nuevaCard)
+                    return true;
+
+                } else {
+                    return false; //ya existe no se puede salvar
+                }
+
+            } else {
+
+                this.state.creditCards.push(nuevaCard.split(" ").join(""))
+                console.log("Salvando")
+                console.log(this.state.creditCards)
+                this.addCardToComboBox(nuevaCard)
+                return true;
+
+            }
+        }
+    }
 
 }
 
