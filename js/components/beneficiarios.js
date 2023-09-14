@@ -9,7 +9,15 @@ import { ListaBeneficiarios } from "./listaBeneficiarios.js";
 import { Paises } from "../../data/paises.js";
 
 
+/*
+   streetName: '',
+        houseNumber: '',
+        zipcode: '',
+        email: '',
+        province: '',
+        municipality: '',
 
+*/
 
 export class Beneficiarios extends Component {
 
@@ -184,6 +192,7 @@ export class Beneficiarios extends Component {
                                     <span class="tw-label-text">Zip Code</span>
                                 </label>
                                 <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
+
                             </div> 
                         </div>
 
@@ -192,7 +201,11 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">Email Address</span>
                             </label>
-                            <input type="text" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeEmail" />   
+                            <input type="email" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeEmail"  t-on-blur="onBlurEmail" />   
+                            <span t-if="this.errores.email==true" class="error">
+                              Incorrect email!!!
+                            </span>
+
                         </div>
 
 
@@ -479,7 +492,7 @@ export class Beneficiarios extends Component {
         this.errores.lastName = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
 
-    onBlurFirstName = (event) => {
+    onBlurLastName = (event) => {
         this.errores.lastName = this.validarSiVacio(event.target.value);
     }
 
@@ -488,7 +501,7 @@ export class Beneficiarios extends Component {
         this.errores.secondLastName = this.validarSiVacio(event.target.value);
     }, API.tiempoDebounce);
 
-    onBlurFirstName = (event) => {
+    onBlurSecondLastName = (event) => {
         this.errores.secondLastName = this.validarSiVacio(event.target.value);
     }
 
@@ -545,8 +558,16 @@ export class Beneficiarios extends Component {
     }, API.tiempoDebounce);
 
     onChangeEmail = API.debounce(async (event) => {
+        
         this.state.email = event.target.value;
+        this.errores.email = !UImanager.validMail(this.state.email);
     }, API.tiempoDebounce);
+
+    onBlurEmail= (event) => {
+       
+        this.errores.email = !UImanager.validMail(this.state.email);
+    }
+
 
 
     //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
@@ -810,6 +831,8 @@ export class Beneficiarios extends Component {
        if (!isValidNumber) {
           this.errores.phone = true;
        }
+
+       this.errores.email = !UImanager.validMail(datos.email);
 
 
         for (let clave in this.errores) {
