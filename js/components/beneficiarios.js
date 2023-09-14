@@ -631,7 +631,7 @@ export class Beneficiarios extends Component {
             this.state.municipality = selectedMunicipio.nombre;
             this.state.municipalityID = selectedCityId;
             this.state.zone = this.state.provinceID === "4" ? "Habana" : "Provincias";
-            this.errores.municipality = true;
+            this.errores.municipality = false;
         }
     };
 
