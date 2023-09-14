@@ -53,8 +53,8 @@ export class ListaBeneficiarios extends Component {
     setup() {
 
 
-        console.log("ListaBeneficiarios")
-        console.log(this.props.listaBeneficiarios)
+       // console.log("ListaBeneficiarios")
+       // console.log(this.props.listaBeneficiarios)
 
 
         const accessToken = API.getTokenFromlocalStorage();
@@ -125,7 +125,7 @@ export class ListaBeneficiarios extends Component {
                 ],
                 autoWidth: false,
                 "pageLength": 10,
-                order: [[0, 'desc']],
+                order: [[0, 'asc']],
                 select: true,
                 responsive: true,
                 destroy: true,
@@ -152,6 +152,30 @@ export class ListaBeneficiarios extends Component {
 
 
         onRendered(async () => {
+            console.log("Rendering")
+            console.log(this.props.listaBeneficiarios)
+            const raw_datos1 = this.props.listaBeneficiarios.map((unDato) => {
+
+                
+                const email = !unDato.email ? "-" : unDato.email
+                return {
+                   
+                    ...unDato,
+                    email
+                }
+                
+            });
+
+
+            this.datos = raw_datos1;
+
+          //  this.tabla.clear();    
+          if (this.tabla) {
+            this.tabla.clear();
+            this.tabla.rows.add(this.datos).draw();         
+          
+          }
+          
 
         });
 

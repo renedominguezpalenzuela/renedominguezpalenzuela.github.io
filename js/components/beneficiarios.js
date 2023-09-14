@@ -8,16 +8,8 @@ import { ListaBeneficiarios } from "./listaBeneficiarios.js";
 
 import { Paises } from "../../data/paises.js";
 
+//TEST: agregar nuevo beneficiario, comprobar que esta en la lista, que esta el localstorage
 
-/*
-   streetName: '',
-        houseNumber: '',
-        zipcode: '',
-        email: '',
-        province: '',
-        municipality: '',
-
-*/
 
 export class Beneficiarios extends Component {
 
@@ -68,6 +60,10 @@ export class Beneficiarios extends Component {
         province: false,
         municipality: false,
 
+    })
+
+    allDatosBeneficiariosFromStorage = useState({
+        datos:[]
     })
 
 
@@ -331,7 +327,7 @@ export class Beneficiarios extends Component {
 
   </div>
 
-  <ListaBeneficiarios  listaBeneficiarios="this.allDatosBeneficiariosFromStorage" 
+  <ListaBeneficiarios  listaBeneficiarios="this.allDatosBeneficiariosFromStorage.datos" 
         onChangeSelectedBeneficiary.bind="this.onChangeSelectedBeneficiary"/>
     
 
@@ -377,10 +373,10 @@ export class Beneficiarios extends Component {
             if (allDatosBeneficiarios) {
                 window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
             }
-            this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+            this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
-            if (this.allDatosBeneficiariosFromStorage) {
-                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+            if (this.allDatosBeneficiariosFromStorage.datos) {
+                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
                     beneficiaryFullName: el.beneficiaryFullName,
                     _id: el._id
                 }));
@@ -731,8 +727,8 @@ export class Beneficiarios extends Component {
             return;
 
         }
-        const allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
-        const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
+       this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+        const selectedBenefiarioData = this.allDatosBeneficiariosFromStorage.datos.filter(unDato => unDato._id === idBeneficiario)[0];
 
 
 
@@ -997,14 +993,15 @@ export class Beneficiarios extends Component {
                 window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
             }
 
-            this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
-            if (this.allDatosBeneficiariosFromStorage) {
-                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+            this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+            if (this.allDatosBeneficiariosFromStorage.datos) {
+                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
                     beneficiaryFullName: el.beneficiaryFullName,
                     _id: el._id
                 }));
             }
 
+          
             if (this.creandoNuevoBeneficiario) {
                 this.creandoNuevoBeneficiario = false;
                 console.log('nuevo')
@@ -1014,6 +1011,9 @@ export class Beneficiarios extends Component {
             } else {
                 this.inicializarDatosBeneficiario(this.selectedBeneficiaryId);
             }
+
+            this.render()
+
         }
 
     }
@@ -1025,84 +1025,13 @@ export class Beneficiarios extends Component {
         // this.state.selectedCardId = '-1'
     }
 
-    /*async onSaveCard() {
-
-        const nuevaCard = this.state.cardNumber;
-        console.log('Card  a salvar')
-        console.log(nuevaCard);
-        if (nuevaCard) {
-
-            console.log('Lista')
-            console.log(this.cardsList)
-            console.log(this.cardsList.length)
-
-            if (!this.cardsList || !this.cardsList.length) {
-
-                return
-            }
-
-            //la busco en cardList
-            const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
-            console.log('Card Existe')
-            console.log(cardExisteenLista)
-
-
-            if (!cardExisteenLista && cardExisteenLista != '') {
-                this.state.creditCards = this.cardsList.map((unCard) => unCard.number);
-
-                this.state.creditCards.push(nuevaCard.split(" ").join(""))
-                console.log("Salvando")
-                console.log(this.state.creditCards)
-            } else {
-                return
-            }
-        }
-
-
-
-
-
-        //this.state.creditCards
-
-        const respuesta = await this.salvar();
-
-        //this.cardsList = selectedBenefiarioData.creditCards;
-        if (respuesta) {
-            console.log('Pidiendo beneficiarios en cards ')
-
-            const api = new API(this.accessToken);
-            const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
-
-            console.log(allDatosBeneficiarios)
-
-            if (allDatosBeneficiarios) {
-                window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
-            }
-            this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
-            this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
-                beneficiaryFullName: el.beneficiaryFullName,
-                _id: el._id
-            }));
-
-            if (this.creandoNuevoBeneficiario) {
-                this.creandoNuevoBeneficiario = false;
-
-                this.inicializarDatosBeneficiario(this.beneficiariosNames.length - 1);
-                this.state.selectedBeneficiaryId = this.beneficiariosNames.length - 1;
-            }
-        }
-
-    }*/
-
-
-
+   
     onChangeSelectedBeneficiary = async (datos) => {
         // this.datosSelectedTX.txID = datos._id;
         // this.state = { ...datos }
         this.inicializarDatosBeneficiario(datos._id);
         //console.log(datos)
     }
-
 
 
 
