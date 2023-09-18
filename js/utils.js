@@ -1212,6 +1212,7 @@ export class UImanager {
 
 
   static formatCardNumber(value) {
+    
     if (!value) return "0000-0000-0000-0000";
     var value = value.replace(/\D/g, '');
     if ((/^\d{0,16}$/).test(value)) {

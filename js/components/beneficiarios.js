@@ -432,6 +432,11 @@ export class Beneficiarios extends Component {
     async buscarLogotipoBanco(CardNumber) {
         const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
 
+       // console.log(`Card Length ${cardWithoutSpaces.length}`)
+        if (cardWithoutSpaces.length!=16) {
+            return false;
+        }
+
         const api = new API(this.accessToken);
         const cardRegExp = await api.getCardRegExp();
         //console.log(cardRegExp)
@@ -649,25 +654,81 @@ export class Beneficiarios extends Component {
 
 
 
+    //t-on-keydown="onCardInputKeyDown"
+    /*  onCardInputKeyDown = API.debounce(async (event) => {
+          console.log(event)
+  
+          this.state.cardNumber = event.target.value;
+  
+  
+          this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+          if (event.target.value.length === 19) {
+  
+  
+              this.buscarLogotipoBanco(this.state.cardNumber);
+  
+              //TODO: si es un card nuevo agregarlo?
+          }
+      }, API.tiempoDebounce);*/
+
+
+    onCardInputKeyDown = (event) => {
+
+        const key = event.key; // const {key} = event; ES6+
+        if (key === "Backspace" || key === "Delete") {
+            this.backspace = true;
+        } else {
+            this.backspace = false
+        }
+
+        //console.log(event)
+        //console.log(this.inputCardNumber.el.value)
+
+        //this.state.cardNumber = this.inputCardNumber.el.value;
+
+
+        // this.inputCardNumber.el.value = UImanager.formatCardNumber( this.state.cardNumber);
+        /*  if (event.target.value.length === 19) {
+  
+  
+              this.buscarLogotipoBanco(this.state.cardNumber);
+  
+              //TODO: si es un card nuevo agregarlo?
+          }*/
+    }
 
 
 
+    //t-on-input
+    onChangeCardInput(event) {
 
+        console.log(event)
+        console.log(`state.cardNumber ${this.state.cardNumber}`)
+        console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
+        if (!this.backspace) {
+            this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);  
+            this.state.cardNumber = this.inputCardNumber.el.value;          
+        } 
+        
 
-
-    onCardInputKeyDown = API.debounce(async (event) => {
-
-        this.state.cardNumber = event.target.value;
         if (event.target.value.length === 19) {
+
 
             this.buscarLogotipoBanco(this.state.cardNumber);
 
-            //TODO: si es un card nuevo agregarlo?
-        }
-    }, API.tiempoDebounce);
 
-    onChangeCardInput(event) {
-        this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+        }
+        /* const key =event.key;
+       
+ 
+         console.log(key)
+         if (key == 8 || key == 46) {
+ 
+ 
+         } else {
+             this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+         }
+         */
     };
 
 
@@ -961,8 +1022,8 @@ export class Beneficiarios extends Component {
     //mantener inactivo hasta que se haga un cambio en un campo
     async onSaveBeneficiario() {
 
-       // const nuevaCard = this.state.cardNumber;
-       // this.salvarNuevaCard(nuevaCard)
+        // const nuevaCard = this.state.cardNumber;
+        // this.salvarNuevaCard(nuevaCard)
 
 
 
@@ -1039,7 +1100,10 @@ export class Beneficiarios extends Component {
             return;
         }
 
+        this.state.cardNumber = this.inputCardNumber.el.value;  
         const nuevaCard = this.state.cardNumber;
+        console.log(`Salvando card ${nuevaCard}`)
+        
         if (await this.buscarLogotipoBanco(nuevaCard)) {
             if (this.salvarNuevaCard(nuevaCard)) {
                 Swal.fire({
