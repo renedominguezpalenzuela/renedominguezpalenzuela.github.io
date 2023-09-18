@@ -23,7 +23,7 @@ export class SendMoneyCuba extends Component {
   inputdeliveryAddress = useRef("inputdeliveryAddress");
   inputcardNumber = useRef("inputcardNumber");
   inputcardHolderName = useRef("inputcardHolderName");
- 
+
   state = useState({
     firstName: "Rene",
     lastName: "Dominguez",
@@ -82,12 +82,12 @@ export class SendMoneyCuba extends Component {
   });
 
   municipios = useState({
-    names:[]
+    names: []
   })
 
   beneficiarioData = useState({
 
-    
+
     selectedBeneficiaryId: '-1',
     selectedCard: '-1',
     cardBankImage: '',
@@ -108,7 +108,7 @@ export class SendMoneyCuba extends Component {
 
   })
 
-  
+
 
   static template = xml`    
     <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-y-0 tw-gap-x-2">   
@@ -124,8 +124,8 @@ export class SendMoneyCuba extends Component {
                 </label> 
 
                 <div class="tw-join">                        
-                   
-                    <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
+                   <!-- t-on-input="onChangeSendInput"  t-on-keypress="onSendInputKeyPress"-->
+                    <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
            
                   
 
@@ -178,7 +178,7 @@ export class SendMoneyCuba extends Component {
 
                   <div class="tw-join">        
                                               
-                      <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
+                      <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
                       class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
                    
                     
@@ -391,7 +391,7 @@ export class SendMoneyCuba extends Component {
       console.log("Beneficiarios")
       console.log(this.beneficiarioData)
 
-    
+
       this.cardRegExp = await api.getCardRegExp();
 
       this.tiposCambio = await api.getAllTiposDeCambio();
@@ -457,33 +457,62 @@ export class SendMoneyCuba extends Component {
   }
 
 
-/*
-  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
-    const service = `card${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiarioData.deliveryZona;
-    //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
-    //pues el usuario puede haber cambiado la provincia
-    const accessToken = API.getTokenFromlocalStorage();
-    const api = new API(accessToken);
-    const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
-    const feeUSD = feeResultUSD.fee;
-    //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
-    const monedaEnviadaUSD = 'USD';
-    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
-    console.log(`Fee en moneda ${monedaEnviada}`)
-    console.log(feeMonedaEnviada)
+  /*
+    async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
+      const service = `card${monedaRecibida.toUpperCase()}`;
+      const zone = this.beneficiarioData.deliveryZona;
+      //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
+      //pues el usuario puede haber cambiado la provincia
+      const accessToken = API.getTokenFromlocalStorage();
+      const api = new API(accessToken);
+      const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
+      const feeUSD = feeResultUSD.fee;
+      //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
+      const monedaEnviadaUSD = 'USD';
+      const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
+      console.log(`Fee en moneda ${monedaEnviada}`)
+      console.log(feeMonedaEnviada)
+  
+      const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+  
+      this.conversionRate.value = tc;
+      this.fee.value = feeMonedaEnviada;
+      this.feeSTR.value = UImanager.roundDec(this.fee.value)
+  
+      return feeMonedaEnviada;
+  
+    }*/
 
-    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
 
-    this.conversionRate.value = tc;
-    this.fee.value = feeMonedaEnviada;
-    this.feeSTR.value = UImanager.roundDec(this.fee.value)
+  //  onSendInputKeyPress= (event) => {
+  //   //this.inputSendRef.el.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
+  //  // this.inputSendRef.el.value = this.inputSendRef.el.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g,'');
+  //   if (charCode >= 48 && charCode <= 57) {
 
-    return feeMonedaEnviada;
+  //   } else {
 
-  }*/
+  //   }
 
-  onChangeSendInput = API.debounce(async () => {
+
+  //   return false
+
+
+  //  var charCode = (event.which) ? event.which : event.keyCode;
+
+  //console.log(charCode)/
+
+  //if (charCode >= 48 && charCode <= 57) {
+  //this.sendAmountIsvalid = true;
+  //return true;
+  //} else {
+  // this.sendAmountIsvalid = false;
+  //return false;
+  // }
+
+  //}/
+
+
+  onChangeSendInput = API.debounce(async (event) => {
 
     const cantidadEnviada = this.inputSendRef.el.value;
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
@@ -499,17 +528,17 @@ export class SendMoneyCuba extends Component {
 
     //Comun
     //const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
-    
-    const feeOBJ = await UImanager.calculateAndShowFee('card',cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
-    this.fee.value  =  feeOBJ.feeMonedaEnviada;
-    this.conversionRate.value =feeOBJ.conversionRate;
+
+    const feeOBJ = await UImanager.calculateAndShowFee('card', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    this.fee.value = feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value = feeOBJ.conversionRate;
     this.feeSTR.value = feeOBJ.feeSTR;
 
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(this.fee.value);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
-    
+
 
   }, 700);
 
@@ -531,9 +560,9 @@ export class SendMoneyCuba extends Component {
     //Comun
 
     //const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
-    const feeOBJ = await UImanager.calculateAndShowFee('card',cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
-    this.fee.value  =  feeOBJ.feeMonedaEnviada;
-    this.conversionRate.value =feeOBJ.conversionRate;
+    const feeOBJ = await UImanager.calculateAndShowFee('card', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    this.fee.value = feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value = feeOBJ.conversionRate;
     this.feeSTR.value = feeOBJ.feeSTR;
 
     this.totalSendCost.value = Number(cantidadEnviada) + Number(this.fee.value);
@@ -714,14 +743,14 @@ export class SendMoneyCuba extends Component {
 
       this.inputcardNumber.el.value = this.beneficiarioData.cardNumber;
       this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
-      
+
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
     } else {
       console.log("NO Hay card data");
       this.beneficiarioData.cardHolderName = '';
       this.beneficiarioData.cardNumber = '';
-      this.inputcardHolderName.el.value ='';
-      this.inputcardNumber.el.value ='';
+      this.inputcardHolderName.el.value = '';
+      this.inputcardNumber.el.value = '';
     }
 
   }
@@ -742,31 +771,31 @@ export class SendMoneyCuba extends Component {
     const selectedBeneficiaryId = event.target.value;
     this.beneficiarioData.selectedBeneficiaryId = selectedBeneficiaryId;
 
-    if (selectedBeneficiaryId!=-1) {
+    if (selectedBeneficiaryId != -1) {
       this.setearDatosBeneficiario(selectedBeneficiaryId);
     } else {
       this.cardsList.cards = []
 
-      
+
       this.beneficiarioData.deliveryAreaID = "-1";  //Provincia
       this.beneficiarioData.deliveryArea = "";
       this.beneficiarioData.receiverCityID = -1;   //Municipio
       this.beneficiarioData.receiverCity = '';
     }
 
-    
 
-    
+
+
     this.beneficiarioData.selectedCard = '-1',
       this.beneficiarioData.cardBankImage = '',
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
-    
+
   }
 
-//TEST: seleccionar beneficiario X, comprobar que los datos del beneficiario X, se ponen en cada uno de los controles
-//IDEAL: Agregar los datos del beneficiario antes del test, eliminar datos beneficiario luego del test
-//REAL: no permite eliminar --> leer datos de un beneficiario, comprobar con los datos leidos desde la BD
+  //TEST: seleccionar beneficiario X, comprobar que los datos del beneficiario X, se ponen en cada uno de los controles
+  //IDEAL: Agregar los datos del beneficiario antes del test, eliminar datos beneficiario luego del test
+  //REAL: no permite eliminar --> leer datos de un beneficiario, comprobar con los datos leidos desde la BD
   setearDatosBeneficiario = async (idBeneficiario) => {
     //Setear el select de tarjetas con la tarjeta de la operacion
 
@@ -911,7 +940,7 @@ export class SendMoneyCuba extends Component {
   async onChangeCardInput(event) {
 
     this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
-    
+
 
 
   };
@@ -942,7 +971,7 @@ export class SendMoneyCuba extends Component {
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
     //this.cambioBeneficiario = true;
-    
+
     if (this.inicializando) return;
     const selectedProvinceId = event.target.value;
     this.beneficiarioData.deliveryAreaID = event.target.value;
@@ -952,7 +981,7 @@ export class SendMoneyCuba extends Component {
     if (selectedProvince) {
       this.municipios.names = UImanager.addKeyToMunicipios(selectedProvince.municipios);
       console.log(this.municipios)
-      
+
       this.beneficiarioData.deliveryArea = selectedProvince.nombre;
       this.beneficiarioData.deliveryZona = selectedProvince.id === "4" ? "Habana" : "Provincias";
       //this.props.onChangeDatosBeneficiarios(this.state);
@@ -961,7 +990,7 @@ export class SendMoneyCuba extends Component {
     }
 
     this.beneficiarioData.receiverCityID = -1; //Municipio id 
-      this.beneficiarioData.receiverCity = '';    //Municipio
+    this.beneficiarioData.receiverCity = '';    //Municipio
   };
 
   //Evento al cambiar de municipio

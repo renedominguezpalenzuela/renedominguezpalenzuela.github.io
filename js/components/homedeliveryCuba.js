@@ -89,7 +89,7 @@ export class HomeDeliveryCuba extends Component {
                     
                       
 
-                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput"    class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
+                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
 
 
                       
@@ -132,7 +132,7 @@ export class HomeDeliveryCuba extends Component {
         
                       <div class="tw-join">                     
                         <div>                                
-                          <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   
+                          <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" 
                           class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
                         </div>
                         

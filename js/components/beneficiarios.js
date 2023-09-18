@@ -622,6 +622,7 @@ export class Beneficiarios extends Component {
       }, API.tiempoDebounce);*/
 
 
+        //t-on-keydown="onCardInputKeyDown"
     onCardInputKeyDown = (event) => {
 
         const key = event.key; // const {key} = event; ES6+
