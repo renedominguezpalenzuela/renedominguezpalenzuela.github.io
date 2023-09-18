@@ -61,6 +61,7 @@ export class Beneficiarios extends Component {
         email: false,
         province: false,
         municipality: false,
+        card:false
 
     })
 
@@ -292,6 +293,9 @@ export class Beneficiarios extends Component {
                         <span class="tw-label-text">Card Number</span>
                     </label>
                     <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <span t-if="this.errores.card==true" class="error">
+                     Card Number Error!!!
+                    </span>
                 </div>
 
                 <div class=" tw-flex tw-items-center tw-w-full sm:tw-row-start-9 sm:tw-col-start-2 tw-mt-1">
@@ -428,60 +432,6 @@ export class Beneficiarios extends Component {
     }
 
 
-
-    async buscarLogotipoBanco(CardNumber) {
-        const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
-
-       // console.log(`Card Length ${cardWithoutSpaces.length}`)
-        if (cardWithoutSpaces.length!=16) {
-            return false;
-        }
-
-        const api = new API(this.accessToken);
-        const cardRegExp = await api.getCardRegExp();
-        //console.log(cardRegExp)
-
-
-
-        for (const key in cardRegExp) {
-
-            const regexp = new RegExp(cardRegExp[key]);
-            const card = this.state.cardNumber.replace(/ /g, "");
-            const resultado = regexp.test(card);
-            if (resultado) {
-
-                switch (key) {
-                    case 'BANDEC_CARD':
-                        //Poner imagen
-                        this.state.cardBankImage = "img/logo-bandec.png";
-                        this.state.bankName = "BANDEC";
-                        return true;
-
-                        break;
-
-                    case 'BANMET_CARD':
-                        //Poner imagen
-                        this.state.cardBankImage = "img/logo-metro.png";
-                        this.state.bankName = "METROPOLITANO";
-                        return true;
-
-                        break;
-
-                    case 'BPA_CARD':
-                        //Poner imagen
-                        this.state.cardBankImage = "img/logo-bpa.png";
-                        this.state.bankName = "BPA";
-                        return true;
-
-                        break;
-
-                    default:
-                        return false;
-                        break;
-                }
-            }
-        }
-    }
 
 
 
@@ -700,24 +650,30 @@ export class Beneficiarios extends Component {
 
 
     //t-on-input
-    onChangeCardInput(event) {
+    async onChangeCardInput(event) {
 
         console.log(event)
         console.log(`state.cardNumber ${this.state.cardNumber}`)
         console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
         if (!this.backspace) {
-            this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);  
-            this.state.cardNumber = this.inputCardNumber.el.value;          
-        } 
-        
+            this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+           
+        }
+
+        this.state.cardNumber = this.inputCardNumber.el.value;
+
 
         if (event.target.value.length === 19) {
-
-
-            this.buscarLogotipoBanco(this.state.cardNumber);
-
-
+            const tarjeta = await UImanager.buscarLogotipoBanco(this.state.cardNumber, this.accessToken);
+            this.state.cardBankImage = tarjeta.cardBankImage;
+            this.state.bankName = tarjeta.bankName;
+            this.errores.card = !tarjeta.tarjetaValida;
+        } else {
+            this.state.cardBankImage = '';
+            this.state.bankName ='';
+            this.errores.card = true;
         }
+
         /* const key =event.key;
        
  
@@ -760,8 +716,13 @@ export class Beneficiarios extends Component {
             const formatedCardNumber = UImanager.formatCardNumber(cardData.number)
             this.state.cardNumber = formatedCardNumber;
             this.state.cardHolderName = cardData.cardHolderName;
-            await this.buscarLogotipoBanco(this.state.cardNumber);
-        }
+            // await this.buscarLogotipoBanco(this.state.cardNumber);
+
+            const tarjeta = await UImanager.buscarLogotipoBanco(this.state.cardNumber, this.accessToken);
+            this.state.cardBankImage = tarjeta.cardBankImage;
+            this.state.bankName = tarjeta.bankName;
+            this.errores.card = !tarjeta.tarjetaValida;
+        } 
         //else {
         //    this.state.cardNumber = '';
         //    this.state.cardHolderName = '';
@@ -1100,11 +1061,11 @@ export class Beneficiarios extends Component {
             return;
         }
 
-        this.state.cardNumber = this.inputCardNumber.el.value;  
+        this.state.cardNumber = this.inputCardNumber.el.value;
         const nuevaCard = this.state.cardNumber;
         console.log(`Salvando card ${nuevaCard}`)
-        
-        if (await this.buscarLogotipoBanco(nuevaCard)) {
+
+        if (await UImanager.buscarLogotipoBanco(nuevaCard, this.accessToken).tarjetaValida) {
             if (this.salvarNuevaCard(nuevaCard)) {
                 Swal.fire({
                     icon: 'success',

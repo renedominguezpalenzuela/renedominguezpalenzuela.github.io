@@ -1006,6 +1006,85 @@ export async function getUsrInfo() {
 export class UImanager {
 
 
+  
+
+  static async  buscarLogotipoBanco(CardNumber, accessToken) {
+    // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
+    const cardWithoutSpaces = CardNumber.replace(/ /g, "");
+
+    // console.log(`Card Length ${cardWithoutSpaces.length}`)
+    if (cardWithoutSpaces.length != 16) {
+        return false;
+    }
+
+    const api = new API(accessToken);
+    const cardRegExp = await api.getCardRegExp();
+    //console.log(cardRegExp)
+
+
+
+    for (const key in cardRegExp) {
+
+        const regexp = new RegExp(cardRegExp[key]);
+        //const card = this.state.cardNumber.replace(/ /g, "");
+        const card = cardWithoutSpaces;
+        const resultado = regexp.test(card);
+        if (resultado) {
+
+            switch (key) {
+                case 'BANDEC_CARD':
+                    //Poner imagen
+                    /* this.state.cardBankImage = "img/logo-bandec.png";
+                     this.state.bankName = "BANDEC";
+                     return true;*/
+                    return {
+                        tarjetaValida: true,
+                        cardBankImage: "img/logo-bandec.png",
+                        bankName: "BANDEC"
+                    }
+
+                    break;
+
+                case 'BANMET_CARD':
+                    //Poner imagen
+                    /*this.state.cardBankImage = "img/logo-metro.png";
+                    this.state.bankName = "METROPOLITANO";
+                    return true;*/
+                    return {
+                        tarjetaValida: true,
+                        cardBankImage: "img/logo-metro.png",
+                        bankName: "METROPOLITANO"
+                    }
+
+                    break;
+
+                case 'BPA_CARD':
+                    //Poner imagen
+                    /* this.state.cardBankImage = "img/logo-bpa.png";
+                     this.state.bankName = "BPA";
+                     return true;*/
+                    return {
+                        tarjetaValida: true,
+                        cardBankImage: "img/logo-bpa.png",
+                        bankName: "BPA"
+                    }
+
+                    break;
+
+                default:
+                    // return false;
+                    return {
+                        tarjetaValida: false,
+                        cardBankImage: "",
+                        bankName: ""
+                    }
+                    break;
+            }
+        }
+    }
+}
+
+
   static validMail(mail)
   {
       return /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
