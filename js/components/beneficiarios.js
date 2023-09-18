@@ -656,6 +656,7 @@ export class Beneficiarios extends Component {
 
 
     onCardInputKeyDown = API.debounce(async (event) => {
+
         this.state.cardNumber = event.target.value;
         if (event.target.value.length === 19) {
 
@@ -960,8 +961,8 @@ export class Beneficiarios extends Component {
     //mantener inactivo hasta que se haga un cambio en un campo
     async onSaveBeneficiario() {
 
-        const nuevaCard = this.state.cardNumber;
-        this.salvarNuevaCard(nuevaCard)
+       // const nuevaCard = this.state.cardNumber;
+       // this.salvarNuevaCard(nuevaCard)
 
 
 
