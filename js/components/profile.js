@@ -202,7 +202,7 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Phone</span>
                     </label>                    
-                    <input t-model="this.state.phoneToShow"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+                    <input t-model="this.state.phoneToShow"  id="phone" name="phone" type="tel" class="tw-selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"/>
                     <span t-if="this.errores.phoneField==true" class="error">
                        Invalid number!!!
                     </span>
@@ -229,7 +229,7 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">ID Number</span>
                     </label>                    
-                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeIdentityNumber" t-on-blur="onBlurIdentityNumber"   />                       
+                    <input type="text" t-model="this.state.identityNumber" placeholder="ID Number" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeIdentityNumber" t-on-blur="onBlurIdentityNumber" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"  />                       
                     <span t-if="this.errores.identityNumber==true" class="error">
                        Required field!!!
                     </span>
@@ -704,7 +704,8 @@ export class Profile extends Component {
     this.errores.firstName = this.validarSiVacio(datos.firstName)
     this.errores.lastName = this.validarSiVacio(datos.lastName)
     this.errores.providerValue = this.validarSiVacio(datos.providerValue)
-    this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+    //this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+    this.errores.identityNumber = UImanager.validarCI(datos.identityNumber);
     this.errores.street = this.validarSiVacio(datos.street)
     
     this.errores.houseNumber = this.validarSiVacio(datos.houseNumber)

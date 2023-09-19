@@ -151,9 +151,9 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">ID</span>
                             </label>
-                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  t-on-blur="onBlurIDInput"  />   
+                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  t-on-blur="onBlurIDInput" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" />   
                             <span t-if="this.errores.identityNumber==true" class="error">
-                              Required field!!!
+                              Required field or not valid format!!!
                             </span>
 
                         </div>
@@ -163,7 +163,7 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">Contact Phone</span>
                             </label>
-                            <input   id="phone" name="phone" type="tel"   t-att-value="this.state.phone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput"  t-on-blur="onBlurPhone" />   
+                            <input   id="phone" name="phone" type="tel"   t-att-value="this.state.phone"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneInput"  t-on-blur="onBlurPhone" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" />   
                             <span t-if="this.errores.phone==true" class="error">
                                Incorrect Phone number!!!
                             </span>
@@ -490,13 +490,17 @@ export class Beneficiarios extends Component {
 
 
 
+
     onChangeIDInput = API.debounce(async (event) => {
         this.state.identityNumber = event.target.value;
-        this.errores.identityNumber = this.validarSiVacio(event.target.value);
+        this.errores.identityNumber = UImanager.validarCI(event.target.value)
+        
+
     }, API.tiempoDebounce);
 
     onBlurIDInput = (event) => {
-        this.errores.identityNumber = this.validarSiVacio(event.target.value);
+        this.errores.identityNumber = UImanager.validarCI(event.target.value);
+        
     }
 
     onChangePhoneInput = API.debounce(async (event) => {
@@ -878,7 +882,8 @@ export class Beneficiarios extends Component {
 
     validarDatos(datos) {
 
-        this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+        //this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
+        this.errores.identityNumber = UImanager.validarCI(datos.identityNumber);
         this.errores.firstName = this.validarSiVacio(datos.firstName);
         this.errores.lastName = this.validarSiVacio(datos.lastName);
         this.errores.secondLastName = this.validarSiVacio(datos.secondLastName);

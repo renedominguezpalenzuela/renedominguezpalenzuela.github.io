@@ -1006,6 +1006,36 @@ export async function getUsrInfo() {
 export class UImanager {
 
 
+  //DEvuelve true si hay error en la longitud del ci
+  static validarCI(ci) {
+    const ciwithoutspaces = ci.replace(/ /g, "");
+
+    const year = ciwithoutspaces.substring(0,2);
+    const month = ciwithoutspaces.substring(2,4);
+    const day = ciwithoutspaces.substring(4,6);
+
+    console.log(`${year} \ ${month} \ ${day}`)
+
+    //if (year)
+
+    if (month<=0 || month>12) {
+      return true;
+    }
+
+    if (day<=0 || day>31) {
+      return true;
+    }
+
+    // console.log(`Card Length ${cardWithoutSpaces.length}`)
+    if (ciwithoutspaces.length != 11) {
+        return true;
+    } else {
+      return false;
+    }
+
+  }
+
+
   
 
   static async  buscarLogotipoBanco(CardNumber, accessToken) {
