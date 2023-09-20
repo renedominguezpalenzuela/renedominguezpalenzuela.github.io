@@ -13,3 +13,7 @@ DOC:
 https://apidoc.ducapp.com/
 
 
+----------------------------------------------------
+Ejecucion de Test unitarios
+
+yarn test

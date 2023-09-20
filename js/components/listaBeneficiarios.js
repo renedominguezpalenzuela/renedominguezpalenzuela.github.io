@@ -31,7 +31,7 @@ export class ListaBeneficiarios extends Component {
     static template = xml`  
 
     
-    <table  id="container-listtr" class="display nowrap tw-mt-2 " style="width:100%" >
+    <table  id="container-listbeneficiary" class="display nowrap tw-mt-2 " style="width:100%" >
         <thead class="tw-bg-[#3750D1] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
             <tr>
                     <th data-priority="1">Beneficiary</th>    
@@ -69,6 +69,11 @@ export class ListaBeneficiarios extends Component {
 
 
 
+        
+        /*onWillDestroy(() => {
+            console.log("Destroy")
+          });*/
+
 
 
 
@@ -104,14 +109,10 @@ export class ListaBeneficiarios extends Component {
             // do something here
 
 
-            var tableId = "#container-listtr";
+            var tableId = "#container-listbeneficiary";
 
-
-            if (!this.tabla) {
-                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-            }
-
-
+            
+           
 
             //CCreando la tabla
             this.tabla = $(tableId).DataTable({
@@ -128,7 +129,7 @@ export class ListaBeneficiarios extends Component {
                 order: [[0, 'asc']],
                 select: true,
                 responsive: true,
-                destroy: true,
+                //destroy: true,
                 //footer: false
 
 
@@ -147,6 +148,20 @@ export class ListaBeneficiarios extends Component {
                     }
                 }
             });
+
+           /* if (!this.datos || this.datos.length<=0) {
+                //$('#container-listtr').DataTable().clear().destroy();
+
+                // this.tabla.clear();
+                //this.tabla.destroy();
+                //2nd empty html
+                // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+                // $(tableId + " thead").empty(); //LIMPIA EL HEADER
+                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+
+
+            }*/
+
 
         });
 
@@ -175,6 +190,29 @@ export class ListaBeneficiarios extends Component {
             this.tabla.rows.add(this.datos).draw();         
           
           }
+
+          const base_name_otra_table = "#container-listtr"
+
+            
+
+          const otra_table = $(`${base_name_otra_table}_wrapper`)
+          console.log(otra_table)
+          
+          //if (otra_table) {
+              console.log("Existe otra tabla")
+            //  console.log(otra_table)
+              $(`${base_name_otra_table}_length`).empty();
+              $(`${base_name_otra_table}_filter`).empty();
+              $(`${base_name_otra_table}_wrapper`).empty();
+          //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
+           //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
+           //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
+            //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+          //}
+
+          
+
+         // container-listtr_wrapper
           
 
         });

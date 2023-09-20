@@ -237,18 +237,9 @@ export class ListaTR extends Component {
             var tableId = "#container-listtr";
 
 
-            if (!this.tabla) {
-                //$('#container-listtr').DataTable().clear().destroy();
+           
 
-                // this.tabla.clear();
-                //this.tabla.destroy();
-                //2nd empty html
-                // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
-                // $(tableId + " thead").empty(); //LIMPIA EL HEADER
-                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-
-
-            }
+            
 
 
             function format(inputDate) {
@@ -393,11 +384,11 @@ export class ListaTR extends Component {
                 order: [[6, 'desc']],
                 select: true,
                 responsive: true,
-                destroy: true,
-                /*language: {
+                //destroy: true,
+                language: {
                     emptyTable: "No data",
                     infoEmpty : "No entries to show"
-                  }*/
+                  }
                 //footer: false
 
                 /*'rowCallback': function(row, data, index){
@@ -455,12 +446,45 @@ export class ListaTR extends Component {
                 });
             }
 
+            if (!this.datos || this.datos.length<=0) {
+                //$('#container-listtr').DataTable().clear().destroy();
+
+                // this.tabla.clear();
+                //this.tabla.destroy();
+                //2nd empty html
+                 $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+                 $(tableId + " thead").empty(); //LIMPIA EL HEADER
+                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+
+
+            }
+
 
 
         });
 
 
         onRendered(async () => {
+
+            const base_name_otra_table = "#container-listbeneficiary"
+
+            
+            const otra_table = $(`${base_name_otra_table}_wrapper`)
+         
+            
+            //if (otra_table) {
+                console.log("Existe otra tabla")
+                console.log(otra_table)
+                $(`${base_name_otra_table}_length`).empty();
+                $(`${base_name_otra_table}_filter`).empty();
+                $(`${base_name_otra_table}_wrapper`).empty();
+            //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
+             //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
+             //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
+              //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+            //}
+
+            
 
         });
 
