@@ -171,7 +171,7 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // Update usuario
   //------------------------------------------------------------------------------------------------
-   async updateUser(datosUsuario) {
+  async updateUser(datosUsuario) {
 
     var body = JSON.stringify(datosUsuario);
 
@@ -1010,25 +1010,55 @@ export class UImanager {
   static validarCI(ci) {
     const ciwithoutspaces = ci.replace(/ /g, "");
 
-    const year = ciwithoutspaces.substring(0,2);
-    const month = ciwithoutspaces.substring(2,4);
-    const day = ciwithoutspaces.substring(4,6);
+    const limiteInferiorEdad = 15; //menores de 15 annos no pueden usar la app
 
-    console.log(`${year} \ ${month} \ ${day}`)
+    const year = parseInt(ciwithoutspaces.substring(0, 2));
+    const month = parseInt(ciwithoutspaces.substring(2, 4));
+    const day = parseInt(ciwithoutspaces.substring(4, 6));
 
-    //if (year)
+  //  console.log(`${year} \ ${month} \ ${day}`)
 
-    if (month<=0 || month>12) {
-      return true;
+
+    const current_year2Digit = new Date().getFullYear() - 2000 + 5; //en 2023 daria 28
+    const current_year4Digits = new Date().getFullYear();
+
+    let year4digit = 0;
+    //console.log(`Current year ${current_year} `)
+
+
+
+    if (year <= current_year2Digit) {
+      year4digit = 2000 + year
+    } else {
+      year4digit = 1900 + year
     }
 
-    if (day<=0 || day>31) {
-      return true;
+    const edad = current_year4Digits - year4digit;
+    console.log(`Edad ${edad}`)
+    console.log(`current_year4Digits ${current_year4Digits}`)
+    console.log(`4 digit year ${year4digit}`)
+    if (edad > limiteInferiorEdad) {
+      console.log("Mayor")
+
+    } else {
+      console.log("Menor")
+      return true; //CI no valido es menor de edad
+    }
+    
+
+
+
+    if (month <= 0 || month > 12) {
+      return true; //CI no valido mes no permitido
+    }
+
+    if (day <= 0 || day > 31) {
+      return true; //CI no valido dia no permitido
     }
 
     // console.log(`Card Length ${cardWithoutSpaces.length}`)
     if (ciwithoutspaces.length != 11) {
-        return true;
+      return true; //CI no valido longitud diferente de 11
     } else {
       return false;
     }
@@ -1036,15 +1066,15 @@ export class UImanager {
   }
 
 
-  
 
-  static async  buscarLogotipoBanco(CardNumber, accessToken) {
+
+  static async buscarLogotipoBanco(CardNumber, accessToken) {
     // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
     const cardWithoutSpaces = CardNumber.replace(/ /g, "");
 
     // console.log(`Card Length ${cardWithoutSpaces.length}`)
     if (cardWithoutSpaces.length != 16) {
-        return false;
+      return false;
     }
 
     const api = new API(accessToken);
@@ -1055,84 +1085,83 @@ export class UImanager {
 
     for (const key in cardRegExp) {
 
-        const regexp = new RegExp(cardRegExp[key]);
-        //const card = this.state.cardNumber.replace(/ /g, "");
-        const card = cardWithoutSpaces;
-        const resultado = regexp.test(card);
-        if (resultado) {
+      const regexp = new RegExp(cardRegExp[key]);
+      //const card = this.state.cardNumber.replace(/ /g, "");
+      const card = cardWithoutSpaces;
+      const resultado = regexp.test(card);
+      if (resultado) {
 
-            switch (key) {
-                case 'BANDEC_CARD':
-                    //Poner imagen
-                    /* this.state.cardBankImage = "img/logo-bandec.png";
-                     this.state.bankName = "BANDEC";
-                     return true;*/
-                    return {
-                        tarjetaValida: true,
-                        cardBankImage: "img/logo-bandec.png",
-                        bankName: "BANDEC"
-                    }
-
-                    break;
-
-                case 'BANMET_CARD':
-                    //Poner imagen
-                    /*this.state.cardBankImage = "img/logo-metro.png";
-                    this.state.bankName = "METROPOLITANO";
-                    return true;*/
-                    return {
-                        tarjetaValida: true,
-                        cardBankImage: "img/logo-metro.png",
-                        bankName: "METROPOLITANO"
-                    }
-
-                    break;
-
-                case 'BPA_CARD':
-                    //Poner imagen
-                    /* this.state.cardBankImage = "img/logo-bpa.png";
-                     this.state.bankName = "BPA";
-                     return true;*/
-                    return {
-                        tarjetaValida: true,
-                        cardBankImage: "img/logo-bpa.png",
-                        bankName: "BPA"
-                    }
-
-                    break;
-
-                default:
-                    // return false;
-                    return {
-                        tarjetaValida: false,
-                        cardBankImage: "",
-                        bankName: ""
-                    }
-                    break;
+        switch (key) {
+          case 'BANDEC_CARD':
+            //Poner imagen
+            /* this.state.cardBankImage = "img/logo-bandec.png";
+             this.state.bankName = "BANDEC";
+             return true;*/
+            return {
+              tarjetaValida: true,
+              cardBankImage: "img/logo-bandec.png",
+              bankName: "BANDEC"
             }
+
+            break;
+
+          case 'BANMET_CARD':
+            //Poner imagen
+            /*this.state.cardBankImage = "img/logo-metro.png";
+            this.state.bankName = "METROPOLITANO";
+            return true;*/
+            return {
+              tarjetaValida: true,
+              cardBankImage: "img/logo-metro.png",
+              bankName: "METROPOLITANO"
+            }
+
+            break;
+
+          case 'BPA_CARD':
+            //Poner imagen
+            /* this.state.cardBankImage = "img/logo-bpa.png";
+             this.state.bankName = "BPA";
+             return true;*/
+            return {
+              tarjetaValida: true,
+              cardBankImage: "img/logo-bpa.png",
+              bankName: "BPA"
+            }
+
+            break;
+
+          default:
+            // return false;
+            return {
+              tarjetaValida: false,
+              cardBankImage: "",
+              bankName: ""
+            }
+            break;
         }
+      }
     }
-}
+  }
 
 
-  static validMail(mail)
-  {
+  static validMail(mail) {
 
-      const correo_valido1 = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
-      const correo_valido2 = mail.charAt(mail.length - 1)!='.'? true : false;
+    const correo_valido1 = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
+    const correo_valido2 = mail.charAt(mail.length - 1) != '.' ? true : false;
 
-      return correo_valido1 && correo_valido2;
+    return correo_valido1 && correo_valido2;
 
-      ///^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
+    ///^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
   }
   //--------------------------------------------------------------------------------------------------------------------
   //SendInput manejar eventos on change de Cantidad enviada, pide el Fee, en funcion de la cantidad a enviar
   //--------------------------------------------------------------------------------------------------------------------
   //delivery
-  static  async calculateAndShowFee(servicio, cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio, zone) {
+  static async calculateAndShowFee(servicio, cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio, zone) {
     const service = `${servicio}${monedaRecibida.toUpperCase()}`;
     if (!zone) {
-      zone="Habana"
+      zone = "Habana"
     }
     //const zone = this.beneficiario.deliveryZona;  
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
@@ -1153,19 +1182,19 @@ export class UImanager {
     //    monedaAconvertir = USD
     //    const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
     //Version original mia: const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
-    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
+    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviada, monedaEnviadaUSD);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
     const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-   // this.conversionRate.value = tc;
-   // this.fee.value = feeMonedaEnviada;
-   // this.feeSTR.value = UImanager.roundDec(this.fee.value)
+    // this.conversionRate.value = tc;
+    // this.fee.value = feeMonedaEnviada;
+    // this.feeSTR.value = UImanager.roundDec(this.fee.value)
     return {
       feeMonedaEnviada: feeMonedaEnviada,
       conversionRate: tc,
       feeSTR: UImanager.roundDec(feeMonedaEnviada)
     }
-    
+
   }
 
   static async onChangeSendInputOLD(receiveCurrency, sendCurrency, sendAmount, conversionRate, accessToken, moneda_vs_USD) {
@@ -1327,7 +1356,7 @@ export class UImanager {
 
 
   static formatCardNumber(value) {
-    
+
     if (!value) return "0000-0000-0000-0000";
     var value = value.replace(/\D/g, '');
     if ((/^\d{0,16}$/).test(value)) {

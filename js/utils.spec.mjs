@@ -101,3 +101,23 @@ describe("Correos Validos:", ()=>{
     }) 
 })
 
+
+
+describe("CI Validos:", ()=>{    
+
+    it ("CI del 1975 debe ser Valido", ()=>{
+        const CI = '75033036829';
+        expect(UImanager.validarCI(CI)).toBe(false); //validarCI --- devuelve true si hay errores            
+    })
+
+
+    it ("CI del 2001 debe ser valido", ()=>{
+        const CI = '01022312345';
+        expect(UImanager.validarCI(CI)).toBe(false); //validarCI --- devuelve true si hay errores                    
+    }) 
+
+    it ("CI de menor de edad debe dar error", ()=>{
+        const CI = '13022312345';
+        expect(UImanager.validarCI(CI)).toBe(true); //validarCI --- devuelve true si hay errores                    
+    }) 
+})
