@@ -78,6 +78,9 @@ export class ListaTR extends Component {
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
+    willUnmount() {
+        console.log('CALLED:> willUnmount');
+    }
 
     setup() {
 
@@ -160,7 +163,7 @@ export class ListaTR extends Component {
 
 
 
-          
+
 
             //console.log(raw_datos)
             this.datos = [];
@@ -198,6 +201,7 @@ export class ListaTR extends Component {
 
         onWillStart(async () => {
 
+
             console.log("Solicitando lista de TX al servidor")
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
@@ -210,7 +214,7 @@ export class ListaTR extends Component {
 
 
             this.datos = [];
-                     
+
 
             this.datos = await this.transformarRawDatos(raw_datos);
 
@@ -237,9 +241,9 @@ export class ListaTR extends Component {
             var tableId = "#container-listtr";
 
 
-           
 
-            
+
+
 
 
             function format(inputDate) {
@@ -314,7 +318,7 @@ export class ListaTR extends Component {
             //CCreando la tabla
 
 
-           
+
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
@@ -387,8 +391,8 @@ export class ListaTR extends Component {
                 //destroy: true,
                 language: {
                     emptyTable: "No data",
-                    infoEmpty : "No entries to show"
-                  }
+                    infoEmpty: "No entries to show"
+                }
                 //footer: false
 
                 /*'rowCallback': function(row, data, index){
@@ -446,14 +450,14 @@ export class ListaTR extends Component {
                 });
             }
 
-            if (!this.datos || this.datos.length<=0) {
+            if (!this.datos || this.datos.length <= 0) {
                 //$('#container-listtr').DataTable().clear().destroy();
 
                 // this.tabla.clear();
                 //this.tabla.destroy();
                 //2nd empty html
-                 $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
-                 $(tableId + " thead").empty(); //LIMPIA EL HEADER
+                $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+                $(tableId + " thead").empty(); //LIMPIA EL HEADER
                 $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
 
 
@@ -466,25 +470,27 @@ export class ListaTR extends Component {
 
         onRendered(async () => {
 
-            const base_name_otra_table = "#container-listbeneficiary"
 
-            
+            const base_name_otra_table = "#container-listbeneficiary"
+            //                                           container-listbeneficiary_wrapper
+
+
             const otra_table = $(`${base_name_otra_table}_wrapper`)
-         
-            
+
+
             //if (otra_table) {
-                console.log("Existe otra tabla")
-                console.log(otra_table)
-                $(`${base_name_otra_table}_length`).empty();
-                $(`${base_name_otra_table}_filter`).empty();
-                $(`${base_name_otra_table}_wrapper`).empty();
+            console.log("Existe otra tabla")
+            console.log(otra_table)
+            //              $(`${base_name_otra_table}_length`).empty();
+            //              $(`${base_name_otra_table}_filter`).empty();
+            $(`${base_name_otra_table}_wrapper`).remove();
             //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
-             //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
-             //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
-              //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+            //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
+            //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
+            //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
             //}
 
-            
+
 
         });
 
@@ -492,6 +498,11 @@ export class ListaTR extends Component {
         /* onWillUnmount(async()=>{
              console.log("sss")
          })*/
+
+        /* onWillDestroy(() => {
+            // do some cleanup
+            console.log('destro')
+          });*/
 
 
 
@@ -501,12 +512,12 @@ export class ListaTR extends Component {
 
     transformarRawDatos(raw_datos) {
 
-     
 
 
-        if (!raw_datos || !raw_datos.status) { 
-            return [];     
-        } else if (!(raw_datos.status!=200 || raw_datos.status!=201 )) {
+
+        if (!raw_datos || !raw_datos.status) {
+            return [];
+        } else if (!(raw_datos.status != 200 || raw_datos.status != 201)) {
             return [];
         } else if (!raw_datos.data) {
             return [];
@@ -528,7 +539,7 @@ export class ListaTR extends Component {
 
         const raw_datos1 = raw_datos.data.data.map((unDato) => {
 
-           
+
 
             //const fecha = new Date(unDato.createdAt).toLocaleDateString('en-US');
             const fecha = new Date(unDato.createdAt).

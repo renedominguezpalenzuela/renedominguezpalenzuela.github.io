@@ -53,8 +53,8 @@ export class ListaBeneficiarios extends Component {
     setup() {
 
 
-       // console.log("ListaBeneficiarios")
-       // console.log(this.props.listaBeneficiarios)
+        // console.log("ListaBeneficiarios")
+        // console.log(this.props.listaBeneficiarios)
 
 
         const accessToken = API.getTokenFromlocalStorage();
@@ -69,7 +69,7 @@ export class ListaBeneficiarios extends Component {
 
 
 
-        
+
         /*onWillDestroy(() => {
             console.log("Destroy")
           });*/
@@ -81,20 +81,20 @@ export class ListaBeneficiarios extends Component {
 
         onWillStart(async () => {
 
-           // this.datos = this.props.listaBeneficiarios;
+            // this.datos = this.props.listaBeneficiarios;
 
 
 
             const raw_datos1 = this.props.listaBeneficiarios.map((unDato) => {
 
-                
+
                 const email = !unDato.email ? "-" : unDato.email
                 return {
-                   
+
                     ...unDato,
                     email
                 }
-                
+
             });
 
 
@@ -111,8 +111,8 @@ export class ListaBeneficiarios extends Component {
 
             var tableId = "#container-listbeneficiary";
 
-            
-           
+
+
 
             //CCreando la tabla
             this.tabla = $(tableId).DataTable({
@@ -149,18 +149,18 @@ export class ListaBeneficiarios extends Component {
                 }
             });
 
-           /* if (!this.datos || this.datos.length<=0) {
-                //$('#container-listtr').DataTable().clear().destroy();
-
-                // this.tabla.clear();
-                //this.tabla.destroy();
-                //2nd empty html
-                // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
-                // $(tableId + " thead").empty(); //LIMPIA EL HEADER
-                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-
-
-            }*/
+            /* if (!this.datos || this.datos.length<=0) {
+                 //$('#container-listtr').DataTable().clear().destroy();
+ 
+                 // this.tabla.clear();
+                 //this.tabla.destroy();
+                 //2nd empty html
+                 // $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
+                 // $(tableId + " thead").empty(); //LIMPIA EL HEADER
+                 $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+ 
+ 
+             }*/
 
 
         });
@@ -171,49 +171,49 @@ export class ListaBeneficiarios extends Component {
             console.log(this.props.listaBeneficiarios)
             const raw_datos1 = this.props.listaBeneficiarios.map((unDato) => {
 
-                
+
                 const email = !unDato.email ? "-" : unDato.email
                 return {
-                   
+
                     ...unDato,
                     email
                 }
-                
+
             });
 
 
             this.datos = raw_datos1;
 
-          //  this.tabla.clear();    
-          if (this.tabla) {
-            this.tabla.clear();
-            this.tabla.rows.add(this.datos).draw();         
-          
-          }
+            //  this.tabla.clear();    
+            if (this.tabla) {
+                this.tabla.clear();
+                this.tabla.rows.add(this.datos).draw();
 
-          const base_name_otra_table = "#container-listtr"
+            }
 
-            
+            const base_name_otra_table = "#container-listtr"
 
-          const otra_table = $(`${base_name_otra_table}_wrapper`)
-          console.log(otra_table)
-          
-          //if (otra_table) {
-              console.log("Existe otra tabla")
+
+
+            const otra_table = $(`${base_name_otra_table}_wrapper`)
+            console.log(otra_table)
+
+            //if (otra_table) {
+            console.log("Existe otra tabla")
             //  console.log(otra_table)
-              $(`${base_name_otra_table}_length`).empty();
-              $(`${base_name_otra_table}_filter`).empty();
-              $(`${base_name_otra_table}_wrapper`).empty();
-          //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
-           //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
-           //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
+            //$(`${base_name_otra_table}_length`).empty();
+            //$(`${base_name_otra_table}_filter`).empty();
+            $(`${base_name_otra_table}_wrapper`).remove();
+            //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
+            //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
+            //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
             //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-          //}
+            //}
 
-          
 
-         // container-listtr_wrapper
-          
+
+            // container-listtr_wrapper
+
 
         });
 
