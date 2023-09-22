@@ -1678,4 +1678,14 @@ export class UImanager {
 
 
 
+export function suma(a, b) {
+  return a + b;
+}
+
+
+
+
+
+
+
 
