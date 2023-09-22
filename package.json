@@ -4,11 +4,13 @@
     "tailwindcss": "^3.3.2"
   },
   "dependencies": {
+    "axios": "^1.5.0",
     "babel-cli": "^6.26.0",
     "daisyui": "^3.0.3"
   },
   "scripts": {
     "test": "babel-node js/run.mjs"
   },
-  "type": "module" 
+ 
+  "type": "module"
 }

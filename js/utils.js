@@ -3,9 +3,21 @@
   Rene Dominguez Palenzuela
   28/05/2023 
  ******************************************************************************************************/
+ /*
+    Para correr las pruebas descomentar esta linea:   
+    import axios  from "axios";
+    sPara la aplicacion web, comentar la linea
+*/
+import axios  from "axios";
+
+import './utils.js';
+
+
+
 
 //TODO: minificar, ofuscar
 //TODO: Crear funcion para mostrar mensajes, pasar solo el texto como parametro
+
 
 const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
@@ -18,8 +30,6 @@ export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //  Clase global para llamado al API
 //-------------------------------------------------------------------------------------------
 export class API {
-
-
 
   static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
   //static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
@@ -41,6 +51,86 @@ export class API {
       'Content-Type': 'application/json',
     }
   }
+
+
+  static async openweatherforTest() {
+
+
+   let respuesta = null;
+    const url = 'https://api.openweathermap.org/data/2.5/weather?lat=21.235&lon=-77.5264&appid=94028805f4357835f2684a7d8192c9fc';
+  
+    await axios.post(url,'','').then(response => {
+      
+        respuesta = response        
+      }).catch(error => {
+        console.log("ERROR en openweatherforTest")
+        console.log(error);
+        respuesta = error        
+      });
+
+
+      return respuesta;
+
+      
+  
+    
+
+  }
+  
+//-------------------------------------------------------------------------------
+//  Login
+//-------------------------------------------------------------------------------
+//Devuelve
+/*
+
+  const resultado = {
+    accessToken: null,
+    cod_respuesta: null,
+    msg_respuesta: null
+  }
+
+
+*/
+static async login(usr, pass) {
+  const config = {
+    headers: {
+      "x-api-key": x_api_key,
+      "Content-Type": "application/json"
+    }
+  };
+
+  const datos = { "email": usr, "password": pass };
+
+  const resultado = {
+    accessToken: null,
+    cod_respuesta: null,
+    msg_respuesta: null
+  }
+
+ 
+  
+
+  await axios.post(`${base_url}/api/auth/login`, datos, config)
+    .then(response => {
+      const datos = response.data;
+      if (datos.accessToken) {      
+        console.log(datos);
+        resultado.accessToken = datos.accessToken;                
+      } else {
+        console.log(response)        
+        //resultado.cod_respuesta = 
+      }
+    }).catch(error => {
+      console.log('Login Error ');
+      if (error.response) {
+        console.error(error.response);        
+      }       
+    });
+
+  return resultado;
+}
+
+
 
 
   //------------------------------------------------------------------------------------------------
@@ -915,6 +1005,7 @@ export async function login(usr, pass) {
 
 
 
+
 //TODO: minificar, ofuscar
 //TODO: Crear funcion para mostrar mensajes, pasar solo el texto como parametro
 //TODO: Poner animacion mientras no se reciban los datos
@@ -1067,19 +1158,35 @@ export class UImanager {
 
 
 
-
+//CardNumber --- se le pasa el numero de tarjeta sin espacios
   static async buscarLogotipoBanco(CardNumber, accessToken) {
     // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
     const cardWithoutSpaces = CardNumber.replace(/ /g, "");
 
-    // console.log(`Card Length ${cardWithoutSpaces.length}`)
+    console.log(`Card Length ${cardWithoutSpaces.length}`)
     if (cardWithoutSpaces.length != 16) {
-      return false;
+     
+        return {
+          tarjetaValida: false,
+          cardBankImage: "",
+          bankName: ""
+        }
+     
     }
 
     const api = new API(accessToken);
     const cardRegExp = await api.getCardRegExp();
-    //console.log(cardRegExp)
+    console.log(cardRegExp)
+
+    if (!cardRegExp) {
+      console.log("AQUI")
+      return {
+        tarjetaValida: false,
+        cardBankImage: "",
+        bankName: ""
+      }
+
+    }
 
 
 

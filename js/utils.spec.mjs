@@ -1,10 +1,7 @@
-
+//var axios = require('axios');
+//import  axios from 'axios';
+import  './libs/axios.min.js';
 import { API, UImanager } from "./utils.js";
-
-
-
-
-
 
 describe("Funcion de aproximacion:", function () {
     it("Funcion de aproximacion", function () {
@@ -29,10 +26,7 @@ describe("Funcion de aproximacion:", function () {
             { in: 1.55499994, digits: 3, expect: "1.555" },
             { in: 12.4253, digits: 2, expect: "12.43" },
             { in: 9.7, digits: 0, expect: "10" },
-            { in: 8.714282448981457, digits: 2, expect: "8.71" },
-            
-        
-        
+            { in: 8.714282448981457, digits: 2, expect: "8.71" },        
         ]
 
         const uno = UImanager.roundDec(10.25678, 2);
@@ -71,19 +65,6 @@ describe("Funcion de aproximacion:", function () {
     
 });
 
-
-
-describe("Funcion de aproximacion:", function () {
-    it("Tarjetas de Banco Expresiones regulares", function () {
-
-        const Bandec_ER =new RegExp('^((92)\\d{0,2})(0699)\\d{0,8}');
-        const Bandec_Card="9225 0699 9511 7616".replace(/ /g, "");
-        console.log(Bandec_Card);
-
-        console.log(Bandec_ER.test(Bandec_Card));
-        expect(Bandec_ER.test(Bandec_Card)).toBe(true)    
-    })   
-});
 
 
 

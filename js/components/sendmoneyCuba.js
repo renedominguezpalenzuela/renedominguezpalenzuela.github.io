@@ -21,7 +21,7 @@ export class SendMoneyCuba extends Component {
 
   inputContactPhone = useRef("inputContactPhone");
   inputdeliveryAddress = useRef("inputdeliveryAddress");
-  inputcardNumber = useRef("inputcardNumber");
+  inputCardNumber = useRef("inputCardNumber");
   inputcardHolderName = useRef("inputcardHolderName");
 
   state = useState({
@@ -30,6 +30,13 @@ export class SendMoneyCuba extends Component {
     avatar: "/img/photo-1534528741775-53994a69daeb.jpg",
     address: "",
     nameFull: "",
+  })
+
+
+  errores = useState({
+
+    card: false
+
   })
 
   monedas = useState({
@@ -263,7 +270,10 @@ export class SendMoneyCuba extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Card Number</span>
                     </label>
-                    <input t-ref="inputcardNumber" type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input t-ref="inputCardNumber" type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <span t-if="this.errores.card==true" class="error">
+                     Card Number Error!!!
+                    </span>
                 </div>
 
                 <div class=" tw-flex tw-items-center tw-w-full tw-row-start-3 tw-mt-1">
@@ -357,7 +367,7 @@ export class SendMoneyCuba extends Component {
   //CASH_OUT_TRANSACTION
   setup() {
 
-    const accessToken = API.getTokenFromlocalStorage();
+    this.accessToken = API.getTokenFromlocalStorage();
 
     onWillStart(async () => {
 
@@ -365,7 +375,7 @@ export class SendMoneyCuba extends Component {
       this.municipios.names = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
 
-      const api = new API(accessToken);
+      const api = new API(this.accessToken);
 
 
       //obteniendo todos los datos de los beneficiarios desde el API
@@ -624,8 +634,8 @@ export class SendMoneyCuba extends Component {
 
     try {
 
-      const accessToken = window.localStorage.getItem('accessToken');
-      const api = new API(accessToken);
+      this.accessToken = window.localStorage.getItem('accessToken');
+      const api = new API(this.accessToken);
       const resultado = await api.createTX(datosTX);
 
       const urlHome = this.props.urlHome ? this.props.urlHome : null;
@@ -741,16 +751,27 @@ export class SendMoneyCuba extends Component {
       this.beneficiarioData.cardNumber = formatedCardNumber;
       this.beneficiarioData.cardHolderName = cardData.cardHolderName;
 
-      this.inputcardNumber.el.value = this.beneficiarioData.cardNumber;
+      this.inputCardNumber.el.value = this.beneficiarioData.cardNumber;
       this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
 
-      await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+      //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+      const tarjeta = await UImanager.buscarLogotipoBanco( this.beneficiarioData.selectedCard, this.accessToken);
+      console.log(tarjeta)
+      console.log(this.beneficiarioData.selectedCard)
+      if (tarjeta) {
+        this.state.cardBankImage = tarjeta.cardBankImage;
+        this.state.bankName = tarjeta.bankName;
+        this.errores.card = !tarjeta.tarjetaValida;
+      } else {
+        this.errores.card = true;
+      }      
+
     } else {
       console.log("NO Hay card data");
       this.beneficiarioData.cardHolderName = '';
       this.beneficiarioData.cardNumber = '';
       this.inputcardHolderName.el.value = '';
-      this.inputcardNumber.el.value = '';
+      this.inputCardNumber.el.value = '';
     }
 
   }
@@ -864,7 +885,16 @@ export class SendMoneyCuba extends Component {
     const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
-    await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+    //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+    const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
+    console.log(tarjeta)
+    if (tarjeta) {
+      this.state.cardBankImage = tarjeta.cardBankImage;
+      this.state.bankName = tarjeta.bankName;
+      this.errores.card = !tarjeta.tarjetaValida;
+    } else {
+      this.errores.card = true;
+    }      
 
 
 
@@ -924,22 +954,59 @@ export class SendMoneyCuba extends Component {
 
 
   //Al teclear el card en el input
-  onCardInputKeyDown = API.debounce(async (event) => {
+  onCardInputKeyDown =  (event) => {
 
+    const key = event.key; // const {key} = event; ES6+
+    if (key === "Backspace" || key === "Delete") {
+      this.backspace = true;
+    } else {
+      this.backspace = false
+    }
+
+    /*
     if (event.target.value.length === 19) {
       this.beneficiarioData.selectedCard = event.target.value.replace(/ /g, "");
-      //this.beneficiarioData.cardNumber = event.target.value;
-      // this.cardNumber.el.value =  event.target.value;
       await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-      //this.props.onChangeDatosBeneficiarios(this.state);
-      //TODO: si es un card nuevo agregarlo?
-    }
-  }, API.tiempoDebounce);
+    }*/
+
+
+  }
 
 
   async onChangeCardInput(event) {
 
-    this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
+    /*
+      this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
+    */  
+
+    console.log(event)
+ 
+  
+    if (!this.backspace) {
+      this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
+     
+      console.log(`beneficiarioData.cardNumber ${this.beneficiarioData.cardNumber}`)
+    }
+
+      console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
+  
+    this.beneficiarioData.cardNumber = this.inputCardNumber.el.value;
+    
+
+    this.state.cardBankImage = '';
+    this.state.bankName = '';
+
+    if (event.target.value.length === 19) {      
+      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
+      if (tarjeta) {
+        this.state.cardBankImage = tarjeta.cardBankImage;
+        this.state.bankName = tarjeta.bankName;
+        this.errores.card = !tarjeta.tarjetaValida;
+      } else {
+        this.errores.card = true;
+      }        
+    }
+
 
 
 

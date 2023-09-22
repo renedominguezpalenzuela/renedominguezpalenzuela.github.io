@@ -61,7 +61,7 @@ export class Beneficiarios extends Component {
         email: false,
         province: false,
         municipality: false,
-        card:false
+        card: false
 
     })
 
@@ -494,13 +494,13 @@ export class Beneficiarios extends Component {
     onChangeIDInput = API.debounce(async (event) => {
         this.state.identityNumber = event.target.value;
         this.errores.identityNumber = UImanager.validarCI(event.target.value)
-        
+
 
     }, API.tiempoDebounce);
 
     onBlurIDInput = (event) => {
         this.errores.identityNumber = UImanager.validarCI(event.target.value);
-        
+
     }
 
     onChangePhoneInput = API.debounce(async (event) => {
@@ -626,7 +626,7 @@ export class Beneficiarios extends Component {
       }, API.tiempoDebounce);*/
 
 
-        //t-on-keydown="onCardInputKeyDown"
+    //t-on-keydown="onCardInputKeyDown"
     onCardInputKeyDown = (event) => {
 
         const key = event.key; // const {key} = event; ES6+
@@ -636,20 +636,7 @@ export class Beneficiarios extends Component {
             this.backspace = false
         }
 
-        //console.log(event)
-        //console.log(this.inputCardNumber.el.value)
 
-        //this.state.cardNumber = this.inputCardNumber.el.value;
-
-
-        // this.inputCardNumber.el.value = UImanager.formatCardNumber( this.state.cardNumber);
-        /*  if (event.target.value.length === 19) {
-  
-  
-              this.buscarLogotipoBanco(this.state.cardNumber);
-  
-              //TODO: si es un card nuevo agregarlo?
-          }*/
     }
 
 
@@ -662,7 +649,7 @@ export class Beneficiarios extends Component {
         console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
         if (!this.backspace) {
             this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
-           
+
         }
 
         this.state.cardNumber = this.inputCardNumber.el.value;
@@ -675,21 +662,11 @@ export class Beneficiarios extends Component {
             this.errores.card = !tarjeta.tarjetaValida;
         } else {
             this.state.cardBankImage = '';
-            this.state.bankName ='';
+            this.state.bankName = '';
             this.errores.card = true;
         }
 
-        /* const key =event.key;
-       
- 
-         console.log(key)
-         if (key == 8 || key == 46) {
- 
- 
-         } else {
-             this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
-         }
-         */
+
     };
 
 
@@ -727,7 +704,7 @@ export class Beneficiarios extends Component {
             this.state.cardBankImage = tarjeta.cardBankImage;
             this.state.bankName = tarjeta.bankName;
             this.errores.card = !tarjeta.tarjetaValida;
-        } 
+        }
         //else {
         //    this.state.cardNumber = '';
         //    this.state.cardHolderName = '';
