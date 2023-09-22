@@ -10,9 +10,6 @@
 */
 import axios  from "axios";
 
-import './utils.js';
-
-
 
 
 //TODO: minificar, ofuscar
