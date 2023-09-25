@@ -1,7 +1,7 @@
 //var axios = require('axios');
 //import  axios from 'axios';
-import  './libs/axios.min.js';
-import { API, UImanager } from "./utils.js";
+import  '../libs/axios.min.js';
+import { API, UImanager } from "../utils.js";
 
 describe("Funcion de aproximacion:", function () {
     it("Funcion de aproximacion", function () {

@@ -2,7 +2,7 @@
 
 
 
-import { API, UImanager } from "./utils.js";
+import { API, UImanager } from "../utils.js";
 
 
 const user = 'darian.alvarez.t@gmail.com';

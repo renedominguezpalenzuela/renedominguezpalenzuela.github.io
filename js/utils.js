@@ -3,12 +3,12 @@
   Rene Dominguez Palenzuela
   28/05/2023 
  ******************************************************************************************************/
- /*
-    Para correr las pruebas descomentar esta linea:   
-    import axios  from "axios";
-    sPara la aplicacion web, comentar la linea
+/*
+   Para correr las pruebas descomentar esta linea:   
+   import axios  from "axios";
+   sPara la aplicacion web, comentar la linea
 */
-//import axios  from "axios";
+//import axios from "axios";
 
 
 
@@ -50,82 +50,58 @@ export class API {
   }
 
 
-  static async openweatherforTest() {
-
-
-   let respuesta = null;
-    const url = 'https://api.openweathermap.org/data/2.5/weather?lat=21.235&lon=-77.5264&appid=94028805f4357835f2684a7d8192c9fc';
+  //-------------------------------------------------------------------------------
+  //  Login
+  //-------------------------------------------------------------------------------
+  //Devuelve
+  /*
   
-    await axios.post(url,'','').then(response => {
-      
-        respuesta = response        
+    const resultado = {
+      accessToken: null,
+      cod_respuesta: null,
+      msg_respuesta: null
+    }
+  
+  
+  */
+  static async login(usr, pass) {
+    const config = {
+      headers: {
+        "x-api-key": x_api_key,
+        "Content-Type": "application/json"
+      }
+    };
+
+    const datos = { "email": usr, "password": pass };
+
+    const resultado = {
+      accessToken: null,
+      cod_respuesta: null,
+      msg_respuesta: null
+    }
+
+
+
+
+    await axios.post(`${base_url}/api/auth/login`, datos, config)
+      .then(response => {
+        const datos = response.data;
+        if (datos.accessToken) {
+          // console.log(datos);
+          resultado.accessToken = datos.accessToken;
+        } else {
+          console.log(response)
+          //resultado.cod_respuesta = 
+        }
       }).catch(error => {
-        console.log("ERROR en openweatherforTest")
-        console.log(error);
-        respuesta = error        
+        console.log('Login Error ');
+        if (error.response) {
+          console.error(error.response);
+        }
       });
 
-
-      return respuesta;
-
-      
-  
-    
-
+    return resultado;
   }
-  
-//-------------------------------------------------------------------------------
-//  Login
-//-------------------------------------------------------------------------------
-//Devuelve
-/*
-
-  const resultado = {
-    accessToken: null,
-    cod_respuesta: null,
-    msg_respuesta: null
-  }
-
-
-*/
-static async login(usr, pass) {
-  const config = {
-    headers: {
-      "x-api-key": x_api_key,
-      "Content-Type": "application/json"
-    }
-  };
-
-  const datos = { "email": usr, "password": pass };
-
-  const resultado = {
-    accessToken: null,
-    cod_respuesta: null,
-    msg_respuesta: null
-  }
-
- 
-  
-
-  await axios.post(`${base_url}/api/auth/login`, datos, config)
-    .then(response => {
-      const datos = response.data;
-      if (datos.accessToken) {      
-        console.log(datos);
-        resultado.accessToken = datos.accessToken;                
-      } else {
-        console.log(response)        
-        //resultado.cod_respuesta = 
-      }
-    }).catch(error => {
-      console.log('Login Error ');
-      if (error.response) {
-        console.error(error.response);        
-      }       
-    });
-
-  return resultado;
-}
 
 
 
@@ -1104,7 +1080,7 @@ export class UImanager {
     const month = parseInt(ciwithoutspaces.substring(2, 4));
     const day = parseInt(ciwithoutspaces.substring(4, 6));
 
-  //  console.log(`${year} \ ${month} \ ${day}`)
+    //  console.log(`${year} \ ${month} \ ${day}`)
 
 
     const current_year2Digit = new Date().getFullYear() - 2000 + 5; //en 2023 daria 28
@@ -1132,7 +1108,7 @@ export class UImanager {
       console.log("Menor")
       return true; //CI no valido es menor de edad
     }
-    
+
 
 
 
@@ -1155,20 +1131,20 @@ export class UImanager {
 
 
 
-//CardNumber --- se le pasa el numero de tarjeta sin espacios
+  //CardNumber --- se le pasa el numero de tarjeta sin espacios
   static async buscarLogotipoBanco(CardNumber, accessToken) {
     // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
     const cardWithoutSpaces = CardNumber.replace(/ /g, "");
 
     console.log(`Card Length ${cardWithoutSpaces.length}`)
     if (cardWithoutSpaces.length != 16) {
-     
-        return {
-          tarjetaValida: false,
-          cardBankImage: "",
-          bankName: ""
-        }
-     
+
+      return {
+        tarjetaValida: false,
+        cardBankImage: "",
+        bankName: ""
+      }
+
     }
 
     const api = new API(accessToken);
@@ -1176,7 +1152,6 @@ export class UImanager {
     console.log(cardRegExp)
 
     if (!cardRegExp) {
-      console.log("AQUI")
       return {
         tarjetaValida: false,
         cardBankImage: "",
@@ -1189,7 +1164,13 @@ export class UImanager {
 
     for (const key in cardRegExp) {
 
-      const regexp = new RegExp(cardRegExp[key]);
+      const expresionregular = cardRegExp[key];
+      console.log(key) 
+      console.log(expresionregular);
+   
+
+
+      const regexp = new RegExp(expresionregular);
       //const card = this.state.cardNumber.replace(/ /g, "");
       const card = cardWithoutSpaces;
       const resultado = regexp.test(card);
@@ -1197,46 +1178,53 @@ export class UImanager {
 
         switch (key) {
           case 'BANDEC_CARD':
-            //Poner imagen
-            /* this.state.cardBankImage = "img/logo-bandec.png";
-             this.state.bankName = "BANDEC";
-             return true;*/
+            console.log("Match: BANDEC")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-bandec.png",
               bankName: "BANDEC"
             }
-
             break;
 
           case 'BANMET_CARD':
-            //Poner imagen
-            /*this.state.cardBankImage = "img/logo-metro.png";
-            this.state.bankName = "METROPOLITANO";
-            return true;*/
+            console.log("Match: METRO")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-metro.png",
               bankName: "METROPOLITANO"
             }
-
             break;
 
           case 'BPA_CARD':
-            //Poner imagen
-            /* this.state.cardBankImage = "img/logo-bpa.png";
-             this.state.bankName = "BPA";
-             return true;*/
+            console.log("Match: BPA")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-bpa.png",
               bankName: "BPA"
             }
-
             break;
 
+          case 'MLC_CREDIT_CARD':
+            console.log("Match: MLC")
+            return {
+              tarjetaValida: true,
+              cardBankImage: "",
+              bankName: "MLC"
+            }
+            break;
+
+          case 'CREDIT_CARD':
+            break;
+            console.log("Match: Credit Card")
+            return {
+              tarjetaValida: true,
+              cardBankImage: "",
+              bankName: "Credit Card"
+            }
+            break;
+
+
           default:
-            // return false;
             return {
               tarjetaValida: false,
               cardBankImage: "",
