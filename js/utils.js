@@ -1165,8 +1165,8 @@ export class UImanager {
     for (const key in cardRegExp) {
 
       const expresionregular = cardRegExp[key];
-      console.log(key) 
-      console.log(expresionregular);
+      /*console.log(key) 
+      console.log(expresionregular);*/
    
 
 
@@ -1178,7 +1178,7 @@ export class UImanager {
 
         switch (key) {
           case 'BANDEC_CARD':
-            console.log("Match: BANDEC")
+            //console.log("Match: BANDEC")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-bandec.png",
@@ -1187,7 +1187,7 @@ export class UImanager {
             break;
 
           case 'BANMET_CARD':
-            console.log("Match: METRO")
+            //console.log("Match: METRO")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-metro.png",
@@ -1196,7 +1196,7 @@ export class UImanager {
             break;
 
           case 'BPA_CARD':
-            console.log("Match: BPA")
+            //console.log("Match: BPA")
             return {
               tarjetaValida: true,
               cardBankImage: "img/logo-bpa.png",
@@ -1205,7 +1205,7 @@ export class UImanager {
             break;
 
           case 'MLC_CREDIT_CARD':
-            console.log("Match: MLC")
+           // console.log("Match: MLC")
             return {
               tarjetaValida: true,
               cardBankImage: "",
@@ -1215,7 +1215,7 @@ export class UImanager {
 
           case 'CREDIT_CARD':
             break;
-            console.log("Match: Credit Card")
+           // console.log("Match: Credit Card")
             return {
               tarjetaValida: true,
               cardBankImage: "",

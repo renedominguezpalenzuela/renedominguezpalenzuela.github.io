@@ -278,6 +278,7 @@ export class SendMoneyCuba extends Component {
 
                 <div class=" tw-flex tw-items-center tw-w-full tw-row-start-3 tw-mt-1">
                   <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
+                 <!-- <t t-esc="this.beneficiarioData.bankName"/> -->
                 </div>
 
                 
@@ -429,7 +430,7 @@ export class SendMoneyCuba extends Component {
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
-        // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+        separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
         autoInsertDialCode: true, //coloca el codigo del pais en el input
         formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
         // autoPlaceholder: "polite",
@@ -586,6 +587,7 @@ export class SendMoneyCuba extends Component {
   //Boton: Enviar transaccion
   async onSendMoney() {
 
+  
 
 
     //cardCUP	cardUSD
@@ -745,6 +747,8 @@ export class SendMoneyCuba extends Component {
       UImanager.formatCardNumber(unaCard.number) === formatedCardNumber
     )[0];
 
+    console.log("change selected card")
+
     if (cardData) {
       console.log("Hay card data");
       console.log(cardData);
@@ -755,16 +759,22 @@ export class SendMoneyCuba extends Component {
       this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
 
       //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-      const tarjeta = await UImanager.buscarLogotipoBanco( this.beneficiarioData.selectedCard, this.accessToken);
+      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
+      console.log("Banco de tarjeta")
       console.log(tarjeta)
       console.log(this.beneficiarioData.selectedCard)
       if (tarjeta) {
-        this.state.cardBankImage = tarjeta.cardBankImage;
-        this.state.bankName = tarjeta.bankName;
+
+      
+        this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
+        this.beneficiarioData.bankName = tarjeta.bankName;
         this.errores.card = !tarjeta.tarjetaValida;
+
+        console.log("Imagen")
+        console.log(this.beneficiarioData.cardBankImage)
       } else {
         this.errores.card = true;
-      }      
+      }
 
     } else {
       console.log("NO Hay card data");
@@ -773,6 +783,8 @@ export class SendMoneyCuba extends Component {
       this.inputcardHolderName.el.value = '';
       this.inputCardNumber.el.value = '';
     }
+
+    this.render()
 
   }
 
@@ -811,6 +823,8 @@ export class SendMoneyCuba extends Component {
       this.beneficiarioData.cardBankImage = '',
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
+
+      this.render()
 
   }
 
@@ -887,74 +901,26 @@ export class SendMoneyCuba extends Component {
 
     //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
     const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
+    console.log("Setear datos de benficiario")
     console.log(tarjeta)
     if (tarjeta) {
-      this.state.cardBankImage = tarjeta.cardBankImage;
-      this.state.bankName = tarjeta.bankName;
+      this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
+      this.beneficiarioData.bankName = tarjeta.bankName;
       this.errores.card = !tarjeta.tarjetaValida;
     } else {
       this.errores.card = true;
-    }      
-
-
-
-  }
-
-  async buscarLogotipoBanco(CardNumber) {
-
-    for (const key in this.cardRegExp) {
-
-      const regexp = new RegExp(this.cardRegExp[key]);
-      //const card = this.state.cardNumber.replace(/ /g, "");
-
-      const resultado = regexp.test(CardNumber);
-
-      if (resultado) {
-
-        switch (key) {
-          case 'BANDEC_CARD':
-            //Poner imagen
-            this.beneficiarioData.cardBankImage = "img/logo-bandec.png";
-            this.beneficiarioData.bankName = "BANDEC";
-
-            break;
-
-          case 'BANMET_CARD':
-            //Poner imagen
-            this.beneficiarioData.cardBankImage = "img/logo-metro.png";
-            this.beneficiarioData.bankName = "METROPOLITANO";
-
-            break;
-
-          case 'BPA_CARD':
-            //Poner imagen
-            this.beneficiarioData.cardBankImage = "img/logo-bpa.png";
-            this.beneficiarioData.bankName = "BPA";
-
-            break;
-
-          default:
-            //this.beneficiarioData.cardBankImage = '';
-            //this.beneficiarioData.bankName = '';
-
-            break;
-        }
-
-      }
-
-
-
-
     }
 
+    this.render()
 
 
 
   }
+
 
 
   //Al teclear el card en el input
-  onCardInputKeyDown =  (event) => {
+  onCardInputKeyDown = (event) => {
 
     const key = event.key; // const {key} = event; ES6+
     if (key === "Backspace" || key === "Delete") {
@@ -977,35 +943,38 @@ export class SendMoneyCuba extends Component {
 
     /*
       this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
-    */  
+    */
 
-    console.log(event)
- 
-  
+    console.log("change card input")
+
+
     if (!this.backspace) {
       this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
-     
+
       console.log(`beneficiarioData.cardNumber ${this.beneficiarioData.cardNumber}`)
     }
 
-      console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
-  
+    console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
+
     this.beneficiarioData.cardNumber = this.inputCardNumber.el.value;
-    
 
-    this.state.cardBankImage = '';
-    this.state.bankName = '';
 
-    if (event.target.value.length === 19) {      
+    this.beneficiarioData.cardBankImage = '';
+    this.beneficiarioData.bankName = '';
+
+    if (event.target.value.length === 19) {
       const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
       if (tarjeta) {
-        this.state.cardBankImage = tarjeta.cardBankImage;
-        this.state.bankName = tarjeta.bankName;
+        console.log("onChangeCardInput")
+        this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
+        this.beneficiarioData.bankName = tarjeta.bankName;
         this.errores.card = !tarjeta.tarjetaValida;
       } else {
         this.errores.card = true;
-      }        
+      }
     }
+
+    this.render()
 
 
 

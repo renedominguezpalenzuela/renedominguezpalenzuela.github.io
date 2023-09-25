@@ -208,7 +208,7 @@ export class Beneficiarios extends Component {
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
-        // separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+         separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
         autoInsertDialCode: true, //coloca el codigo del pais en el input
         formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
 
