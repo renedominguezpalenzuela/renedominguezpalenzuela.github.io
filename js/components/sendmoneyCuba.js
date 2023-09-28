@@ -214,7 +214,10 @@ export class SendMoneyCuba extends Component {
                     <span class="tw-label-text">Concept</span>
                   </label>
                 
-                  <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
+                  <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeConcept" ></textarea>
+                  <span t-if="this.errores.concept==true" class="error">
+                    Required field!!!
+                  </span> 
                 </div>
               </div>
     
@@ -539,6 +542,10 @@ export class SendMoneyCuba extends Component {
 
   }, 700);
 
+  onChangeConcept = API.debounce(async (event) => {
+    this.errores.concept = UImanager.validarSiVacio(event.target.value);
+  },700);
+
   onBlurReceiveInput = (event) => {
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(event.target.value);
   }
@@ -660,12 +667,14 @@ export class SendMoneyCuba extends Component {
 Devuelve true si todos los datos ok
 */
   async validarDatos (datos) {
-    // console.log(datos)
+    console.log(datos)
+    
 
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
     this.errores.cardHolderName = UImanager.validarSiVacio(datos.cardHolderName);
-    this.errores.deliveryAddress = UImanager.validarSiVacio(this.beneficiarioData.deliveryAddress);
+    this.errores.deliveryAddress = UImanager.validarSiVacio(datos.deliveryAddress);
+    this.errores.concept = UImanager.validarSiVacio(datos.concept);
     
     if (this.beneficiarioData.receiverCityID==-1) {
       this.errores.city = true;
@@ -674,9 +683,10 @@ Devuelve true si todos los datos ok
     }
     
 
+  
    
 
-    this.errores.phoneField = !libphonenumber.isValidNumber(this.beneficiarioData.contactPhone)
+    this.errores.phoneField = !libphonenumber.isValidNumber(datos.contactPhone)
 
 
     if (!this.beneficiarioData.selectedCard) {
@@ -852,6 +862,8 @@ Devuelve true si todos los datos ok
       this.inputcardHolderName.el.value = '';
       this.inputCardNumber.el.value = '';
     }
+
+    this.errores.cardHolderName = UImanager.validarSiVacio(this.beneficiarioData.cardHolderName)
 
     this.render()
 
