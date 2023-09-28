@@ -629,7 +629,7 @@ export class SendMoneyCuba extends Component {
 
 
   validarDatos(datos) {
-    console.log(datos)
+    // console.log(datos)
 
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);

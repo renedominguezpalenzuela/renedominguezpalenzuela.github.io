@@ -417,6 +417,22 @@ console.log(feeOBJ)
 
   validarDatos(datos) {
 
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
+
+
+    for (let clave in this.errores) {
+      if (this.errores[clave] == true) {
+        console.log(clave)
+        return false;
+
+      }
+
+    }
+
+    return true;
+
+    /*
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
       Swal.fire({
@@ -486,7 +502,7 @@ console.log(feeOBJ)
       return false;
     }
 
-    return true;
+    return true;*/
 
   }
 
