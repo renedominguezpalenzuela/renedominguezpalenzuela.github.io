@@ -39,8 +39,6 @@ export class SendMoneyCuba extends Component {
     receiveAmount: false,
     card: false,
     concept: false,
-    selectedBeneficiary: false,
-    cardNumber: false,
     cardHolderName: false,
     contactPhone: false,
     deliveryAddress: false,
@@ -300,7 +298,12 @@ export class SendMoneyCuba extends Component {
                 <label class="tw-label">
                   <span class="tw-label-text">Card Holder Name</span>
                 </label>
-                <input type="text" t-ref="inputcardHolderName"  t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
+                
+                <input type="text" t-ref="inputcardHolderName"  t-att-value="this.beneficiarioData.cardHolderName" maxlength="300" 
+                placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" t-on-blur="onBlurCardHolderInput"  />   
+                <span t-if="this.errores.cardHolderName==true" class="error">
+                   Required field!!!
+                </span>
                </div>
 
     
@@ -601,8 +604,17 @@ export class SendMoneyCuba extends Component {
     console.log("DATOS")
     console.log(datosTX);
 
-    if (!this.validarDatos(datosTX)) {
+    const validacionOK =await this.validarDatos(datosTX)
+    console.log("Errores en validacion")
+    console.log(validacionOK)
+
+    if (!validacionOK) {
       console.log("Validation Errors");
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Validation errors'
+      })
+
       return;
     }
 
@@ -627,93 +639,125 @@ export class SendMoneyCuba extends Component {
 
   }
 
-
-  validarDatos(datos) {
+/*
+Devuelve true si todos los datos ok
+*/
+  async validarDatos (datos) {
     // console.log(datos)
 
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
+    this.errores.cardHolderName = UImanager.validarSiVacio(datos.cardHolderName);
+
+
+    if (!this.beneficiarioData.selectedCard) {
+      this.errores.card = true;
+      this.beneficiarioData.cardBankImage = '';
+      this.beneficiarioData.bankName = '';
+
+    } else {
+      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
+
+      if (tarjeta) {
+        this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
+        this.beneficiarioData.bankName = tarjeta.bankName;
+        this.errores.card = !tarjeta.tarjetaValida;
+      } else {
+        this.errores.card = true;
+        this.beneficiarioData.cardBankImage = '';
+        this.beneficiarioData.bankName = '';
+      }
+
+
+    }
+
+
+
+    let hayErrores = false;
 
 
     for (let clave in this.errores) {
       if (this.errores[clave] == true) {
+        console.log("Error en validacion")
         console.log(clave)
-        return false;
+        
+        hayErrores = true;
 
       }
 
     }
+    console.log("NO hay Error en validacion")
 
-    return true;
+    return !hayErrores;
 
-/*
-
-    //--------------------- Sending amount --------------------------------------------
-    if (!datos.amount) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Please enter the sending amount'
-      })
-      return false;
-    } else if (datos.amount <= 0) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Sending amount must be greater than zero'
-      })
-      return false;
-    }
-
-    //--------------------- Receivers amount --------------------------------------------
-    if (datos.deliveryAmount <= 0) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'The received amount must be greater than zero'
-      })
-      return false;
-    }
-
-    //--------------------- Municipio --------------------------------------------
-    if (!datos.receiverCity || datos.receiverCity === '') {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Please select city'
-      })
-      return false;
-    }
-
-    //--------------------- Nombre --------------------------------------------
-    if (!datos.cardHolderName || datos.cardHolderName === '') {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Please enter the full name of receiver. First name and Last name at least'
-      })
-      return false;
-    }
-
-
-
-    //--------------------- address --------------------------------------------
-    if (!datos.deliveryAddress || datos.deliveryAddress === '') {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Please enter the address'
-      })
-      return false;
-    }
-
-    //--------------------- Phone --------------------------------------------
-
-
-    if (!datos.contactPhone || datos.contactPhone === '' || !this.phonInputSelect.isValidNumber()) {
-      Swal.fire({
-        icon: 'error', title: 'Error',
-        text: 'Incorrect phone number'
-      })
-      return false;
-    }
-
-
-    return true;*/
+    /*
+    
+        //--------------------- Sending amount --------------------------------------------
+        if (!datos.amount) {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please enter the sending amount'
+          })
+          return false;
+        } else if (datos.amount <= 0) {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Sending amount must be greater than zero'
+          })
+          return false;
+        }
+    
+        //--------------------- Receivers amount --------------------------------------------
+        if (datos.deliveryAmount <= 0) {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'The received amount must be greater than zero'
+          })
+          return false;
+        }
+    
+        //--------------------- Municipio --------------------------------------------
+        if (!datos.receiverCity || datos.receiverCity === '') {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please select city'
+          })
+          return false;
+        }
+    
+        //--------------------- Nombre --------------------------------------------
+        if (!datos.cardHolderName || datos.cardHolderName === '') {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please enter the full name of receiver. First name and Last name at least'
+          })
+          return false;
+        }
+    
+    
+    
+        //--------------------- address --------------------------------------------
+        if (!datos.deliveryAddress || datos.deliveryAddress === '') {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Please enter the address'
+          })
+          return false;
+        }
+    
+        //--------------------- Phone --------------------------------------------
+    
+    
+        if (!datos.contactPhone || datos.contactPhone === '' || !this.phonInputSelect.isValidNumber()) {
+          Swal.fire({
+            icon: 'error', title: 'Error',
+            text: 'Incorrect phone number'
+          })
+          return false;
+        }
+    
+    
+        return true;*/
 
   }
 
@@ -732,7 +776,7 @@ export class SendMoneyCuba extends Component {
 
   onChangeSelectedCard = async (event) => {
     console.log(event.target.value)
-    if (event.target.value==-1 || event.target.value==='') {
+    if (event.target.value == -1 || event.target.value === '') {
       return;
     }
 
@@ -939,7 +983,7 @@ export class SendMoneyCuba extends Component {
     if (!event.target.value) {
       this.errores.card = false;
     }
-    
+
     /*
       this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
     */
@@ -983,9 +1027,15 @@ export class SendMoneyCuba extends Component {
 
   onChangeCardHolderInput = API.debounce(async (event) => {
     this.beneficiarioData.cardHolderName = event.target.value;
+    this.errores.cardHolderName = UImanager.validarSiVacio(event.target.value);
 
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
+
+  
+  onBlurCardHolderInput = (event) => {
+    this.errores.cardHolderName = UImanager.validarSiVacio(event.target.value);
+  }
 
   onChangeAddressInput = API.debounce(async (event) => {
     this.beneficiarioData.deliveryAddress = event.target.value;

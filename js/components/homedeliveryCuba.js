@@ -363,6 +363,8 @@ console.log(feeOBJ)
 
 
   }, 700);
+
+
   async onSendMoney() {
     const service = `delivery${this.inputReceiveCurrencyRef.el.value.toUpperCase()}`;
 
@@ -382,11 +384,9 @@ console.log(feeOBJ)
       ...this.beneficiario
     };
 
-    if (!this.validarDatos(datosTX)) {
-      console.log("Validation Errors");
-      return;
-    }
 
+  
+    
     delete datosTX["deliveryCityID"];
 
 
@@ -394,6 +394,21 @@ console.log(feeOBJ)
 
 
     console.log(datosTX);
+
+    const validacionOK =await this.validarDatos(datosTX)
+    console.log("Errores en validacion")
+    console.log(validacionOK)
+
+    if (!validacionOK) {
+      console.log("Validation Errors");
+      Swal.fire({
+        icon: 'error', title: 'Error',
+        text: 'Validation errors'
+      })
+
+      return;
+    }
+
 
 
 
@@ -415,8 +430,54 @@ console.log(feeOBJ)
   }
 
 
-  validarDatos(datos) {
 
+
+  async validarDatos(datos) {
+
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
+
+    if (!this.beneficiarioData.selectedCard) {
+      this.errores.card = true;
+      this.beneficiarioData.cardBankImage = '';
+      this.beneficiarioData.bankName = '';
+
+    } else {
+      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
+
+      if (tarjeta) {
+        this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
+        this.beneficiarioData.bankName = tarjeta.bankName;
+        this.errores.card = !tarjeta.tarjetaValida;
+      } else {
+        this.errores.card = true;
+        this.beneficiarioData.cardBankImage = '';
+        this.beneficiarioData.bankName = '';
+      }
+
+
+    }
+
+
+
+    let hayErrores = false;
+
+
+    for (let clave in this.errores) {
+      if (this.errores[clave] == true) {
+        console.log("Error en validacion")
+        console.log(clave)
+        
+        hayErrores = true;
+
+      }
+
+    }
+    console.log("NO hay Error en validacion")
+
+    return !hayErrores;
+
+    /*
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
 
@@ -430,7 +491,7 @@ console.log(feeOBJ)
 
     }
 
-    return true;
+    return true;*/
 
     /*
     //--------------------- Sending amount --------------------------------------------
