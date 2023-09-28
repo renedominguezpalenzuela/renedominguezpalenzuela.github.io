@@ -1069,6 +1069,25 @@ export async function getUsrInfo() {
 //--------------------------------------------------------------------------------------
 export class UImanager {
 
+  static validarSiVacio(dato) {
+    let error = false;
+    if ( !dato) {
+       error = true;
+    }
+    return error;
+
+  }
+
+  static validarSiMenorQueCero(dato) {
+    let error = false;
+    if ( !dato || dato <=0) {
+       error = true;
+    }
+    return error;
+
+  }
+
+
 
   //DEvuelve true si hay error en la longitud del ci
   static validarCI(ci) {

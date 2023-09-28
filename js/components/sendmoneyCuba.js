@@ -35,7 +35,18 @@ export class SendMoneyCuba extends Component {
 
   errores = useState({
 
-    card: false
+    sendAmount: false,
+    receiveAmount: false,
+    card: false,
+    concept: false,
+    selectedBeneficiary: false,
+    cardNumber: false,
+    cardHolderName: false,
+    contactPhone: false,
+    deliveryAddress: false,
+    province: false,
+    city: false
+
 
   })
 
@@ -132,11 +143,8 @@ export class SendMoneyCuba extends Component {
 
                 <div class="tw-join">                        
                    <!-- t-on-input="onChangeSendInput"  t-on-keypress="onSendInputKeyPress"-->
-                    <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
-           
-                  
-
-          
+                    <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
+                         
                  
                   <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
                     <option value="usd">USD</option>
@@ -144,6 +152,10 @@ export class SendMoneyCuba extends Component {
                     <option value="cad">CAD</option>   
                   </select>
                 </div>
+
+                <span t-if="this.errores.sendAmount==true" class="error">
+                    Error in field!!!
+                </span>  
 
                 <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
               
@@ -185,7 +197,7 @@ export class SendMoneyCuba extends Component {
 
                   <div class="tw-join">        
                                               
-                      <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
+                      <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   t-on-blur="onBlurReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
                       class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
                    
                     
@@ -194,6 +206,10 @@ export class SendMoneyCuba extends Component {
                       <option value="usd">MLC</option>
                     </select>
                   </div>
+
+                  <span t-if="this.errores.receiveAmount==true" class="error">
+                      Error in field!!!
+                  </span> 
 
                   <div class="tw-form-control   row-start-4 col-span-2 w-full ">
                   <label class="tw-label">
@@ -228,12 +244,10 @@ export class SendMoneyCuba extends Component {
                       <t t-if="this.beneficiariosNames.names.length>0">
                         <t  t-foreach="this.beneficiariosNames.names" t-as="unBeneficiario" t-key="unBeneficiario._id">
                               <option t-att-value="unBeneficiario._id">
-                                  <t t-esc="unBeneficiario.beneficiaryFullName"/>
-                                  
+                                  <t t-esc="unBeneficiario.beneficiaryFullName"/>                                  
                               </option>
                         </t>     
-                      </t>     
-                                
+                      </t>                                     
                     </select>
                   </div> 
 
@@ -467,65 +481,16 @@ export class SendMoneyCuba extends Component {
     this.onChangeReceiveInput();
   }
 
-
-  /*
-    async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
-      const service = `card${monedaRecibida.toUpperCase()}`;
-      const zone = this.beneficiarioData.deliveryZona;
-      //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
-      //pues el usuario puede haber cambiado la provincia
-      const accessToken = API.getTokenFromlocalStorage();
-      const api = new API(accessToken);
-      const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
-      const feeUSD = feeResultUSD.fee;
-      //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
-      const monedaEnviadaUSD = 'USD';
-      const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
-      console.log(`Fee en moneda ${monedaEnviada}`)
-      console.log(feeMonedaEnviada)
-  
-      const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-  
-      this.conversionRate.value = tc;
-      this.fee.value = feeMonedaEnviada;
-      this.feeSTR.value = UImanager.roundDec(this.fee.value)
-  
-      return feeMonedaEnviada;
-  
-    }*/
-
-
-  //  onSendInputKeyPress= (event) => {
-  //   //this.inputSendRef.el.value = event.target.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');
-  //  // this.inputSendRef.el.value = this.inputSendRef.el.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g,'');
-  //   if (charCode >= 48 && charCode <= 57) {
-
-  //   } else {
-
-  //   }
-
-
-  //   return false
-
-
-  //  var charCode = (event.which) ? event.which : event.keyCode;
-
-  //console.log(charCode)/
-
-  //if (charCode >= 48 && charCode <= 57) {
-  //this.sendAmountIsvalid = true;
-  //return true;
-  //} else {
-  // this.sendAmountIsvalid = false;
-  //return false;
-  // }
-
-  //}/
-
+  onBlurSendInput = (event) => {
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
+  }
 
   onChangeSendInput = API.debounce(async (event) => {
 
     const cantidadEnviada = this.inputSendRef.el.value;
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
+
+
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
@@ -535,6 +500,7 @@ export class SendMoneyCuba extends Component {
     const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
 
 
     //Comun
@@ -553,10 +519,17 @@ export class SendMoneyCuba extends Component {
 
   }, 700);
 
+  onBlurReceiveInput = (event) => {
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(event.target.value);
+  }
+
+
 
   onChangeReceiveInput = API.debounce(async () => {
 
     const cantidadRecibida = this.inputReceiveRef.el.value;
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
+
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
@@ -567,6 +540,7 @@ export class SendMoneyCuba extends Component {
 
     this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
 
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
 
     //Comun
 
@@ -587,7 +561,7 @@ export class SendMoneyCuba extends Component {
   //Boton: Enviar transaccion
   async onSendMoney() {
 
-  
+
 
 
     //cardCUP	cardUSD
@@ -655,8 +629,24 @@ export class SendMoneyCuba extends Component {
 
 
   validarDatos(datos) {
-    // console.log(datos)
+    console.log(datos)
 
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
+
+
+    for (let clave in this.errores) {
+      if (this.errores[clave] == true) {
+        console.log(clave)
+        return false;
+
+      }
+
+    }
+
+    return true;
+
+/*
 
     //--------------------- Sending amount --------------------------------------------
     if (!datos.amount) {
@@ -723,7 +713,7 @@ export class SendMoneyCuba extends Component {
     }
 
 
-    return true;
+    return true;*/
 
   }
 
@@ -765,7 +755,7 @@ export class SendMoneyCuba extends Component {
       console.log(this.beneficiarioData.selectedCard)
       if (tarjeta) {
 
-      
+
         this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
         this.beneficiarioData.bankName = tarjeta.bankName;
         this.errores.card = !tarjeta.tarjetaValida;
@@ -824,7 +814,7 @@ export class SendMoneyCuba extends Component {
       this.beneficiarioData.cardNumber = '',
       this.beneficiarioData.cardHolderName = ''
 
-      this.render()
+    this.render()
 
   }
 

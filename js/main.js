@@ -17,7 +17,7 @@ class Root extends Component {
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 4, title: 'To Credit Card' });
+  state = useState({ menuId: 4, title: 'Send Money To Cuba' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -83,13 +83,10 @@ class Root extends Component {
       
           
 
-          <t t-else="">
-            
+          <t t-else="">           
             <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-2 tw-h-[100vh]">
-            <div class="tw-h-[100vh]">No component defined for this menu option yet</div>
-              
-            </div>  
-              
+            <div class="tw-h-[100vh]">No component defined for this menu option yet</div>              
+            </div>                
           </t>
             
           

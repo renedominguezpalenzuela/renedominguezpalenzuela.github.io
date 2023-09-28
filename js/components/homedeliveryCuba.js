@@ -40,6 +40,18 @@ export class HomeDeliveryCuba extends Component {
     nameFull: "",
   })
 
+  
+  errores = useState({
+    sendAmount: false,
+    receiveAmount: false,    
+    concept: false,
+    selectedBeneficiary: false,   
+    contactPhone: false,
+    deliveryAddress: false,
+    province: false,
+    city: false
+  })
+
 
 
   //Contendra los datos del beneficiario al que se le envia la transferencia
@@ -89,7 +101,7 @@ export class HomeDeliveryCuba extends Component {
                     
                       
 
-                      <input type="text" t-ref="inputSendRef" t-on-input="onChangeSendInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
+                      <input type="text" t-ref="inputSendRef" t-on-blur="onBlurSendInput" t-on-input="onChangeSendInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
 
 
                       
@@ -102,6 +114,12 @@ export class HomeDeliveryCuba extends Component {
                       </select>
 
                   </div>
+
+                  
+                <span t-if="this.errores.sendAmount==true" class="error">
+                   Error in field!!!
+                </span>  
+             
                   <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
                   
                       <div class=" tw-text-right ">  
@@ -141,6 +159,10 @@ export class HomeDeliveryCuba extends Component {
                           <option value="usd">USD</option>
                         </select>
                       </div>
+
+                      <span t-if="this.errores.receiveAmount==true" class="error">
+                         Error in field!!!
+                      </span> 
         
                       <div class="tw-form-control   tw-row-start-4 tw-col-span-2 tw-w-full ">
                         <label class="tw-label">
@@ -259,41 +281,15 @@ export class HomeDeliveryCuba extends Component {
 
   
 
-/*
-  async calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, tipoCambio) {
-    const service = `delivery${monedaRecibida.toUpperCase()}`;
-    const zone = this.beneficiario.deliveryZona;  
-    //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
-    //pues el usuario puede haber cambiado la provincia
-    const accessToken = API.getTokenFromlocalStorage();
-    console.log(service)
-    console.log(zone)
-    console.log(cantidadRecibida)
-    const api = new API(accessToken);
-    const feeResultUSD = await api.getFee(service, zone, cantidadRecibida)
-    const feeUSD = feeResultUSD.fee;
-    console.log("Fee USD")
-    console.log(feeUSD)
-    //Aplicar TC al fee en USD, para obtenerlo en la moneda enviada
-    const monedaEnviadaUSD = 'USD';
-    //Segun darian    
-    //    monedaBase = monedaEnviada (EUR)
-    //    monedaAconvertir = USD
-    //    const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
-    //Version original mia: const feeMonedaEnviada = UImanager.aplicarTipoCambio1(feeUSD, tipoCambio, monedaEnviadaUSD, monedaEnviada);
-    const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio,  monedaEnviada, monedaEnviadaUSD);
-    console.log(`Fee en moneda ${monedaEnviada}`)
-    console.log(feeMonedaEnviada)
-    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
-    this.conversionRate.value = tc;
-    this.fee.value = feeMonedaEnviada;
-    this.feeSTR.value = UImanager.roundDec(this.fee.value)
-    return feeMonedaEnviada;
-  }*/
+  onBlurSendInput = (event) => {
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
+  }
 
   onChangeSendInput = API.debounce(async () => {
 
     const cantidadEnviada = this.inputSendRef.el.value;
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
+
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
@@ -302,8 +298,10 @@ export class HomeDeliveryCuba extends Component {
 
 
     this.monedas.recibida = monedaRecibida.toUpperCase()
+    
 
     const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
 
     this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
 
@@ -324,9 +322,17 @@ console.log(feeOBJ)
   }, 700);
 
 
+  
+  onBlurReceiveInput = (event) => {
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(event.target.value);
+  }
+
   onChangeReceiveInput = API.debounce(async () => {
 
     const cantidadRecibida = this.inputReceiveRef.el.value;
+    this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
+
+
     const monedaEnviada = this.inputSendCurrencyRef.el.value;
     const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
 
@@ -334,6 +340,7 @@ console.log(feeOBJ)
     this.monedas.recibida = monedaRecibida.toUpperCase()
 
     const cantidadEnviada = UImanager.calcularCantidadEnviada(cantidadRecibida, this.tiposCambio, monedaEnviada, monedaRecibida);
+    this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
 
     this.inputSendRef.el.value = UImanager.roundDec(cantidadEnviada);
 

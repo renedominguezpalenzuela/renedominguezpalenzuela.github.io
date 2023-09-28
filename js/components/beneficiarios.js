@@ -9,7 +9,26 @@ import { ListaBeneficiarios } from "./listaBeneficiarios.js";
 import { Paises } from "../../data/paises.js";
 
 //TEST: agregar nuevo beneficiario, comprobar que esta en la lista, que esta el localstorage
-
+/*
+IDs
+benListaBeneficiarios
+benfirstName
+benlastName
+benSecondLastName
+benID
+phone
+benAddress
+benhouseNo
+benZipCode
+benEmail
+benProvincia
+benMunicipio
+benSelectedCard
+benCardNumber
+benCardHolderName
+benSaveBeneficiario
+benSaveCard
+*/
 
 export class Beneficiarios extends Component {
 
@@ -96,7 +115,7 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">Select  Beneficiary</span>
                             </label>
-                            <select t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
+                            <select  id="benListaBeneficiarios" t-att-value="this.state.selectedBeneficiaryId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
                                 <option  t-att-value="-1" >Select or enter new data</option>
                                 <t t-foreach="this.beneficiariosNames" t-as="unBeneficiario" t-key="unBeneficiario._id">
                                     <option t-att-value="unBeneficiario._id"><t t-esc="unBeneficiario.beneficiaryFullName"/></option>
@@ -119,7 +138,7 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">First Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName"   maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <input id="benfirstName" type="text" t-att-value="this.state.firstName" t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName"   maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
                                 <span t-if="this.errores.firstName==true" class="error">
                                   Required field!!!
                                 </span>
@@ -129,7 +148,7 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  t-on-blur="onBlurLastName" maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
+                                <input id="benlastName" type="text" t-att-value="this.state.lastName"  t-on-input="onChangeLastName"  t-on-blur="onBlurLastName" maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
                                 <span t-if="this.errores.lastName==true" class="error">
                                   Required field!!!
                                 </span>
@@ -139,7 +158,7 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">Second Last Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName" t-on-blur="onBlurSecondLastName" maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
+                                <input id="benSecondLastName" type="text" t-att-value="this.state.secondLastName" t-on-input="onChangeSecondLastName" t-on-blur="onBlurSecondLastName" maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
                                 <span t-if="this.errores.secondLastName==true" class="error">
                                   Required field!!!
                                 </span>
@@ -151,7 +170,7 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">ID</span>
                             </label>
-                            <input type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  t-on-blur="onBlurIDInput" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" />   
+                            <input id="benID" type="text" t-att-value="this.state.identityNumber"  maxlength="300" placeholder="ID" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeIDInput"  t-on-blur="onBlurIDInput" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" />   
                             <span t-if="this.errores.identityNumber==true" class="error">
                               Required field or not valid format!!!
                             </span>
@@ -176,7 +195,7 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">Street Name</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  t-on-blur="onBlurStreetName"  maxlength="300" placeholder="Street Name" class="tw-input tw-input-bordered tw-w-full " />   
+                                <input id="benAddress" type="text" t-att-value="this.state.streetName" t-on-input="onChangeStreetName"  t-on-blur="onBlurStreetName"  maxlength="300" placeholder="Street Name" class="tw-input tw-input-bordered tw-w-full " />   
                                 <span t-if="this.errores.streetName==true" class="error">
                                     Required field!!!
                                 </span>
@@ -185,7 +204,7 @@ export class Beneficiarios extends Component {
 
                             <div class="tw-form-control    sm:tw-ml-2 ">
                                 <label class="tw-label">
-                                    <span class="tw-label-text">House Number</span>
+                                    <span  id="benhouseNo" class="tw-label-text">House Number</span>
                                 </label>
                                 <input type="text" t-att-value="this.state.houseNumber"  t-on-input="onChangeHouseNumber"  t-on-blur="onBlurHouseNumber" maxlength="300" placeholder="House Number" class="tw-input tw-input-bordered  tw-w-full " /> 
                                 <span t-if="this.errores.houseNumber==true" class="error">
@@ -197,7 +216,7 @@ export class Beneficiarios extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text">Zip Code</span>
                                 </label>
-                                <input type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  t-on-blur="onBlurZipCode" maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
+                                <input id="benZipCode" type="text" t-att-value="this.state.zipcode" t-on-input="onChangeZipCode"  t-on-blur="onBlurZipCode" maxlength="300" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " />  
                                 <span t-if="this.errores.zipcode==true" class="error">
                                     Required field!!!
                                 </span>
@@ -210,7 +229,7 @@ export class Beneficiarios extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text">Email Address</span>
                             </label>
-                            <input type="email" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeEmail"  t-on-blur="onBlurEmail" />   
+                            <input id="benEmail" type="email" t-att-value="this.state.email"  maxlength="300" placeholder="Email Address" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeEmail"  t-on-blur="onBlurEmail" />   
                             <span t-if="this.errores.email==true" class="error">
                               Incorrect email!!!
                             </span>
@@ -224,7 +243,7 @@ export class Beneficiarios extends Component {
                         <label class="tw-label">
                             <span class="tw-label-text">Province</span>
                         </label>
-                        <select t-att-value="this.state.provinceID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
+                        <select id="benProvincia" t-att-value="this.state.provinceID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
                         <option t-att-disabled="true" t-att-value="-1" >Select Province</option>
                             <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                             <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
@@ -240,7 +259,7 @@ export class Beneficiarios extends Component {
                         <label class="tw-label">
                             <span class="tw-label-text">City</span>
                         </label>
-                        <select t-att-value="this.state.municipalityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
+                        <select id="benMunicipio" t-att-value="this.state.municipalityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                             <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                             <t t-foreach="this.municipios" t-as="unMunicipio" t-key="unMunicipio.id">
                             <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
@@ -275,7 +294,7 @@ export class Beneficiarios extends Component {
                     <label class="tw-label">
                         <span class="tw-label-text">Select Card</span>
                     </label>
-                    <select  t-att-value="this.state.selectedCardId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
+                    <select  id="benSelectedCard" t-att-value="this.state.selectedCardId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                         <option  t-att-value="-1" >Select or enter new data</option>
                         <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
                            <option t-att-value="unCard.id">
@@ -292,7 +311,7 @@ export class Beneficiarios extends Component {
                     <label class="tw-label">
                         <span class="tw-label-text">Card Number</span>
                     </label>
-                    <input type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
+                    <input id="benCardNumber" type="text" t-ref="inputCardNumber" t-att-value="this.state.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                     <span t-if="this.errores.card==true" class="error">
                      Card Number Error!!!
                     </span>
@@ -306,7 +325,7 @@ export class Beneficiarios extends Component {
                     <label class="tw-label">
                         <span class="tw-label-text">Card Holder Name</span>
                     </label>
-                    <input type="text" t-ref="inputCardHolderName" t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
+                    <input id="benCardHolderName" type="text" t-ref="inputCardHolderName" t-att-value="this.state.cardHolderName" maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeCardHolderInput" />   
                    
                 </div>
 
@@ -314,8 +333,8 @@ export class Beneficiarios extends Component {
 
                 <div class="tw-card-actions">
                     <div class="tw-flex">    
-                        <button class="tw-btn   tw-mr-3" t-on-click="onNewCard">New Card </button>             
-                        <button class="tw-btn  tw-mr-3" t-on-click="onSaveCard">Save Card </button>                    
+                        <button id="benNewCard" class="tw-btn   tw-mr-3" t-on-click="onNewCard">New Card </button>             
+                        <button id="benSaveCard" class="tw-btn  tw-mr-3" t-on-click="onSaveCard">Save Card </button>                    
                     </div>
                 
                   
@@ -326,7 +345,7 @@ export class Beneficiarios extends Component {
 
         <div class="tw-card-actions">
                 <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3 tw-mb-2  ">
-                      <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                      <button id="benSaveBeneficiario" class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
                 </div>
 
       
