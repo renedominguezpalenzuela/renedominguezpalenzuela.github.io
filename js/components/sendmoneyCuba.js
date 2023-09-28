@@ -39,8 +39,8 @@ export class SendMoneyCuba extends Component {
     receiveAmount: false,
     card: false,
     concept: false,
-    cardHolderName: false,
-    contactPhone: false,
+    cardHolderName: false,    
+    phoneField:false,
     deliveryAddress: false,
     province: false,
     city: false
@@ -313,6 +313,10 @@ export class SendMoneyCuba extends Component {
                  <span class="tw-label-text">Contact Phone</span>
                 </label>
                 <input t-ref="inputContactPhone" t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhoneInput" />
+                <span t-if="this.errores.phoneField==true" class="error">
+                  Invalid number!!!
+                </span>
+
                 <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
                 <span id="error-phone-msg" class="tw-hide"></span> -->
               </div> 
@@ -323,7 +327,13 @@ export class SendMoneyCuba extends Component {
                 <span class="tw-label-text">Delivery Address</span>
               </label>           
               <textarea t-ref="inputdeliveryAddress" t-att-value="this.beneficiarioData.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+              
+              <span t-if="this.errores.deliveryAddress==true" class="error">
+                 Required field!!!
+              </span>
+
              </div>
+
 
 
              <div class="tw-form-control tw-w-full sm:tw-row-start-6 ">
@@ -336,6 +346,9 @@ export class SendMoneyCuba extends Component {
                  <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                </t>             
              </select>
+             <span t-if="this.errores.province==true" class="error">
+              Required field!!!
+             </span>
            </div>
 
            <div class="tw-form-control tw-w-full sm:tw-row-start-6 ">
@@ -348,6 +361,10 @@ export class SendMoneyCuba extends Component {
                  <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
                </t>             
              </select>
+
+             <span t-if="this.errores.city==true" class="error">
+              Required field!!!
+             </span>
            </div>
 
         
@@ -648,6 +665,18 @@ Devuelve true si todos los datos ok
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
     this.errores.cardHolderName = UImanager.validarSiVacio(datos.cardHolderName);
+    this.errores.deliveryAddress = UImanager.validarSiVacio(this.beneficiarioData.deliveryAddress);
+    
+    if (this.beneficiarioData.receiverCityID==-1) {
+      this.errores.city = true;
+    } else {
+      this.errores.city = false;
+    }
+    
+
+   
+
+    this.errores.phoneField = !libphonenumber.isValidNumber(this.beneficiarioData.contactPhone)
 
 
     if (!this.beneficiarioData.selectedCard) {
@@ -794,6 +823,7 @@ Devuelve true si todos los datos ok
       this.beneficiarioData.cardNumber = formatedCardNumber;
       this.beneficiarioData.cardHolderName = cardData.cardHolderName;
 
+
       this.inputCardNumber.el.value = this.beneficiarioData.cardNumber;
       this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
 
@@ -882,6 +912,8 @@ Devuelve true si todos los datos ok
 
     this.beneficiarioData.deliveryAddress = beneficiarioSelected.houseNumber + ', ' + beneficiarioSelected.streetName + '. ZipCode: ' + beneficiarioSelected.zipcode;
     this.inputdeliveryAddress.el.value = this.beneficiarioData.deliveryAddress
+
+    this.errores.deliveryAddress = UImanager.validarSiVacio(this.beneficiarioData.deliveryAddress);
 
     //Inicializando provincia
     const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === beneficiarioSelected.deliveryArea)[0];
@@ -1039,12 +1071,24 @@ Devuelve true si todos los datos ok
 
   onChangeAddressInput = API.debounce(async (event) => {
     this.beneficiarioData.deliveryAddress = event.target.value;
+    this.errores.deliveryAddress = UImanager.validarSiVacio(this.beneficiarioData.deliveryAddress);
+
 
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
   onChangePhoneInput = API.debounce(async (event) => {
+  
+
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    // console.log(cod_pais)
+    const telefono = cod_pais + event.target.value;
+
     this.beneficiarioData.contactPhone = event.target.value;
+
+
+
+    this.errores.phoneField = !libphonenumber.isValidNumber(telefono)
     console.log(this.beneficiarioData.contactPhone)
 
     //this.props.onChangeDatosBeneficiarios(this.state);
@@ -1076,6 +1120,7 @@ Devuelve true si todos los datos ok
 
     this.beneficiarioData.receiverCityID = -1; //Municipio id 
     this.beneficiarioData.receiverCity = '';    //Municipio
+    this.errores.city = false;
   };
 
   //Evento al cambiar de municipio
@@ -1088,7 +1133,10 @@ Devuelve true si todos los datos ok
     if (selectedMunicipio) {
       this.beneficiarioData.receiverCity = selectedMunicipio.nombre;
       this.beneficiarioData.receiverCityID = selectedCityId;
+      this.errores.city = false;
       // this.props.onChangeDatosBeneficiarios(this.state);
+    } else {
+      this.errores.city = true;
     }
   };
 
