@@ -286,7 +286,7 @@ export class SendMoneyCuba extends Component {
                     </label>
                     <input t-ref="inputCardNumber" type="text" t-att-value="this.beneficiarioData.cardNumber" maxlength="19" placeholder="0000-0000-0000-0000" class="tw-input tw-input-bordered tw-w-full "  t-on-keydown="onCardInputKeyDown" t-on-input="onChangeCardInput" />   
                     <span t-if="this.errores.card==true" class="error">
-                     Card Number Error!!!
+                       Card Number Error!!!
                     </span>
                 </div>
 
@@ -731,6 +731,11 @@ export class SendMoneyCuba extends Component {
   }
 
   onChangeSelectedCard = async (event) => {
+    console.log(event.target.value)
+    if (event.target.value==-1 || event.target.value==='') {
+      return;
+    }
+
     this.beneficiarioData.selectedCard = event.target.value
     const formatedCardNumber = UImanager.formatCardNumber(event.target.value);
     const cardData = this.cardsList.cards.filter((unaCard) =>
@@ -931,6 +936,10 @@ export class SendMoneyCuba extends Component {
 
   async onChangeCardInput(event) {
 
+    if (!event.target.value) {
+      this.errores.card = false;
+    }
+    
     /*
       this.beneficiarioData.cardNumber = UImanager.formatCardNumber(event.target.value);
     */
