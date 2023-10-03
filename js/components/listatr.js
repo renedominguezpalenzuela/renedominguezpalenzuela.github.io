@@ -78,9 +78,7 @@ export class ListaTR extends Component {
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
-    willUnmount() {
-        console.log('CALLED:> willUnmount');
-    }
+ 
 
     setup() {
 

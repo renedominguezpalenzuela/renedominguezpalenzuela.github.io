@@ -406,6 +406,8 @@ export class SendMoneyCuba extends Component {
   setup() {
 
     this.accessToken = API.getTokenFromlocalStorage();
+    
+    if (!this.accessToken) { return }
 
     onWillStart(async () => {
 

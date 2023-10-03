@@ -154,6 +154,8 @@ export class Beneficiarios extends Component {
    
    
     this.accessToken = window.localStorage.getItem('accessToken');
+    
+    if (!this.accessToken) { return }
 
     onWillStart(async () => {
       

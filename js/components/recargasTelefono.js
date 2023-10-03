@@ -216,6 +216,8 @@ export class RecargasTelefono extends Component {
 
     setup() {
         const accessToken = window.localStorage.getItem('accessToken');
+        
+    if (!accessToken) { return }
         const walletAddress = window.localStorage.getItem('walletAddress');
         const userId = window.localStorage.getItem('userId');
 

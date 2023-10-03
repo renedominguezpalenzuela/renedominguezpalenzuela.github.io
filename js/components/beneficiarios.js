@@ -368,6 +368,7 @@ export class Beneficiarios extends Component {
     setup() {
 
         this.accessToken = window.localStorage.getItem('accessToken');
+        
 
 
         onWillStart(async () => {
@@ -394,23 +395,28 @@ export class Beneficiarios extends Component {
 
 
             //obteniendo todos los datos de los beneficiarios desde el API
-            const api = new API(this.accessToken);
-            const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+            if (this.accessToken) {
 
-            //console.log(allDatosBeneficiarios)
+                const api = new API(this.accessToken);
+                const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
 
-            if (allDatosBeneficiarios) {
-                window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                //console.log(allDatosBeneficiarios)
+
+                if (allDatosBeneficiarios) {
+                    window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                }
+                this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+
+                if (this.allDatosBeneficiariosFromStorage.datos) {
+                    this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
+                        beneficiaryFullName: el.beneficiaryFullName,
+                        _id: el._id
+                    }));
+                }
+
+            } else {
+                this.beneficiariosNames = [];
             }
-            this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
-
-            if (this.allDatosBeneficiariosFromStorage.datos) {
-                this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
-                    beneficiaryFullName: el.beneficiaryFullName,
-                    _id: el._id
-                }));
-            }
-
 
 
 

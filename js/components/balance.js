@@ -74,6 +74,8 @@ export class Balance extends Component {
     if (!this.socketActivo) return;
 
     const accessToken = window.localStorage.getItem('accessToken');
+    
+    if (!accessToken) { return }
 
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
@@ -85,7 +87,6 @@ export class Balance extends Component {
 
     
 
-    if (!accessToken) { return }
 
 
     const query = {
