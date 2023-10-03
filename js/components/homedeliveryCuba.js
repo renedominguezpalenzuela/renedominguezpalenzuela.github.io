@@ -45,11 +45,21 @@ export class HomeDeliveryCuba extends Component {
     sendAmount: false,
     receiveAmount: false,    
     concept: false,
-    selectedBeneficiary: false,   
-    contactPhone: false,
+    
+    deliveryFirstName: false,
+    deliveryLastName: false,
+    deliverySecondLastName: false,
+    deliveryID:false,
     deliveryAddress: false,
+
+    deliveryPhone:false,      
+
+    selectedBeneficiary: false,
+       
     province: false,
-    city: false
+    city: false,    
+    
+    
   })
 
 
@@ -170,6 +180,9 @@ export class HomeDeliveryCuba extends Component {
                         </label>
                   
                         <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
+                         <span t-if="this.errores.concept==true" class="error">
+                            Error in field!!!
+                         </span> 
                       </div>
                 </div>
            
@@ -189,7 +202,7 @@ export class HomeDeliveryCuba extends Component {
     
 
 
-       <Beneficiarios  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" /> 
+       <Beneficiarios errores="this.errores"  onChangeDatosBeneficiarios.bind="onChangeDatosBeneficiarios" beneficiariosNames="beneficiariosNames" datosSelectedTX="this.datosSelectedTX" /> 
       <button class="tw-btn tw-btn-primary tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[30%]" t-on-click="onSendMoney">Send</button>  
         
     
@@ -205,6 +218,8 @@ export class HomeDeliveryCuba extends Component {
 
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
+
+    
 
   }
 
@@ -411,6 +426,8 @@ console.log(feeOBJ)
       return;
     }
 
+    return;
+
 
 
 
@@ -439,26 +456,16 @@ console.log(feeOBJ)
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
 
-    if (!this.beneficiarioData.selectedCard) {
-      this.errores.card = true;
-      this.beneficiarioData.cardBankImage = '';
-      this.beneficiarioData.bankName = '';
+    this.errores.deliveryFirstName = UImanager.validarSiVacio(datos.deliveryFirstName)
+    this.errores.deliveryLastName = UImanager.validarSiVacio(datos.deliveryLastName)
+	  this.errores.deliverySecondLastName = UImanager.validarSiVacio(datos.deliverySecondLastName)
 
-    } else {
-      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
-
-      if (tarjeta) {
-        this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
-        this.beneficiarioData.bankName = tarjeta.bankName;
-        this.errores.card = !tarjeta.tarjetaValida;
-      } else {
-        this.errores.card = true;
-        this.beneficiarioData.cardBankImage = '';
-        this.beneficiarioData.bankName = '';
-      }
+    this.errores.deliveryID = UImanager.validarCI(datos.deliveryID)
+    this.errores.deliveryAddress = UImanager.validarSiVacio(datos.deliveryAddress)
 
 
-    }
+    console.log(this.errores)
+    
 
 
 
@@ -475,7 +482,7 @@ console.log(feeOBJ)
       }
 
     }
-    console.log("NO hay Error en validacion")
+  
 
     return !hayErrores;
 

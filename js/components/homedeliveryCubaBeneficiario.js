@@ -28,6 +28,9 @@ export class Beneficiarios extends Component {
     selectedBeneficiaryId: "-1"
   })
 
+  
+
+
   static template = xml`  
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
 
@@ -67,21 +70,30 @@ export class Beneficiarios extends Component {
                       <label class="tw-label">
                         <span class="tw-label-text">First Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliveryFirstName" t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
+                      <input type="text" t-att-value="this.state.deliveryFirstName" t-on-blur="onBlurFirstName"  t-on-input="onChangeFirstName"  maxlength="300" placeholder="First name" class="tw-input tw-input-bordered tw-w-full " />   
+                      <span t-if="this.props.errores.deliveryFirstName==true" class="error">
+                         Required field!!!
+                      </span> 
                     </div>
 
                     <div class="tw-form-control   tw-w-full ">
                       <label class="tw-label">
                       <span class="tw-label-text">Last Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliveryLastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
+                      <input type="text" t-att-value="this.state.deliveryLastName" t-on-blur="onBlurLastName"  t-on-input="onChangeLastName"  maxlength="300" placeholder="Last name" class="tw-input tw-input-bordered  tw-w-full " /> 
+                       <span t-if="this.props.errores.deliveryLastName==true" class="error">
+                         Required field!!!
+                      </span> 
                     </div>
 
                     <div class="tw-form-control tw-w-full ">     
                       <label class="tw-label">
                         <span class="tw-label-text">Second Last Name</span>
                       </label>
-                      <input type="text" t-att-value="this.state.deliverySecondLastName" t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
+                      <input type="text" t-att-value="this.state.deliverySecondLastName" t-on-blur="onBlurSecondLastName"  t-on-input="onChangeSecondLastName"  maxlength="300" placeholder="Second last name" class="tw-input tw-input-bordered tw-w-full " />  
+                      <span t-if="this.props.errores.deliverySecondLastName==true" class="error">
+                          Required field!!!
+                       </span> 
                     </div>                              
                   </div>
 
@@ -89,15 +101,20 @@ export class Beneficiarios extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">ID</span>
                     </label>
-                    <input type="text" t-att-value="this.state.deliveryID"   maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeID" />   
+                    <input type="text" t-att-value="this.state.deliveryID"  t-on-blur="onBlurdeliveryID"   maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeID"  onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" />   
+                    <span t-if="this.props.errores.deliveryID==true" class="error">
+                         Error in ID!!!
+                       </span> 
                   </div>
 
                   <div class="tw-form-control tw-w-full  ">
                   <label class="tw-label">
                    <span class="tw-label-text">Contact Phone</span>
                   </label>
-                  <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
-                  
+                  <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" t-on-blur="onBlurPhone" />
+                   <span t-if="this.props.errores.deliveryPhone==true" class="error">
+                          Required field!!!
+                       </span> 
                 </div>
                   
                   <div class="tw-form-control  sm:tw-col-span-2 tw-w-full ">
@@ -105,7 +122,10 @@ export class Beneficiarios extends Component {
                         <span class="tw-label-text">Delivery Address</span>
                       </label>
                     
-                      <textarea  t-att-value="this.state.deliveryAddress" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+                      <textarea  t-att-value="this.state.deliveryAddress" t-on-blur="onBlurAddressInput" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeAddressInput" ></textarea>
+                      <span t-if="this.props.errores.deliveryAddress==true" class="error">
+                         Required field!!!
+                      </span>  
                   </div>
 
                   <div class="tw-form-control tw-w-full ">
@@ -151,28 +171,30 @@ export class Beneficiarios extends Component {
   //"deliveryZone": "Provincias",| Habana
   setup() {
 
-   
-   
+
+
     this.accessToken = window.localStorage.getItem('accessToken');
-    
+
     if (!this.accessToken) { return }
 
+    console.log(this.props.errores.deliveryFirstName)
+
     onWillStart(async () => {
-      
+
       this.provincias = Provincias;
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
     });
 
     onRendered(() => {
 
-      
+
 
       if (this.cambioBeneficiario) {
         this.cambioBeneficiario = false;
         return;
       }
 
-          
+
 
       //Buscar el CI
       if (this.props.datosSelectedTX.allData) {
@@ -183,7 +205,7 @@ export class Beneficiarios extends Component {
           unBeneficiario.CI === CI
         )[0]
 
-    
+
 
         if (beneficiario) {
           this.inicializarDatosBeneficiario(beneficiario._id);
@@ -210,7 +232,7 @@ export class Beneficiarios extends Component {
 
       this.phoneInput = document.querySelector("#phone");
       this.phonInputSelect = window.intlTelInput(this.phoneInput, {
-         separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+        separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
         autoInsertDialCode: true, //coloca el codigo del pais en el input
         formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
 
@@ -227,15 +249,15 @@ export class Beneficiarios extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-      
-      
-      if (this.props.beneficiariosNames.length>0) {
+
+
+      if (this.props.beneficiariosNames.length > 0) {
         this.inicializarDatosBeneficiario(this.props.beneficiariosNames[0]._id);
       }
 
     });
 
-   
+
 
   }
 
@@ -272,33 +294,85 @@ export class Beneficiarios extends Component {
 
   onChangeFirstName = API.debounce(async (event) => {
     this.state.deliveryFirstName = event.target.value;
+   
+    this.props.errores.deliveryFirstName = UImanager.validarSiVacio(event.target.value)
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  onChangeAddressInput = API.debounce(async (event) => {
-    this.state.deliveryAddress = event.target.value;
-    this.props.onChangeDatosBeneficiarios(this.state);
-  }, API.tiempoDebounce);
+  onBlurFirstName = (event) => {
+    this.props.errores.deliveryFirstName = UImanager.validarSiVacio(event.target.value)
+  }
 
   onChangeLastName = API.debounce(async (event) => {
     this.state.deliveryLastName = event.target.value;
+    this.props.errores.deliveryLastName = UImanager.validarSiVacio(event.target.value)
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
+
+  onBlurLastName = (event) => {
+    this.props.errores.deliveryLastName = UImanager.validarSiVacio(event.target.value)
+  }
 
   onChangeSecondLastName = API.debounce(async (event) => {
     this.state.deliverySecondLastName = event.target.value;
+    this.props.errores.deliverySecondLastName = UImanager.validarSiVacio(event.target.value)
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
+
+  
+  onBlurSecondLastName = (event) => {
+    this.props.errores.deliverySecondLastName = UImanager.validarSiVacio(event.target.value)
+  }
+
+
+
+
+  
+
+
 
   onChangeID = API.debounce(async (event) => {
     this.state.deliveryID = event.target.value;
+    this.props.errores.deliveryID = UImanager.validarCI(event.target.value)
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  onChangePhone = API.debounce(async (event) => {
-    this.state.deliveryPhone = event.target.value;
+  
+  onBlurdeliveryID = (event) => {
+    this.props.errores.deliveryID = UImanager.validarCI(event.target.value)
+  }
+
+
+  
+  onChangeAddressInput = API.debounce(async (event) => {
+    this.state.deliveryAddress = event.target.value;
+    this.props.errores.deliveryAddress = UImanager.validarSiVacio(event.target.value)
     this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
+
+  
+  onBlurAddressInput = (event) => {
+    this.props.errores.deliveryAddress = UImanager.validarSiVacio(event.target.value)
+  }
+
+  onChangePhone = API.debounce(async (event) => {
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    const telefono = cod_pais + event.target.value;
+
+    this.state.deliveryPhone = event.target.value;
+
+    
+    this.props.errores.deliveryPhone = !libphonenumber.isValidNumber(telefono)
+    this.props.onChangeDatosBeneficiarios(this.state);
+  }, API.tiempoDebounce);
+
+  onBlurPhone = (event) => {
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    const telefono = cod_pais + event.target.value;
+
+    this.props.errores.deliveryPhone =!libphonenumber.isValidNumber(telefono)
+  }
+  
 
   onChangeSelectedBeneficiario = (event) => {
     const selectedBeneficiaryId = event.target.value;
@@ -310,7 +384,7 @@ export class Beneficiarios extends Component {
 
   inicializarDatosBeneficiario = (idBeneficiario) => {
 
-   
+
     const allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
@@ -323,6 +397,23 @@ export class Beneficiarios extends Component {
       this.state.deliveryPhone = selectedBenefiarioData.deliveryPhone;
       this.state.deliveryAddress = selectedBenefiarioData.houseNumber + ', ' + selectedBenefiarioData.streetName + '. ZipCode: ' + selectedBenefiarioData.zipcode;
       this.state.selectedBeneficiaryId = idBeneficiario;
+
+
+      
+    this.props.errores.deliveryFirstName = UImanager.validarSiVacio(this.state.deliveryFirstName)
+    this.props.errores.deliveryLastName = UImanager.validarSiVacio(this.state.deliveryLastName)
+    this.props.errores.deliverySecondLastName = UImanager.validarSiVacio(this.state.deliverySecondLastName)
+
+    this.props.errores.deliveryID = UImanager.validarCI(this.state.deliveryID)
+
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    const telefono = cod_pais + selectedBenefiarioData.deliveryPhone;
+
+    this.props.errores.deliveryPhone =!libphonenumber.isValidNumber(telefono)
+
+    //this.props.errores.deliveryAddress = UImanager.validarSiVacio(this.state.deliveryAddress)
+
+
       //Inicializando provincia
       const selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.nombre === selectedBenefiarioData.deliveryArea)[0];
       if (selectedProvince) {

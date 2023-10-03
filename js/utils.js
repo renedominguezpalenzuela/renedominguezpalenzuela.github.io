@@ -1257,6 +1257,9 @@ export class UImanager {
 
 
   static validMail(mail) {
+    if (!mail) {
+      return false;
+    }
 
     const correo_valido1 = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
     const correo_valido2 = mail.charAt(mail.length - 1) != '.' ? true : false;
