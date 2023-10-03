@@ -94,7 +94,7 @@ export class RecargasTelefono extends Component {
             <label class="tw-label">
              <span class="tw-label-text">Phone to recharge</span>
             </label>
-            <input   t-att-value="this.state.phone"  id="phone" name="phone" type="phone" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" />
+            <input   t-att-value="this.state.phone"  id="phone" name="phone" type="phone" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"/>
 
             <span t-if="this.errores.phoneField==true" class="error">
               Invalid number!!!
