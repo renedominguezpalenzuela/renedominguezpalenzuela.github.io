@@ -386,7 +386,7 @@ export class ListaTR extends Component {
                 order: [[6, 'desc']],
                 select: true,
                 responsive: true,
-                //destroy: true,
+                destroy: true,
                 language: {
                     emptyTable: "No data",
                     infoEmpty: "No entries to show"

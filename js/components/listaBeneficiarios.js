@@ -129,7 +129,7 @@ export class ListaBeneficiarios extends Component {
                 order: [[0, 'asc']],
                 select: true,
                 responsive: true,
-                //destroy: true,
+                destroy: true,
                 //footer: false
 
 

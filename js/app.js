@@ -208,7 +208,7 @@ class Root extends Component {
   setTest_data() {
     this.inputUsr.el.value = 'darian.alvarez.t@gmail.com';
     this.inputPass.el.value = 'Buvosic8*';
-    Swal.fire('Test data is ready');
+    //Swal.fire('Test data is ready');
   }
 
   getApi_Status() {
