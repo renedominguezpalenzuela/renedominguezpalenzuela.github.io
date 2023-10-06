@@ -78,7 +78,7 @@ export class ListaTR extends Component {
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
- 
+
 
     setup() {
 
@@ -381,6 +381,23 @@ export class ListaTR extends Component {
 
 
                 ],
+                dom: 'Bfrtip',
+                buttons: [
+
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    /*'copy','excel', 'csv',
+                    
+                    {
+                        extend: 'pdf',
+                        messageTop: 'TX List'
+                    },*/
+                    // {
+                    //     extend: 'print',
+                    //     messageTop: 'TX List'
+                    // }
+
+                ],
+
                 autoWidth: false,
                 "pageLength": 10,
                 order: [[6, 'desc']],

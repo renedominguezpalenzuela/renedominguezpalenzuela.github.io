@@ -161,6 +161,10 @@ table.display.dataTable > tbody > tr.selected:hover > *  {
     background-color: #fff;
 }
 
+ tr.even {
+  background-color:#D3DAF0 !important;
+ }
+
 
 #container-listtr_filter {
   margin-bottom: 0.5rem;
