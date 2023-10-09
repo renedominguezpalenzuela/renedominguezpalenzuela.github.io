@@ -80,8 +80,8 @@ export class Profile extends Component {
       size: ""
     },
 
-    passportImg: "",
-    driverlicenseImg: "",
+    passportImg: "/img/passport.png",
+    driverlicenseImg: "/img/driverlicense.png",
 
 
     birthDate: "",
@@ -348,7 +348,7 @@ export class Profile extends Component {
                         <div class="tw-px-10 tw-pt-10 ">
                             <t t-if="this.state.passportImg">
                                 <div class="tw-avatar">
-                                    <div class="tw-w-24 tw-mask tw-mask-squircle">                
+                                    <div class="tw-w-24 ">                
                                       <img t-att-src="this.state.passportImg" />
                                     </div>
                                 </div>  
@@ -378,7 +378,7 @@ export class Profile extends Component {
                           <div class="tw-px-10 tw-pt-10 ">
                               <t t-if="this.state.driverlicenseImg">
                                   <div class="tw-avatar">
-                                      <div class="tw-w-24 tw-mask tw-mask-squircle">                
+                                      <div class="tw-w-24 ">                
                                         <img t-att-src="this.state.driverlicenseImg" />
                                       </div>
                                   </div>  

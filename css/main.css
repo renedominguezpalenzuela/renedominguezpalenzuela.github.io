@@ -80,7 +80,11 @@ table{
     word-wrap:break-word;
   }
 
-
+  /*Alto de filas de DataTables*/
+    table.dataTable tbody th, table.dataTable tbody td {
+      padding-top: 3px!important;
+      padding-bottom: 3px!important;
+  }
   
 /* workaround*/
 .intl-tel-input {
@@ -258,4 +262,9 @@ div.menuv .menuv-current a:hover {
   border-right: none;
   border-bottom: 1px dotted #999999;
   color: darkblue;
+}
+
+
+.tw-avatar img {
+  object-fit: contain!important;
 }

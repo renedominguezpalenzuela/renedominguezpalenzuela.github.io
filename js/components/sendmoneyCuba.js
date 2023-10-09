@@ -690,9 +690,12 @@ Devuelve true si todos los datos ok
     
 
   
+    const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
+    // console.log(cod_pais)
+    const telefono = cod_pais + datos.contactPhone;
    
 
-    this.errores.phoneField = !libphonenumber.isValidNumber(datos.contactPhone)
+    this.errores.phoneField = !libphonenumber.isValidNumber(telefono)
 
 
     if (!this.beneficiarioData.selectedCard) {

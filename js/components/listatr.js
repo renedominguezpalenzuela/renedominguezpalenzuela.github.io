@@ -13,7 +13,7 @@ import { tipos_operaciones } from "../../data/tipos_operacion.js";
 export class ListaTR extends Component {
 
 
-  
+
 
     datos = null;
     //grid = null;
@@ -43,7 +43,7 @@ export class ListaTR extends Component {
 
     
     <table  id="container-listtr" class="display nowrap " style="width:100%" >
-    <thead class="tw-bg-[#3750D1] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+    <thead class="tw-bg-[#4F50E9] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
         <tr>
                 <th data-priority="1">Transaction ID</th>    
                 <th>UserType</th>
@@ -93,7 +93,7 @@ export class ListaTR extends Component {
         onWillStart(async () => {
 
 
-           
+
 
 
 
@@ -116,135 +116,135 @@ export class ListaTR extends Component {
             // console.log(this.datos[0])
 
 
-            
-        const accessToken = API.getTokenFromlocalStorage();
-        if (!accessToken) { return }
 
-        this.api = new API(accessToken);
+            const accessToken = API.getTokenFromlocalStorage();
+            if (!accessToken) { return }
 
-
-        const walletAddress = window.localStorage.getItem('walletAddress');
-        const userId = window.localStorage.getItem('userId');
+            this.api = new API(accessToken);
 
 
-        const query = {
-            token: accessToken
-        }
+            const walletAddress = window.localStorage.getItem('walletAddress');
+            const userId = window.localStorage.getItem('userId');
 
 
-        if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
-            this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
-
-
-
-        }
-
-        
-        console.log("Solicitando lista de TX al servidor")
-
-        const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-        console.log("lista de TX recibidas")
-
-
-
-        //console.log("Tipo operacion a filtrar")
-        //console.log(this.props.tipooperacion)
-
-
-        this.datos = [];
-
-
-        this.datos = await this.transformarRawDatos(raw_datos);
-
-
-
-
-
-
-        // -----   Creando el socket  ------------------------------------------------
-        this.socket = io(API.baseSocketURL, {
-            path: this.subscriptionPath,
-            query: query,
-        });
-
-        // ----- Si ocurre algun error --------------------------------------------------
-        this.socket.on('error', (error) => {
-            console.log('Socket ListTX ERROR: ', {
-                event: 'error',
-                data: error
-            });
-        });
-
-
-
-        // ----- Socket conectado  ---------------------------------------------------
-        this.socket.on("connect", (datos) => {
-            console.log("Socket LIST TX conectado correctamente");
-            console.log("socket LIST TX id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
-
-            // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
-            //Creando subscripcion a todas las transacciones de la wallet
-            this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
-        });
-
-        // ----- Socket ReConectado  --------------------------------------------------- 
-        this.socket.on('reconnect', () => {
-            console.log('Socket LIST TX RE conectado ', this.socket.connected);
-        });
-
-
-
-
-        // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
-        this.socket.on('TRANSACTION_UPDATE', async (data) => {
-            console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
-            console.log('TR Status LIST TX ' + data.transactionStatus);
-
-
-
-            console.log("Solicitando lista de TX al servidor en SOCKET")
-
-            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log("lista de TX recibidas en SOCKET")
-
-
-
-
-
-
-
-            //console.log(raw_datos)
-            this.datos = [];
-
-            this.datos = await this.transformarRawDatos(raw_datos);
-            if (this.datos) {
-                this.actualizarDatos(this.datos);
+            const query = {
+                token: accessToken
             }
 
 
+            if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
+                this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
+
+
+
+            }
+
+
+            console.log("Solicitando lista de TX al servidor")
+
+            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+            console.log("lista de TX recibidas")
+
+
+
+            //console.log("Tipo operacion a filtrar")
+            //console.log(this.props.tipooperacion)
+
+
+            this.datos = [];
+
+
+            this.datos = await this.transformarRawDatos(raw_datos);
 
 
 
 
 
-            //this.tabla.config.plugin.remove("pagination");
-            //this.tabla.config.plugin.remove("search");
+
+            // -----   Creando el socket  ------------------------------------------------
+            this.socket = io(API.baseSocketURL, {
+                path: this.subscriptionPath,
+                query: query,
+            });
+
+            // ----- Si ocurre algun error --------------------------------------------------
+            this.socket.on('error', (error) => {
+                console.log('Socket ListTX ERROR: ', {
+                    event: 'error',
+                    data: error
+                });
+            });
+
+
+
+            // ----- Socket conectado  ---------------------------------------------------
+            this.socket.on("connect", (datos) => {
+                console.log("Socket LIST TX conectado correctamente");
+                console.log("socket LIST TX id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
+
+                // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
+                //Creando subscripcion a todas las transacciones de la wallet
+                this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
+            });
+
+            // ----- Socket ReConectado  --------------------------------------------------- 
+            this.socket.on('reconnect', () => {
+                console.log('Socket LIST TX RE conectado ', this.socket.connected);
+            });
+
+
+
+
+            // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
+            this.socket.on('TRANSACTION_UPDATE', async (data) => {
+                console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
+                console.log('TR Status LIST TX ' + data.transactionStatus);
+
+
+
+                console.log("Solicitando lista de TX al servidor en SOCKET")
+
+                const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+                console.log("lista de TX recibidas en SOCKET")
 
 
 
 
 
-            /*if (data.transactionStatus == "confirmed") {
-              const saldos = await this.get_data(true);
-              if (saldos) {
-                this.balance.saldos = saldos;
-                console.log(JSON.stringify(this.balance));
-              }
-            }*/
-        }
-        
-        
-        );
+
+
+                //console.log(raw_datos)
+                this.datos = [];
+
+                this.datos = await this.transformarRawDatos(raw_datos);
+                if (this.datos) {
+                    this.actualizarDatos(this.datos);
+                }
+
+
+
+
+
+
+
+                //this.tabla.config.plugin.remove("pagination");
+                //this.tabla.config.plugin.remove("search");
+
+
+
+
+
+                /*if (data.transactionStatus == "confirmed") {
+                  const saldos = await this.get_data(true);
+                  if (saldos) {
+                    this.balance.saldos = saldos;
+                    console.log(JSON.stringify(this.balance));
+                  }
+                }*/
+            }
+
+
+            );
 
 
 
@@ -394,21 +394,35 @@ export class ListaTR extends Component {
 
 
                 ],
+                /* dom: 'Bfrtip',
+                 buttons: [
+ 
+                     'copy', 'csv', 'excel', 'pdf', 'print'
+                     'copy','excel', 'csv',
+                     
+                     {
+                         extend: 'pdf',
+                         messageTop: 'TX List'
+                     },
+                     // {
+                     //     extend: 'print',
+                     //     messageTop: 'TX List'
+                     // }
+ 
+                 ],*/
                 dom: 'Bfrtip',
                 buttons: [
-
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                    /*'copy','excel', 'csv',
-                    
+                    'copy', 
+                    'csv', 
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Save EXCEL'
+                    },
                     {
                         extend: 'pdf',
                         messageTop: 'TX List'
-                    },*/
-                    // {
-                    //     extend: 'print',
-                    //     messageTop: 'TX List'
-                    // }
-
+                    }, 
+                    'print'
                 ],
 
                 autoWidth: false,

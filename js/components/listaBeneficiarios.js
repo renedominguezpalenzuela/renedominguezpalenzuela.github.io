@@ -32,7 +32,7 @@ export class ListaBeneficiarios extends Component {
 
     
     <table  id="container-listbeneficiary" class="display nowrap tw-mt-2 " style="width:100%" >
-        <thead class="tw-bg-[#3750D1] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+        <thead class="tw-bg-[#4F50E9] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
             <tr>
                     <th data-priority="1">Beneficiary</th>    
                     <th>ID</th>        
@@ -118,9 +118,9 @@ export class ListaBeneficiarios extends Component {
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'beneficiaryFullName', width: '30%' },
-                    { data: 'deliveryCI', width: '15%' },
-                    { data: 'email', width: '15%' },
+                    { data: 'beneficiaryFullName', width: '25%' },
+                    { data: 'deliveryCI', width: '10%' },
+                    { data: 'email', width: '20%' },
                     { data: 'deliveryPhone', width: '15%' },
                     { data: 'country', width: '14%' },
                 ],
