@@ -7,6 +7,8 @@ import { API } from "../utils.js";
 
 export class Balance extends Component {
 
+ 
+
 
   socketActivo = true;
 
@@ -93,7 +95,27 @@ export class Balance extends Component {
       token: accessToken
     }
 
-    // -----   Creando el socket  ------------------------------------------------
+    
+
+    //Inicializando 
+    onWillStart(async () => {
+
+      if (!this.socketActivo) return;
+
+
+
+
+
+
+
+    });
+
+    onMounted(async () => {
+
+  
+
+
+      // -----   Creando el socket  ------------------------------------------------
     this.socket = io(API.baseSocketURL, {
       path: subscriptionPath,
       query: query,
@@ -141,30 +163,22 @@ export class Balance extends Component {
     });
 
 
-    //Inicializando 
-    onWillStart(async () => {
 
-      if (!this.socketActivo) return;
-
+    
       //console.log("Solicitando Balance al servidor")
 
       const saldos = await this.get_data(false);
-      //console.log("Balance recibido servidor")
+
+
+      console.log("Balance recibido servidor")
 
       if (saldos) {
         this.balance.saldos = saldos;
-        //console.log(JSON.stringify(this.balance));
+        console.log(JSON.stringify(this.balance));
       }
 
 
 
-
-
-
-
-    });
-
-    onMounted(async () => {
 
 
     });

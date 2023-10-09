@@ -415,6 +415,17 @@ export class SendMoneyCuba extends Component {
       this.municipios.names = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
 
+
+
+    });
+
+    onRendered(() => {
+
+    });
+
+    onMounted(async () => {
+
+      
       const api = new API(this.accessToken);
 
 
@@ -448,13 +459,6 @@ export class SendMoneyCuba extends Component {
 
 
 
-    });
-
-    onRendered(() => {
-
-    });
-
-    onMounted(async () => {
 
       const monedaEnviada = this.inputSendCurrencyRef.el.value;
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;

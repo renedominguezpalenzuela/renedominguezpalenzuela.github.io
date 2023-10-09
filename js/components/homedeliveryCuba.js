@@ -231,8 +231,22 @@ export class HomeDeliveryCuba extends Component {
     //const userId = window.localStorage.getItem('userId');
 
 
-    onWillStart(async () => {
+    onWillStart( () => {
      
+    
+
+
+
+
+    });
+
+    onRendered(() => {
+
+    });
+
+    onMounted(async () => {
+
+
       const api = new API(accessToken);
      
 
@@ -264,16 +278,6 @@ export class HomeDeliveryCuba extends Component {
 
       this.tiposCambio = await api.getAllTiposDeCambio();
 
-
-
-
-    });
-
-    onRendered(() => {
-
-    });
-
-    onMounted(() => {
       const monedaEnviada = this.inputSendCurrencyRef.el.value;
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
       this.monedas.enviada = monedaEnviada.toUpperCase();

@@ -17,7 +17,7 @@ class Root extends Component {
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 5, title: 'Home Delivery' });
+  state = useState({ menuId: 4, title: 'To Credit Card' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -96,15 +96,7 @@ class Root extends Component {
     </div>
 
 </div>  
-
-
- 
-  
-
-
-
-
-    
+   
 
   `;
 
@@ -115,22 +107,7 @@ class Root extends Component {
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
 
-
-
-
-
-
-
     onWillStart(() => {
-
-
-    });
-
-    onMounted(() => {
-
-
-
-
 
 
     });
@@ -142,10 +119,15 @@ class Root extends Component {
         var tableId = "#container-listtr";
         $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
       }
+    }
+    );
 
+
+    onMounted(() => {
 
 
     });
+
 
   }
 

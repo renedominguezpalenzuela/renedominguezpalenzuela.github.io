@@ -13,7 +13,7 @@ import { tipos_operaciones } from "../../data/tipos_operacion.js";
 export class ListaTR extends Component {
 
 
-    //static props = ["tipooperacion"];
+  
 
     datos = null;
     //grid = null;
@@ -85,6 +85,38 @@ export class ListaTR extends Component {
 
 
 
+
+
+
+
+
+        onWillStart(async () => {
+
+
+           
+
+
+
+
+
+
+
+        });
+
+
+
+        onMounted(async () => {
+            // do something here
+
+
+
+
+
+            // console.log("Operacion")
+            // console.log(this.datos[0])
+
+
+            
         const accessToken = API.getTokenFromlocalStorage();
         if (!accessToken) { return }
 
@@ -106,6 +138,24 @@ export class ListaTR extends Component {
 
 
         }
+
+        
+        console.log("Solicitando lista de TX al servidor")
+
+        const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+        console.log("lista de TX recibidas")
+
+
+
+        //console.log("Tipo operacion a filtrar")
+        //console.log(this.props.tipooperacion)
+
+
+        this.datos = [];
+
+
+        this.datos = await this.transformarRawDatos(raw_datos);
+
 
 
 
@@ -191,49 +241,12 @@ export class ListaTR extends Component {
                 console.log(JSON.stringify(this.balance));
               }
             }*/
-        });
+        }
+        
+        
+        );
 
 
-
-
-
-        onWillStart(async () => {
-
-
-            console.log("Solicitando lista de TX al servidor")
-
-            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log("lista de TX recibidas")
-
-
-
-            //console.log("Tipo operacion a filtrar")
-            //console.log(this.props.tipooperacion)
-
-
-            this.datos = [];
-
-
-            this.datos = await this.transformarRawDatos(raw_datos);
-
-
-
-
-            // console.log("Operacion")
-            // console.log(this.datos[0])
-
-
-
-
-
-
-
-        });
-
-
-
-        onMounted(async () => {
-            // do something here
 
 
             var tableId = "#container-listtr";

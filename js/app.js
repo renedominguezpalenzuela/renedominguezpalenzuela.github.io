@@ -2,7 +2,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 //import useStore from "/js/store.js";
 //import { getAPIStatus, login, getUsrInfo } from "/js/utils.js";
-import useStore from "./store.js";
+
 import { getAPIStatus, login, API } from "./utils.js";
 
 
@@ -13,12 +13,6 @@ class Root extends Component {
   inputUsr = useRef("input_user");
   inputPass = useRef("input_pass");
 
-
-  count = useState({ value: 0 });
-
-  increment() {
-    this.count.value++;
-  }
 
 
 
@@ -64,7 +58,7 @@ class Root extends Component {
 
 
   setup() {
-    this.store = useStore();
+  
 
 
 
@@ -220,3 +214,16 @@ class Root extends Component {
 }
 
 mount(Root, document.body);
+
+// or alternatively
+/*
+const env = {
+  _t: myTranslateFunction,
+  user: {...},
+  services: {
+      ...
+  },
+};
+*/
+
+//mount(App, document.body, { env });
