@@ -100,12 +100,12 @@ class Root extends Component {
 
 
       //obteniendo todos los datos de los beneficiarios
-      const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
+      /*const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
 
 
       if (allDatosBeneficiarios) {
         window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
-      }
+      }*/
 
       //const  allDatosBeneficiariosFromStorage =JSON.parse(window.localStorage.getItem('beneficiariesFullData'));      
       //console.log(allDatosBeneficiariosFromStorage);

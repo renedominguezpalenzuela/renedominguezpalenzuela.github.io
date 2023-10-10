@@ -175,7 +175,7 @@ export class Beneficiarios extends Component {
 
     this.accessToken = window.localStorage.getItem('accessToken');
 
-    if (!this.accessToken) { return }
+  
 
     console.log(this.props.errores.deliveryFirstName)
 
@@ -188,6 +188,7 @@ export class Beneficiarios extends Component {
     onRendered(() => {
 
 
+      if (!this.accessToken) { return }
 
       if (this.cambioBeneficiario) {
         this.cambioBeneficiario = false;

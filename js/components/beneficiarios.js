@@ -296,7 +296,7 @@ export class Beneficiarios extends Component {
                     </label>
                     <select  id="benSelectedCard" t-att-value="this.state.selectedCardId" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedCard">
                         <option  t-att-value="-1" >Select or enter new data</option>
-                        <t t-foreach="cardsList" t-as="unCard" t-key="unCard.id">
+                        <t t-foreach="this.cardsList" t-as="unCard" t-key="unCard.id">
                            <option t-att-value="unCard.id">
                             <t t-esc="unCard.cardHolderName"/>  <t t-esc="unCard.number"/>
                            </option>
@@ -368,6 +368,12 @@ export class Beneficiarios extends Component {
     setup() {
 
         this.accessToken = window.localStorage.getItem('accessToken');
+
+        this.beneficiariosNames = [];
+        this.provincias = []
+        this.municipios = []
+        this.cardsList = []
+
         
 
 
@@ -414,9 +420,7 @@ export class Beneficiarios extends Component {
                     }));
                 }
 
-            } else {
-                this.beneficiariosNames = [];
-            }
+            } 
 
 
 

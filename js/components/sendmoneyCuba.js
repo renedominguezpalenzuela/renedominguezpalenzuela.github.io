@@ -228,6 +228,8 @@ export class SendMoneyCuba extends Component {
    
     </div>
        <!-- Beneficiario -->
+
+      
           <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg ">
             <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg ">
               <div>Beneficiary</div>                         
@@ -240,6 +242,7 @@ export class SendMoneyCuba extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Select Beneficiary</span>
                     </label>
+                    
                     <select t-att-value="this.beneficiarioData.selectedBeneficiaryId"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario" >
                       <option  t-att-value="-1" >Select Beneficiary</option>
                       <t t-if="this.beneficiariosNames.names.length>0">
@@ -250,7 +253,10 @@ export class SendMoneyCuba extends Component {
                         </t>     
                       </t>                                     
                     </select>
+                    
                   </div> 
+
+                  
 
                   <div class="tw-form-control tw-w-full tw-max-w-xs sm:tw-row-start-1 sm:tw-row-col-1  tw-row-start-10">
                   <label class="tw-label">
@@ -278,6 +284,7 @@ export class SendMoneyCuba extends Component {
                       </t>
                                   
                   </select>
+                  
                 </div>
 
 
@@ -293,7 +300,7 @@ export class SendMoneyCuba extends Component {
 
                 <div class=" tw-flex tw-items-center tw-w-full tw-row-start-3 tw-mt-1">
                   <img t-att-src="this.beneficiarioData.cardBankImage" alt="" class="tw-ml-3  sm:tw-w-[10vw] tw-w-[30vw]"/>
-                 <!-- <t t-esc="this.beneficiarioData.bankName"/> -->
+                 
                 </div>
 
                 
@@ -320,8 +327,7 @@ export class SendMoneyCuba extends Component {
                   Invalid number!!!
                 </span>
 
-                <!-- <span id="valid-phone-msg" class="tw-hide">✓ Valid</span>
-                <span id="error-phone-msg" class="tw-hide"></span> -->
+                
               </div> 
 
               
@@ -343,12 +349,14 @@ export class SendMoneyCuba extends Component {
              <label class="tw-label">
                <span class="tw-label-text">Province</span>
              </label>
+             
              <select t-att-value="this.beneficiarioData.deliveryAreaID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProvince">
              <option t-att-disabled="true" t-att-value="-1" >Select Province</option>  
              <t t-foreach="this.provincias" t-as="unaProvincia" t-key="unaProvincia.id">
                  <option t-att-value="unaProvincia.id"><t t-esc="unaProvincia.nombre"/></option>
                </t>             
              </select>
+            
              <span t-if="this.errores.province==true" class="error">
               Required field!!!
              </span>
@@ -358,12 +366,14 @@ export class SendMoneyCuba extends Component {
              <label class="tw-label">
                <span class="tw-label-text">City</span>
              </label>
+             
              <select t-att-value="this.beneficiarioData.receiverCityID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeCity">
                <option t-att-disabled="true" t-att-value="-1" >Select city</option>
                <t t-foreach="this.municipios.names" t-as="unMunicipio" t-key="unMunicipio.id">
                  <option  t-att-value="unMunicipio.id"><t t-esc="unMunicipio.nombre"/></option>
                </t>             
              </select>
+            
 
              <span t-if="this.errores.city==true" class="error">
               Required field!!!
@@ -380,6 +390,8 @@ export class SendMoneyCuba extends Component {
          
         
         </div>    
+
+       
         <!-- Beneficiario END -->
 
 
@@ -405,9 +417,16 @@ export class SendMoneyCuba extends Component {
   //CASH_OUT_TRANSACTION
   setup() {
 
+    this.beneficiariosNames.names =[]
+    this.cardsList.cards = []
+    this.provincias = []
+    this.municipios = []
+
+
     this.accessToken = API.getTokenFromlocalStorage();
     
-    if (!this.accessToken) { return }
+   
+   
 
     onWillStart(async () => {
 
@@ -424,6 +443,8 @@ export class SendMoneyCuba extends Component {
     });
 
     onMounted(async () => {
+
+      if (!this.accessToken) { return }
 
       
       const api = new API(this.accessToken);

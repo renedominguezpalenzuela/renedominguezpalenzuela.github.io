@@ -224,9 +224,9 @@ export class HomeDeliveryCuba extends Component {
   }
 
   setup() {
-    const accessToken = window.localStorage.getItem('accessToken');
+   
     
-    if (!accessToken) { return }
+    
     //const walletAddress = window.localStorage.getItem('walletAddress');
     //const userId = window.localStorage.getItem('userId');
 
@@ -246,8 +246,20 @@ export class HomeDeliveryCuba extends Component {
 
     onMounted(async () => {
 
+      //this.beneficiarioData =[]
 
-      const api = new API(accessToken);
+      this.accessToken = window.localStorage.getItem('accessToken');
+
+
+     
+
+      if (!this.accessToken) {
+        console.error("NO ACCESS TOKEN")
+        return              
+      } 
+
+
+      const api = new API(this.accessToken);
      
 
       //Pidiendo las tasas de conversion de monedas
@@ -255,7 +267,7 @@ export class HomeDeliveryCuba extends Component {
 
       //obteniendo todos los datos de los beneficiarios
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
-      // console.log(allDatosBeneficiarios)
+      console.log(allDatosBeneficiarios)
 
       if (allDatosBeneficiarios) {
         window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -263,7 +275,7 @@ export class HomeDeliveryCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
 
-      this.beneficiarioData =[]
+      
       
       
       if (this.allDatosBeneficiariosFromStorage  && this.allDatosBeneficiariosFromStorage.length>0 )  {
@@ -437,8 +449,8 @@ console.log(feeOBJ)
 
 
     try {
-      const accessToken = window.localStorage.getItem('accessToken');
-      const api = new API(accessToken);
+    
+      const api = new API(this.accessToken);
       const resultado = await api.createTXHomeDeliveryCuba(datosTX);
       
       const urlHome = this.props.urlHome ? this.props.urlHome : null;
