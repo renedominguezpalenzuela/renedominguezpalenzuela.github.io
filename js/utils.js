@@ -14,8 +14,10 @@
 const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
+/*
+const axios_using_interceptors = axios.create();
 
-axios.interceptors.request.use((config) => {
+axios_using_interceptors.interceptors.request.use((config) => {
   config.baseURL = base_url;
   config.headers['x-api-key'] = x_api_key;
   config.headers['Content-Type'] = "application/json";
@@ -25,25 +27,64 @@ axios.interceptors.request.use((config) => {
   }
 
   return config
-})
+})*/
+
+
+axios.interceptors.response.use(response => response,  error => {
+    const status = error.response ? error.response.status : null;
+
+    console.log("Estatus")
+    console.log(status)
+    
+    if (status === 401) {
+      // Handle unauthorized access
+      window.location.assign("/");
+     // if (!Swal.isVisible()) {
+     /*   Swal.fire({
+          icon: 'error',
+          title: "Token error" ,
+          text: error.response.data.message,
+          confirmButtonText: 'OK',
+        }).then(()=>{
+          window.location.assign("/");
+          
+        })*/
+
+      //}
+      
+      
+      return Promise.reject(error);
+     
+    } else if (status === 404) {
+      // Handle not found errors
+      return Promise.reject(error);
+    } else {
+      // Handle other errors
+      return Promise.reject(error);
+    }
+    
+   
+  }
+);
+
 
 //-----------------------------------------------------------------------------------------
 // Login
 //-----------------------------------------------------------------------------------------
 
 export async function login(usr, pass) {
-  /* const config = {
+   const config = {
      headers: {
        "x-api-key": x_api_key,
        "Content-Type": "application/json"
      }
-   };*/
+   };
 
   const datos = { "email": usr, "password": pass };
 
   let resultado = false;
-  //await axios.post(`${base_url}/api/auth/login`, datos, config)
-  await axios.post("/api/auth/login", datos)
+  await axios.post(`${base_url}/api/auth/login`, datos, config)
+  //await axios_using_interceptors.post("/api/auth/login", datos)
     .then(response => {
       const datos = response.data;
       if (datos.accessToken) {
@@ -201,18 +242,18 @@ export class API {
   // Obtiene datos del usuario
   //------------------------------------------------------------------------------------------------
   async getUserProfile() {
-    /*
+   
         var config = {
-          //method: 'get',
-          //url: `${base_url}/api/private/users`,
+          method: 'get',
+          url: `${base_url}/api/private/users`,
           headers: this.headers,
-        }*/
+        }
 
 
     let datos = null;
-    //await axios(config)
-    await axios.get('/api/private/users').then(function (response) {
-      console.log(response)
+    await axios(config)
+    //await axios_using_interceptors.get('/api/private/users')
+    .then(function (response) {
       datos = response.data.user;
     }).catch(function (error) {
       console.log(error);
@@ -256,6 +297,7 @@ export class API {
     }
 
     let datos = null;
+    //await axios_using_interceptors.post('/api/private/users/verify', raw).then(function (response) {
     await axios(config).then(function (response) {
       datos = response;
     }).catch(function (error) {
@@ -271,6 +313,7 @@ export class API {
   // Crear usuario
   //------------------------------------------------------------------------------------------------
   static async createUser(datosUsuario) {
+   
 
     var body = JSON.stringify(datosUsuario);
 
@@ -313,6 +356,7 @@ export class API {
   // Update usuario
   //------------------------------------------------------------------------------------------------
   async updateUser(datosUsuario) {
+
 
     var body = JSON.stringify(datosUsuario);
 
