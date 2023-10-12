@@ -1091,6 +1091,8 @@ export class UImanager {
 
   //DEvuelve true si hay error en la longitud del ci
   static validarCI(ci) {
+    if (!ci) return true;
+    
     const ciwithoutspaces = ci.replace(/ /g, "");
 
     const limiteInferiorEdad = 15; //menores de 15 annos no pueden usar la app
