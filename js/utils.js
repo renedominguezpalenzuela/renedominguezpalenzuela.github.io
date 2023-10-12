@@ -4,11 +4,83 @@
   28/05/2023 
  ******************************************************************************************************/
 /*
-   Para correr las pruebas descomentar esta linea:   
+   Para correr las pruebas con jest descomentar esta linea:   
+   Para correr las pruebas con cypress no es necesario
    import axios  from "axios";
    sPara la aplicacion web, comentar la linea
 */
 //import axios from "axios";
+
+const base_url = 'https://backend.ducapp.net';
+const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
+
+
+axios.interceptors.request.use((config) => {
+  config.baseURL = base_url;
+  config.headers['x-api-key'] = x_api_key;
+  config.headers['Content-Type'] = "application/json";
+  const accessToken = localStorage.getItem('accessToken');
+  if (accessToken) {
+    config.headers['Authorization'] = `Bearer ${accessToken}`;
+  }
+
+  return config
+})
+
+//-----------------------------------------------------------------------------------------
+// Login
+//-----------------------------------------------------------------------------------------
+
+export async function login(usr, pass) {
+  /* const config = {
+     headers: {
+       "x-api-key": x_api_key,
+       "Content-Type": "application/json"
+     }
+   };*/
+
+  const datos = { "email": usr, "password": pass };
+
+  let resultado = false;
+  //await axios.post(`${base_url}/api/auth/login`, datos, config)
+  await axios.post("/api/auth/login", datos)
+    .then(response => {
+      const datos = response.data;
+      if (datos.accessToken) {
+        resultado = true;
+        console.log(datos);
+        window.localStorage.setItem('accessToken', datos.accessToken)
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Login error',
+          text: 'Check your credential data',
+          footer: '<div>Press "Set Test Data" Button to get Test User credentials</div>'
+        });
+      }
+    }).catch(error => {
+      console.log('Login Error ');
+      if (error.response) {
+        console.error(error.response);
+        Swal.fire({
+          icon: 'error',
+          title: error.response.data.error + ' code ' + error.response.data.statusCode,
+          text: error.response.data.message,
+        })
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong in login process',
+          footer: '<h5> Inspect console for details </h5>'
+        })
+      }
+      return error;
+
+    });
+
+  return resultado;
+}
 
 
 
@@ -16,11 +88,8 @@
 //TODO: Crear funcion para mostrar mensajes, pasar solo el texto como parametro
 
 
-const base_url = 'https://backend.ducapp.net';
-const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
-
-export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+//export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //export const baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
 //-------------------------------------------------------------------------------------------
@@ -28,80 +97,86 @@ export const baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 //-------------------------------------------------------------------------------------------
 export class API {
 
+
   static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+
   //static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
   constructor(accessToken) {
 
     this.accessToken = accessToken;
 
-    this.base_url = 'https://backend.ducapp.net';
-    this.x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
+    // this.base_url = 'https://backend.ducapp.net';
+    // this.x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
-    this.baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
+    // this.baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
     //this.baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
 
     this.headers = {
       'authorization': `Bearer ${accessToken}`,
-      'x-api-key': this.x_api_key,
+      'x-api-key': x_api_key,
       'Content-Type': 'application/json',
     }
+
+
   }
 
 
-  //-------------------------------------------------------------------------------
-  //  Login
-  //-------------------------------------------------------------------------------
-  //Devuelve
-  /*
-  
-    const resultado = {
-      accessToken: null,
-      cod_respuesta: null,
-      msg_respuesta: null
-    }
-  
-  
-  */
-  static async login(usr, pass) {
-    const config = {
-      headers: {
-        "x-api-key": x_api_key,
-        "Content-Type": "application/json"
-      }
-    };
+  // //-------------------------------------------------------------------------------
+  // //  Login
+  // //-------------------------------------------------------------------------------
+  // //Devuelve
+  // /*
 
-    const datos = { "email": usr, "password": pass };
-
-    const resultado = {
-      accessToken: null,
-      cod_respuesta: null,
-      msg_respuesta: null
-    }
+  //   const resultado = {
+  //     accessToken: null,
+  //     cod_respuesta: null,
+  //     msg_respuesta: null
+  //   }
 
 
+  // */
+  // static async login(usr, pass) {
+  //   const config = {
+  //     headers: {
+  //       "x-api-key": x_api_key,
+  //       "Content-Type": "application/json"
+  //     }
+  //   };
+
+  //   const datos = { "email": usr, "password": pass };
+
+  //   const resultado = {
+  //     accessToken: null,
+  //     cod_respuesta: null,
+  //     msg_respuesta: null
+  //   }
 
 
-    await axios.post(`${base_url}/api/auth/login`, datos, config)
-      .then(response => {
-        const datos = response.data;
-        if (datos.accessToken) {
-          // console.log(datos);
-          resultado.accessToken = datos.accessToken;
-        } else {
-          console.log(response)
-          //resultado.cod_respuesta = 
-        }
-      }).catch(error => {
-        console.log('Login Error ');
-        if (error.response) {
-          console.error(error.response);
-        }
-      });
 
-    return resultado;
-  }
+
+
+  //  await axios.post(`${base_url}/api/auth/login`, datos, config)
+
+  //     .then(response => {
+  //       const datos = response.data;
+  //       if (datos.accessToken) {
+  //         // console.log(datos);
+  //         resultado.accessToken = datos.accessToken;
+  //       } else {
+  //         console.log(response)
+  //         //resultado.cod_respuesta = 
+  //       }
+  //     }).catch(error => {
+  //       console.log('Login Error ');
+  //       if (error.response) {
+  //         console.error(error.response);
+  //       }
+  //     });
+
+  //   return resultado;
+  // }
 
 
 
@@ -126,15 +201,18 @@ export class API {
   // Obtiene datos del usuario
   //------------------------------------------------------------------------------------------------
   async getUserProfile() {
+    /*
+        var config = {
+          //method: 'get',
+          //url: `${base_url}/api/private/users`,
+          headers: this.headers,
+        }*/
 
-    var config = {
-      method: 'get',
-      url: `${this.base_url}/api/private/users`,
-      headers: this.headers,
-    }
 
     let datos = null;
-    await axios(config).then(function (response) {
+    //await axios(config)
+    await axios.get('/api/private/users').then(function (response) {
+      console.log(response)
       datos = response.data.user;
     }).catch(function (error) {
       console.log(error);
@@ -302,7 +380,7 @@ export class API {
 
 
     const headers = {
-      'x-api-key': this.x_api_key,
+      'x-api-key': x_api_key,
       'Content-Type': 'multipart/form-data',
     }
 
@@ -336,7 +414,7 @@ export class API {
 
     var config = {
       method: 'get',
-      url: `${this.base_url}/api/private/delivery-card-regex`,
+      url: `${base_url}/api/private/delivery-card-regex`,
       headers: this.headers,
     }
 
@@ -375,7 +453,7 @@ export class API {
 
     var config = {
       method: 'get',
-      url: `${this.base_url}/api/private/fees/cu/${service}/${zone}?amount=${amount}`,
+      url: `${base_url}/api/private/fees/cu/${service}/${zone}?amount=${amount}`,
       headers: this.headers,
     }
 
@@ -406,7 +484,7 @@ export class API {
 
     var config = {
       method: 'get',
-      url: `${this.base_url}/api/private/rates?base=${moneda_base}`,
+      url: `${base_url}/api/private/rates?base=${moneda_base}`,
       headers: this.headers,
     }
 
@@ -668,7 +746,7 @@ export class API {
 
     var config = {
       method: 'post',
-      url: `${this.base_url}/api/private/users/beneficiary`,
+      url: `${base_url}/api/private/users/beneficiary`,
       headers: this.headers,
     }
 
@@ -700,7 +778,7 @@ export class API {
 
     var config = {
       method: 'post',
-      url: `${this.base_url}/api/private/transactions/topup/operators`,
+      url: `${base_url}/api/private/transactions/topup/operators`,
       headers: this.headers,
       data: body
     }
@@ -814,22 +892,7 @@ export class API {
 
         return respuesta;
 
-        /*
-         return fetch(`//api.github.com/users/${login}`)
-          .then(response => {
-            if (!response.ok) {
-              throw new Error(response.statusText)
-            }
-            console.log("preConfirm")
-            console.log(response)
-            return response.json()
-          })
-          .catch(error => {
-            Swal.showValidationMessage(
-              `Request failed: ${error}`
-            )
-          })
-          */
+
 
       },
       allowOutsideClick: () => !Swal.isLoading()
@@ -923,9 +986,9 @@ export function getAPIStatus() {
 }
 
 //-------------------------------------------------------------------------------
-//  Login
+//  Login OK before interceptor
 //-------------------------------------------------------------------------------
-
+/*
 export async function login(usr, pass) {
   const config = {
     headers: {
@@ -974,7 +1037,8 @@ export async function login(usr, pass) {
     });
 
   return resultado;
-}
+}*/
+
 
 
 
@@ -1071,8 +1135,8 @@ export class UImanager {
 
   static validarSiVacio(dato) {
     let error = false;
-    if ( !dato) {
-       error = true;
+    if (!dato) {
+      error = true;
     }
     return error;
 
@@ -1080,8 +1144,8 @@ export class UImanager {
 
   static validarSiMenorQueCero(dato) {
     let error = false;
-    if ( !dato || dato <=0) {
-       error = true;
+    if (!dato || dato <= 0) {
+      error = true;
     }
     return error;
 
@@ -1092,7 +1156,7 @@ export class UImanager {
   //DEvuelve true si hay error en la longitud del ci
   static validarCI(ci) {
     if (!ci) return true;
-    
+
     const ciwithoutspaces = ci.replace(/ /g, "");
 
     const limiteInferiorEdad = 15; //menores de 15 annos no pueden usar la app
@@ -1188,7 +1252,7 @@ export class UImanager {
       const expresionregular = cardRegExp[key];
       /*console.log(key) 
       console.log(expresionregular);*/
-   
+
 
 
       const regexp = new RegExp(expresionregular);
@@ -1226,7 +1290,7 @@ export class UImanager {
             break;
 
           case 'MLC_CREDIT_CARD':
-           // console.log("Match: MLC")
+            // console.log("Match: MLC")
             return {
               tarjetaValida: true,
               cardBankImage: "",
@@ -1236,7 +1300,7 @@ export class UImanager {
 
           case 'CREDIT_CARD':
             break;
-           // console.log("Match: Credit Card")
+            // console.log("Match: Credit Card")
             return {
               tarjetaValida: true,
               cardBankImage: "",
