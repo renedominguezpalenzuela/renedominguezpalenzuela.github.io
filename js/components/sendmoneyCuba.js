@@ -39,8 +39,8 @@ export class SendMoneyCuba extends Component {
     receiveAmount: false,
     card: false,
     concept: false,
-    cardHolderName: false,    
-    phoneField:false,
+    cardHolderName: false,
+    phoneField: false,
     deliveryAddress: false,
     province: false,
     city: false
@@ -411,22 +411,30 @@ export class SendMoneyCuba extends Component {
 
 
 
+  static props = ["urlHome"];
+
+  static defaultProps = {
+    urlHome: '/',
+  };
+
 
 
 
   //CASH_OUT_TRANSACTION
   setup() {
 
-    this.beneficiariosNames.names =[]
+    this.beneficiariosNames.names = []
     this.cardsList.cards = []
     this.provincias = []
     this.municipios = []
 
 
     this.accessToken = API.getTokenFromlocalStorage();
-    
-   
-   
+
+    API.setRedirectionURL(this.props.urlHome);
+
+
+
 
     onWillStart(async () => {
 
@@ -444,9 +452,16 @@ export class SendMoneyCuba extends Component {
 
     onMounted(async () => {
 
-      if (!this.accessToken) { return }
+      // if (!this.accessToken) { return }
 
-      
+
+      if (!this.accessToken) {
+        console.error("NO ACCESS TOKEN - Send Money cuba")
+        window.location.assign(API.redirectURLLogin);
+        return;
+      }
+
+
       const api = new API(this.accessToken);
 
 
@@ -571,7 +586,7 @@ export class SendMoneyCuba extends Component {
 
   onChangeConcept = API.debounce(async (event) => {
     this.errores.concept = UImanager.validarSiVacio(event.target.value);
-  },700);
+  }, 700);
 
   onBlurReceiveInput = (event) => {
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(event.target.value);
@@ -655,7 +670,7 @@ export class SendMoneyCuba extends Component {
     console.log("DATOS")
     console.log(datosTX);
 
-    const validacionOK =await this.validarDatos(datosTX)
+    const validacionOK = await this.validarDatos(datosTX)
     console.log("Errores en validacion")
     console.log(validacionOK)
 
@@ -690,31 +705,31 @@ export class SendMoneyCuba extends Component {
 
   }
 
-/*
-Devuelve true si todos los datos ok
-*/
-  async validarDatos (datos) {
+  /*
+  Devuelve true si todos los datos ok
+  */
+  async validarDatos(datos) {
     console.log(datos)
-    
+
 
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(datos.amount);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(datos.deliveryAmount);
     this.errores.cardHolderName = UImanager.validarSiVacio(datos.cardHolderName);
     this.errores.deliveryAddress = UImanager.validarSiVacio(datos.deliveryAddress);
     this.errores.concept = UImanager.validarSiVacio(datos.concept);
-    
-    if (this.beneficiarioData.receiverCityID==-1) {
+
+    if (this.beneficiarioData.receiverCityID == -1) {
       this.errores.city = true;
     } else {
       this.errores.city = false;
     }
-    
 
-  
+
+
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
     // console.log(cod_pais)
     const telefono = cod_pais + datos.contactPhone;
-   
+
 
     this.errores.phoneField = !libphonenumber.isValidNumber(telefono)
 
@@ -749,7 +764,7 @@ Devuelve true si todos los datos ok
       if (this.errores[clave] == true) {
         console.log("Error en validacion")
         console.log(clave)
-        
+
         hayErrores = true;
 
       }
@@ -1106,7 +1121,7 @@ Devuelve true si todos los datos ok
     //this.props.onChangeDatosBeneficiarios(this.state);
   }, API.tiempoDebounce);
 
-  
+
   onBlurCardHolderInput = (event) => {
     this.errores.cardHolderName = UImanager.validarSiVacio(event.target.value);
   }
@@ -1120,7 +1135,7 @@ Devuelve true si todos los datos ok
   }, API.tiempoDebounce);
 
   onChangePhoneInput = API.debounce(async (event) => {
-  
+
 
     const cod_pais = '+' + this.phonInputSelect.getSelectedCountryData().dialCode;
     // console.log(cod_pais)

@@ -429,12 +429,27 @@ export class Profile extends Component {
 
   `;
 
+  static props = ["urlHome"];
+
+  static defaultProps = {
+    urlHome: '/',
+  };
 
 
   setup() {
     const accessToken = window.localStorage.getItem('accessToken');
-    
-    if (!accessToken) { return }
+
+    API.setRedirectionURL(this.props.urlHome);
+
+    // if (!accessToken) { return }
+
+
+    if (accessToken) {
+      console.error("NO ACCESS TOKEN - Profile")
+      window.location.assign(API.redirectURLLogin);
+      return;
+    }
+
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
 
@@ -677,7 +692,7 @@ export class Profile extends Component {
 
   validarDatos(datos) {
 
-   
+
 
 
     //Validaciones si es update
@@ -699,7 +714,7 @@ export class Profile extends Component {
 
 
 
- 
+
 
 
 
@@ -709,7 +724,7 @@ export class Profile extends Component {
     //this.errores.identityNumber = this.validarSiVacio(datos.identityNumber)
     this.errores.identityNumber = UImanager.validarCI(datos.identityNumber);
     this.errores.street = this.validarSiVacio(datos.street)
-    
+
     this.errores.houseNumber = this.validarSiVacio(datos.houseNumber)
     this.errores.city = this.validarSiVacio(datos.city)
     this.errores.country = this.validarSiVacio(datos.country)
@@ -723,13 +738,13 @@ export class Profile extends Component {
     console.log(datos.phone)
     console.log(libphonenumber.isValidNumber(datos.phone))
 
-    for (let clave in this.errores){
-      if (this.errores[clave]==true)  {
+    for (let clave in this.errores) {
+      if (this.errores[clave] == true) {
         console.log(clave)
-        return  false;
+        return false;
 
       }
-      
+
     }
 
 
@@ -970,7 +985,7 @@ export class Profile extends Component {
   }
 
 
- //DEvuelve true si esta vacio
+  //DEvuelve true si esta vacio
   validarSiVacio(dato) {
     let error = false;
     if (this.props.newUser && !dato) {

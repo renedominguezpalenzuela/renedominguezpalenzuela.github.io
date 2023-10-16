@@ -14,6 +14,7 @@
 const base_url = 'https://backend.ducapp.net';
 const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
 
+
 /*
 const axios_using_interceptors = axios.create();
 
@@ -30,42 +31,42 @@ axios_using_interceptors.interceptors.request.use((config) => {
 })*/
 
 
-axios.interceptors.response.use(response => response,  error => {
-    const status = error.response ? error.response.status : null;
+axios.interceptors.response.use(response => response, error => {
+  const status = error.response ? error.response.status : null;
 
-    console.log("Estatus")
-    console.log(status)
-    
-    if (status === 401) {
-      // Handle unauthorized access
-      window.location.assign("/");
-     // if (!Swal.isVisible()) {
-     /*   Swal.fire({
-          icon: 'error',
-          title: "Token error" ,
-          text: error.response.data.message,
-          confirmButtonText: 'OK',
-        }).then(()=>{
-          window.location.assign("/");
-          
-        })*/
 
-      //}
+  console.log("Axios Interceptor")
+
+  if (status === 401) {
+    // Handle unauthorized access
+    window.location.assign(API.redirectURLLogin);
+    return Promise.reject(error);
+
+  } else if (status === 404) {
+    // Handle not found errors
+
+    console.log(`Error CODE 404: ${error.code}, Error MSG: ${error.message}`)
+    Swal.fire({
+      icon: 'error 404',
+      title: `Error CODE 404: ${error.code}, Error MSG: ${error.message}`
       
-      
-      return Promise.reject(error);
-     
-    } else if (status === 404) {
-      // Handle not found errors
-      return Promise.reject(error);
-    } else {
-      // Handle other errors
-      return Promise.reject(error);
-    }
-    
+    })
+    return Promise.reject(error);
+  } else {
+    // Handle other errors
    
+    console.log(`Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`)
+    console.log(error)
+    Swal.fire({
+      icon: 'error',
+      title: `Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`
+      
+    })
+    return Promise.reject(error);
   }
-);
+
+
+});
 
 
 //-----------------------------------------------------------------------------------------
@@ -73,18 +74,18 @@ axios.interceptors.response.use(response => response,  error => {
 //-----------------------------------------------------------------------------------------
 
 export async function login(usr, pass) {
-   const config = {
-     headers: {
-       "x-api-key": x_api_key,
-       "Content-Type": "application/json"
-     }
-   };
+  const config = {
+    headers: {
+      "x-api-key": x_api_key,
+      "Content-Type": "application/json"
+    }
+  };
 
   const datos = { "email": usr, "password": pass };
 
   let resultado = false;
   await axios.post(`${base_url}/api/auth/login`, datos, config)
-  //await axios_using_interceptors.post("/api/auth/login", datos)
+    //await axios_using_interceptors.post("/api/auth/login", datos)
     .then(response => {
       const datos = response.data;
       if (datos.accessToken) {
@@ -141,6 +142,45 @@ export class API {
 
   static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 
+  //direccion a donde se redireccionara cuando no existe token 
+  static redirectURLLogin = '/login';
+
+  //direccion a donde se redireccionara cuando se termina una operacion correctamente
+  static redirectURLHome = '/';
+
+  //--------------------------------------------------------------------------
+  // devuelve true si esta en ambiente local
+  //--------------------------------------------------------------------------
+
+  static ambienteLocal() {
+  
+
+    let esLocal = false;
+
+    const host_url = window.location.origin;
+    if (host_url === "http://localhost:3000") {
+      esLocal = true;
+    }
+    return esLocal;
+
+  }
+
+  //--------------------------------------------------------------------------------
+  // setRedirectionURL
+  //--------------------------------------------------------------------------------
+
+  //se llama en cada uno de los componentes
+  //pasandole como parametro this.props.urlHome
+  //si no se le pasa ese parametro redireccionaa ala url por defecto
+  //si esta en local, la url por defecto para redireccionar seria '/'
+  //si no esta en local la url por defecto para redireccionar seria '/login'
+  static setRedirectionURL(urlHome) {
+    console.log(urlHome)
+    console.log(this.ambienteLocal())
+    this.redirectURLLogin = this.ambienteLocal() ? '/' : '/login'
+    this.redirectURLHome = urlHome ? urlHome : '/';
+  }
+
   //static baseSocketURL = "https://backend.ducwallet.com"; //Produccion
 
   constructor(accessToken) {
@@ -162,6 +202,8 @@ export class API {
 
 
   }
+
+
 
 
   // //-------------------------------------------------------------------------------
@@ -242,30 +284,30 @@ export class API {
   // Obtiene datos del usuario
   //------------------------------------------------------------------------------------------------
   async getUserProfile() {
-   
-        var config = {
-          method: 'get',
-          url: `${base_url}/api/private/users`,
-          headers: this.headers,
-        }
+
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/users`,
+      headers: this.headers,
+    }
 
 
     let datos = null;
     await axios(config)
-    //await axios_using_interceptors.get('/api/private/users')
-    .then(function (response) {
-      datos = response.data.user;
-    }).catch(function (error) {
-      console.log(error);
-      Swal.fire({
-        icon: 'error',
-        title: error.message,
-        text: 'Something went wrong requesting User Profile',
-        footer: '<h5> Inspect console for details </h5>'
-      })
+      //await axios_using_interceptors.get('/api/private/users')
+      .then(function (response) {
+        datos = response.data.user;
+      }).catch(function (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: error.message,
+          text: 'Something went wrong requesting User Profile',
+          footer: '<h5> Inspect console for details </h5>'
+        })
 
-      datos = error;
-    });
+        datos = error;
+      });
 
     return datos;
 
@@ -313,7 +355,7 @@ export class API {
   // Crear usuario
   //------------------------------------------------------------------------------------------------
   static async createUser(datosUsuario) {
-   
+
 
     var body = JSON.stringify(datosUsuario);
 
@@ -1718,7 +1760,7 @@ export class UImanager {
 
               } else {
                 //redireccionar al home page
-                if (!homeURL) {
+                if (!this.redirectURLHome) {
                   console.log("Redireccionar al home page solo si no esta el prop homeURL")
                   const menuId = 7
                   const menuName = 'Transactions List';
@@ -1727,8 +1769,8 @@ export class UImanager {
                   }
                 } else {
                   console.log('redireccionar usando props')
-                  console.log(homeURL)
-                  window.location.assign(homeURL);
+                  console.log(this.redirectURLHome)
+                  window.location.assign(this.redirectURLHome);
                 }
               }
 

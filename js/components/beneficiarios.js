@@ -364,17 +364,25 @@ export class Beneficiarios extends Component {
 
   `;
 
+    static props = ["urlHome"];
+
+    static defaultProps = {
+        urlHome: '/',
+    };
+
 
     setup() {
 
         this.accessToken = window.localStorage.getItem('accessToken');
+
+        API.setRedirectionURL(this.props.urlHome);
 
         this.beneficiariosNames = [];
         this.provincias = []
         this.municipios = []
         this.cardsList = []
 
-        
+
 
 
         onWillStart(async () => {
@@ -420,7 +428,14 @@ export class Beneficiarios extends Component {
                     }));
                 }
 
-            } 
+            } else {
+
+
+                console.error("NO ACCESS TOKEN - Beneficiario")
+                window.location.assign(API.redirectURLLogin);
+                return;
+
+            }
 
 
 

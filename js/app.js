@@ -4,6 +4,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 //import { getAPIStatus, login, getUsrInfo } from "/js/utils.js";
 
 import { getAPIStatus, login, API } from "./utils.js";
+import { Message } from "./messages.js";
 
 
 
@@ -202,10 +203,12 @@ class Root extends Component {
   setTest_data() {
     this.inputUsr.el.value = 'darian.alvarez.t@gmail.com';
     this.inputPass.el.value = 'Buvosic8*';
+    
     //Swal.fire('Test data is ready');
   }
 
   getApi_Status() {
+    //Message.showMSG("HOLA")
     getAPIStatus()
   }
 

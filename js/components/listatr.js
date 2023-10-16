@@ -78,9 +78,16 @@ export class ListaTR extends Component {
     //TODO: Formatear la fecha
     //TODO: Formatear el importe
 
+    static props = ["urlHome"];
+
+    static defaultProps = {
+        urlHome: '/',
+    };
 
 
     setup() {
+
+        API.setRedirectionURL(this.props.urlHome);
 
 
 
@@ -119,6 +126,13 @@ export class ListaTR extends Component {
 
             const accessToken = API.getTokenFromlocalStorage();
             if (!accessToken) { return }
+
+
+           /* if (!accessToken) {
+                console.error("NO ACCESS TOKEN - Lista TX")
+                window.location.assign(API.redirectURLLogin);
+                return;
+            }*/
 
             this.api = new API(accessToken);
 
@@ -412,8 +426,8 @@ export class ListaTR extends Component {
                  ],*/
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 
-                    'csv', 
+                    'copy',
+                    'csv',
                     {
                         extend: 'excelHtml5',
                         text: 'Save EXCEL'
@@ -421,7 +435,7 @@ export class ListaTR extends Component {
                     {
                         extend: 'pdf',
                         messageTop: 'TX List'
-                    }, 
+                    },
                     'print'
                 ],
 

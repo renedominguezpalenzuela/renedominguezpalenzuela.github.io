@@ -48,6 +48,11 @@ export class ListaBeneficiarios extends Component {
    
   `;
 
+    static props = ["urlHome"];
+
+    static defaultProps = {
+        urlHome: '/',
+    };
 
 
     setup() {
@@ -58,7 +63,16 @@ export class ListaBeneficiarios extends Component {
 
 
         const accessToken = API.getTokenFromlocalStorage();
-        if (!accessToken) { return }
+        API.setRedirectionURL(this.props.urlHome);
+
+
+        //if (!this.accessToken) { return }
+
+        if (!this.accessToken) {
+            console.error("NO ACCESS TOKEN - Lista beneficiarios")
+            window.location.assign(API.redirectURLLogin);
+            return;
+        }
 
         this.api = new API(accessToken);
 

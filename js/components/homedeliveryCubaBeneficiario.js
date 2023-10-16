@@ -177,7 +177,7 @@ export class Beneficiarios extends Component {
 
   
 
-    console.log(this.props.errores.deliveryFirstName)
+   // console.log(this.props.errores.deliveryFirstName)
 
     onWillStart(async () => {
 

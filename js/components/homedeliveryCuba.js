@@ -40,26 +40,26 @@ export class HomeDeliveryCuba extends Component {
     nameFull: "",
   })
 
-  
+
   errores = useState({
     sendAmount: false,
-    receiveAmount: false,    
+    receiveAmount: false,
     concept: false,
-    
+
     deliveryFirstName: false,
     deliveryLastName: false,
     deliverySecondLastName: false,
-    deliveryID:false,
+    deliveryID: false,
     deliveryAddress: false,
 
-    deliveryPhone:false,      
+    deliveryPhone: false,
 
     selectedBeneficiary: false,
-       
+
     province: false,
-    city: false,    
-    
-    
+    city: false,
+
+
   })
 
 
@@ -89,9 +89,9 @@ export class HomeDeliveryCuba extends Component {
     recibida: "CUP"
   })
 
-  tipo_operacion = [3,4,5];
+  tipo_operacion = [3, 4, 5];
 
-  beneficiariosNames =[]
+  beneficiariosNames = []
 
 
 
@@ -219,21 +219,31 @@ export class HomeDeliveryCuba extends Component {
   onChangeDatosBeneficiarios(datosBeneficiario) {
     this.beneficiario = datosBeneficiario;
 
-    
+
 
   }
 
+
+  static props = ["urlHome"];
+
+  static defaultProps = {
+    urlHome: '/',
+  };
+
+
   setup() {
-   
-    
-    
+
+    //console.log(this.props)
+
+    API.setRedirectionURL(this.props.urlHome);
+
     //const walletAddress = window.localStorage.getItem('walletAddress');
     //const userId = window.localStorage.getItem('userId');
 
 
-    onWillStart( () => {
-     
-    
+    onWillStart(() => {
+
+
 
 
 
@@ -246,21 +256,22 @@ export class HomeDeliveryCuba extends Component {
 
     onMounted(async () => {
 
-      //this.beneficiarioData =[]
+      this.beneficiarioData = []
 
       this.accessToken = window.localStorage.getItem('accessToken');
 
 
-     
+
 
       if (!this.accessToken) {
-        console.error("NO ACCESS TOKEN")
-        return              
-      } 
+        console.error("NO ACCESS TOKEN - HomeDeliveryCuba")
+        window.location.assign(API.redirectURLLogin);
+        return;
+      }
 
 
       const api = new API(this.accessToken);
-     
+
 
       //Pidiendo las tasas de conversion de monedas
       //await this.pedirTasadeCambio("usd", "cup");
@@ -275,10 +286,10 @@ export class HomeDeliveryCuba extends Component {
       this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
 
 
-      
-      
-      
-      if (this.allDatosBeneficiariosFromStorage  && this.allDatosBeneficiariosFromStorage.length>0 )  {
+
+
+
+      if (this.allDatosBeneficiariosFromStorage && this.allDatosBeneficiariosFromStorage.length > 0) {
         this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
           beneficiaryFullName: el.beneficiaryFullName,
           _id: el._id,
@@ -312,7 +323,7 @@ export class HomeDeliveryCuba extends Component {
     this.onChangeReceiveInput();
   }
 
-  
+
 
   onBlurSendInput = (event) => {
     this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
@@ -331,7 +342,7 @@ export class HomeDeliveryCuba extends Component {
 
 
     this.monedas.recibida = monedaRecibida.toUpperCase()
-    
+
 
     const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
@@ -340,12 +351,12 @@ export class HomeDeliveryCuba extends Component {
 
 
     //Comun
-//    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
-    const feeOBJ = await UImanager.calculateAndShowFee('delivery',cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    //    const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+    const feeOBJ = await UImanager.calculateAndShowFee('delivery', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
     console.log("FEE OBJ")
-console.log(feeOBJ)
-    this.fee.value  =  feeOBJ.feeMonedaEnviada;
-    this.conversionRate.value =feeOBJ.conversionRate;
+    console.log(feeOBJ)
+    this.fee.value = feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value = feeOBJ.conversionRate;
     this.feeSTR.value = feeOBJ.feeSTR;
 
 
@@ -355,7 +366,7 @@ console.log(feeOBJ)
   }, 700);
 
 
-  
+
   onBlurReceiveInput = (event) => {
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(event.target.value);
   }
@@ -384,8 +395,8 @@ console.log(feeOBJ)
     const feeOBJ = await UImanager.calculateAndShowFee('delivery', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
     console.log("FEE OBJ")
     console.log(feeOBJ)
-    this.fee.value  =  feeOBJ.feeMonedaEnviada;
-    this.conversionRate.value =feeOBJ.conversionRate;
+    this.fee.value = feeOBJ.feeMonedaEnviada;
+    this.conversionRate.value = feeOBJ.conversionRate;
     this.feeSTR.value = feeOBJ.feeSTR;
 
 
@@ -407,7 +418,7 @@ console.log(feeOBJ)
     //TODO: Validaciones
     const datosTX = {
       service: service,
-      amount: UImanager.roundDec(this.totalSendCost.value) ,                                           //Cantidad a enviar, incluyendo el fee
+      amount: UImanager.roundDec(this.totalSendCost.value),                                           //Cantidad a enviar, incluyendo el fee
       currency: this.inputSendCurrencyRef.el.value.toUpperCase(),                   //moneda del envio
       deliveryAmount: this.inputReceiveRef.el.value,                                //Cantidad que recibe el beneficiario
       deliveryCurrency: this.inputReceiveCurrencyRef.el.value.toUpperCase(),        //moneda que se recibe      
@@ -418,8 +429,8 @@ console.log(feeOBJ)
     };
 
 
-  
-    
+
+
     delete datosTX["deliveryCityID"];
 
 
@@ -428,7 +439,7 @@ console.log(feeOBJ)
 
     console.log(datosTX);
 
-    const validacionOK =await this.validarDatos(datosTX)
+    const validacionOK = await this.validarDatos(datosTX)
     console.log("Errores en validacion")
     console.log(validacionOK)
 
@@ -442,17 +453,17 @@ console.log(feeOBJ)
       return;
     }
 
- 
+
 
 
 
 
 
     try {
-    
+
       const api = new API(this.accessToken);
       const resultado = await api.createTXHomeDeliveryCuba(datosTX);
-      
+
       const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
       UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
@@ -474,14 +485,14 @@ console.log(feeOBJ)
 
     this.errores.deliveryFirstName = UImanager.validarSiVacio(datos.deliveryFirstName)
     this.errores.deliveryLastName = UImanager.validarSiVacio(datos.deliveryLastName)
-	  this.errores.deliverySecondLastName = UImanager.validarSiVacio(datos.deliverySecondLastName)
+    this.errores.deliverySecondLastName = UImanager.validarSiVacio(datos.deliverySecondLastName)
 
     this.errores.deliveryID = UImanager.validarCI(datos.deliveryID)
     this.errores.deliveryAddress = UImanager.validarSiVacio(datos.deliveryAddress)
 
 
     console.log(this.errores)
-    
+
 
 
 
@@ -492,13 +503,13 @@ console.log(feeOBJ)
       if (this.errores[clave] == true) {
         console.log("Error en validacion")
         console.log(clave)
-        
+
         hayErrores = true;
 
       }
 
     }
-  
+
 
     return !hayErrores;
 

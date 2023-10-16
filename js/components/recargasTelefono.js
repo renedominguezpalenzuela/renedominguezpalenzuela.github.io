@@ -43,7 +43,7 @@ export class RecargasTelefono extends Component {
     })
 
     errores = useState({
-        phoneField:false
+        phoneField: false
     })
 
 
@@ -214,10 +214,27 @@ export class RecargasTelefono extends Component {
   `;
 
 
+    static props = ["urlHome"];
+
+    static defaultProps = {
+        urlHome: '/',
+    };
+
+
     setup() {
         const accessToken = window.localStorage.getItem('accessToken');
-        
-    if (!accessToken) { return }
+
+        API.setRedirectionURL(this.props.urlHome);
+
+        //if (!accessToken) { return }
+
+
+        if (accessToken) {
+            console.error("NO ACCESS TOKEN - Recargas")
+            window.location.assign(API.redirectURLLogin);
+            return;
+        }
+
         const walletAddress = window.localStorage.getItem('walletAddress');
         const userId = window.localStorage.getItem('userId');
 
@@ -285,18 +302,18 @@ export class RecargasTelefono extends Component {
         //productosCubaPedidos = false;
 
 
-        if (cod_pais == 53 ) {
+        if (cod_pais == 53) {
 
             if (!this.selectedCountryCuba) {
                 this.pedirProductos = true;
             }
-            
+
             this.selectedCountryCuba = true;
         } else {
-            this.selectedCountryCuba = false; 
+            this.selectedCountryCuba = false;
             this.pedirProductos = true;
         }
-        
+
         console.log(`Selected Cuba ${this.selectedCountryCuba}`)
         console.log(`Pedir productos ${this.pedirProductos}`)
 
@@ -325,8 +342,8 @@ export class RecargasTelefono extends Component {
         const isValidNumber = libphonenumber.isValidNumber(telefono)
 
         if (!isValidNumber) {
-           this.errores.phoneField = true;
-          
+            this.errores.phoneField = true;
+
             return;
             //console.log(respuesta)
         } else {
@@ -464,7 +481,7 @@ export class RecargasTelefono extends Component {
                 this.state.label = producto.label;
                 //console.log("Productos")
                 //console.log(producto)
-                if (producto.promotions && producto.promotions.zize>0 && producto.promotions[0]) {
+                if (producto.promotions && producto.promotions.zize > 0 && producto.promotions[0]) {
                     // console.log("Promociones")
                     // console.log(producto.promotions[0])
                     //this.state.promoTitle = producto.promotions[0].title
@@ -511,7 +528,7 @@ export class RecargasTelefono extends Component {
     async onChangeCurrencySend(event) {
 
         const moneda = event.target.value
-        if (this.state.currency !=moneda) {
+        if (this.state.currency != moneda) {
             this.pedirProductos = true;
         }
         this.state.currency = moneda;
@@ -623,7 +640,7 @@ export class RecargasTelefono extends Component {
         Swal.fire({
             title: 'do you really want to send this recharge',
             icon: 'warning',
-            html:`
+            html: `
             <div> To: ${this.state.phoneOwnerName}</div>
             <div>
 
@@ -653,18 +670,18 @@ export class RecargasTelefono extends Component {
             showCancelButton: true,
             focusConfirm: true,
             reverseButtons: false,
-            
-            cancelButtonText:`No`,
-            confirmButtonText:`Yes`
-          }).then((result) => {
+
+            cancelButtonText: `No`,
+            confirmButtonText: `Yes`
+        }).then((result) => {
             if (result.value) {
-                
-             this.ejecutarRecarga()
+
+                this.ejecutarRecarga()
             }
-          }); 
+        });
 
 
-       
+
 
 
 
