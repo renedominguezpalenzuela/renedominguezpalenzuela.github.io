@@ -444,7 +444,7 @@ export class Profile extends Component {
     // if (!accessToken) { return }
 
 
-    if (accessToken) {
+    if (!accessToken && !this.props.newUser) {
       console.error("NO ACCESS TOKEN - Profile")
       window.location.assign(API.redirectURLLogin);
       return;
