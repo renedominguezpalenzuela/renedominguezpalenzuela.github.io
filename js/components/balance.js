@@ -85,9 +85,9 @@ export class Balance extends Component {
     const accessToken = window.localStorage.getItem('accessToken');
 
 
-    if (accessToken) { return }
+    if (!accessToken) { return }
 
-    /*if (accessToken) {
+    /*if (!accessToken) {
       console.error("NO ACCESS TOKEN - Balance")
       window.location.assign(API.redirectURLLogin);
       return;

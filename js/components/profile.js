@@ -4,6 +4,7 @@ import { Menu } from "./menu.js";
 import { LeftMenu } from "./leftmenu.js";
 import { API } from "../utils.js";
 import { Paises } from "../../data/paises.js";
+import { UImanager } from "../utils.js";
 
 
 
@@ -847,6 +848,14 @@ export class Profile extends Component {
       if (this.props.newUser) {
         //creando nuevo usuario
         respuesta = await API.createUser(datosAEnviar)
+        
+
+
+
+
+
+
+
       } else {
         //modificando usuario
         //Solo enviar campos que no estan vacios
@@ -881,9 +890,26 @@ export class Profile extends Component {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
+       
+
+        //Enviar OTP
+        if (this.props.newUser) {
+          //creando nuevo usuario
+          const vid = respuesta.data.user.id
+          const vemail = respuesta.data.user.email
+
+          const respuesta2 = await API.requestOTP(vid, vemail)
+          console.log("---- Respuesta2 OK ----- ")
+          console.log(respuesta2)
+
+          const respuestaOK = respuesta2.completed;
+        }
+
+
+
         Swal.fire({
-          title: '',
-          text: "User data have been saved",
+          title: 'User data have been saved',
+          text: this.props.newUser  ? "A verification code is sended to your email" : "",
           icon: 'success',
           showCancelButton: false,
           // confirmButtonColor: '#3085d6',
@@ -891,13 +917,17 @@ export class Profile extends Component {
           confirmButtonText: 'Ok',
           cancelButtonText: 'No'
         }).then((result) => {
-          if (result.isConfirmed) {
+          if (this.props.newUser) {
+            window.location.assign("index.html");
+          }
+
+          /*if (result.isConfirmed) {
 
             if (this.props.newUser) {
               window.location.assign("index.html");
             }
 
-          }
+          }*/
 
         });
 
@@ -938,6 +968,8 @@ export class Profile extends Component {
       })
 
     }
+
+
 
     //Swal.fire('Not implemented yet,  more details about data is needed');
   }

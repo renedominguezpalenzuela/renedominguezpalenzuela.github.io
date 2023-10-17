@@ -393,6 +393,46 @@ export class API {
 
   }
 
+  //------------------------------------------------------------------------------------------------
+  // request OTP (One time password)
+  //------------------------------------------------------------------------------------------------
+  static async requestOTP(id, email) {
+
+    const datosUsuario ={
+      userID : id,
+      value: email
+    }
+
+    var body = JSON.stringify(datosUsuario);
+
+
+    const headers = {
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    }
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/otp`,
+      headers: headers,
+      data: body
+    }
+
+    let datos = null;
+   
+    try {
+      datos = await axios(config);
+    } catch (error) {
+      datos = error;
+
+    }
+
+
+
+    return datos;
+
+  }
+
 
   //------------------------------------------------------------------------------------------------
   // Update usuario

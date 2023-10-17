@@ -48,9 +48,7 @@ class Root extends Component {
 
 
   setup() {
-    //const accessToken = window.localStorage.getItem('accessToken');
-    //const walletAddress = window.localStorage.getItem('walletAddress');
-    //const userId = window.localStorage.getItem('userId');
+   
 
     
 

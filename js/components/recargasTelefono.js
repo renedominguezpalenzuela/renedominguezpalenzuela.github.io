@@ -229,7 +229,7 @@ export class RecargasTelefono extends Component {
         //if (!accessToken) { return }
 
 
-        if (accessToken) {
+        if (!accessToken) {
             console.error("NO ACCESS TOKEN - Recargas")
             window.location.assign(API.redirectURLLogin);
             return;
