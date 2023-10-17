@@ -62,33 +62,15 @@ export class ListaBeneficiarios extends Component {
         // console.log(this.props.listaBeneficiarios)
 
 
-        const accessToken = API.getTokenFromlocalStorage();
-        API.setRedirectionURL(this.props.urlHome);
+       /* accessToken = API.getTokenFromlocalStorage();
+   
+
+  
+
+        this.api = new API(accessToken);*/
 
 
-        //if (!this.accessToken) { return }
-
-        if (!this.accessToken) {
-            console.error("NO ACCESS TOKEN - Lista beneficiarios")
-            window.location.assign(API.redirectURLLogin);
-            return;
-        }
-
-        this.api = new API(accessToken);
-
-
-        //this.datos = await this.transformarRawDatos(raw_datos);
-        //this.actualizarDatos(this.datos);
-
-
-
-
-
-        /*onWillDestroy(() => {
-            console.log("Destroy")
-          });*/
-
-
+       
 
 
 

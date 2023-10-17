@@ -270,9 +270,9 @@ export class API {
   static getTokenFromlocalStorage() {
     let token = '';
     try {
-      token = window.localStorage.getItem('accessToken');
+      token = window.localStorage.getItem('accessToken');              
     } catch (error) {
-      console.log("Token not found on session storage");
+      console.log("Token not found on local storage");
       console.log(error);
     }
 

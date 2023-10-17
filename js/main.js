@@ -8,6 +8,7 @@ import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
 import { RecargasTelefono } from "./components/recargasTelefono.js";
 import { ListaTR } from "./components/listatr.js";
+import { API } from "./utils.js";
 
 
 
@@ -103,7 +104,7 @@ class Root extends Component {
 
 
   setup() {
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = API.getTokenFromlocalStorage();
     const walletAddress = window.localStorage.getItem('walletAddress');
     const userId = window.localStorage.getItem('userId');
 

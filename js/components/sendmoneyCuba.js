@@ -688,7 +688,7 @@ export class SendMoneyCuba extends Component {
 
     try {
 
-      this.accessToken = window.localStorage.getItem('accessToken');
+      this.accessToken = API.getTokenFromlocalStorage();
       const api = new API(this.accessToken);
       const resultado = await api.createTX(datosTX);
 

@@ -95,8 +95,9 @@ class Root extends Component {
 
 
     if (loginOK) {
-      const accessToken = window.localStorage.getItem('accessToken');
-      console.log(accessToken)
+      
+      const accessToken = API.getTokenFromlocalStorage();
+      
       const api = new API(accessToken);
 
 

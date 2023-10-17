@@ -258,7 +258,7 @@ export class HomeDeliveryCuba extends Component {
 
       this.beneficiarioData = []
 
-      this.accessToken = window.localStorage.getItem('accessToken');
+      this.accessToken = API.getTokenFromlocalStorage();
 
 
 
@@ -301,8 +301,9 @@ export class HomeDeliveryCuba extends Component {
 
       this.tiposCambio = await api.getAllTiposDeCambio();
 
-      const monedaEnviada = this.inputSendCurrencyRef.el.value;
+     
       const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
+      const monedaEnviada = this.inputSendCurrencyRef.el.value;
       this.monedas.enviada = monedaEnviada.toUpperCase();
       this.monedas.recibida = monedaRecibida.toUpperCase();
       const tc = this.tiposCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];

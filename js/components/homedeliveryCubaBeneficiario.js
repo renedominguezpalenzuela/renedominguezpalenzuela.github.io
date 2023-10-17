@@ -173,7 +173,7 @@ export class Beneficiarios extends Component {
 
 
 
-    this.accessToken = window.localStorage.getItem('accessToken');
+    this.accessToken = API.getTokenFromlocalStorage();
 
   
 

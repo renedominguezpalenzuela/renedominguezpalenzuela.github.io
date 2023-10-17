@@ -438,7 +438,7 @@ export class Profile extends Component {
 
 
   setup() {
-    const accessToken = window.localStorage.getItem('accessToken');
+    const accessToken = API.getTokenFromlocalStorage();
 
     API.setRedirectionURL(this.props.urlHome);
 
@@ -476,7 +476,7 @@ export class Profile extends Component {
       );
 
       if (this.props.newUser === false) {
-        const accessToken = window.localStorage.getItem('accessToken');
+        const accessToken = API.getTokenFromlocalStorage();
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
         console.log("User profile")
@@ -859,7 +859,7 @@ export class Profile extends Component {
       } else {
         //modificando usuario
         //Solo enviar campos que no estan vacios
-        const accessToken = window.localStorage.getItem('accessToken');
+        const accessToken = API.getTokenFromlocalStorage();
         const api = new API(accessToken);
 
         delete datosAEnviar["image"];

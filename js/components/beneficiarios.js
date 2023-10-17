@@ -356,8 +356,10 @@ export class Beneficiarios extends Component {
 
   </div>
 
+
   <ListaBeneficiarios  listaBeneficiarios="this.allDatosBeneficiariosFromStorage.datos" 
         onChangeSelectedBeneficiary.bind="this.onChangeSelectedBeneficiary"/>
+        
     
 
     
@@ -373,7 +375,7 @@ export class Beneficiarios extends Component {
 
     setup() {
 
-        this.accessToken = window.localStorage.getItem('accessToken');
+        this.accessToken = API.getTokenFromlocalStorage();
 
         API.setRedirectionURL(this.props.urlHome);
 
@@ -381,6 +383,7 @@ export class Beneficiarios extends Component {
         this.provincias = []
         this.municipios = []
         this.cardsList = []
+
 
 
 
