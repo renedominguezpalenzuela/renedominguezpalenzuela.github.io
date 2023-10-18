@@ -4,7 +4,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 //import { getAPIStatus, login, getUsrInfo } from "/js/utils.js";
 
 import { getAPIStatus, login, API } from "./utils.js";
-import { Message } from "./messages.js";
+
 
 
 
@@ -209,7 +209,7 @@ class Root extends Component {
   }
 
   getApi_Status() {
-    //Message.showMSG("HOLA")
+
     getAPIStatus()
   }
 
