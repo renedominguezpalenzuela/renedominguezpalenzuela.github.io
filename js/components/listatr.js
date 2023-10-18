@@ -424,7 +424,7 @@ export class ListaTR extends Component {
                      // }
  
                  ],*/
-                dom: 'Bfrtip',
+                dom: 'lBfrtip',
                 buttons: [
                     'copy',
                     'csv',
