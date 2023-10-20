@@ -184,8 +184,8 @@ export class API {
   //si esta en local, la url por defecto para redireccionar seria '/'
   //si no esta en local la url por defecto para redireccionar seria '/login'
   static setRedirectionURL(urlHome) {
-    console.log(urlHome)
-    console.log(this.ambienteLocal())
+    //console.log(urlHome)
+   // console.log(this.ambienteLocal())
     this.redirectURLLogin = this.ambienteLocal() ? '/' : '/login'
     this.redirectURLHome = urlHome ? urlHome : '/';
   }

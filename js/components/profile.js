@@ -929,6 +929,7 @@ export class Profile extends Component {
 
             console.log("RESPUESTA Verificar usuario")
             console.log(ususarioVerificadoOK)
+            window.location.assign(API.redirectURLLogin);
      
             //window.location.assign("index.html");
           }
