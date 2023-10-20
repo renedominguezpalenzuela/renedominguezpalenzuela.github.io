@@ -173,7 +173,7 @@ export class Beneficiarios extends Component {
 
 
 
-    this.accessToken = API.getTokenFromlocalStorage();
+    this.accessToken = API.getTokenFromsessionStorage();
 
   
 
@@ -386,7 +386,7 @@ export class Beneficiarios extends Component {
   inicializarDatosBeneficiario = (idBeneficiario) => {
 
 
-    const allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+    const allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
     const selectedBenefiarioData = allDatosBeneficiariosFromStorage.filter(unDato => unDato._id === idBeneficiario)[0];
 
     if (selectedBenefiarioData) {

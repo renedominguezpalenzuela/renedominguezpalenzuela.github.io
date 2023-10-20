@@ -124,7 +124,7 @@ export class ListaTR extends Component {
 
 
 
-            const accessToken = API.getTokenFromlocalStorage();
+            const accessToken = API.getTokenFromsessionStorage();
             if (!accessToken) { return }
 
 
@@ -137,8 +137,8 @@ export class ListaTR extends Component {
             this.api = new API(accessToken);
 
 
-            const walletAddress = window.localStorage.getItem('walletAddress');
-            const userId = window.localStorage.getItem('userId');
+            const walletAddress = window.sessionStorage.getItem('walletAddress');
+            const userId = window.sessionStorage.getItem('userId');
 
 
             const query = {

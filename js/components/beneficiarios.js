@@ -375,7 +375,7 @@ export class Beneficiarios extends Component {
 
     setup() {
 
-        this.accessToken = API.getTokenFromlocalStorage();
+        this.accessToken = API.getTokenFromsessionStorage();
 
         API.setRedirectionURL(this.props.urlHome);
 
@@ -420,9 +420,9 @@ export class Beneficiarios extends Component {
                 //console.log(allDatosBeneficiarios)
 
                 if (allDatosBeneficiarios) {
-                    window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                    window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
                 }
-                this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+                this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
 
                 if (this.allDatosBeneficiariosFromStorage.datos) {
                     this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
@@ -784,7 +784,7 @@ export class Beneficiarios extends Component {
             return;
 
         }
-        this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+        this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
         const selectedBenefiarioData = this.allDatosBeneficiariosFromStorage.datos.filter(unDato => unDato._id === idBeneficiario)[0];
 
 
@@ -1030,10 +1030,10 @@ export class Beneficiarios extends Component {
             console.log(allDatosBeneficiarios)
 
             if (allDatosBeneficiarios) {
-                window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
             }
 
-            this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+            this.allDatosBeneficiariosFromStorage.datos = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
             if (this.allDatosBeneficiariosFromStorage.datos) {
                 this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.datos.map(el => ({
                     beneficiaryFullName: el.beneficiaryFullName,

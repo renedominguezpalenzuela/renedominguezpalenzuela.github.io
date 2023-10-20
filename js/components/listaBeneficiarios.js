@@ -62,7 +62,7 @@ export class ListaBeneficiarios extends Component {
         // console.log(this.props.listaBeneficiarios)
 
 
-       /* accessToken = API.getTokenFromlocalStorage();
+       /* accessToken = API.getTokenFromsessionStorage();
    
 
   

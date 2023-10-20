@@ -12,7 +12,10 @@
 //import axios from "axios";
 
 const base_url = 'https://backend.ducapp.net';
-const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
+//const x_api_key = 'test.c6f50414-cc7f-5f00-bbb5-2d4eb771c41a';
+const x_api_key = 'test.874a5fc8-609a-5bae-ade2-e933bcb2721d';
+
+
 
 
 /*
@@ -22,7 +25,7 @@ axios_using_interceptors.interceptors.request.use((config) => {
   config.baseURL = base_url;
   config.headers['x-api-key'] = x_api_key;
   config.headers['Content-Type'] = "application/json";
-  const accessToken = localStorage.getItem('accessToken');
+  const accessToken = sessionStorage.getItem('accessToken');
   if (accessToken) {
     config.headers['Authorization'] = `Bearer ${accessToken}`;
   }
@@ -42,6 +45,11 @@ axios.interceptors.response.use(response => response, error => {
     window.location.assign(API.redirectURLLogin);
     return Promise.reject(error);
 
+  } else if (status === 400) {
+    console.log(`Error CODE 400: ${error.code}, Error MSG: ${error.message}`)
+    return
+    // Promise.resolve();
+
   } else if (status === 404) {
     // Handle not found errors
 
@@ -52,6 +60,7 @@ axios.interceptors.response.use(response => response, error => {
       
     })
     return Promise.reject(error);
+
   } else {
     // Handle other errors
    
@@ -91,7 +100,7 @@ export async function login(usr, pass) {
       if (datos.accessToken) {
         resultado = true;
         console.log(datos);
-        window.localStorage.setItem('accessToken', datos.accessToken)
+        window.sessionStorage.setItem('accessToken', datos.accessToken)
       } else {
         Swal.fire({
           icon: 'error',
@@ -267,10 +276,10 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // Leer Token desde sesion Storage
   //------------------------------------------------------------------------------------------------
-  static getTokenFromlocalStorage() {
+  static getTokenFromsessionStorage() {
     let token = '';
     try {
-      token = window.localStorage.getItem('accessToken');              
+      token = window.sessionStorage.getItem('accessToken');              
     } catch (error) {
       console.log("Token not found on local storage");
       console.log(error);
@@ -341,6 +350,7 @@ export class API {
     let datos = null;
     //await axios_using_interceptors.post('/api/private/users/verify', raw).then(function (response) {
     await axios(config).then(function (response) {
+      console.log(response)
       datos = response;
     }).catch(function (error) {
       console.log(error);
@@ -422,6 +432,8 @@ export class API {
    
     try {
       datos = await axios(config);
+      console.log("OTP")
+      console.log(datos)
     } catch (error) {
       datos = error;
 
@@ -654,7 +666,7 @@ export class API {
   //-------------------------------------------------------------------------------
   async createTX(datosTX) {
     //leer token desde local storage
-    //const accessToken = window.localStorage.getItem('accessToken');
+    //const accessToken = window.sessionStorage.getItem('accessToken');
 
 
     var body = JSON.stringify(datosTX);
@@ -690,7 +702,7 @@ export class API {
   //-------------------------------------------------------------------------------
   async createTXHomeDeliveryCuba(datosTX) {
     //leer token desde local storage
-    // const accessToken = window.localStorage.getItem('accessToken');
+    // const accessToken = window.sessionStorage.getItem('accessToken');
 
 
     var body = JSON.stringify(datosTX);
@@ -753,8 +765,8 @@ export class API {
 
     if (!this.accessToken) return null;
     //leer token desde local storage
-    // const accessToken = window.localStorage.getItem('accessToken');
-    // const walletAddress = window.localStorage.getItem('walletAddress');
+    // const accessToken = window.sessionStorage.getItem('accessToken');
+    // const walletAddress = window.sessionStorage.getItem('walletAddress');
 
     //console.log(walletAddress);
 
@@ -996,10 +1008,13 @@ export class API {
   //----------------------------------------------------------------------------------------------
   // Verificar usuario
   //----------------------------------------------------------------------------------------------
-  async verificarUsuario(IDUsuario) {
+  static async verificarUsuario(IDUsuario) {
+
+    var respuesta_api = null;
 
     Swal.fire({
-      title: 'A message with a verification code has been sent to your email address. Enter the code to continue',
+      title: 'User has not been verified',
+      text: 'A message with a verification code has been sent to your email address. Enter the code to continue',
       input: 'text',
       inputAttributes: { autocapitalize: 'off' },
       showCancelButton: true,
@@ -1014,9 +1029,9 @@ export class API {
           code: verificationCode
         }*/
 
-        const respuesta = await API.confirmUser(IDUsuario, verificationCode)
+         respuesta_api = await API.confirmUser(IDUsuario, verificationCode)
 
-        return respuesta;
+        return respuesta_api;
 
 
 
@@ -1030,16 +1045,17 @@ export class API {
 
 
 
-        const respuesta = result.value;
-        console.log(respuesta)
+       // const respuesta = result.value;
+       console.log(result)
+       console.log(respuesta_api)
 
 
-        if (respuesta.validatedUser && respuesta.validatedUser == true) {
+        if (respuesta_api.data.validatedUser && respuesta_api.data.validatedUser == true) {
 
           Swal.fire({
             icon: 'success',
             title: 'Activating user',
-            text: respuesta.message
+            text: respuesta_api.message
           })
 
 
@@ -1048,7 +1064,7 @@ export class API {
 
         } else {
 
-          const cod_error = respuesta.response ? respuesta.response.data.message : "Error activating user"
+          const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
 
           Swal.fire({
             icon: 'error',
@@ -1132,7 +1148,7 @@ export async function login(usr, pass) {
       if (datos.accessToken) {
         resultado = true;
         console.log(datos);
-        window.localStorage.setItem('accessToken', datos.accessToken)
+        window.sessionStorage.setItem('accessToken', datos.accessToken)
       } else {
         Swal.fire({
           icon: 'error',
@@ -1179,7 +1195,7 @@ export async function login(usr, pass) {
 //-------------------------------------------------------------------------------
 export async function getTrData() {
   //leer token desde local storage
-  const accessToken = window.localStorage.getItem('accessToken');
+  const accessToken = window.sessionStorage.getItem('accessToken');
 
   var data = JSON.stringify({
     "filter": {
@@ -1215,7 +1231,7 @@ export async function getTrData() {
 //-------------------------------------------------------------------------------
 export async function getUsrInfo() {
   //leer token desde local storage
-  const accessToken = window.localStorage.getItem('accessToken');
+  const accessToken = window.sessionStorage.getItem('accessToken');
 
   var data = JSON.stringify({
     "filter": {
@@ -1239,11 +1255,11 @@ export async function getUsrInfo() {
     datos = response.data;
 
     if (datos.user._id) {
-      window.localStorage.setItem('userId', datos.user._id)
+      window.sessionStorage.setItem('userId', datos.user._id)
     }
 
     if (datos.user.walletAddress) {
-      window.localStorage.setItem('walletAddress', datos.user.walletAddress)
+      window.sessionStorage.setItem('walletAddress', datos.user.walletAddress)
     }
 
   }).catch(function (error) {
@@ -1472,7 +1488,7 @@ export class UImanager {
     //const zone = this.beneficiario.deliveryZona;  
     //TODO: el fee depende del zone, el zone de la provincia, recalcular el fee antes de hacer el envio
     //pues el usuario puede haber cambiado la provincia
-    const accessToken = API.getTokenFromlocalStorage();
+    const accessToken = API.getTokenFromsessionStorage();
     console.log(service)
     console.log(zone)
     console.log(cantidadRecibida)

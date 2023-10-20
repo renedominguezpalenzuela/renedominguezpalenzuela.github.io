@@ -438,7 +438,7 @@ export class Profile extends Component {
 
 
   setup() {
-    const accessToken = API.getTokenFromlocalStorage();
+    const accessToken = API.getTokenFromsessionStorage();
 
     API.setRedirectionURL(this.props.urlHome);
 
@@ -451,8 +451,8 @@ export class Profile extends Component {
       return;
     }
 
-    const walletAddress = window.localStorage.getItem('walletAddress');
-    const userId = window.localStorage.getItem('userId');
+    const walletAddress = window.sessionStorage.getItem('walletAddress');
+    const userId = window.sessionStorage.getItem('userId');
 
 
     onWillStart(async () => {
@@ -476,7 +476,7 @@ export class Profile extends Component {
       );
 
       if (this.props.newUser === false) {
-        const accessToken = API.getTokenFromlocalStorage();
+        const accessToken = API.getTokenFromsessionStorage();
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
         console.log("User profile")
@@ -518,7 +518,7 @@ export class Profile extends Component {
 
 
       } else {
-        window.localStorage.clear();
+        window.sessionStorage.clear();
       }
     });
 
@@ -821,7 +821,7 @@ export class Profile extends Component {
     this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
     const datosAEnviar = this.prepararDatosaEnviar(this.state);
-    console.log("Datos a enviar")
+    console.log("Datos a enviar REGISTRO")
     console.log(datosAEnviar)
 
 
@@ -839,6 +839,7 @@ export class Profile extends Component {
     // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
 
 
+    var userID = null;
 
 
     try {
@@ -848,6 +849,11 @@ export class Profile extends Component {
       if (this.props.newUser) {
         //creando nuevo usuario
         respuesta = await API.createUser(datosAEnviar)
+        
+       
+        /* if (!ususarioVerificadoOK) {
+           return;
+         }*/
         
 
 
@@ -859,7 +865,7 @@ export class Profile extends Component {
       } else {
         //modificando usuario
         //Solo enviar campos que no estan vacios
-        const accessToken = API.getTokenFromlocalStorage();
+        const accessToken = API.getTokenFromsessionStorage();
         const api = new API(accessToken);
 
         delete datosAEnviar["image"];
@@ -895,10 +901,10 @@ export class Profile extends Component {
         //Enviar OTP
         if (this.props.newUser) {
           //creando nuevo usuario
-          const vid = respuesta.data.user.id
+          userID = respuesta.data.user.id
           const vemail = respuesta.data.user.email
 
-          const respuesta2 = await API.requestOTP(vid, vemail)
+          const respuesta2 = await API.requestOTP(userID, vemail)
           console.log("---- Respuesta2 OK ----- ")
           console.log(respuesta2)
 
@@ -916,9 +922,15 @@ export class Profile extends Component {
           // cancelButtonColor: '#d33',
           confirmButtonText: 'Ok',
           cancelButtonText: 'No'
-        }).then((result) => {
+        }).then(async (result) => {
           if (this.props.newUser) {
-            window.location.assign("index.html");
+
+            const ususarioVerificadoOK = await API.verificarUsuario(userID);
+
+            console.log("RESPUESTA Verificar usuario")
+            console.log(ususarioVerificadoOK)
+     
+            //window.location.assign("index.html");
           }
 
           /*if (result.isConfirmed) {

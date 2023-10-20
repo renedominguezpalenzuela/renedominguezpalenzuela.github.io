@@ -222,7 +222,7 @@ export class RecargasTelefono extends Component {
 
 
     setup() {
-        const accessToken = API.getTokenFromlocalStorage();
+        const accessToken = API.getTokenFromsessionStorage();
 
         API.setRedirectionURL(this.props.urlHome);
 
@@ -235,8 +235,8 @@ export class RecargasTelefono extends Component {
             return;
         }
 
-        const walletAddress = window.localStorage.getItem('walletAddress');
-        const userId = window.localStorage.getItem('userId');
+        const walletAddress = window.sessionStorage.getItem('walletAddress');
+        const userId = window.sessionStorage.getItem('userId');
 
 
         //  this.select_product.el.value=-1;
@@ -377,7 +377,7 @@ export class RecargasTelefono extends Component {
         this.state.producto = -1;
         this.selectProduct.el.value = -1;
 
-        const accessToken = API.getTokenFromlocalStorage();
+        const accessToken = API.getTokenFromsessionStorage();
         const api = new API(accessToken);
 
         Swal.fire({
@@ -582,7 +582,7 @@ export class RecargasTelefono extends Component {
 
         try {
 
-            const accessToken = API.getTokenFromlocalStorage();
+            const accessToken = API.getTokenFromsessionStorage();
             const api = new API(accessToken);
 
             let resultado = null;

@@ -237,8 +237,8 @@ export class HomeDeliveryCuba extends Component {
 
     API.setRedirectionURL(this.props.urlHome);
 
-    //const walletAddress = window.localStorage.getItem('walletAddress');
-    //const userId = window.localStorage.getItem('userId');
+    //const walletAddress = window.sessionStorage.getItem('walletAddress');
+    //const userId = window.sessionStorage.getItem('userId');
 
 
     onWillStart(() => {
@@ -258,7 +258,7 @@ export class HomeDeliveryCuba extends Component {
 
       this.beneficiarioData = []
 
-      this.accessToken = API.getTokenFromlocalStorage();
+      this.accessToken = API.getTokenFromsessionStorage();
 
 
 
@@ -281,9 +281,9 @@ export class HomeDeliveryCuba extends Component {
       console.log(allDatosBeneficiarios)
 
       if (allDatosBeneficiarios) {
-        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
-      this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
 
 
 

@@ -87,12 +87,12 @@ export class Menu extends Component {
 
         onWillStart(() => {
 
-            this.state.avatar =window.localStorage.getItem('avatar') ? window.localStorage.getItem('avatar') : this.state.avatar;
+            this.state.avatar =window.sessionStorage.getItem('avatar') ? window.sessionStorage.getItem('avatar') : this.state.avatar;
             
 
-            this.state.firstName = window.localStorage.getItem('firstName');
-            this.state.lastName = window.localStorage.getItem('lastName');
-            this.state.nameFull = window.localStorage.getItem('nameFull');
+            this.state.firstName = window.sessionStorage.getItem('firstName');
+            this.state.lastName = window.sessionStorage.getItem('lastName');
+            this.state.nameFull = window.sessionStorage.getItem('nameFull');
 
             
             
@@ -113,7 +113,7 @@ export class Menu extends Component {
 
     logout () {
         console.log("Logout")
-        window.localStorage.clear();
+        window.sessionStorage.clear();
         window.location.assign("index.html");
 
     }

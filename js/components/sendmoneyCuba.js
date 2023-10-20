@@ -429,7 +429,7 @@ export class SendMoneyCuba extends Component {
     this.municipios = []
 
 
-    this.accessToken = API.getTokenFromlocalStorage();
+    this.accessToken = API.getTokenFromsessionStorage();
 
     API.setRedirectionURL(this.props.urlHome);
 
@@ -468,10 +468,10 @@ export class SendMoneyCuba extends Component {
       //obteniendo todos los datos de los beneficiarios desde el API
       const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
       if (allDatosBeneficiarios) {
-        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }
 
-      this.allDatosBeneficiariosFromStorage = JSON.parse(window.localStorage.getItem('beneficiariesFullData'));
+      this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
 
       this.beneficiarioData = []
 
@@ -688,7 +688,7 @@ export class SendMoneyCuba extends Component {
 
     try {
 
-      this.accessToken = API.getTokenFromlocalStorage();
+      this.accessToken = API.getTokenFromsessionStorage();
       const api = new API(this.accessToken);
       const resultado = await api.createTX(datosTX);
 

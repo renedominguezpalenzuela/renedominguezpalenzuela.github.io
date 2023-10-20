@@ -59,6 +59,8 @@ class Root extends Component {
 
 
   setup() {
+
+    window.sessionStorage.clear();
   
 
 
@@ -86,7 +88,7 @@ class Root extends Component {
   }
 
   async login_btn() {
-    window.localStorage.clear();
+    window.sessionStorage.clear();
   
 
     console.log("Login a... ");
@@ -96,7 +98,7 @@ class Root extends Component {
 
     if (loginOK) {
       
-      const accessToken = API.getTokenFromlocalStorage();
+      const accessToken = API.getTokenFromsessionStorage();
       
       const api = new API(accessToken);
 
@@ -106,10 +108,10 @@ class Root extends Component {
 
 
       if (allDatosBeneficiarios) {
-        window.localStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
       }*/
 
-      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.localStorage.getItem('beneficiariesFullData'));      
+      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
       //console.log(allDatosBeneficiariosFromStorage);
 
 
@@ -123,7 +125,7 @@ class Root extends Component {
 
       
       if (userData._id) {
-        window.localStorage.setItem('userId', userData._id)
+        window.sessionStorage.setItem('userId', userData._id)
       }
 
 
@@ -134,12 +136,12 @@ class Root extends Component {
           verified :  false
         */
          console.log("Usuario verificado")
-        window.localStorage.setItem('verified', userData.verified)
+        window.sessionStorage.setItem('verified', userData.verified)
       } else {
         console.log("Usuario NO verificado")
-        /*const ususarioVerificadoOK = await api.verificarUsuario(userData._id);
+      // const ususarioVerificadoOK = await API.verificarUsuario(userData._id);
 
-        if (!ususarioVerificadoOK) {
+        /*if (!ususarioVerificadoOK) {
           return;
         }*/
 
@@ -150,15 +152,15 @@ class Root extends Component {
 
 
       if (userData.firstName) {
-        window.localStorage.setItem('firstName', userData.firstName)
+        window.sessionStorage.setItem('firstName', userData.firstName)
       }
 
       if (userData.lastName) {
-        window.localStorage.setItem('lastName', userData.lastName)
+        window.sessionStorage.setItem('lastName', userData.lastName)
       }
 
       if (userData.nameFull) {
-        window.localStorage.setItem('nameFull', userData.nameFull)
+        window.sessionStorage.setItem('nameFull', userData.nameFull)
       }
 
 
@@ -166,12 +168,12 @@ class Root extends Component {
 
       if (userData.avatar) {
         //https://lh3.googleusercontent.com/a-/AOh14GiiEcL0fUG0CEdQb3V5X3Y21KYu3Q6QW4tFaNr2HA
-        window.localStorage.setItem('avatar', userData.avatar)
+        window.sessionStorage.setItem('avatar', userData.avatar)
 
         //userData.safeImage.image;
       }
       if (userData.safeImage) {
-        window.localStorage.setItem('safeImage', userData.safeImage.image)
+        window.sessionStorage.setItem('safeImage', userData.safeImage.image)
       }
 
 
@@ -179,12 +181,12 @@ class Root extends Component {
 
 
       if (userData.walletAddress) {
-        window.localStorage.setItem('walletAddress', userData.walletAddress)
+        window.sessionStorage.setItem('walletAddress', userData.walletAddress)
       }
 
       //obteniendo lista de ids de beneficiarios
       if (userData.beneficiaries) {
-        window.localStorage.setItem('beneficiariesID', userData.beneficiaries)
+        window.sessionStorage.setItem('beneficiariesID', userData.beneficiaries)
       }
 
       const beneficiariosIDList = userData.beneficiaries;
