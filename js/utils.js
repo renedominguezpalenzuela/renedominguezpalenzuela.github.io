@@ -322,6 +322,102 @@ export class API {
 
   }
 
+
+  //------------------------------------------------------------------------------------------------
+  // 1. Paises
+  //------------------------------------------------------------------------------------------------
+  async getListaPaises() {
+
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/transactions/cash-out/countries`,
+      headers: this.headers,
+    }
+
+
+    let datos = null;
+    await axios(config)
+      .then(function (response) {
+
+        datos = response.data.data;
+       
+       
+      }).catch(function (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: error.message,
+          text: 'Something went wrong requesting Country List',
+          footer: '<h5> Inspect console for details </h5>'
+        })
+
+        datos = error;
+      });
+
+    return datos;
+
+  }
+
+  //Devuelve arreglo con codigos ISO3, listo para ser usado en el control del telegono
+  static async transformarISO2toISO3(listaPaisesFromAPI, listaPaisesISO3) {
+    
+    let seleccionCodigosPaises =[]
+
+    listaPaisesFromAPI.map((unPais) => {
+      console.log(unPais.iso_code)
+      const paisConISO2 = listaPaisesISO3.filter((paisISO3)=>paisISO3.isoAlpha3===unPais.iso_code)[0]
+      
+      if (paisConISO2) {
+        console.log(paisConISO2)
+        seleccionCodigosPaises.push(paisConISO2.isoAlpha2.toLowerCase())
+      }
+    })
+
+    //  
+      return seleccionCodigosPaises;
+
+
+  }
+
+  
+  //------------------------------------------------------------------------------------------------
+  // 2. Services 
+  //------------------------------------------------------------------------------------------------
+  async getListaServicios(iso_code) {
+
+    var raw = JSON.stringify({
+      "country_iso_code": iso_code
+    });
+
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/transactions/cash-out/services`,
+      headers: this.headers,
+      data: raw
+    }
+
+
+    let datos = null;
+    await axios(config)
+      .then(function (response) {
+        datos = response.data.data;             
+      }).catch(function (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: error.message,
+          text: 'Something went wrong requesting Service List',
+          footer: '<h5> Inspect console for details </h5>'
+        })
+
+        datos = error;
+      });
+
+    return datos;
+
+  }
+
+
   //------------------------------------------------------------------------------------------------
   // Confirmar usuario
   //------------------------------------------------------------------------------------------------

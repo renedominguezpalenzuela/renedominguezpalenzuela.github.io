@@ -7,18 +7,19 @@ import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
 import { RecargasTelefono } from "./components/recargasTelefono.js";
+import { RecargasTelefonoAll } from "./components/recargasTelefonoAll.js";
 import { ListaTR } from "./components/listatr.js";
 import { API } from "./utils.js";
 
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, RecargasTelefono, ListaTR };
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios,RecargasTelefonoAll,  RecargasTelefono, ListaTR };
 
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 5, title: 'Home Delivery' });
+  state = useState({ menuId: 7, title: 'Phone Recharge All' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -34,7 +35,8 @@ class Root extends Component {
       ]
     },
     { id: 6, name: "Phone Recharge", type: 2 },
-    { id: 7, name: "Transactions List", type: 2 },
+    { id: 7, name: "Phone Recharge All", type: 2 },
+    { id: 8, name: "Transactions List", type: 2 },
 
 
   ];
@@ -78,6 +80,10 @@ class Root extends Component {
           </t>
 
           <t t-elif="this.state.menuId === 7">
+             <RecargasTelefonoAll/>
+          </t>
+
+          <t t-elif="this.state.menuId === 8">
            <ListaTR />
           </t>
 
@@ -115,7 +121,7 @@ class Root extends Component {
 
 
     onRendered(() => {
-      if (this.state.menuId != 7) {
+      if (this.state.menuId != 8) {
         // console.log(this.state)
         var tableId = "#container-listtr";
         $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
