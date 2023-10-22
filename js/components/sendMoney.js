@@ -6,21 +6,15 @@ import { ListaTR } from "./listatr.js";
 
 //TODO: refactorizar en un componente la parte de las monedas y el importe
 
-export class RecargasTelefonoAll extends Component {
+export class SendMoney extends Component {
 
-    //static components = { Beneficiarios };
 
-    //TODO: poner imagen de espera con una ventana
 
-    promo_template = useState({
-        title: '',
-        description: '',
-        content: ''
-    });
 
-    getList = useState({
-        paises: false
 
+    showSpinner = useState({
+        paises: true,
+        servicios: false
     })
 
 
@@ -30,7 +24,7 @@ export class RecargasTelefonoAll extends Component {
     selectProduct = useRef("selectProduct");
 
     state = useState({
-        pais: 53,                   //codigo telefonico del pais
+        /*pais: 53,                   //codigo telefonico del pais
         currency: "USD",
         producto: -1,
         listaProductos: [],
@@ -42,7 +36,9 @@ export class RecargasTelefonoAll extends Component {
         phoneOwnerName: '',
         promoTitle: '',
         promoContent: '',
-        promoDescrip: ''
+        promoDescrip: '',*/
+
+        listaServicios: []
 
 
     })
@@ -59,14 +55,9 @@ export class RecargasTelefonoAll extends Component {
 
 
 
-    //
-    /*
-    tipo_operacion = {
-        //name: "CASH_OUT_TRANSACTION"
-        name: "DIRECT_TOPUP"
-    }*/
 
-    tipo_operacion = [6, 7];
+
+    tipo_operacion = [1, 2];
 
 
     static components = { ListaTR };
@@ -80,50 +71,50 @@ export class RecargasTelefonoAll extends Component {
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-1">
          
                 
-                <div class="tw-card-body tw-items-center ">
-                    <h1>Column 1</h1>
-                    
-                    <div class="tw-form-control tw-w-full   ">
-                        <label class="tw-label">
-                            <span class="tw-label-text">Currency to pay for recharge</span>
-                        </label>
-                        <select t-att-value="this.state.currency" class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend"  >                    
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="CAD">CAD</option>            
-                        </select>
-                    </div>    
+                <div class="tw-card-body tw-items-center "> 
 
-                    <div class="tw-form-control tw-w-full sm:tw-row-start-4 ">
-                        <label class="tw-label">
-                            <span class="tw-label-text">Phone to recharge</span>
+                    <!-- **************************************************** -->
+                    <!-- ***************  Countrys ***************** -->
+                    <!-- **************************************************** -->
+                    <div class="tw-form-control tw-w-full  ">
+                        <label class="tw-label">                            
+                            <span class="tw-label-text">
+                              Phone to recharge
+                            </span>
+                            <span t-if="this.showSpinner.paises==true">
+                               <img src="img/Spinner-1s-200px.png" width="35rem"/>
+                            </span>
                         </label>
-                        <input   t-att-value="this.state.phone"  id="phone" name="phone" type="phone" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"/>
+                        
+                        <input type="text"  maxlength="100" placeholder="Country" id="country" class="tw-input tw-input-bordered tw-w-full"   />   
                         <span t-if="this.errores.phoneField==true" class="error">
                             Invalid number!!!
                         </span>                        
-                    </div>                                        
-                
+                    </div>       
+                    
+                    <!-- **************************************************** -->
+                    <!-- *************** Services *************************** -->
+                    <!-- **************************************************** -->
                     <div class="tw-form-control tw-w-full   ">  
-                        <label class="tw-label">
-                            <span class="tw-label-text">Recharge type </span>
-                        </label>  
-                        <select t-ref="selectProduct"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProduct" >  
-                            <option  t-att-value="-1" >Select Product</option>          
-                            <t t-foreach="this.state.listaProductos" t-as="unProducto" t-key="unProducto.id">
-                                <option t-att-value="unProducto.id"   >                                      
-                                    <t t-esc="unProducto.name"/> - <t t-esc="unProducto.label"/>                                                                                        
-                                </option>
-                            </t>             
-                        </select>
-                    </div>   
+                    <label class="tw-label">
+                        <span class="tw-label-text">Services </span>
+                        <span t-if="this.showSpinner.servicios==true">
+                        <img src="img/Spinner-1s-200px.png" width="35rem"/>
+                     </span>
+                    </label>  
+                    <select t-ref="selectProduct"  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeProduct" >  
+                        <option  t-att-value="-1" >Select Service</option>          
+                        <t t-foreach="this.state.listaServicios" t-as="unServicio" t-key="unServicio.id">
+                            <option t-att-value="unServicio.id"   >                                      
+                                <t t-esc="unServicio.name"/>                                                                                        
+                            </option>
+                        </t>             
+                    </select>
+                    </div>  
+
+
+              
  
-                    <div class="tw-form-control tw-w-full   ">
-                        <label class="tw-label">
-                            <span class="tw-label-text">Phone owner full name</span>
-                        </label>
-                        <input type="text" t-att-value="this.state.phoneOwnerName"  maxlength="300" placeholder="" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangePhoneOwnerName" />   
-                    </div>
                     
                     <div class="tw-card-actions">
                         <button class="tw-btn tw-btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
@@ -132,59 +123,12 @@ export class RecargasTelefonoAll extends Component {
             </div>
         </div>
 
+       
+
+
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2">
-
             <div class="tw-card-body tw-items-center ">
-           
-            
-              
-              
-
-            </div>
-        </div>
-
-
-        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-span-2">
-            <div class="tw-card-body tw-items-center ">
-                <div class="tw-form-control tw-w-full">
-                    <div t-if="this.state.operator">
-                        <div class="tw-text-[1rem] tw-font-[500]">
-                             Recharge Data  
-                        </div>
-
-                        <div class="tw-ml-3">
-                             Operator: <t t-esc="this.state.operator"/>
-                        </div>
-                        <div class="tw-ml-3">
-                            Description:  <t t-esc="this.state.productoDesc"/>
-                        </div>                        
-                        <div class="tw-ml-3">
-                            Cost:
-                            <t t-esc="this.state.salePrice"/>
-                            <span class="tw-mr-2"></span>
-                            <t t-esc="this.state.currency"/>
-                            <span class="tw-mr-2"></span>
-                            <div>
-                                <t t-esc="this.state.label"/>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-
-                <div class="tw-form-control tw-w-full ">
-                    <div  t-if="this.promo_template.title">
-                        <div class="tw-text-[1rem] tw-font-[500] tw-mt-2 ">
-                            Promotions
-                        </div>   
-                        <div class="tw-ml-3 promotion-overflow" >                                           
-                            <t t-out="this.promo_template.title"/>                          
-                        </div>
-                    </div>
-
-
-                </div>
+      
             </div>
         </div>
 
@@ -197,17 +141,13 @@ export class RecargasTelefonoAll extends Component {
 
     </div>
 
-    
+   
 
     
-      
-
 
   `;
 
-
     static props = ["urlHome"];
-
     static defaultProps = {
         urlHome: '/',
     };
@@ -229,13 +169,6 @@ export class RecargasTelefonoAll extends Component {
 
 
         this.api = new API(this.accessToken);
-
-        const walletAddress = window.sessionStorage.getItem('walletAddress');
-        const userId = window.sessionStorage.getItem('userId');
-
-
-        //  this.select_product.el.value=-1;
-
 
 
         onWillStart(async () => {
@@ -263,7 +196,11 @@ export class RecargasTelefonoAll extends Component {
             } else {
                 this.seleccionCodigosPaises = [];
             }
-            console.log(this.seleccionCodigosPaises)
+
+            this.showSpinner.paises = false;
+
+
+
 
 
             /*this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
@@ -288,9 +225,10 @@ export class RecargasTelefonoAll extends Component {
 
 
 
+            /*
             this.phoneInput = document.querySelector("#phone");
 
-            //if (this.phonInput) {
+            
             this.phonInputSelect = window.intlTelInput(this.phoneInput, {
                 separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
                 autoInsertDialCode: true, //coloca el codigo del pais en el input
@@ -306,9 +244,66 @@ export class RecargasTelefonoAll extends Component {
                 utilsScript: "js/libs/intlTelIutils.js"
             });
             this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
-            //}
+            */
+
+
+
+
+            $("#country").countrySelect({
+                //defaultCountry: "jp",
+                onlyCountries: this.seleccionCodigosPaises,//
+                //preferredCountries: ['ca', 'gb', 'us'], //en miusculas si es en mayusculas da error
+                responsiveDropdown: true
+            });
+
+            $('#country').on('change', async () => {
+                //alert( this.value );
+                await this.getListaServicios();
+            });
+
+
+
+
+
+
+
+
+
+            //------------------------------------------------------------------------------ 
+            //--------------- Pedir lista de servicios -------------------------------------
+            //------------------------------------------------------------------------------
+            await this.getListaServicios()
+
 
         })
+
+    }
+
+
+    async getListaServicios() {
+
+        console.log("Get Lista de Servicios")
+        this.showSpinner.servicios = true;
+        const pais = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
+
+        const cod_iso2 = pais.iso2.toUpperCase();
+        console.log(cod_iso2)
+
+        const cod_pais_iso3 = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
+
+        const cod_iso3 = cod_pais_iso3.isoAlpha3;
+        console.log(cod_iso3)
+
+
+
+
+        if (cod_iso3) {
+            this.state.listaServicios = await this.api.getListaServicios(cod_iso3);
+            console.log("Pidiendo Lista de servicios")
+            console.log(this.state.listaServicios);
+        }
+
+        this.showSpinner.servicios = false;
 
     }
 
@@ -321,10 +316,14 @@ export class RecargasTelefonoAll extends Component {
     //--------------------------------------------------------------------------------------
     handleCountryChange = async (event) => {
 
-        const cod_pais = this.phonInputSelect.getSelectedCountryData();//.dialCode;
-        console.log(cod_pais)
+        console.log("Cambio")
 
-        const servicios = await this.api.getListaServicios(cod_pais)
+        await this.getListaServicios();
+
+        /* const cod_pais = this.phonInputSelect.getSelectedCountryData();//.dialCode;
+         console.log(cod_pais)
+ 
+         const servicios = await this.api.getListaServicios(cod_pais)*/
 
         /*
 
@@ -369,7 +368,7 @@ export class RecargasTelefonoAll extends Component {
             this.errores.phoneField = false;
         }
 
-        await this.handlePhoneChange(telefono, moneda)
+        //await this.handlePhoneChange(telefono, moneda)
 
 
     }, 1100);
@@ -546,6 +545,7 @@ export class RecargasTelefonoAll extends Component {
 
     async onChangeCurrencySend(event) {
 
+        /*
         const moneda = event.target.value
         if (this.state.currency != moneda) {
             this.pedirProductos = true;
@@ -566,6 +566,7 @@ export class RecargasTelefonoAll extends Component {
             //   console.log("pidiendo por primera ves los productos")
             await this.handlePhoneChange(telefono, moneda)
         }
+        */
 
     }
 

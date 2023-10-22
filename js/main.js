@@ -7,19 +7,19 @@ import { SendMoneyCuba } from "./components/sendmoneyCuba.js";
 import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
 import { RecargasTelefono } from "./components/recargasTelefono.js";
-import { RecargasTelefonoAll } from "./components/recargasTelefonoAll.js";
+import { SendMoney } from "./components/sendMoney.js";
 import { ListaTR } from "./components/listatr.js";
 import { API } from "./utils.js";
 
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios,RecargasTelefonoAll,  RecargasTelefono, ListaTR };
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, SendMoney,  RecargasTelefono, ListaTR };
 
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 7, title: 'Phone Recharge All' });
+  state = useState({ menuId: 3, title: 'Send Money' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -28,14 +28,15 @@ class Root extends Component {
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
     { id: 2, name: "Beneficiaries", type: 2 },
+    { id: 3, name: "Send Money", type: 2 },
     {
-      id: 3, name: "Send Money To Cuba", type: 1, subitems: [
-        { id: 4, name: "To Credit Card" },
-        { id: 5, name: "Home Delivery" },
+      id: 4, name: "Send Money To Cuba", type: 1, subitems: [
+        { id: 5, name: "To Credit Card" },
+        { id: 6, name: "Home Delivery" },
       ]
     },
-    { id: 6, name: "Phone Recharge", type: 2 },
-    { id: 7, name: "Phone Recharge All", type: 2 },
+    { id: 7, name: "Phone Recharge", type: 2 },
+   
     { id: 8, name: "Transactions List", type: 2 },
 
 
@@ -66,22 +67,23 @@ class Root extends Component {
              <Beneficiarios/>
           </t>
 
-
-          <t t-elif="this.state.menuId === 4">
-            <SendMoneyCuba menuController.bind="leftMenuController" urlHome=""/>
+          
+          <t t-elif="this.state.menuId === 3">
+             <SendMoney/>
           </t>
 
           <t t-elif="this.state.menuId === 5">
-            <HomeDeliveryCuba/>
+            <SendMoneyCuba menuController.bind="leftMenuController" urlHome=""/>
           </t>
 
           <t t-elif="this.state.menuId === 6">
-             <RecargasTelefono/>
+            <HomeDeliveryCuba/>
           </t>
 
           <t t-elif="this.state.menuId === 7">
-             <RecargasTelefonoAll/>
+             <RecargasTelefono/>
           </t>
+
 
           <t t-elif="this.state.menuId === 8">
            <ListaTR />

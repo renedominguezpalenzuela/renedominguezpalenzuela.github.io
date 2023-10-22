@@ -364,11 +364,11 @@ export class API {
     let seleccionCodigosPaises =[]
 
     listaPaisesFromAPI.map((unPais) => {
-      console.log(unPais.iso_code)
+   
       const paisConISO2 = listaPaisesISO3.filter((paisISO3)=>paisISO3.isoAlpha3===unPais.iso_code)[0]
       
       if (paisConISO2) {
-        console.log(paisConISO2)
+       
         seleccionCodigosPaises.push(paisConISO2.isoAlpha2.toLowerCase())
       }
     })
@@ -385,10 +385,13 @@ export class API {
   //------------------------------------------------------------------------------------------------
   async getListaServicios(iso_code) {
 
+   
     var raw = JSON.stringify({
       "country_iso_code": iso_code
     });
 
+
+    //                 /api/private/transactions/cash-out/services
     var config = {
       method: 'get',
       url: `${base_url}/api/private/transactions/cash-out/services`,
@@ -396,17 +399,76 @@ export class API {
       data: raw
     }
 
+    console.log("Countr code Pidiendo lista servicios")
+    console.log(iso_code)
+
+    console.log(config)
+
 
     let datos = null;
     await axios(config)
       .then(function (response) {
-        datos = response.data.data;             
+        datos = response.data.data;    
+        console.log("Servicios obtenidos")         
+        console.log(datos)
       }).catch(function (error) {
         console.log(error);
         Swal.fire({
           icon: 'error',
           title: error.message,
           text: 'Something went wrong requesting Service List',
+          footer: '<h5> Inspect console for details </h5>'
+        })
+
+        datos = error;
+      });
+
+    return datos;
+
+  }
+
+
+  
+  //------------------------------------------------------------------------------------------------
+  // 3. Get Payers  
+  //------------------------------------------------------------------------------------------------
+  async getListaPayers( service_id , country_iso_code ) {
+
+    const per_page = 50;
+   
+    var raw = JSON.stringify({
+      "service_id" : service_id,
+      "country_iso_code": iso_code,
+      "per_page" : per_page
+    });
+
+
+    //                 /api/private/transactions/cash-out/payers
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/transactions/cash-out/payers`,
+      headers: this.headers,
+      data: raw
+    }
+
+   // console.log("Countr code Pidiendo lista servicios")
+   // console.log(iso_code)
+
+    //console.log(config)
+
+
+    let datos = null;
+    await axios(config)
+      .then(function (response) {
+        datos = response.data.data;    
+        console.log("Payers obtenidos")         
+        console.log(datos)
+      }).catch(function (error) {
+        console.log(error);
+        Swal.fire({
+          icon: 'error',
+          title: error.message,
+          text: 'Something went wrong requesting Payers List',
           footer: '<h5> Inspect console for details </h5>'
         })
 
