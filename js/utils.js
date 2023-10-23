@@ -33,7 +33,7 @@ axios_using_interceptors.interceptors.request.use((config) => {
   return config
 })*/
 
-
+/*
 axios.interceptors.response.use(response => response, error => {
   const status = error.response ? error.response.status : null;
 
@@ -57,25 +57,25 @@ axios.interceptors.response.use(response => response, error => {
     Swal.fire({
       icon: 'error 404',
       title: `Error CODE 404: ${error.code}, Error MSG: ${error.message}`
-      
+
     })
     return Promise.reject(error);
 
   } else {
     // Handle other errors
-   
+
     console.log(`Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`)
     console.log(error)
     Swal.fire({
       icon: 'error',
       title: `Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`
-      
+
     })
     return Promise.reject(error);
   }
 
 
-});
+});*/
 
 
 //-----------------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ export class API {
   //--------------------------------------------------------------------------
 
   static ambienteLocal() {
-  
+
 
     let esLocal = false;
 
@@ -185,7 +185,7 @@ export class API {
   //si no esta en local la url por defecto para redireccionar seria '/login'
   static setRedirectionURL(urlHome) {
     //console.log(urlHome)
-   // console.log(this.ambienteLocal())
+    // console.log(this.ambienteLocal())
     this.redirectURLLogin = this.ambienteLocal() ? '/' : '/login'
     this.redirectURLHome = urlHome ? urlHome : '/';
   }
@@ -208,6 +208,9 @@ export class API {
       'x-api-key': x_api_key,
       'Content-Type': 'application/json',
     }
+
+    console.log("Constructor")
+    console.log(this.headers)
 
 
   }
@@ -279,7 +282,7 @@ export class API {
   static getTokenFromsessionStorage() {
     let token = '';
     try {
-      token = window.sessionStorage.getItem('accessToken');              
+      token = window.sessionStorage.getItem('accessToken');
     } catch (error) {
       console.log("Token not found on local storage");
       console.log(error);
@@ -340,8 +343,8 @@ export class API {
       .then(function (response) {
 
         datos = response.data.data;
-       
-       
+
+
       }).catch(function (error) {
         console.log(error);
         Swal.fire({
@@ -360,86 +363,209 @@ export class API {
 
   //Devuelve arreglo con codigos ISO3, listo para ser usado en el control del telegono
   static async transformarISO2toISO3(listaPaisesFromAPI, listaPaisesISO3) {
-    
-    let seleccionCodigosPaises =[]
+
+    let seleccionCodigosPaises = []
 
     listaPaisesFromAPI.map((unPais) => {
-   
-      const paisConISO2 = listaPaisesISO3.filter((paisISO3)=>paisISO3.isoAlpha3===unPais.iso_code)[0]
-      
+
+      const paisConISO2 = listaPaisesISO3.filter((paisISO3) => paisISO3.isoAlpha3 === unPais.iso_code)[0]
+
       if (paisConISO2) {
-       
+
         seleccionCodigosPaises.push(paisConISO2.isoAlpha2.toLowerCase())
       }
     })
 
     //  
-      return seleccionCodigosPaises;
+    return seleccionCodigosPaises;
 
 
   }
 
-  
+
   //------------------------------------------------------------------------------------------------
   // 2. Services 
   //------------------------------------------------------------------------------------------------
   async getListaServicios(iso_code) {
 
-   
-    var raw = JSON.stringify({
-      "country_iso_code": iso_code
+
+    let datos = null;
+
+    const config = {
+      headers: this.headers,
+      // data: {"country_iso_code": iso_code},
+      params: {
+        "country_iso_code": iso_code
+      }
+    }
+   await axios.get(`${base_url}/api/private/transactions/cash-out/services`, config).then((response) => {
+      datos = response.data.data;      
+    }).catch((error) => {
+      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: error.message,
+        text: 'Something went wrong requesting Service List',
+        footer: '<h5> Inspect console for details </h5>'
+      })
+
+      datos = error;
     });
 
 
-    //                 /api/private/transactions/cash-out/services
-    var config = {
-      method: 'get',
-      url: `${base_url}/api/private/transactions/cash-out/services`,
-      headers: this.headers,
-      data: raw
-    }
 
-    console.log("Countr code Pidiendo lista servicios")
-    console.log(iso_code)
+    /*
+        const parametros = {
+          params: {
+            "country_iso_code": iso_code
+          }     
+        }
+    
+        const vdatos = { "country_iso_code": iso_code }
+    
+        const mheaders = {   
+          headers: this.headers
+        }
+    
+        let datos = null;
+        await axios.get(
+          `${base_url}/api/private/transactions/cash-out/services`,
+      
+          mheaders,
+          {params: vdatos}
+       
+    
+    
+        ).then((response) => {
+          datos = response.data.data;
+          console.log("Servicios obtenidos")
+          console.log(response.data)
+        }).catch((error) => {
+          console.log(error);
+          Swal.fire({
+            icon: 'error',
+            title: error.message,
+            text: 'Something went wrong requesting Service List',
+            footer: '<h5> Inspect console for details </h5>'
+          })
+    
+          datos = error;
+        });
+    
+    */
 
-    console.log(config)
 
 
+    /*
+        const parametros = {
+          "country_iso_code": iso_code
+        }
+    
+    
+        var body = JSON.stringify(parametros);
+    
+        var config = {
+          method: 'get',
+          url: `${base_url}/api/private/transactions/cash-out/services`,
+          headers: this.headers,
+          data: body
+        }
+    
+        console.log(config)
+    
+    
+    
+    
+        let datos = null;
+        await axios(config).then((response) => {
+          datos = response.data.data;
+          console.log("Servicios obtenidos")
+          console.log(response.data)
+        }).catch((error) => {
+          console.log(error);
+          Swal.fire({
+            icon: 'error',
+            title: error.message,
+            text: 'Something went wrong requesting Service List',
+            footer: '<h5> Inspect console for details </h5>'
+          })
+    
+          datos = error;
+        });
+        */
+
+
+    /*
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            let datos = null;
+        var myHeaders = new Headers();
+        myHeaders.append("authorization", `Bearer ${this.accessToken}`);
+        myHeaders.append("x-api-key", x_api_key);
+        myHeaders.append("Content-Type", "application/json");
+    
+        var raw = JSON.stringify({
+          "country_iso_code": "NPL"
+        });
+    
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow'
+        };
+    
+        fetch("https://backend.ducapp.net/api/private/transactions/cash-out/services", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+    */
+
+    /*
+    ---------------------------------------------------------------------------------------
+        
     let datos = null;
-    await axios(config)
-      .then(function (response) {
-        datos = response.data.data;    
-        console.log("Servicios obtenidos")         
-        console.log(datos)
-      }).catch(function (error) {
-        console.log(error);
-        Swal.fire({
-          icon: 'error',
-          title: error.message,
-          text: 'Something went wrong requesting Service List',
-          footer: '<h5> Inspect console for details </h5>'
-        })
-
-        datos = error;
-      });
-
+    var myHeaders = new Headers();
+    myHeaders.append("authorization", `Bearer ${this.accessToken}`);
+    myHeaders.append("x-api-key", x_api_key);
+    myHeaders.append("Content-Type", "application/json");
+    
+    var raw = JSON.stringify({
+    "country_iso_code": iso_code
+    });
+    
+    var requestOptions = {
+    method: 'GET',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+    };
+    
+    fetch(`${base_url}/api/private/transactions/cash-out/services`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      datos = result
+      console.log(result)
+    })
+    .catch(error => console.log('error', error));
+    
+    */
     return datos;
 
   }
 
 
-  
+
   //------------------------------------------------------------------------------------------------
   // 3. Get Payers  
   //------------------------------------------------------------------------------------------------
-  async getListaPayers( service_id , country_iso_code ) {
+  async getListaPayers(service_id, country_iso_code) {
 
     const per_page = 50;
-   
+
     var raw = JSON.stringify({
-      "service_id" : service_id,
+      "service_id": service_id,
       "country_iso_code": iso_code,
-      "per_page" : per_page
+      "per_page": per_page
     });
 
 
@@ -451,8 +577,8 @@ export class API {
       data: raw
     }
 
-   // console.log("Countr code Pidiendo lista servicios")
-   // console.log(iso_code)
+    // console.log("Countr code Pidiendo lista servicios")
+    // console.log(iso_code)
 
     //console.log(config)
 
@@ -460,8 +586,8 @@ export class API {
     let datos = null;
     await axios(config)
       .then(function (response) {
-        datos = response.data.data;    
-        console.log("Payers obtenidos")         
+        datos = response.data.data;
+        console.log("Payers obtenidos")
         console.log(datos)
       }).catch(function (error) {
         console.log(error);
@@ -566,8 +692,8 @@ export class API {
   //------------------------------------------------------------------------------------------------
   static async requestOTP(id, email) {
 
-    const datosUsuario ={
-      userID : id,
+    const datosUsuario = {
+      userID: id,
       value: email
     }
 
@@ -587,7 +713,7 @@ export class API {
     }
 
     let datos = null;
-   
+
     try {
       datos = await axios(config);
       console.log("OTP")
@@ -1187,7 +1313,7 @@ export class API {
           code: verificationCode
         }*/
 
-         respuesta_api = await API.confirmUser(IDUsuario, verificationCode)
+        respuesta_api = await API.confirmUser(IDUsuario, verificationCode)
 
         return respuesta_api;
 
@@ -1203,9 +1329,9 @@ export class API {
 
 
 
-       // const respuesta = result.value;
-       console.log(result)
-       console.log(respuesta_api)
+        // const respuesta = result.value;
+        console.log(result)
+        console.log(respuesta_api)
 
 
         if (respuesta_api.data.validatedUser && respuesta_api.data.validatedUser == true) {
