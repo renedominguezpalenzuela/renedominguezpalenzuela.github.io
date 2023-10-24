@@ -391,14 +391,21 @@ export class API {
 
     let datos = null;
 
-    const config = {
+
+    var raw = JSON.stringify({
+      "country_iso_code": iso_code
+    });
+
+
+ 
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/cash-out/services`,
       headers: this.headers,
-      // data: {"country_iso_code": iso_code},
-      params: {
-        "country_iso_code": iso_code
-      }
+      data: raw
     }
-   await axios.get(`${base_url}/api/private/transactions/cash-out/services`, config).then((response) => {
+
+   await axios(config).then((response) => {
       datos = response.data.data;      
     }).catch((error) => {
       console.log(error);
@@ -414,141 +421,6 @@ export class API {
 
 
 
-    /*
-        const parametros = {
-          params: {
-            "country_iso_code": iso_code
-          }     
-        }
-    
-        const vdatos = { "country_iso_code": iso_code }
-    
-        const mheaders = {   
-          headers: this.headers
-        }
-    
-        let datos = null;
-        await axios.get(
-          `${base_url}/api/private/transactions/cash-out/services`,
-      
-          mheaders,
-          {params: vdatos}
-       
-    
-    
-        ).then((response) => {
-          datos = response.data.data;
-          console.log("Servicios obtenidos")
-          console.log(response.data)
-        }).catch((error) => {
-          console.log(error);
-          Swal.fire({
-            icon: 'error',
-            title: error.message,
-            text: 'Something went wrong requesting Service List',
-            footer: '<h5> Inspect console for details </h5>'
-          })
-    
-          datos = error;
-        });
-    
-    */
-
-
-
-    /*
-        const parametros = {
-          "country_iso_code": iso_code
-        }
-    
-    
-        var body = JSON.stringify(parametros);
-    
-        var config = {
-          method: 'get',
-          url: `${base_url}/api/private/transactions/cash-out/services`,
-          headers: this.headers,
-          data: body
-        }
-    
-        console.log(config)
-    
-    
-    
-    
-        let datos = null;
-        await axios(config).then((response) => {
-          datos = response.data.data;
-          console.log("Servicios obtenidos")
-          console.log(response.data)
-        }).catch((error) => {
-          console.log(error);
-          Swal.fire({
-            icon: 'error',
-            title: error.message,
-            text: 'Something went wrong requesting Service List',
-            footer: '<h5> Inspect console for details </h5>'
-          })
-    
-          datos = error;
-        });
-        */
-
-
-    /*
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            let datos = null;
-        var myHeaders = new Headers();
-        myHeaders.append("authorization", `Bearer ${this.accessToken}`);
-        myHeaders.append("x-api-key", x_api_key);
-        myHeaders.append("Content-Type", "application/json");
-    
-        var raw = JSON.stringify({
-          "country_iso_code": "NPL"
-        });
-    
-        var requestOptions = {
-          method: 'GET',
-          headers: myHeaders,
-          body: raw,
-          redirect: 'follow'
-        };
-    
-        fetch("https://backend.ducapp.net/api/private/transactions/cash-out/services", requestOptions)
-          .then(response => response.text())
-          .then(result => console.log(result))
-          .catch(error => console.log('error', error));
-    */
-
-    /*
-    ---------------------------------------------------------------------------------------
-        
-    let datos = null;
-    var myHeaders = new Headers();
-    myHeaders.append("authorization", `Bearer ${this.accessToken}`);
-    myHeaders.append("x-api-key", x_api_key);
-    myHeaders.append("Content-Type", "application/json");
-    
-    var raw = JSON.stringify({
-    "country_iso_code": iso_code
-    });
-    
-    var requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-    };
-    
-    fetch(`${base_url}/api/private/transactions/cash-out/services`, requestOptions)
-    .then(response => response.text())
-    .then(result => {
-      datos = result
-      console.log(result)
-    })
-    .catch(error => console.log('error', error));
-    
-    */
     return datos;
 
   }
@@ -564,14 +436,14 @@ export class API {
 
     var raw = JSON.stringify({
       "service_id": service_id,
-      "country_iso_code": iso_code,
+      "country_iso_code": country_iso_code,
       "per_page": per_page
     });
 
 
     //                 /api/private/transactions/cash-out/payers
     var config = {
-      method: 'get',
+      method: 'post',
       url: `${base_url}/api/private/transactions/cash-out/payers`,
       headers: this.headers,
       data: raw

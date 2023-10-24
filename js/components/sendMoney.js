@@ -10,12 +10,14 @@ export class SendMoney extends Component {
 
     showSpinner = useState({
         paises: true,
-        servicios: false
+        servicios: false,
+        payers: false
     })
 
     errores = useState({
         paises: false,
-        servicios: false
+        servicios: false,
+        payers: false
     })
 
 
@@ -40,7 +42,8 @@ export class SendMoney extends Component {
     state = useState({
         cod_servicio: null,
         cod_pais_iso3: null,
-        listaServicios: []
+        listaServicios: [],
+        listaPayers: []
     })
 
 
@@ -94,26 +97,52 @@ export class SendMoney extends Component {
                 <!-- *************** Services *************************** -->
                 <!-- **************************************************** -->
                 <div class="tw-form-control tw-w-full   ">  
-                <label class="tw-label">
-                    <span class="tw-label-text">Services </span>
-                    <span t-if="this.showSpinner.servicios==true">
-                    <img src="img/Spinner-1s-200px.png" width="35rem"/>
-                </span>
-                </label>  
-                <select  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeService" >  
-                    <option  t-att-value="-1" >Select Service</option>  
-                        
-                    <t t-if="(this.state.listaServicios) and (this.state.listaServicios.length>0)">   
-                        <t t-foreach="this.state.listaServicios" t-as="unServicio" t-key="unServicio.id">
-                            <option t-att-value="unServicio.id"   >                                      
-                                <t t-esc="unServicio.name"/>                                                                                        
-                            </option>
-                        </t>             
-                    </t>
-                </select>
-            <span t-if="this.errores.servicios==true" class="error">
-                    Service is required!!!
-                </span> 
+                    <label class="tw-label">
+                        <span class="tw-label-text">Services </span>
+                        <span t-if="this.showSpinner.servicios==true">
+                        <img src="img/Spinner-1s-200px.png" width="35rem"/>
+                    </span>
+                    </label>  
+                    <select  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeService" >  
+                        <option  t-att-value="-1" >Select Service</option>  
+                            
+                        <t t-if="(this.state.listaServicios) and (this.state.listaServicios.length>0)">   
+                            <t t-foreach="this.state.listaServicios" t-as="unServicio" t-key="unServicio.id">
+                                <option t-att-value="unServicio.id"   >                                      
+                                    <t t-esc="unServicio.name"/>                                                                                        
+                                </option>
+                            </t>             
+                        </t>
+                    </select>
+                    <span t-if="this.errores.servicios==true" class="error">
+                        Service is required!!!
+                    </span> 
+                </div>  
+
+                <!-- **************************************************** -->
+                <!-- *************** Payers   *************************** -->
+                <!-- **************************************************** -->
+                <div class="tw-form-control tw-w-full   ">  
+                    <label class="tw-label">
+                        <span class="tw-label-text">Payers </span>
+                        <span t-if="this.showSpinner.payers==true">
+                        <img src="img/Spinner-1s-200px.png" width="35rem"/>
+                    </span>
+                    </label>  
+                    <select  class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangePayer" >  
+                        <option  t-att-value="-1" >Select Payers</option>  
+                            
+                        <t t-if="(this.state.listaPayers) and (this.state.listaPayers.length>0)">   
+                            <t t-foreach="this.state.listaPayers" t-as="unPayer" t-key="unPayer.id">
+                                <option t-att-value="unPayer.id"   >                                      
+                                    <t t-esc="unPayer.name"/>                                                                                        
+                                </option>
+                            </t>             
+                        </t>
+                    </select>
+                    <span t-if="this.errores.payers==true" class="error">
+                        Payer is required!!!
+                    </span> 
                 </div>  
 
 
@@ -216,22 +245,9 @@ export class SendMoney extends Component {
             });
 
             $('#country').on('change', async () => {
-
-                const pais = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
-           
-   
-                const cod_iso2 = pais.iso2.toUpperCase();
-              
-               
-                const cod_pais_iso3 = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
-                const cod_iso3 = cod_pais_iso3.isoAlpha3;
-
-                
+                const cod_iso3 = this.getCodigoPaisFromList();
                 this.state.cod_pais_iso3 = cod_iso3
-                console.log("Paus")
-                console.log(this.state)
-                
-                 await this.getListaServicios();
+                await this.getListaServicios(cod_iso3);
             });
 
 
@@ -240,65 +256,104 @@ export class SendMoney extends Component {
             //------------------------------------------------------------------------------ 
             //------------- 2. Pedir lista de servicios -------------------------------------
             //------------------------------------------------------------------------------
-            await this.getListaServicios()
+
+            const cod_iso3 = this.getCodigoPaisFromList();
+            await this.getListaServicios(cod_iso3)
+
+            //------------------------------------------------------------------------------ 
+            //------------- 3. Pedir PAyers -------------------------------------
+            //------------------------------------------------------------------------------
+            //const service_id = this.state.cod_servicio
+            //await this.getListaPayers(service_id, cod_iso3) 
+
 
 
         })
 
     }
 
-     //------------------------------------------------------------------------------ 
-     //------------- 3. Pedir PAyers -------------------------------------
+
+    getCodigoPaisFromList() {
+        const pais = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
+        const cod_iso2 = pais.iso2.toUpperCase();
+        const cod_pais_iso3 = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
+        const cod_iso3 = cod_pais_iso3.isoAlpha3;
+
+        this.state.cod_pais_iso3 = cod_iso3;
+
+        return cod_iso3;
+    }
+
+    //------------------------------------------------------------------------------ 
+    //------------- 3. Pedir PAyers -------------------------------------
     //------------------------------------------------------------------------------
     //   Get Payers {{baseURL}}/api/private/transactions/cash-out/payers
     // Datos: iso, servicio
     async onChangeService(event) {
         console.log("Change service")
         console.log(event.target.value)
+        const service_id = event.target.value;
+        if (service_id != -1) {
+            const cod_iso3 = this.getCodigoPaisFromList();
+
+            console.log(service_id)
+            console.log(cod_iso3)
+            await this.getListaPayers(service_id, cod_iso3)
+
+        }
+
+    }
+
+    async onChangePayer(event) {
+        console.log("Change Payer")
+        console.log(event.target.value)
     }
 
 
-    async getListaServicios() {
+    /*
+     "service_id": 2,
+    "country_iso_code": "IND",
+    "per_page": 100
+    */
+    async getListaPayers(service_id, country_iso_code) {
+        this.state.listaPayers = [];
 
-           this.state.listaServicios= []
+        this.showSpinner.payers = true;
 
-       
-           this.showSpinner.servicios = true;
-           const pais = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
-           
-   
-           const cod_iso2 = pais.iso2.toUpperCase();
-         
-          
-           const cod_pais_iso3 = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
-           const cod_iso3 = cod_pais_iso3.isoAlpha3;
-   
-           console.log("cod iso 3")
-           console.log(cod_iso3)
-           if (cod_iso3) {
-             this.state.cod_pais_iso3 = cod_iso3;
-               this.state.listaServicios = await this.api.getListaServicios(cod_iso3);
-               if (this.state.listaServicios && this.state.listaServicios.length>0) {
-                this.state.cod_servicio = this.state.listaServicios[0].id
-               }
-               
-               console.log("Pidiendo Lista de servicios")
-               console.log(this.state.listaServicios);
-           }
-           this.showSpinner.servicios = false;
-           
+
+        this.state.listaPayers = await this.api.getListaPayers(service_id, country_iso_code)
+
+        this.showSpinner.payers = false;
+
+
     }
 
 
 
-
-/*    //--------------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------
     // 2. Get Services {{baseURL}}/api/private/transactions/cash-out/services
     //--------------------------------------------------------------------------------------
-    handleCountryChange = async (event) => {
-        console.com("Cambia pais")
-         await this.getListaServicios();
-    }*/
+    async getListaServicios(cod_iso3) {
+
+        this.state.listaServicios = []
+
+        this.showSpinner.servicios = true;
+
+        if (cod_iso3) {
+            this.state.cod_pais_iso3 = cod_iso3;
+            this.state.listaServicios = await this.api.getListaServicios(cod_iso3);
+            if (this.state.listaServicios && this.state.listaServicios.length > 0) {
+                this.state.cod_servicio = this.state.listaServicios[0].id
+            }
+
+        }
+        this.showSpinner.servicios = false;
+
+    }
+
+
+
+
 
 
 
