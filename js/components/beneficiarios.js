@@ -713,6 +713,10 @@ export class Beneficiarios extends Component {
             this.errores.card = true;
         }
 
+        if (event.target.value==='') {
+            this.errores.card = false;
+        }
+
 
     };
 
