@@ -33,7 +33,7 @@ axios_using_interceptors.interceptors.request.use((config) => {
   return config
 })*/
 
-/*
+
 axios.interceptors.response.use(response => response, error => {
   const status = error.response ? error.response.status : null;
 
@@ -42,7 +42,14 @@ axios.interceptors.response.use(response => response, error => {
 
   if (status === 401) {
     // Handle unauthorized access
-    window.location.assign(API.redirectURLLogin);
+  
+    const es_login = window.location.toString().includes('login');
+
+    if (!es_login){
+     
+      window.location.assign(API.redirectURLLogin);
+    }
+    //window.location.assign(API.redirectURLLogin);
     return Promise.reject(error);
 
   } else if (status === 400) {
@@ -75,7 +82,7 @@ axios.interceptors.response.use(response => response, error => {
   }
 
 
-});*/
+});
 
 
 //-----------------------------------------------------------------------------------------

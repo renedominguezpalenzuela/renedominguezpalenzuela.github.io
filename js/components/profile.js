@@ -734,10 +734,19 @@ export class Profile extends Component {
     this.errores.province = this.validarSiVacio(datos.province)
     this.errores.zipcode = this.validarSiVacio(datos.zipcode)
     this.errores.birthDate = this.validarSiVacio(datos.birthDate)
-    this.errores.phoneField = !libphonenumber.isValidNumber(datos.phone)
+
+    if (datos.phone) {
+      this.errores.phoneField = !libphonenumber.isValidNumber(datos.phone)
     //this.validarSiVacio(datos.phone)
+    
     console.log(datos.phone)
     console.log(libphonenumber.isValidNumber(datos.phone))
+
+    } else {
+      this.errores.phoneField = true;
+
+    }
+    
 
     for (let clave in this.errores) {
       if (this.errores[clave] == true) {
