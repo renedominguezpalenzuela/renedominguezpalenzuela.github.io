@@ -426,7 +426,7 @@ export class SendMoneyCuba extends Component {
     this.beneficiariosNames.names = []
     this.cardsList.cards = []
     this.provincias = []
-    this.municipios = []
+    this.municipios.names = []
 
 
     this.accessToken = API.getTokenFromsessionStorage();
@@ -1157,12 +1157,16 @@ export class SendMoneyCuba extends Component {
   //Evento al cambiar de provincia, se setea delivery area, se modifica la lista de municipips
   onChangeProvince = (event) => {
     //this.cambioBeneficiario = true;
+    console.log("Cambio de provincia")
+    //console.log(this.inicializando)
 
-    if (this.inicializando) return;
+   // if (this.inicializando) return;
+
+    
     const selectedProvinceId = event.target.value;
     this.beneficiarioData.deliveryAreaID = event.target.value;
     let selectedProvince = this.provincias.filter(unaProvincia => unaProvincia.id === selectedProvinceId)[0];
-
+    console.log("Selected province")
     console.log(selectedProvince)
     if (selectedProvince) {
       this.municipios.names = UImanager.addKeyToMunicipios(selectedProvince.municipios);
@@ -1183,7 +1187,7 @@ export class SendMoneyCuba extends Component {
   //Evento al cambiar de municipio
   onChangeCity = (event) => {
     // this.cambioBeneficiario = true;
-    if (this.inicializando) return;
+    //if (this.inicializando) return;
     const selectedCityId = event.target.value;
     let selectedMunicipio = this.municipios.names[selectedCityId];
     console.log(selectedMunicipio)
