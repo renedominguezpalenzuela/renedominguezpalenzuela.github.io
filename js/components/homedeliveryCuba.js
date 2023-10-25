@@ -345,6 +345,10 @@ export class HomeDeliveryCuba extends Component {
     this.monedas.recibida = monedaRecibida.toUpperCase()
 
 
+    if (!this.tiposCambio) {
+      const api = new API(this.accessToken);
+      this.tiposCambio = await api.getAllTiposDeCambio();
+    }
     const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
     this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
 

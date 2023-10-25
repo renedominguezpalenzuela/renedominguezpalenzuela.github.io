@@ -562,6 +562,15 @@ export class SendMoneyCuba extends Component {
     this.monedas.enviada = monedaEnviada.toUpperCase()
     this.monedas.recibida = monedaRecibida.toUpperCase()
 
+    console.log("Calcular calcularCantidadRecibida")
+    console.log(monedaEnviada, monedaRecibida)
+    console.log(this.tiposCambio)
+
+    if (!this.tiposCambio) {
+      const api = new API(this.accessToken);
+      this.tiposCambio = await api.getAllTiposDeCambio();
+    }
+
     const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
 
     this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
