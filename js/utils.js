@@ -216,8 +216,7 @@ export class API {
       'Content-Type': 'application/json',
     }
 
-    console.log("Constructor")
-    console.log(this.headers)
+   
 
 
   }
@@ -466,8 +465,7 @@ export class API {
     await axios(config)
       .then(function (response) {
         datos = response.data.data;
-        console.log("Payers obtenidos")
-        console.log(datos)
+  
       }).catch(function (error) {
         console.log(error);
         Swal.fire({

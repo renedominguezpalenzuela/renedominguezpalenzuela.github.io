@@ -184,11 +184,11 @@ export class Balance extends Component {
       const saldos = await this.get_data(false);
 
 
-      console.log("Balance recibido servidor")
+    //  console.log("Balance recibido servidor")
 
       if (saldos) {
         this.balance.saldos = saldos;
-        console.log(JSON.stringify(this.balance));
+      //  console.log(JSON.stringify(this.balance));
       }
 
 

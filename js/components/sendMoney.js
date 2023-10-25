@@ -2,6 +2,7 @@ const { Component, xml, useState, useRef, onMounted, onRendered, onWillStart, ma
 import { API, UImanager } from "../utils.js";
 import { Paises } from "../../data/paises.js";
 import { ListaTR } from "./listatr.js";
+import { SendMoneyFieldsName } from "../../data/sendmoneyfields.js";
 
 
 
@@ -48,6 +49,18 @@ export class SendMoney extends Component {
         listaPayers: [],
         listaMonedasARecibir: []
     })
+
+    extraFieldLists = useState({
+        credit_party_identifiers_accepted: [],
+        required_documents: [],
+        required_receiving_entity_fields: [],
+        required_sending_entity_fields: []
+    })
+
+    extraFieldLists = useState({
+        fields: []
+    })
+
 
 
 
@@ -188,15 +201,16 @@ export class SendMoney extends Component {
                             </span> 
                         </div>
                     </div> 
+
+                    <div class="tw-card-actions">
+                    <button class="tw-btn tw-btn-primary" t-on-click="onSend">Send</button>
+                </div>
                     
                     
 
 
                 </div>
-            </div>
-
-
-
+        </div>
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2">
             <div class="tw-card-body tw-items-center ">
@@ -276,18 +290,99 @@ export class SendMoney extends Component {
         
 
                 
-                <div class="tw-card-actions">
-                    <button class="tw-btn tw-btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
-                </div>
+              
 
             </div>
         </div>
 
 
+        <t t-if="((this.extraFieldLists.credit_party_identifiers_accepted) and (this.extraFieldLists.credit_party_identifiers_accepted.length>0)) or ((this.extraFieldLists.required_documents) and (this.extraFieldLists.required_documents>0))">
+            <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+                
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
+                    <div> General Data </div>      
+                </div>    
+        
+                <div class="tw-card-body tw-items-center  " id="general_data">      
+                    <t t-foreach="this.extraFieldLists.credit_party_identifiers_accepted" t-as="unField" t-key="unField.name">   
+                        <div class="tw-form-control tw-w-full  tw-pl-1">
+                            <label class="tw-label">
+                                <span class="tw-label-text"><t t-esc="unField.label"/> </span>
+                            </label>
+                            <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" />   
+                            <!--  <span t-if="this.errores.unField.name==true" class="error">
+                                    Required field!!!
+                                </span>  -->
+                        </div>                             
+                    </t>     
+                    
+                    <t t-foreach="this.extraFieldLists.required_documents" t-as="unField" t-key="unField.name">   
+                    <div class="tw-form-control tw-w-full  tw-pl-1">
+                        <label class="tw-label">
+                            <span class="tw-label-text"><t t-esc="unField.label"/> </span>
+                        </label>
+                        <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields"  />   
+                        <!-- <span t-if="this.errores.unField.name==true" class="error">
+                                    Required field!!!
+                        </span>  -->
+                    </div>                             
+                </t>       
+
+                
+                </div>
+            </div>
+        </t>
+
+        <t t-if="(this.extraFieldLists.required_receiving_entity_fields) and (this.extraFieldLists.required_receiving_entity_fields.length>0)">
+            <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+                    
+                <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
+                    <div> Receiver Data </div>      
+                </div>    
+        
+                <div class="tw-card-body tw-items-center  " id="reciver_data">   
+                    <t t-foreach="this.extraFieldLists.required_receiving_entity_fields" t-as="unField" t-key="unField.name">   
+                        <div class="tw-form-control tw-w-full  tw-pl-1">
+                            <label class="tw-label">
+                                <span class="tw-label-text"><t t-esc="unField.label"/> </span>
+                            </label>
+                            <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                            <!-- <span t-if="this.errores.unField.name==true" class="error">
+                            Required field!!!
+                            </span>  -->
+                        </div>                             
+                    </t>                 
+                </div>
+            </div>
+        </t>
+
+        <t t-if="(this.extraFieldLists.required_sending_entity_fields) and (this.extraFieldLists.required_sending_entity_fields.length>0)">
+            <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+                    
+            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
+                <div> Sender Data </div>      
+            </div>    
+
+            <div class="tw-card-body tw-items-center"  id="sender_data" >            
+                        <t t-foreach="this.extraFieldLists.required_sending_entity_fields" t-as="unField" t-key="unField.name">   
+                            <div class="tw-form-control tw-w-full  tw-pl-1">
+                                <label class="tw-label">
+                                    <span class="tw-label-text"><t t-esc="unField.label"/> </span>
+                                </label>
+                                <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                                <!-- <span t-if="this.errores.unField.name==true" class="error">
+                                    Required field!!!
+                                </span>  -->
+                            </div>                             
+                        </t>            
+            </div>
+            </div>
+        </t>
+
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
-        <div class="tw-card-body tw-items-center  ">            
-            <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
-        </div>
+            <div class="tw-card-body tw-items-center  ">            
+                <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+            </div>
         </div>
 
     </div>
@@ -298,6 +393,14 @@ export class SendMoney extends Component {
 
   `;
 
+
+  onChangeExtraFields = API.debounce(async (event) => {
+
+    console.log(event.target.id)
+    console.log("ONCHange")
+    ///this.errores.providerValue = this.validarSiVacio(event.target.value);
+  }, 700);
+
     static props = ["urlHome"];
     static defaultProps = {
         urlHome: '/',
@@ -305,9 +408,9 @@ export class SendMoney extends Component {
 
 
 
-//Cuando selecciona el pais, debe setearse la moneda destino
-//inhabilitar todos los controls
-//Al inicio debe estar deshabilitada la entrada de la cantidad enviada / recibida
+    //Cuando selecciona el pais, debe setearse la moneda destino
+    //inhabilitar todos los controls
+    //Al inicio debe estar deshabilitada la entrada de la cantidad enviada / recibida
 
     setup() {
         this.accessToken = API.getTokenFromsessionStorage();
@@ -345,17 +448,17 @@ export class SendMoney extends Component {
             // 1. Get Countries {{baseURL}}/api/private/transactions/cash-out/countries
             //--------------------------------------------------------------------------------------
             const listaPaisesFromAPI = await this.api.getListaPaises();
-            console.log(listaPaisesFromAPI)
+            //console.log(listaPaisesFromAPI)
             this.seleccionCodigosPaises = [];
-            this.state.listaMonedasARecibir=[];
+            this.state.listaMonedasARecibir = [];
             if (listaPaisesFromAPI) {
                 this.seleccionCodigosPaises = await API.transformarISO2toISO3(listaPaisesFromAPI, Paises);
-               
-                
+
+
             } else {
                 this.seleccionCodigosPaises = [];
             }
-            console.log(this.seleccionCodigosPaises)
+            // console.log(this.seleccionCodigosPaises)
 
             this.showSpinner.paises = false;
 
@@ -369,18 +472,23 @@ export class SendMoney extends Component {
 
             this.monedas.recibida = this.getMonedaPaisFromList();
             this.state.listaMonedasARecibir.push(this.monedas.recibida)
-            
-            
+
+
 
 
 
             $('#country').on('change', async () => {
                 const cod_iso3 = this.getCodigoPaisFromList();
                 this.state.cod_pais_iso3 = cod_iso3
-                this.state.listaMonedasARecibir=[];
+                this.state.listaMonedasARecibir = [];
                 this.monedas.recibida = this.getMonedaPaisFromList();
                 this.state.listaMonedasARecibir.push(this.monedas.recibida)
-                
+                this.state.listaPayers = [];
+                this.extraFieldLists.required_receiving_entity_fields = [];
+                this.extraFieldLists.required_sending_entity_fields = [];
+                this.extraFieldLists.credit_party_identifiers_accepted = [];
+                this.extraFieldLists.required_documents = [];
+
                 await this.getListaServicios(cod_iso3);
             });
 
@@ -412,15 +520,15 @@ export class SendMoney extends Component {
         const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
         const cod_iso2 = pais_seleccionado.iso2.toUpperCase();
         const pais_datos = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
-        console.log(pais_datos)
+        //console.log(pais_datos)
         const cod_iso3 = pais_datos.isoAlpha3;
 
-        
+
 
         return cod_iso3;
 
 
-       
+
     }
 
 
@@ -428,8 +536,8 @@ export class SendMoney extends Component {
         const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
         const cod_iso2 = pais_seleccionado.iso2.toUpperCase();
         const pais_datos = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
-        
-       
+
+
 
         return pais_datos.currency.code;
     }
@@ -440,8 +548,14 @@ export class SendMoney extends Component {
     //   Get Payers {{baseURL}}/api/private/transactions/cash-out/payers
     // Datos: iso, servicio
     async onChangeService(event) {
-        console.log("Change service")
-        console.log(event.target.value)
+        this.state.listaPayers = [];
+
+        this.extraFieldLists.required_receiving_entity_fields = [];
+        this.extraFieldLists.required_sending_entity_fields = [];
+        this.extraFieldLists.credit_party_identifiers_accepted = [];
+        this.extraFieldLists.required_documents = [];
+
+       
         const service_id = event.target.value;
         if (service_id != -1) {
             const cod_iso3 = this.getCodigoPaisFromList();
@@ -455,8 +569,25 @@ export class SendMoney extends Component {
     }
 
     async onChangePayer(event) {
+
+
+   
+
+        this.extraFieldLists.required_receiving_entity_fields = [];
+        this.extraFieldLists.required_sending_entity_fields = [];
+        this.extraFieldLists.credit_party_identifiers_accepted = [];
+        this.extraFieldLists.required_documents = [];
+
         console.log("Change Payer")
         console.log(event.target.value)
+        const id_payer = event.target.value;
+
+        const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == id_payer)[0];
+        console.log(payer_seleccionado)
+
+        this.crearExtraFields(payer_seleccionado);
+
+
     }
 
 
@@ -467,13 +598,108 @@ export class SendMoney extends Component {
     */
     async getListaPayers(service_id, country_iso_code) {
         this.state.listaPayers = [];
+        this.extraFieldLists.required_receiving_entity_fields = [];
+        this.extraFieldLists.required_sending_entity_fields = [];
+        this.extraFieldLists.credit_party_identifiers_accepted = [];
+        this.extraFieldLists.required_documents = [];
+
+
 
         this.showSpinner.payers = true;
 
 
         this.state.listaPayers = await this.api.getListaPayers(service_id, country_iso_code)
+        console.log(this.state.listaPayers)
+
+
 
         this.showSpinner.payers = false;
+
+
+    }
+
+    getFieldLabel(field_name) {
+        const nombre = SendMoneyFieldsName.filter((unField) => unField.name === field_name)[0];
+        if (nombre) {
+            return nombre.label
+        } else {
+            return field_name
+        }
+    }
+
+    crearExtraFields(payerSeleccionado) {
+
+
+        let tipo_transaccion = '';
+
+        if (payerSeleccionado.transaction_types.B2B) {
+            console.log("B2B")
+            tipo_transaccion = 'B2B';
+        } else if (payerSeleccionado.transaction_types.C2C) {
+            console.log("C2C")
+            tipo_transaccion = 'C2C';
+        }
+
+        //console.log("PAYER SELECCIONADO")
+
+
+        //console.log(payerSeleccionado.transaction_types[tipo_transaccion].required_receiving_entity_fields)
+
+
+        this.extraFieldLists.required_receiving_entity_fields = payerSeleccionado.transaction_types[tipo_transaccion].required_receiving_entity_fields.map(
+            (unField) => {
+                return {
+                    name: unField,
+                    label: this.getFieldLabel(unField),
+                    value: ''
+                }
+            }
+        );
+
+        this.extraFieldLists.required_sending_entity_fields = payerSeleccionado.transaction_types[tipo_transaccion].required_sending_entity_fields.map(
+            (unField) => {
+                return {
+                    name: unField,
+                    label: this.getFieldLabel(unField),
+                    value: ''
+                }
+            }
+        );
+
+
+        
+
+
+        this.extraFieldLists.credit_party_identifiers_accepted = payerSeleccionado.transaction_types[tipo_transaccion].credit_party_identifiers_accepted.map(
+            (unField) => {
+                return {
+                    name: unField,
+                    label: this.getFieldLabel(unField),
+                    value: ''
+                }
+            }
+        );
+
+        this.extraFieldLists.required_documents = payerSeleccionado.transaction_types[tipo_transaccion].required_documents.map(
+            (unField) => {
+                return {
+                    name: unField,
+                    label: this.getFieldLabel(unField),
+                    value: ''
+                }
+            }
+        );
+
+        
+
+
+
+        
+
+        console.log(this.extraFieldLists)
+
+        //this.render()
+
 
 
     }
@@ -486,6 +712,10 @@ export class SendMoney extends Component {
     async getListaServicios(cod_iso3) {
 
         this.state.listaServicios = []
+        this.extraFieldLists.required_receiving_entity_fields = [];
+        this.extraFieldLists.required_sending_entity_fields = [];
+        this.extraFieldLists.credit_party_identifiers_accepted = [];
+        this.extraFieldLists.required_documents = [];
 
         this.showSpinner.servicios = true;
 
@@ -507,7 +737,7 @@ export class SendMoney extends Component {
 
 
 
-    async ejecutarRecarga() {
+    async ejecutarEnvio() {
         console.log("Ejecutando recarga")
         console.log(this.state);
 
@@ -586,7 +816,10 @@ export class SendMoney extends Component {
 
 
 
-    async onSendRecharge() {
+    async onSend() {
+        console.log(this.extraFieldLists)
+
+        return;
 
 
         Swal.fire({
@@ -628,7 +861,7 @@ export class SendMoney extends Component {
         }).then((result) => {
             if (result.value) {
 
-                this.ejecutarRecarga()
+                this.ejecutarEnvio()
             }
         });
 
@@ -641,10 +874,6 @@ export class SendMoney extends Component {
 
 
 
-
-    onChangePhoneOwnerName(event) {
-        this.state.phoneOwnerName = event.target.value
-    }
 
 
 

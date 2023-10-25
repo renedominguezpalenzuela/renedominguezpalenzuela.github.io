@@ -154,10 +154,10 @@ export class ListaTR extends Component {
             }
 
 
-            console.log("Solicitando lista de TX al servidor")
+          
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log("lista de TX recibidas")
+          
 
 
 
@@ -535,8 +535,8 @@ export class ListaTR extends Component {
 
 
             //if (otra_table) {
-            console.log("Existe otra tabla")
-            console.log(otra_table)
+           // console.log("Existe otra tabla")
+            //console.log(otra_table)
             //              $(`${base_name_otra_table}_length`).empty();
             //              $(`${base_name_otra_table}_filter`).empty();
             $(`${base_name_otra_table}_wrapper`).remove();
