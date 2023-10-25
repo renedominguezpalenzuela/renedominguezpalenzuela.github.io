@@ -649,7 +649,7 @@ export class SendMoneyCuba extends Component {
     //
 
     const beneficiario = {
-      cardNumber: this.beneficiarioData.selectedCard,
+      cardNumber: this.beneficiarioData.selectedCard?this.beneficiarioData.selectedCard : this.beneficiarioData.cardNumber,
       cardHolderName: this.beneficiarioData.cardHolderName,
       contactPhone: this.beneficiarioData.contactPhone,
       deliveryAddress: this.beneficiarioData.deliveryAddress,
@@ -743,13 +743,16 @@ export class SendMoneyCuba extends Component {
     this.errores.phoneField = !libphonenumber.isValidNumber(telefono)
 
 
-    if (!this.beneficiarioData.selectedCard) {
+    console.log("CARD")
+    console.log(datos)
+
+    if (!datos.cardNumber  ) {
       this.errores.card = true;
       this.beneficiarioData.cardBankImage = '';
       this.beneficiarioData.bankName = '';
 
     } else {
-      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
+      const tarjeta = await UImanager.buscarLogotipoBanco(datos.cardNumber, this.accessToken);
 
       if (tarjeta) {
         this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
