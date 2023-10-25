@@ -19,7 +19,7 @@ class Root extends Component {
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 8, title: 'Transactions List' });
+  state = useState({ menuId: 3, title: 'Send Money' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"

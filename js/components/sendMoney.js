@@ -17,8 +17,10 @@ export class SendMoney extends Component {
     errores = useState({
         paises: false,
         servicios: false,
-        payers: false
+        payers: false,
+        sendAmount: false
     })
+
 
 
 
@@ -43,7 +45,8 @@ export class SendMoney extends Component {
         cod_servicio: null,
         cod_pais_iso3: null,
         listaServicios: [],
-        listaPayers: []
+        listaPayers: [],
+        listaMonedasARecibir: []
     })
 
 
@@ -64,16 +67,140 @@ export class SendMoney extends Component {
     static components = { ListaTR };
 
 
+    inputSendRef = useRef("inputSendRef");
+    //inputReceiveRef = useRef("inputReceiveRef");
+    //concept = useRef("concept");
+    inputSendCurrencyRef = useRef("inputSendCurrencyRef");
+    //inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
+
+    conversionRate = useState({ value: 0 });
+
+
+    feeSTR = useState({ value: "0" });
+    fee = useState({ value: 0 });
+
+
+    monedas = useState({
+        enviada: "",
+        recibida: ""
+    })
+
+
+    totalSendCost = useState({ value: 0 });
+    totalSendCostSTR = useState({ value: "0" });
+
+
 
 
 
     static template = xml`    
     <div class="sm:tw-grid sm:tw-grid-cols-2 tw-gap-2 ">
             <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-1">
-                
-                        
-            <div class="tw-card-body tw-items-center "> 
 
+                    
+                <div class="tw-card-body tw-items-center "> 
+
+                        <div class="tw-form-control  tw-w-full ">
+                            <label class="tw-label">
+                                <span class="tw-label-text">You Send (before fee)</span>  
+                            </label> 
+
+                            <div class="tw-join">                        
+                         
+                                <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
+                                        
+                                
+                                <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
+                                    <option value="usd">USD</option>
+                                    <option value="eur">EUR</option>
+                                    <option value="cad">CAD</option>   
+                                </select>
+                            </div>
+
+                            <span t-if="this.errores.sendAmount==true" class="error">
+                                Error in field!!!
+                            </span>  
+
+                            <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
+                        
+                            
+                            
+                                <div class=" tw-text-right ">  
+                                    <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
+                                    <t t-esc="this.conversionRate.value"/> 
+                                    <span class="tw-ml-1"> 
+                                    <t t-esc="this.monedas.recibida"/> 
+                                    </span>
+                                </div>
+
+                                
+                                <div class=" tw-text-right "> 
+                                <span class="tw-mr-2"> Send Fee: </span>
+                                    <t t-esc="this.feeSTR.value"/> 
+                                    <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                                </div>
+
+
+
+                                <div class=" tw-text-right  "> 
+                                <span class="tw-mr-2"> Total Sending Cost (plus fee): </span>
+                                    <t t-esc="this.totalSendCostSTR.value"/>
+                                    <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                                </div> 
+
+                        </div> 
+                    </div>
+                
+                   <div class="tw-form-control tw-w-full ">
+                        <label class="tw-label">
+                            <span class="tw-label-text">Received Amount</span>  
+                        </label> 
+
+                        <div class="tw-join">        
+                                                    
+                            <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   t-on-blur="onBlurReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
+                            class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
+                        
+                            
+                            <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                                    <t t-if="(this.state.listaMonedasARecibir) and (this.state.listaMonedasARecibir.length>0)">   
+                                <t t-foreach="this.state.listaMonedasARecibir" t-as="unaMoneda" t-key="unaMoneda">
+                                    <option t-att-value="unaMoneda"   >                                      
+                                        <t t-esc="unaMoneda"/>                                                                                        
+                                    </option>
+                                </t>             
+                                </t>
+                            </select>
+                        </div>
+
+                        <span t-if="this.errores.receiveAmount==true" class="error">
+                            Error in field!!!
+                        </span> 
+
+                        <div class="tw-form-control   row-start-4 col-span-2 w-full ">
+                            <label class="tw-label">
+                                <span class="tw-label-text">Concept</span>
+                            </label>
+                            
+                            <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeConcept" ></textarea>
+                            <span t-if="this.errores.concept==true" class="error">
+                                Required field!!!
+                            </span> 
+                        </div>
+                    </div> 
+                    
+                    
+
+
+                </div>
+            </div>
+
+
+
+
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2">
+            <div class="tw-card-body tw-items-center ">
+                
                 <!-- **************************************************** -->
                 <!-- ***************  Countrys ***************** -->
                 <!-- **************************************************** -->
@@ -152,17 +279,8 @@ export class SendMoney extends Component {
                 <div class="tw-card-actions">
                     <button class="tw-btn tw-btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
                 </div>
-            
-        </div>
-        </div>
 
-
-
-
-        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2">
-        <div class="tw-card-body tw-items-center ">
-
-        </div>
+            </div>
         </div>
 
 
@@ -187,7 +305,9 @@ export class SendMoney extends Component {
 
 
 
-
+//Cuando selecciona el pais, debe setearse la moneda destino
+//inhabilitar todos los controls
+//Al inicio debe estar deshabilitada la entrada de la cantidad enviada / recibida
 
     setup() {
         this.accessToken = API.getTokenFromsessionStorage();
@@ -227,8 +347,11 @@ export class SendMoney extends Component {
             const listaPaisesFromAPI = await this.api.getListaPaises();
             console.log(listaPaisesFromAPI)
             this.seleccionCodigosPaises = [];
+            this.state.listaMonedasARecibir=[];
             if (listaPaisesFromAPI) {
                 this.seleccionCodigosPaises = await API.transformarISO2toISO3(listaPaisesFromAPI, Paises);
+               
+                
             } else {
                 this.seleccionCodigosPaises = [];
             }
@@ -244,9 +367,20 @@ export class SendMoney extends Component {
                 responsiveDropdown: true
             });
 
+            this.monedas.recibida = this.getMonedaPaisFromList();
+            this.state.listaMonedasARecibir.push(this.monedas.recibida)
+            
+            
+
+
+
             $('#country').on('change', async () => {
                 const cod_iso3 = this.getCodigoPaisFromList();
                 this.state.cod_pais_iso3 = cod_iso3
+                this.state.listaMonedasARecibir=[];
+                this.monedas.recibida = this.getMonedaPaisFromList();
+                this.state.listaMonedasARecibir.push(this.monedas.recibida)
+                
                 await this.getListaServicios(cod_iso3);
             });
 
@@ -274,14 +408,30 @@ export class SendMoney extends Component {
 
 
     getCodigoPaisFromList() {
-        const pais = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
-        const cod_iso2 = pais.iso2.toUpperCase();
-        const cod_pais_iso3 = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
-        const cod_iso3 = cod_pais_iso3.isoAlpha3;
 
-        this.state.cod_pais_iso3 = cod_iso3;
+        const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
+        const cod_iso2 = pais_seleccionado.iso2.toUpperCase();
+        const pais_datos = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
+        console.log(pais_datos)
+        const cod_iso3 = pais_datos.isoAlpha3;
+
+        
 
         return cod_iso3;
+
+
+       
+    }
+
+
+    getMonedaPaisFromList() {
+        const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData");//.dialCode;
+        const cod_iso2 = pais_seleccionado.iso2.toUpperCase();
+        const pais_datos = Paises.filter((unPais) => unPais.isoAlpha2 === cod_iso2)[0];
+        
+       
+
+        return pais_datos.currency.code;
     }
 
     //------------------------------------------------------------------------------ 
@@ -567,8 +717,60 @@ export class SendMoney extends Component {
     
         this.setearBeneficiario(CIBeneficiariodeTX)
     
-        await this.onChangeSendInput()*/
+    */
 
+    }
+
+
+
+    onChangeSendInput = API.debounce(async (event) => {
+
+        /*const cantidadEnviada = this.inputSendRef.el.value;
+        this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
+    
+    
+        const monedaEnviada = this.inputSendCurrencyRef.el.value;
+        const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
+    
+        this.monedas.enviada = monedaEnviada.toUpperCase()
+        this.monedas.recibida = monedaRecibida.toUpperCase()
+    
+        const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
+    
+        this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
+        this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
+    
+    
+        //Comun
+        //const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
+    
+        const feeOBJ = await UImanager.calculateAndShowFee('card', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
+        this.fee.value = feeOBJ.feeMonedaEnviada;
+        this.conversionRate.value = feeOBJ.conversionRate;
+        this.feeSTR.value = feeOBJ.feeSTR;
+    
+    
+        this.totalSendCost.value = Number(cantidadEnviada) + Number(this.fee.value);
+        this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
+    
+    */
+
+    }, 700);
+
+
+    onBlurSendInput = (event) => {
+        this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
+    }
+
+
+    //Evento al cambiar la moneda a enviar
+    onChangeCurrencySend() {
+        this.onChangeSendInput()
+    }
+
+    //Evento al cambiar la moneda a recibir
+    onChangeCurrencyRecib() {
+        this.onChangeReceiveInput();
     }
 
 

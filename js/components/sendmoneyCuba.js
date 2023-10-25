@@ -140,7 +140,7 @@ export class SendMoneyCuba extends Component {
                 </label> 
 
                 <div class="tw-join">                        
-                   <!-- t-on-input="onChangeSendInput"  t-on-keypress="onSendInputKeyPress"-->
+        
                     <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
                          
                  
