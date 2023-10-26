@@ -117,7 +117,7 @@ export class HomeDeliveryCuba extends Component {
                       
 
                       <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
-                          <option value="usd">USD</option>
+                          <option value="usd" selected="selected">USD</option>
                           <option value="eur">EUR</option>
                           <option value="cad">CAD</option>
 
