@@ -1668,7 +1668,9 @@ export class UImanager {
     const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviada, monedaEnviadaUSD);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
-    const tc = tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()];
+    
+    const tc =tipoCambio ? tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()]: 0;
+
     // this.conversionRate.value = tc;
     // this.fee.value = feeMonedaEnviada;
     // this.feeSTR.value = UImanager.roundDec(this.fee.value)
@@ -1865,9 +1867,15 @@ export class UImanager {
 
 
   static aplicarTipoCambio2(cantidadMonedaBase, tipoCambio, monedaBase, monedaaConvertir) {
+    console.log("tc2")
+    console.log(cantidadMonedaBase)
+    console.log(tipoCambio)
+    console.log(monedaBase)
+    console.log(monedaaConvertir)
+    if (!tipoCambio) return 0;
 
     const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
-    console.log("tc2")
+  
     console.log(tc)
     if (tc <= 0) return 0;
     const cantidadConvertida = cantidadMonedaBase / tc;

@@ -406,7 +406,7 @@ export class HomeDeliveryCuba extends Component {
 
 
 
-    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeMonedaEnviada);
+    this.totalSendCost.value = Number(cantidadEnviada) + Number(feeOBJ.feeMonedaEnviada);
     this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
 

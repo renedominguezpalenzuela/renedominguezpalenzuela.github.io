@@ -200,7 +200,7 @@ export class SendMoneyCuba extends Component {
                    
                     
                     <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
-                      <option value="cup">CUP</option>
+                      <option value="cup" selected="selected">CUP</option>
                       <option value="usd">MLC</option>
                     </select>
                   </div>
