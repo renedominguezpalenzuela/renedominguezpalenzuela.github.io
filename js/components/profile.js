@@ -45,6 +45,11 @@ export class Profile extends Component {
     birthDate: false
   })
 
+  showSpinner = useState({
+    boton: false
+  })
+  
+
   state = useState({
 
     appVersion: "0.1",
@@ -415,7 +420,15 @@ export class Profile extends Component {
         </div>
 
 
-        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSaveAllData">Save</button>
+        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSaveAllData">
+        <span>
+        Save
+      </span>
+        <span t-if="this.showSpinner.boton==true">
+          <img src="img/Spinner-1s-200px.png" width="45rem"/>
+        </span>
+       
+        </button>
 
     </div>
       
@@ -838,6 +851,8 @@ export class Profile extends Component {
 
   async onSaveAllData() {
 
+  
+
     var countryData = $("#country").countrySelect("getSelectedCountryData");
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
@@ -862,6 +877,7 @@ export class Profile extends Component {
     } else {
       console.log("No hay error")
     }
+    this.showSpinner.boton = true;
 
 
 
@@ -962,6 +978,7 @@ export class Profile extends Component {
             console.log(ususarioVerificadoOK)
             if (ususarioVerificadoOK) {
               window.location.assign(API.redirectURLLogin);
+              this.showSpinner.boton = false;
             }
 
           }
@@ -973,7 +990,7 @@ export class Profile extends Component {
         console.log("----ERROR: Respuesta del API----- ")
         console.log(respuesta)
         const respuestatxt = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
-
+        this.showSpinner.boton = false;
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
@@ -985,6 +1002,7 @@ export class Profile extends Component {
     } catch (error) {
       console.log("----ERROR: Sin Respuesta del API----- ")
       console.log(error)
+      this.showSpinner.boton = false;
 
       Swal.fire({
         icon: 'error',
@@ -993,6 +1011,8 @@ export class Profile extends Component {
       })
 
     }
+
+    this.showSpinner.boton = false;
 
   }
 

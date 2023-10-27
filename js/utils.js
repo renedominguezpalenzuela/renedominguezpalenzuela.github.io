@@ -1209,14 +1209,15 @@ export class API {
       //console.log(result.value.code)
       //console.log(IDUsuario)
 
-      console.log("Respuesta del API de Confirmar usuario 2")
-      console.log(respuesta_api)
-      console.log( result.value)
-      const verificado_correctamente = result.value.data.validatedUser;
-      const message = result.value.data.message;
+    
 
 
       if (result.isConfirmed) {   //si usuario le dio al boton confirmar
+        console.log("Respuesta del API de Confirmar usuario 2")
+        console.log(respuesta_api)
+        console.log( result.value)
+        const verificado_correctamente = result.value.data.validatedUser;
+        const message = result.value.data.message;
 
        
 
