@@ -1216,8 +1216,12 @@ export class API {
         console.log("Respuesta del API de Confirmar usuario 2")
         console.log(respuesta_api)
         console.log( result.value)
-        const verificado_correctamente = result.value.data.validatedUser;
-        const message = result.value.data.message;
+        let verificado_correctamente = false;
+        let message = "Error in verification code"
+        if (respuesta_api) {
+         verificado_correctamente = result.value.data.validatedUser;
+         message = result.value.data.message;
+        }
 
        
 
@@ -1236,9 +1240,16 @@ export class API {
         
 
         } else {
-          const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
+          let cod_error  = '???';
+          resultado = false;
+          
+          if ( respuesta_api) {
+            const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
           console.log("Error verificando usuario")
           console.log(respuesta_api)
+
+          }
+          
           Swal.fire({
             icon: 'error',
             title: 'Activating user error',
