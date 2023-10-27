@@ -1027,8 +1027,11 @@ export class Profile extends Component {
     if (!datos.avatar) delete datos["avatar"];
 
 
-    if (datos.source1 && !datos.source1.url) delete datos["source1"];
-    if (datos.source2 && !datos.source2.url) delete datos["source2"];
+    /*if (datos.source1 && !datos.source1.url) delete datos["source1"];
+    if (datos.source2 && !datos.source2.url) delete datos["source2"];*/
+
+    if (datos.source1 && !datos.source1.url) datos["source1"] = {};
+    if (datos.source2 && !datos.source2.url) datos["source2"] = {};
 
     if (!datos.birthDate) delete datos["birthDate"];
 
