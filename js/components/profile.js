@@ -699,7 +699,16 @@ export class Profile extends Component {
     //Validaciones si es update
     if (!this.props.newUser) {
 
-      if (this.inputPass1.el.value || this.inputPass2.el.value && (this.inputPass1.el.value != this.inputPass2.el.value)) {
+      console.log("no es un usuario nuevo")
+
+      console.log("VALIDANDO")
+   
+      console.log(this.inputPass1.el.value)
+      console.log(this.inputPass2.el.value)
+
+      if ( (this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
+        
+        console.log("ERROR EN PASS")
         Swal.fire({
           icon: 'error', title: 'Error',
           text: 'Passwords are not the same or are empty, please check'
@@ -768,11 +777,16 @@ export class Profile extends Component {
       return false;
     }*/
 
-    if ((this.inputPass1.el.value != this.inputPass2.el.value) || !this.state.password.trim()) {
+
+
+    /*if ((this.inputPass1.el.value != this.inputPass2.el.value) &&  (!this.state.password.trim() || !this.state.password.trim() )) {
       this.errores.password = true;
       return false;
     }
 
+    this.errores.password = true;
+
+    return false;*/
 
 
 
@@ -833,18 +847,26 @@ export class Profile extends Component {
     console.log("Datos a enviar REGISTRO")
     console.log(datosAEnviar)
 
+   
+
 
 
     // console.log("Datos enviados 2:")
     // console.log(this.state)
 
-
-
+   
 
     if (!this.validarDatos(datosAEnviar)) {
       console.log("Validation Errors");
       return;
+    } else {
+      console.log("No hay error")
     }
+    
+
+  
+
+  
     // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
 
 
@@ -858,6 +880,7 @@ export class Profile extends Component {
       if (this.props.newUser) {
         //creando nuevo usuario
         respuesta = await API.createUser(datosAEnviar)
+        console.log("Respuesta  Create ") 
         
        
         /* if (!ususarioVerificadoOK) {
@@ -878,13 +901,14 @@ export class Profile extends Component {
         const api = new API(accessToken);
 
         delete datosAEnviar["image"];
+        console.log(datosAEnviar)
         respuesta = await api.updateUser(datosAEnviar)
 
-
+        console.log("Respuesta  Update")
 
       }
 
-      console.log("Respuesta Create / Update")
+      
       console.log(respuesta)
 
       let cod_respuesta = 0;
