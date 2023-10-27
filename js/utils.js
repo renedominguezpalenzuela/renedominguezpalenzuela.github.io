@@ -42,11 +42,11 @@ axios.interceptors.response.use(response => response, error => {
 
   if (status === 401) {
     // Handle unauthorized access
-  
+
     const es_login = window.location.toString().includes('login');
 
-    if (!es_login){
-     
+    if (!es_login) {
+
       window.location.assign(API.redirectURLLogin);
     }
     //window.location.assign(API.redirectURLLogin);
@@ -216,7 +216,7 @@ export class API {
       'Content-Type': 'application/json',
     }
 
-   
+
 
 
   }
@@ -403,7 +403,7 @@ export class API {
     });
 
 
- 
+
     var config = {
       method: 'post',
       url: `${base_url}/api/private/transactions/cash-out/services`,
@@ -411,8 +411,8 @@ export class API {
       data: raw
     }
 
-   await axios(config).then((response) => {
-      datos = response.data.data;      
+    await axios(config).then((response) => {
+      datos = response.data.data;
     }).catch((error) => {
       console.log(error);
       Swal.fire({
@@ -465,7 +465,7 @@ export class API {
     await axios(config)
       .then(function (response) {
         datos = response.data.data;
-  
+
       }).catch(function (error) {
         console.log(error);
         Swal.fire({
@@ -573,6 +573,9 @@ export class API {
       userID: id,
       value: email
     }
+
+    console.log("Datos a enviar a rquestOTP")
+    console.log(datosUsuario)
 
     var body = JSON.stringify(datosUsuario);
 
@@ -1171,9 +1174,10 @@ export class API {
   //----------------------------------------------------------------------------------------------
   static async verificarUsuario(IDUsuario) {
 
-    var respuesta_api = null;
+    let respuesta_api = null;
+    let resultado = false;
 
-    Swal.fire({
+    await Swal.fire({
       title: 'User has not been verified',
       text: 'A message with a verification code has been sent to your email address. Enter the code to continue',
       input: 'text',
@@ -1191,6 +1195,8 @@ export class API {
         }*/
 
         respuesta_api = await API.confirmUser(IDUsuario, verificationCode)
+        console.log("Respuesta del API de Confirmar usuario")
+        console.log(respuesta_api)
 
         return respuesta_api;
 
@@ -1198,42 +1204,46 @@ export class API {
 
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then((result) => {
+    }).then(async (result) => {
       //console.log("then")
       //console.log(result.value.code)
       //console.log(IDUsuario)
+
+      console.log("Respuesta del API de Confirmar usuario 2")
+      console.log(respuesta_api)
+      console.log( result.value)
+      const verificado_correctamente = result.value.data.validatedUser;
+      const message = result.value.data.message;
+
+
       if (result.isConfirmed) {   //si usuario le dio al boton confirmar
 
+       
 
 
-        // const respuesta = result.value;
-        console.log(result)
-        console.log(respuesta_api)
-
-
-        if (respuesta_api.data.validatedUser && respuesta_api.data.validatedUser == true) {
-
-          Swal.fire({
+        if (verificado_correctamente && verificado_correctamente == true) {
+          console.log("Usuario verificado correctamente")
+          resultado = true;
+          await Swal.fire({
             icon: 'success',
             title: 'Activating user',
-            text: respuesta_api.message
+            text: message,
+            confirmButtonText: 'Ok',
+            timer: 3000
           })
 
-
-          return true;
-
+        
 
         } else {
-
           const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
-
+          console.log("Error verificando usuario")
+          console.log(respuesta_api)
           Swal.fire({
             icon: 'error',
             title: 'Activating user error',
-            text: cod_error
+            text: cod_error + ' ' + message
           })
-
-          return false;
+         
         }
 
 
@@ -1250,6 +1260,8 @@ export class API {
         })*/
       }
     })
+   return resultado;
+
   }
 
 
@@ -1668,8 +1680,8 @@ export class UImanager {
     const feeMonedaEnviada = UImanager.aplicarTipoCambio2(feeUSD, tipoCambio, monedaEnviada, monedaEnviadaUSD);
     console.log(`Fee en moneda ${monedaEnviada}`)
     console.log(feeMonedaEnviada)
-    
-    const tc =tipoCambio ? tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()]: 0;
+
+    const tc = tipoCambio ? tipoCambio[monedaEnviada.toUpperCase()][monedaRecibida.toUpperCase()] : 0;
 
     // this.conversionRate.value = tc;
     // this.fee.value = feeMonedaEnviada;
@@ -1875,7 +1887,7 @@ export class UImanager {
     if (!tipoCambio) return 0;
 
     const tc = tipoCambio[monedaBase.toUpperCase()][monedaaConvertir.toUpperCase()];
-  
+
     console.log(tc)
     if (tc <= 0) return 0;
     const cantidadConvertida = cantidadMonedaBase / tc;

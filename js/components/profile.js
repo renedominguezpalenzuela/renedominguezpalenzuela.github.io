@@ -702,12 +702,12 @@ export class Profile extends Component {
       console.log("no es un usuario nuevo")
 
       console.log("VALIDANDO")
-   
+
       console.log(this.inputPass1.el.value)
       console.log(this.inputPass2.el.value)
 
-      if ( (this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
-        
+      if ((this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
+
         console.log("ERROR EN PASS")
         Swal.fire({
           icon: 'error', title: 'Error',
@@ -718,7 +718,7 @@ export class Profile extends Component {
 
 
 
-      return true;
+      return true; //si es un update, no valida que existan campos vacios
 
     }
 
@@ -746,16 +746,16 @@ export class Profile extends Component {
 
     if (datos.phone) {
       this.errores.phoneField = !libphonenumber.isValidNumber(datos.phone)
-    //this.validarSiVacio(datos.phone)
-    
-    console.log(datos.phone)
-    console.log(libphonenumber.isValidNumber(datos.phone))
+      //this.validarSiVacio(datos.phone)
+
+      console.log(datos.phone)
+      console.log(libphonenumber.isValidNumber(datos.phone))
 
     } else {
       this.errores.phoneField = true;
 
     }
-    
+
 
     for (let clave in this.errores) {
       if (this.errores[clave] == true) {
@@ -847,14 +847,14 @@ export class Profile extends Component {
     console.log("Datos a enviar REGISTRO")
     console.log(datosAEnviar)
 
-   
+
 
 
 
     // console.log("Datos enviados 2:")
     // console.log(this.state)
 
-   
+
 
     if (!this.validarDatos(datosAEnviar)) {
       console.log("Validation Errors");
@@ -862,11 +862,11 @@ export class Profile extends Component {
     } else {
       console.log("No hay error")
     }
-    
 
-  
 
-  
+
+
+
     // A message with a verification code has been sent to your email address. Enter the code to continue. Didn’t get a verification code?
 
 
@@ -880,13 +880,13 @@ export class Profile extends Component {
       if (this.props.newUser) {
         //creando nuevo usuario
         respuesta = await API.createUser(datosAEnviar)
-        console.log("Respuesta  Create ") 
-        
-       
+        console.log("Respuesta  Create ")
+
+
         /* if (!ususarioVerificadoOK) {
            return;
          }*/
-        
+
 
 
 
@@ -908,7 +908,7 @@ export class Profile extends Component {
 
       }
 
-      
+
       console.log(respuesta)
 
       let cod_respuesta = 0;
@@ -929,7 +929,7 @@ export class Profile extends Component {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
-       
+
 
         //Enviar OTP
         if (this.props.newUser) {
@@ -938,17 +938,15 @@ export class Profile extends Component {
           const vemail = respuesta.data.user.email
 
           const respuesta2 = await API.requestOTP(userID, vemail)
-          console.log("---- Respuesta2 OK ----- ")
+          console.log("---- Respuesta Request OTP ----- ")
           console.log(respuesta2)
 
           const respuestaOK = respuesta2.completed;
         }
 
-
-
         Swal.fire({
           title: 'User data have been saved',
-          text: this.props.newUser  ? "A verification code is sended to your email" : "",
+          text: this.props.newUser ? "A verification code is sended to your email" : "",
           icon: 'success',
           showCancelButton: false,
           // confirmButtonColor: '#3085d6',
@@ -962,32 +960,13 @@ export class Profile extends Component {
 
             console.log("RESPUESTA Verificar usuario")
             console.log(ususarioVerificadoOK)
-            window.location.assign(API.redirectURLLogin);
-     
-            //window.location.assign("index.html");
-          }
-
-          /*if (result.isConfirmed) {
-
-            if (this.props.newUser) {
-              window.location.assign("index.html");
+            if (ususarioVerificadoOK) {
+              window.location.assign(API.redirectURLLogin);
             }
 
-          }*/
+          }
 
         });
-
-
-        //Swal.fire('User data have been saved');
-        /*if (this.props.newUser) {
-          this.verificarUsuario();
-        }*/
-        //ir hacia el login si es crear usuario
-
-
-
-
-
 
 
       } else {
@@ -1015,9 +994,6 @@ export class Profile extends Component {
 
     }
 
-
-
-    //Swal.fire('Not implemented yet,  more details about data is needed');
   }
 
 
