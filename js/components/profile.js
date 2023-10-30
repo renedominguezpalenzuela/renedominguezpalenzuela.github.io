@@ -35,7 +35,7 @@ export class Profile extends Component {
     city: false,
     country: false,
     country_iso_code: false,
-    province: false,
+    //province: false,
     zipcode: false,
     password: false,
     image: false,
@@ -69,7 +69,7 @@ export class Profile extends Component {
     city: "",
     country: "",
     country_iso_code: "",
-    province: "",
+    //province: "",
     zipcode: "",
     password: "",
     source1: {
@@ -296,7 +296,7 @@ export class Profile extends Component {
             <!-- ************************************************************************* -->
      
             <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
-                <div class="tw-form-control tw-w-full  ">
+                <!-- <div class="tw-form-control tw-w-full  ">
                     <label class="tw-label">
                       <span class="tw-label-text">Province</span>
                     </label>                    
@@ -304,7 +304,17 @@ export class Profile extends Component {
                     <span t-if="this.errores.province==true" class="error">
                        Required field!!!
                     </span>
-                </div>
+                </div> -->
+
+                <div class="tw-form-control tw-w-full  ">
+                <label class="tw-label">
+                  <span class="tw-label-text">Zip Code</span>
+                </label>                    
+                <input type="text" t-model="this.state.zipcode" placeholder="Zip Code" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangezipcode" t-on-blur="onBlurzipcode"   />   
+                <span t-if="this.errores.zipcode==true" class="error">
+                Required field!!!
+              </span>                    
+            </div>
         
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
@@ -325,7 +335,7 @@ export class Profile extends Component {
             <!--            Zip Code    and Currency                                       -->
             <!-- ************************************************************************* -->
      
-            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+           <!-- <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
                 <div class="tw-form-control tw-w-[30%]  ">
                     <label class="tw-label">
                       <span class="tw-label-text">Zip Code</span>
@@ -337,7 +347,7 @@ export class Profile extends Component {
                 </div>
 
             
-            </div>  
+            </div>   -->
 
 
            <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg tw-mt-5">
@@ -498,7 +508,7 @@ export class Profile extends Component {
         if (userData.kyc) {
           const kyc = JSON.parse(userData.kyc.gatheredInfo);
           console.log(kyc);
-          this.state.province = kyc.Location.City;
+         // this.state.province = kyc.Location.City;
           this.state.birthDate = kyc.PersonInfo.YearOfBirth + "-" + kyc.PersonInfo.MonthOfBirth + "-" + kyc.PersonInfo.DayOfBirth;
         }
 
@@ -747,7 +757,7 @@ export class Profile extends Component {
     this.errores.country = this.validarSiVacio(datos.country)
 
     this.errores.country_iso_code = this.validarSiVacio(datos.country_iso_code)
-    this.errores.province = this.validarSiVacio(datos.province)
+    //this.errores.province = this.validarSiVacio(datos.province)
     this.errores.zipcode = this.validarSiVacio(datos.zipcode)
     this.errores.birthDate = this.validarSiVacio(datos.birthDate)
 
@@ -858,7 +868,7 @@ export class Profile extends Component {
     var countryData = $("#country").countrySelect("getSelectedCountryData");
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
-    this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
+    //this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
     const datosAEnviar = this.prepararDatosaEnviar(this.state);
     console.log("Datos a enviar REGISTRO")
@@ -1037,7 +1047,7 @@ export class Profile extends Component {
     if (!datos.houseNumber) delete datos["houseNumber"];
     if (!datos.country) delete datos["country"];
     if (!datos.country_iso_code) delete datos["country_iso_code"];
-    if (!datos.province) delete datos["province"];
+    //if (!datos.province) delete datos["province"];
     if (!datos.zipcode) delete datos["zipcode"];
 
     if (!datos.password) delete datos["password"];
@@ -1143,12 +1153,12 @@ export class Profile extends Component {
 
 
   onChangeprovince = API.debounce(async (event) => {
-    this.errores.province = this.validarSiVacio(event.target.value);
+//    this.errores.province = this.validarSiVacio(event.target.value);
   }, this.timeToBlur);
 
 
   onBlurprovince = (event) => {
-    this.errores.province = this.validarSiVacio(event.target.value);
+   // this.errores.province = this.validarSiVacio(event.target.value);
   }
 
   onChangecountry = API.debounce(async (event) => {
