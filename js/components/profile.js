@@ -18,9 +18,8 @@ export class Profile extends Component {
   inputPassport = useRef("inputPassport");
   inputDriverLicence = useRef("inputDriverLicence");
 
-
-  inputPass1 = useRef("inputPass1");
-  inputPass2 = useRef("inputPass2");
+  inputPass1 = this.props.newUser ? useRef("inputPass1") : null;
+  inputPass2 = this.props.newUser ? useRef("inputPass2") : null;
 
   iconPassVisibility1 = useRef("iconPassVisibility1");
   iconPassVisibility2 = useRef("iconPassVisibility2");
@@ -48,7 +47,7 @@ export class Profile extends Component {
   showSpinner = useState({
     boton: true
   })
-  
+
 
   state = useState({
 
@@ -137,37 +136,37 @@ export class Profile extends Component {
         <!--               Password                                                    -->
         <!-- ************************************************************************* -->
        
-          <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+          <div  t-if="this.props.newUser" class="sm:tw-flex sm:tw-flex-row  tw-w-full">
      
 
-          <div class="tw-form-control tw-w-full  ">
-          <label class="tw-label">
-             <span class="tw-label-text">Password</span>
-          </label>
-            <div class="tw-join ">
-                  <input  type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%] " placeholder="Password" t-ref="inputPass1"  t-model="this.state.password"/>
-                  <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility">
-                    <i id="toggler1" class="far  fa-eye " t-ref="iconPassVisibility1"></i>
-                  </button>
-                    
-              
+            <div class="tw-form-control tw-w-full  ">
+              <label class="tw-label">
+                <span class="tw-label-text">Password</span>
+              </label>
+                <div class="tw-join ">
+                      <input  type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%] " placeholder="Password" t-ref="inputPass1"  t-model="this.state.password"/>
+                      <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility">
+                        <i id="toggler1" class="far  fa-eye " t-ref="iconPassVisibility1"></i>
+                      </button>
+                        
+                  
+                </div>
             </div>
-          </div>
 
-          <div class="tw-form-control tw-w-full  tw-pl-1">
-            <label class="tw-label">
-            <span class="tw-label-text">Confirm Password</span>
-            </label>
-            <div class="tw-join  ">
+            <div class="tw-form-control tw-w-full  tw-pl-1">
+              <label class="tw-label">
+              <span class="tw-label-text">Confirm Password</span>
+              </label>
+              <div class="tw-join  ">
 
-            <input type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" placeholder="Confirm Password" t-ref="inputPass2"/>
-            <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
-            <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
-            </button>
+              <input type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" placeholder="Confirm Password" t-ref="inputPass2"/>
+              <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
+              <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
+              </button>
 
 
+              </div>
             </div>
-          </div>
         </div>       
 
      
@@ -421,12 +420,12 @@ export class Profile extends Component {
 
 
         <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSaveAllData">
-        <span>
+        <!-- <span> -->
         Save
-      </span>
+      <!-- </span>
         <span t-if="this.showSpinner.boton==true">
           <img src="img/Spinner-1s-200px.png" width="45rem"/>
-        </span>
+        </span> -->
        
         </button>
 
@@ -710,30 +709,25 @@ export class Profile extends Component {
 
 
     //Validaciones si es update
-    if (!this.props.newUser) {
-
-      console.log("no es un usuario nuevo")
-
-      console.log("VALIDANDO")
-
-      console.log(this.inputPass1.el.value)
-      console.log(this.inputPass2.el.value)
-
-      if ((this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
-
-        console.log("ERROR EN PASS")
-        Swal.fire({
-          icon: 'error', title: 'Error',
-          text: 'Passwords are not the same or are empty, please check'
-        })
-        return false;
-      }
-
-
-
-      return true; //si es un update, no valida que existan campos vacios
-
-    }
+    /* if (!this.props.newUser) {
+ 
+      
+ 
+       if ((this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
+ 
+         console.log("ERROR EN PASS")
+         Swal.fire({
+           icon: 'error', title: 'Error',
+           text: 'Passwords are not the same or are empty, please check'
+         })
+         return false;
+       }
+ 
+ 
+ 
+       return true; //si es un update, no valida que existan campos vacios
+ 
+     }*/
 
 
 
@@ -810,6 +804,8 @@ export class Profile extends Component {
 
   toggler_visibility() {
 
+    if (!this.props.newUser) { return }
+
     if (this.inputPass1.el.type == 'password') {
       this.inputPass1.el.setAttribute('type', 'text');
       this.inputPass2.el.setAttribute('type', 'text');
@@ -850,13 +846,13 @@ export class Profile extends Component {
 
 
   async onSaveAllData() {
-    
-    
-
- 
 
 
-  
+
+
+
+
+
 
     var countryData = $("#country").countrySelect("getSelectedCountryData");
     this.state.country = countryData.name;
