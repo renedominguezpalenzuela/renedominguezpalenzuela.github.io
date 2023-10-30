@@ -46,7 +46,7 @@ export class Profile extends Component {
   })
 
   showSpinner = useState({
-    boton: false
+    boton: true
   })
   
 
@@ -850,6 +850,11 @@ export class Profile extends Component {
 
 
   async onSaveAllData() {
+    
+    
+
+ 
+
 
   
 
@@ -878,6 +883,8 @@ export class Profile extends Component {
       console.log("No hay error")
     }
     this.showSpinner.boton = true;
+    //$.blockUI({ message: '<h1><img src="img/Spinner-1s-200px.png" width="45rem"/>Just a moment...</h1>' });
+    $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /> ' });
 
 
 
@@ -991,6 +998,7 @@ export class Profile extends Component {
         console.log(respuesta)
         const respuestatxt = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
         this.showSpinner.boton = false;
+        $.unblockUI();
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
@@ -1003,7 +1011,7 @@ export class Profile extends Component {
       console.log("----ERROR: Sin Respuesta del API----- ")
       console.log(error)
       this.showSpinner.boton = false;
-
+      $.unblockUI();
       Swal.fire({
         icon: 'error',
         title: 'Unexpected Error',
@@ -1013,6 +1021,7 @@ export class Profile extends Component {
     }
 
     this.showSpinner.boton = false;
+    $.unblockUI();
 
   }
 
