@@ -854,6 +854,7 @@ export class Profile extends Component {
 
 
 
+
     var countryData = $("#country").countrySelect("getSelectedCountryData");
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
@@ -879,8 +880,8 @@ export class Profile extends Component {
       console.log("No hay error")
     }
     this.showSpinner.boton = true;
-    //$.blockUI({ message: '<h1><img src="img/Spinner-1s-200px.png" width="45rem"/>Just a moment...</h1>' });
-    $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /> ' });
+    
+    $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
 
 
 
@@ -900,19 +901,6 @@ export class Profile extends Component {
         //creando nuevo usuario
         respuesta = await API.createUser(datosAEnviar)
         console.log("Respuesta  Create ")
-
-
-        /* if (!ususarioVerificadoOK) {
-           return;
-         }*/
-
-
-
-
-
-
-
-
       } else {
         //modificando usuario
         //Solo enviar campos que no estan vacios
@@ -926,6 +914,8 @@ export class Profile extends Component {
         console.log("Respuesta  Update")
 
       }
+
+      $.unblockUI();
 
 
       console.log(respuesta)
@@ -948,7 +938,7 @@ export class Profile extends Component {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
-
+       
 
         //Enviar OTP
         if (this.props.newUser) {
@@ -962,6 +952,8 @@ export class Profile extends Component {
 
           const respuestaOK = respuesta2.completed;
         }
+
+       
 
         Swal.fire({
           title: 'User data have been saved',
@@ -982,6 +974,7 @@ export class Profile extends Component {
             if (ususarioVerificadoOK) {
               window.location.assign(API.redirectURLLogin);
               this.showSpinner.boton = false;
+              
             }
 
           }
@@ -994,7 +987,7 @@ export class Profile extends Component {
         console.log(respuesta)
         const respuestatxt = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
         this.showSpinner.boton = false;
-        $.unblockUI();
+        
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
@@ -1007,7 +1000,7 @@ export class Profile extends Component {
       console.log("----ERROR: Sin Respuesta del API----- ")
       console.log(error)
       this.showSpinner.boton = false;
-      $.unblockUI();
+     // $.unblockUI();
       Swal.fire({
         icon: 'error',
         title: 'Unexpected Error',
@@ -1017,7 +1010,7 @@ export class Profile extends Component {
     }
 
     this.showSpinner.boton = false;
-    $.unblockUI();
+    //$.unblockUI();
 
   }
 
