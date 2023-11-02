@@ -34,55 +34,59 @@ axios_using_interceptors.interceptors.request.use((config) => {
 })*/
 
 
-axios.interceptors.response.use(response => response, error => {
-  const status = error.response ? error.response.status : null;
-
-
-  console.log("Axios Interceptor")
-
-  if (status === 401) {
-    // Handle unauthorized access
-
-    const es_login = window.location.toString().includes('login');
-
-    if (!es_login) {
-
-      window.location.assign(API.redirectURLLogin);
-    }
-    //window.location.assign(API.redirectURLLogin);
-    return Promise.reject(error);
-
-  } else if (status === 400) {
-    console.log(`Error CODE 400: ${error.code}, Error MSG: ${error.message}`)
-    return
-    // Promise.resolve();
-
-  } else if (status === 404) {
-    // Handle not found errors
-
-    console.log(`Error CODE 404: ${error.code}, Error MSG: ${error.message}`)
-    Swal.fire({
-      icon: 'error 404',
-      title: `Error CODE 404: ${error.code}, Error MSG: ${error.message}`
-
-    })
-    return Promise.reject(error);
-
-  } else {
-    // Handle other errors
-
-    console.log(`Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`)
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    console.log("ERROR in Axios Interceptor")
     console.log(error)
-    Swal.fire({
-      icon: 'error',
-      title: `Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`
-
-    })
-    return Promise.reject(error);
-  }
+    const status = error.response ? error.response.status : null;
 
 
-});
+    if (status === 401) {
+      // Handle unauthorized access
+
+      const es_login = window.location.toString().includes('login');
+
+      if (!es_login) {
+
+        window.location.assign(API.redirectURLLogin);
+      }
+      //window.location.assign(API.redirectURLLogin);
+      return Promise.reject(error);
+
+    } else if (status === 400) {
+ 
+      console.log(`Error CODE 400: ${error.code}, Error MSG: ${error.message}`)
+      return
+      // Promise.resolve();
+
+    } else if (status === 404) {
+
+      
+
+      console.log(`Error CODE 404 - Not Found: ${error.code}, Error MSG: ${error.message}`)
+      Swal.fire({
+        icon: 'error',
+        title: `Error CODE 404 - Not Found: ${error.code}, Error MSG: ${error.message}`
+
+      })
+      return Promise.reject(error);
+
+    } else {
+      // Handle other errors
+
+      console.log(`Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`)
+    
+      Swal.fire({
+        icon: 'error',
+        title: `Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`
+
+      })
+      return Promise.reject(error);
+    }
+
+
+  });
 
 
 //-----------------------------------------------------------------------------------------
@@ -597,6 +601,103 @@ export class API {
     try {
       datos = await axios(config);
       console.log("OTP")
+      console.log(datos)
+    } catch (error) {
+      datos = error;
+
+    }
+
+
+
+    return datos;
+
+  }
+
+
+
+  //------------------------------------------------------------------------------------------------
+  // request OTP para ambio de password (One time password)
+  //------------------------------------------------------------------------------------------------
+  // identificador puede ser email o phone
+  static async requestOTPForChangePass(identificador) {
+
+    const datosUsuario = {
+      email: identificador
+    }
+
+
+    console.log("Datos a enviar a rquestOTP cambio passs")
+    console.log(datosUsuario)
+
+    var body = JSON.stringify(datosUsuario);
+
+
+    const headers = {
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    }
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/password/request`,
+      headers: headers,
+      data: body
+    }
+
+    let datos = null;
+
+    try {
+      datos = await axios(config);
+      console.log("OTP para cambio de pass")
+      console.log(datos)
+    } catch (error) {
+      datos = error;
+
+    }
+
+
+
+    return datos;
+
+  }
+
+
+
+  //------------------------------------------------------------------------------------------------
+  // request OTP para ambio de password (One time password)
+  //------------------------------------------------------------------------------------------------
+  // identificador puede ser email o phone
+  static async changePass(activationCode, password) {
+
+    const datosUsuario = {
+      activationCode: activationCode,
+      password: password
+    }
+
+
+    console.log("Datos a enviar change passs")
+    console.log(datosUsuario)
+
+    var body = JSON.stringify(datosUsuario);
+
+
+    const headers = {
+      'x-api-key': x_api_key,
+      'Content-Type': 'application/json',
+    }
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/users/password/change`,
+      headers: headers,
+      data: body
+    }
+
+    let datos = null;
+
+    try {
+      datos = await axios(config);
+      console.log("Change pass")
       console.log(datos)
     } catch (error) {
       datos = error;
@@ -1209,21 +1310,21 @@ export class API {
       //console.log(result.value.code)
       //console.log(IDUsuario)
 
-    
+
 
 
       if (result.isConfirmed) {   //si usuario le dio al boton confirmar
         console.log("Respuesta del API de Confirmar usuario 2")
         console.log(respuesta_api)
-        console.log( result.value)
+        console.log(result.value)
         let verificado_correctamente = false;
         let message = "Error in verification code"
         if (respuesta_api) {
-         verificado_correctamente = result.value.data.validatedUser;
-         message = result.value.data.message;
+          verificado_correctamente = result.value.data.validatedUser;
+          message = result.value.data.message;
         }
 
-       
+
 
 
         if (verificado_correctamente && verificado_correctamente == true) {
@@ -1237,25 +1338,25 @@ export class API {
             timer: 3000
           })
 
-        
+
 
         } else {
-          let cod_error  = '???';
+          let cod_error = '???';
           resultado = false;
-          
-          if ( respuesta_api) {
+
+          if (respuesta_api) {
             const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
-          console.log("Error verificando usuario")
-          console.log(respuesta_api)
+            console.log("Error verificando usuario")
+            console.log(respuesta_api)
 
           }
-          
+
           Swal.fire({
             icon: 'error',
             title: 'Activating user error',
             text: cod_error + ' ' + message
           })
-         
+
         }
 
 
@@ -1272,7 +1373,7 @@ export class API {
         })*/
       }
     })
-   return resultado;
+    return resultado;
 
   }
 
@@ -1649,13 +1750,17 @@ export class UImanager {
   }
 
 
+  //DEvuelve false si hay error email
   static validMail(mail) {
-    if (!mail) {
+
+    if (!mail || mail.trim() === "") {
+
       return false;
+
     }
 
     const correo_valido1 = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()\.,;\s@\"]+\.{0,1})+([^<>()\.,;:\s@\"]{2,}|[\d\.]+))$/.test(mail);
-    const correo_valido2 = mail.charAt(mail.length - 1) != '.' ? true : false;
+    const correo_valido2 = mail.charAt(mail.length - 1) != '.' ? true : false; //si termina en punto, es correo erroneo
 
     return correo_valido1 && correo_valido2;
 

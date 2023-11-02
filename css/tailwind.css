@@ -2156,10 +2156,6 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-top: 0.25rem;
 }
 
-.tw-mt-10 {
-  margin-top: 2.5rem;
-}
-
 .tw-mt-2 {
   margin-top: 0.5rem;
 }
@@ -2172,8 +2168,16 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-top: 1.25rem;
 }
 
+.tw-mt-6 {
+  margin-top: 1.5rem;
+}
+
 .tw-mt-\[0\.5rem\] {
   margin-top: 0.5rem;
+}
+
+.tw-mt-10 {
+  margin-top: 2.5rem;
 }
 
 .tw-flex {
@@ -2228,6 +2232,10 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 38%;
 }
 
+.tw-w-\[50\%\] {
+  width: 50%;
+}
+
 .tw-w-\[60\%\] {
   width: 60%;
 }
@@ -2272,8 +2280,16 @@ details.tw-collapse summary::-webkit-details-marker {
   flex-direction: column;
 }
 
+.tw-place-content-center {
+  place-content: center;
+}
+
 .tw-place-items-center {
   place-items: center;
+}
+
+.tw-content-center {
+  align-content: center;
 }
 
 .tw-items-end {
@@ -2290,6 +2306,10 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-justify-center {
   justify-content: center;
+}
+
+.tw-justify-items-center {
+  justify-items: center;
 }
 
 .tw-gap-2 {
@@ -2317,14 +2337,13 @@ details.tw-collapse summary::-webkit-details-marker {
   border-radius: 0.375rem;
 }
 
+.tw-border {
+  border-width: 1px;
+}
+
 .tw-bg-\[\#009AFF\] {
   --tw-bg-opacity: 1;
   background-color: rgb(0 154 255 / var(--tw-bg-opacity));
-}
-
-.tw-bg-\[\#3750D1\] {
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 80 209 / var(--tw-bg-opacity));
 }
 
 .tw-bg-\[\#4F50E9\] {
@@ -2405,6 +2424,10 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-pt-10 {
   padding-top: 2.5rem;
+}
+
+.tw-pt-2 {
+  padding-top: 0.5rem;
 }
 
 .tw-text-center {

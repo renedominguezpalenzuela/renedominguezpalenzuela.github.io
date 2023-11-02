@@ -29,14 +29,18 @@ class Root extends Component {
           <div class="tw-h-full  sm:tw-w-[45vw] left tw-p-5 border-rounded-2 ">             
             <h3>SIGN IN</h3>
             <input type="text" placeholder="USERNAME" id="usr" t-ref="input_user"/>
-            <input type="password" placeholder="PASSWORD" id="pass" t-ref="input_pass"/>                
-            <div class="tw-flex">                 
+            <input type="password" placeholder="PASSWORD" id="pass" t-ref="input_pass"/> 
+            <div class="tw-flex ">                 
+               <a class="tw-ml-1" href="/forgotpass.html">Forgot password?</a>
+            </div>
+
+            <div class="tw-flex tw-pt-2">                 
               <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           
               <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
             </div>
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
 
-            <div class="tw-mt-10 tw-flex tw-justify-center">Don't have an account yet?
+            <div class="tw-mt-6 tw-flex tw-justify-center">Don't have an account yet?
              <a class="tw-ml-1" href="/register.html">Sign Up</a>
             </div>
           </div>

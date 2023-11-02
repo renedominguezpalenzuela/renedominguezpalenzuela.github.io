@@ -712,7 +712,8 @@ export class Profile extends Component {
 
 
 
-
+//DEvuelve true si datos ok
+// false si hay error
   validarDatos(datos) {
 
 
