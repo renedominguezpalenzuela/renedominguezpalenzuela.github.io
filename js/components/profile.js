@@ -169,6 +169,14 @@ export class Profile extends Component {
             </div>
         </div>       
 
+        <div  t-if="!this.props.newUser" class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+            <a class="tw-ml-1" href="/forgotpass.html">    
+               <button id="login-btn" class="submit-btn" t-on-click="login_btn">
+                  Change Password
+                </button>
+            </a>            
+        </div>            
+
      
 
 
