@@ -139,6 +139,8 @@ export class ForgotPassChange extends Component {
 
   setup() {
 
+    API.setRedirectionURL(this.props.urlHome);
+
 
     onWillStart(async () => {
 
@@ -301,10 +303,15 @@ export class ForgotPassChange extends Component {
          await Swal.fire({
             icon: 'success',
             title: 'Password changed successfully!!!',
+            showCancelButton: false,
             //text: 'Use it to change the password'
-          })
+          }).then(async (result) => { 
+            console.log("Redireccionar")
+            window.location.assign(API.redirectURLLogin);
 
-          console.log("Redireccionar")
+          });
+
+          
 
 
 

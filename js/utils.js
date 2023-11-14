@@ -163,6 +163,8 @@ export class API {
   static baseSocketURL = "wss://backend.ducapp.net/";  //PRueba
 
   //direccion a donde se redireccionara cuando no existe token 
+  //debe llamarse antes a API.setRedirectionURL(this.props.urlHome); en el componente
+  //luego: window.location.assign(API.redirectURLLogin);
   static redirectURLLogin = '/login';
 
   //direccion a donde se redireccionara cuando se termina una operacion correctamente
