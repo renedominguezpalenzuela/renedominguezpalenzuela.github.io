@@ -290,3 +290,9 @@ body > div.blockUI.blockMsg.blockPage {
 }
 }
 
+.tw-input-disabled, .tw-input:disabled, .tw-input[disabled] {
+
+   background-color: rgb(247 247 247 / 87%);
+ 
+
+}

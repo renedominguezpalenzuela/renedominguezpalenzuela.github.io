@@ -9,7 +9,7 @@ import { SendMoneyFieldsName } from "../../data/sendmoneyfields.js";
 
 export class SendMoney extends Component {
 
-    
+
     inputSendRef = useRef("inputSendRef");
     inputReceiveRef = useRef("inputReceiveRef");
     //concept = useRef("concept");
@@ -40,9 +40,9 @@ export class SendMoney extends Component {
     })
 
 
-     //Resetear:
-     // al escoger nuevo pais
-     // al escoger nuevo servicio
+    //Resetear:
+    // al escoger nuevo pais
+    // al escoger nuevo servicio
     payer_id = null;  //se modifica al seleccionar el payer
     transactionType = null;  //C2C  (client to client? ) | B2B (business to business) Se modifica al seleccionar el payer
 
@@ -206,7 +206,8 @@ export class SendMoney extends Component {
                         <div class="tw-join">        
                                                     
                             <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   t-on-blur="onBlurReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
-                            class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>    
+                            class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
+                            t-att-disabled="this.inputsDeshabilitar.sendAmount" />    
                         
                             
                             <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
@@ -523,15 +524,15 @@ export class SendMoney extends Component {
                 this.extraFieldLists.credit_party_identifiers_accepted = [];
                 this.extraFieldLists.required_documents = [];
 
-                
+
                 //Al cambiar el pais, resetear todo
                 this.payer_id = null;
                 this.transactionType = null;
                 this.inputSendRef.el.value = UImanager.roundDec(0);
-                this.inputReceiveRef.el.value =UImanager.roundDec(0);
+                this.inputReceiveRef.el.value = UImanager.roundDec(0);
                 this.evaluarSiPermiteCambiarSendAmount();
-                this.actualizarUIConTipoCambioyFee(0,0,0);
-                
+                this.actualizarUIConTipoCambioyFee(0, 0, 0);
+
 
                 await this.getListaServicios(cod_iso3);
             });
@@ -613,11 +614,11 @@ export class SendMoney extends Component {
 
         } else {
 
-            
+
             this.payer_id = null;
             this.transactionType = null;
             this.evaluarSiPermiteCambiarSendAmount();
-            this.actualizarUIConTipoCambioyFee(0,0,0);
+            this.actualizarUIConTipoCambioyFee(0, 0, 0);
         }
 
     }
@@ -642,7 +643,7 @@ export class SendMoney extends Component {
         console.log(payer_seleccionado)
         this.inputSendRef.el.value = UImanager.roundDec(0);
         this.inputReceiveRef.el.value = UImanager.roundDec(0);
-        this.actualizarUIConTipoCambioyFee(0,0,0);
+        this.actualizarUIConTipoCambioyFee(0, 0, 0);
         if (payer_seleccionado) {
 
             if (payer_seleccionado.transaction_types.B2B) {
@@ -658,7 +659,7 @@ export class SendMoney extends Component {
         } else {
             this.payer_id = null;
             this.transactionType = null;
-            
+
         }
 
 
@@ -1026,8 +1027,8 @@ export class SendMoney extends Component {
 
         this.conversionRate.value = UImanager.roundDec(tc, 4);
         this.feeSTR.value = fee;
-    
-    
+
+
         this.totalSendCost.value = Number(cantidadEnviada) + Number(fee);
         this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
 
@@ -1035,63 +1036,47 @@ export class SendMoney extends Component {
 
 
     onChangeSendInput = API.debounce(async (event) => {
-       
-       // const cantidadEnviada = event.target.value;
-       const cantidadEnviada = this.inputSendRef.el.value;
 
-        const hayErrorCantidadaEnviar = UImanager.validarSiMenorQueCero(cantidadEnviada);      
+        // const cantidadEnviada = event.target.value;
+        const cantidadEnviada = this.inputSendRef.el.value;
+
+        const hayErrorCantidadaEnviar = UImanager.validarSiMenorQueCero(cantidadEnviada);
         this.errores.sendAmount = hayErrorCantidadaEnviar;
         if (hayErrorCantidadaEnviar) return;
         const monedaEnviada = this.inputSendCurrencyRef.el.value;
         const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
-    
+
         this.monedas.enviada = monedaEnviada.toUpperCase()
         this.monedas.recibida = monedaRecibida.toUpperCase()
-    
+
 
         const modo = 'SOURCE_AMOUNT';
 
-        const feeResponse =  await this.api.getFeeSendMoneyToAnyContry(this.payer_id,this.transactionType, modo, cantidadEnviada, monedaEnviada);
+        const feeResponse = await this.api.getFeeSendMoneyToAnyContry(this.payer_id, this.transactionType, modo, cantidadEnviada, monedaEnviada);
         console.log(feeResponse)
-        const feeAmount = feeResponse.fee.amount;
-        const feeCurrency = feeResponse.fee.currency;
-        const tipoCambio = feeResponse.rate;
-        console.log(feeAmount)
-        console.log(feeCurrency)
-        console.log(tipoCambio)
+
+        if (feeResponse) {
+            const feeAmount = feeResponse.fee.amount ? feeResponse.fee.amount : 0;
+            // const feeCurrency = feeResponse.fee.currency ? feeResponse.fee.currency : 0;
+            const tipoCambio = feeResponse.rate ? feeResponse.rate : 0;
+            console.log(feeAmount)
+            // console.log(feeCurrency)
+            console.log(tipoCambio)
 
 
-        const cantidadARecibir =  cantidadEnviada * tipoCambio;
-        this.inputReceiveRef.el.value = UImanager.roundDec(cantidadARecibir);
+            const cantidadARecibir = cantidadEnviada * tipoCambio;
+            this.inputReceiveRef.el.value = cantidadARecibir ? UImanager.roundDec(cantidadARecibir) : UImanager.roundDec(0);
 
-        this.actualizarUIConTipoCambioyFee(tipoCambio, feeAmount, cantidadEnviada);
+            this.actualizarUIConTipoCambioyFee(tipoCambio, feeAmount, cantidadEnviada);
+
+        } else {
+            this.inputReceiveRef.el.value = UImanager.roundDec(0);
+        }
 
 
 
 
 
-        /*
-        
-       
-        const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
-    
-        this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
-        this.errores.receiveAmount = UImanager.validarSiMenorQueCero(cantidadRecibida);
-    
-    
-        //Comun
-        //const feeMonedaEnviada = await this.calculateAndShowFee(cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio);
-    
-        const feeOBJ = await UImanager.calculateAndShowFee('card', cantidadRecibida, monedaRecibida, monedaEnviada, this.tiposCambio, this.beneficiario.deliveryZona);
-        this.fee.value = feeOBJ.feeMonedaEnviada;
-        this.conversionRate.value = feeOBJ.conversionRate;
-        this.feeSTR.value = feeOBJ.feeSTR;
-    
-    
-        this.totalSendCost.value = Number(cantidadEnviada) + Number(this.fee.value);
-        this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
-    
-    */
 
     }, 700);
 
@@ -1100,10 +1085,9 @@ export class SendMoney extends Component {
         this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
     }
 
-
+   
     //Evento al cambiar la moneda a enviar
     onChangeCurrencySend() {
-        console.log("Cambio moneda")
         this.onChangeSendInput()
     }
 
@@ -1111,6 +1095,57 @@ export class SendMoney extends Component {
     onChangeCurrencyRecib() {
         this.onChangeReceiveInput();
     }
+
+    onBlurReceiveInput= (event) => {
+        this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
+    }
+
+
+
+    onChangeReceiveInput = API.debounce(async (event) => {
+
+        // const cantidadEnviada = event.target.value;
+        const cantidadARecibir = this.inputReceiveRef.el.value;
+
+        const hayErrorCantidadARecibir = UImanager.validarSiMenorQueCero(cantidadARecibir);
+
+        this.errores.sendAmount = hayErrorCantidadARecibir;
+        if (hayErrorCantidadARecibir) return;
+
+        //monedas
+        const monedaEnviada = this.inputSendCurrencyRef.el.value;
+        const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
+        this.monedas.enviada = monedaEnviada.toUpperCase()
+        this.monedas.recibida = monedaRecibida.toUpperCase()
+
+
+        const modo = 'DESTINATION_AMOUNT';
+
+       const feeResponse = await this.api.getFeeSendMoneyToAnyContry(this.payer_id, this.transactionType, modo, cantidadARecibir, monedaEnviada);
+
+        if (feeResponse) {
+            const feeAmount = feeResponse.fee.amount ? feeResponse.fee.amount : 0;
+            // const feeCurrency = feeResponse.fee.currency ? feeResponse.fee.currency : 0;
+            const tipoCambio = feeResponse.rate ? feeResponse.rate : 0;
+
+            console.log(feeResponse)
+            console.log(feeAmount)
+            //console.log(feeCurrency)
+            console.log(tipoCambio)
+
+
+            const cantidadaEnviar = cantidadARecibir / tipoCambio;
+            console.log(cantidadaEnviar)
+            this.inputSendRef.el.value = cantidadaEnviar ? UImanager.roundDec(cantidadaEnviar) : UImanager.roundDec(0);
+
+            this.actualizarUIConTipoCambioyFee(tipoCambio, feeAmount, cantidadaEnviar);
+
+        } else {
+            this.inputSendRef.el.value = UImanager.roundDec(0);
+        }
+
+
+    }, 700);
 
 
 

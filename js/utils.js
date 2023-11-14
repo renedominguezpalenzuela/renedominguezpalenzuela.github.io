@@ -57,21 +57,22 @@ axios.interceptors.response.use(
     } else if (status === 400) {
       const errorMSG = error.response.data.message;
 
-      console.log(`Error CODE 400: ${error.code}, Error MSG: ${errorMSG}`)
+      console.log(`Error CODE 400,  Error MSG: ${errorMSG}`)
 
-     
+
 
       await Swal.fire({
         icon: 'error',
         title: `Error CODE 400`,
-        text:  `Error: ${errorMSG}`
+        text: `Error: ${errorMSG}`
 
       })
+      
 
-      return
+      return ;
       // Promise.resolve();
 
-    }  else if (status === 404) {
+    } else if (status === 404) {
 
 
 
@@ -504,19 +505,38 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // 4. Get Fee
   //------------------------------------------------------------------------------------------------
-  async getFeeSendMoneyToAnyContry(payer_id, transactionType, mode, sourceAmount, sourceCurrency) {
+  // payer_id  --- ID del payer
+  // transactionType === C2C | B2B
+  // mode === SOURCE_AMOUNT | DESTINATION_AMOUNT
+  // amount ---
+  //  si mode===DESTINATION_AMOUNT ==> amount = cantidad a recibir
+  //  si mode===SOURCE_AMOUNT ==> amount = cantidad a enviar
+  // sourceCurrency --- moneda en la que se envia USD | EUR | CAD
+  async getFeeSendMoneyToAnyContry(payer_id, transactionType, mode, amount, sourceCurrency) {
 
 
     let datos = null;
+    var raw = '';
 
+    if (mode === "SOURCE_AMOUNT") {
+      raw = JSON.stringify({
+        "payer_id": payer_id,
+        "transactionType": transactionType,
+        "mode": mode,
+        "sourceAmount": amount,
+        "sourceCurrency": sourceCurrency
+      });
 
-    var raw = JSON.stringify({
-      "payer_id": payer_id,
-      "transactionType": transactionType,
-      "mode": mode,
-      "sourceAmount": sourceAmount,
-      "sourceCurrency": sourceCurrency
-    });
+    } else if (mode === "DESTINATION_AMOUNT") {
+
+      raw = JSON.stringify({
+        "payer_id": payer_id,
+        "transactionType": transactionType,
+        "mode": mode,
+        "destinationAmount": amount,
+        "sourceCurrency": sourceCurrency
+      });
+    }
 
     console.log("Payload")
 
@@ -533,11 +553,29 @@ export class API {
       data: raw
     }
 
-    await axios(config).then((response) => {
-      datos = response.data.data;
-    }).catch((error) => {
+    try {
+      const response = await axios(config);
+      if (response && response.data && response.data.data) {
+        datos = response.data.data;
+      }
+    } catch (error) {
+      datos = error;
+
+      console.log("----------- ERROR en getFee ------------------")
       console.log(error);
-      Swal.fire({
+
+    }
+
+    /*
+    await axios(config).then((response) => {
+      if (response && response.data && response.data.data) {
+        datos = response.data.data;
+      }
+      
+    }).catch(async (error) => {
+      console.log("ERROR en getFee")
+      console.log(error);
+    await Swal.fire({
         icon: 'error',
         title: error.message,
         text: 'Something went wrong requesting Fee',
@@ -545,7 +583,7 @@ export class API {
       })
 
       datos = error;
-    });
+    });*/
 
 
 
