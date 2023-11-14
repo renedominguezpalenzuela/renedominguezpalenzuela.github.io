@@ -593,6 +593,56 @@ export class API {
 
 
   //------------------------------------------------------------------------------------------------
+  // 5. Send to other country
+  //------------------------------------------------------------------------------------------------
+
+  async sendToOtherCountrys(sendData) {
+
+
+    let datos = null;
+    var raw = '';
+
+    raw = JSON.stringify(sendData)
+
+   
+    console.log("Payload")
+
+    console.log(raw)
+
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/cash-out/send`,
+      headers: this.headers,
+      data: raw
+    }
+
+    try {
+      const response = await axios(config);
+      if (response && response.data && response.data.data) {
+        datos = response.data.data;
+      }
+    } catch (error) {
+      datos = error;
+
+      console.log("----------- ERROR en Send Money ------------------")
+      console.log(error);
+
+    }
+
+   
+
+
+
+    return datos;
+
+  }
+
+
+
+  
+
+  //------------------------------------------------------------------------------------------------
   // Confirmar usuario
   //------------------------------------------------------------------------------------------------
   static async confirmUser(userID, verificationCode) {
@@ -2142,12 +2192,13 @@ export class UImanager {
 
   static gestionResultado(resultado, urlHome, menuController) {
 
-
+    console.log(resultado)
 
     //TODO: refactorizar
     if (resultado.data) {
       //se proceso correctamente la operacion
       if (resultado.data.status === 200 && !resultado.data.paymentLink) {
+        console.log("Saldo suficiente")
         Swal.fire(resultado.data.payload);
         return;
       }
@@ -2157,7 +2208,7 @@ export class UImanager {
         //redireccionar a otra pagina 
         const paymentLink = resultado.data.paymentLink.url;
 
-        console.log("URL HOME")
+        console.log("Saldo insuficiente pago con stripe")
         console.log(urlHome)
         //debugger
 

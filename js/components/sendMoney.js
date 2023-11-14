@@ -12,7 +12,7 @@ export class SendMoney extends Component {
 
     inputSendRef = useRef("inputSendRef");
     inputReceiveRef = useRef("inputReceiveRef");
-    //concept = useRef("concept");
+    concept = useRef("concept");
 
     inputSendCurrencyRef = useRef("inputSendCurrencyRef");
     inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
@@ -231,7 +231,7 @@ export class SendMoney extends Component {
                                 <span class="tw-label-text">Concept</span>
                             </label>
                             
-                            <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onChangeConcept" ></textarea>
+                            <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
                             <span t-if="this.errores.concept==true" class="error">
                                 Required field!!!
                             </span> 
@@ -811,93 +811,6 @@ export class SendMoney extends Component {
 
 
 
-    async ejecutarEnvio() {
-        console.log("Ejecutando recarga")
-        console.log(this.state);
-
-
-
-
-
-        //TODO: Validaciones
-        const datosTX = {
-
-            /* productId: this.state.producto,
-             receiverName: this.state.phoneOwnerName,
-             destinations: [this.state.phone],
-             currency: this.state.currency,
-             isScheduled: false,
-             scheduledDate: null,*/
-             payer_id: this.payer_id,
-            transaction_type : this.transactionType,
-            sourceCurrency: this.inputSendCurrencyRef.el.value, 
-            sourceAmount: this.inputSendRef.el.value,
-            paymentLink: true,
-            merchant_external_id: API.generateRandomID()
-
-        }
-
-        console.log(datosTX);
-
-        return;
-
-        if (!this.validarDatos(datosTX)) {
-            console.log("Validation Errors");
-            return;
-        }
-
-
-        try {
-
-
-
-            let resultado = null;
-
-            Swal.fire({
-                title: 'Please Wait..!',
-                text: 'Creating recharge operation...',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-                //showCancelButton: true,
-                showCloseButton: true,
-                didOpen: async () => {
-                    swal.showLoading()
-                    resultado = await this.api.sendPhoneRecharge(datosTX);
-
-                    /*  if (resultado.code) {
-                          if (resultado.code === "ERR_BAD_REQUEST") {
-  
-                              Swal.fire({
-                                  icon: 'error',
-                                  title: 'Error',
-                                  text: resultado.response.data.message
-                              })
-  
-  
-                          }
-                          console.log(resultado.code)
-                      }*/
-
-
-
-
-                    const urlHome = this.props.urlHome ? this.props.urlHome : null;
-
-                    UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
-                    //swal.close();
-                }
-            })
-
-
-
-        } catch (error) {
-            console.log(error);
-            // Swal.fire(resultado.response.data.message);
-        }
-    }
-
-
 
 
 
@@ -1040,7 +953,7 @@ export class SendMoney extends Component {
         this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
     }
 
-   
+
     //Evento al cambiar la moneda a enviar
     onChangeCurrencySend() {
         this.onChangeSendInput()
@@ -1051,7 +964,7 @@ export class SendMoney extends Component {
         this.onChangeReceiveInput();
     }
 
-    onBlurReceiveInput= (event) => {
+    onBlurReceiveInput = (event) => {
         this.errores.sendAmount = UImanager.validarSiMenorQueCero(event.target.value);
     }
 
@@ -1076,7 +989,7 @@ export class SendMoney extends Component {
 
         const modo = 'DESTINATION_AMOUNT';
 
-       const feeResponse = await this.api.getFeeSendMoneyToAnyContry(this.payer_id, this.transactionType, modo, cantidadARecibir, monedaEnviada);
+        const feeResponse = await this.api.getFeeSendMoneyToAnyContry(this.payer_id, this.transactionType, modo, cantidadARecibir, monedaEnviada);
 
         if (feeResponse) {
             const feeAmount = feeResponse.fee.amount ? feeResponse.fee.amount : 0;
@@ -1104,29 +1017,28 @@ export class SendMoney extends Component {
 
 
 
-    
+
 
     async onSend() {
-        console.log(this.extraFieldLists)
+
 
         const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData").name;
 
-        const servicio = this.state.listaServicios.filter((unServicio)=>unServicio.id==this.service_id)[0].name
-        console.log(servicio)
-        
-        console.log(pais_seleccionado)
+        const servicio = this.state.listaServicios.filter((unServicio) => unServicio.id == this.service_id)[0].name
+
 
         const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id)[0].name;
 
-        const enviar =  this.inputSendRef.el.value;
-        const recibir =  this.inputReceiveRef.el.value;
+        const enviar = this.inputSendRef.el.value;
+        const recibir = this.inputReceiveRef.el.value;
         const monedaEnviar = this.inputSendCurrencyRef.el.value;
         const monedaRecibir = this.inputReceiveCurrencyRef.el.value;
-       
 
-     
 
-        
+
+
+
+
 
 
 
@@ -1185,6 +1097,127 @@ export class SendMoney extends Component {
 
 
 
+    }
+
+
+
+
+
+    async ejecutarEnvio() {
+        console.log("Ejecutando recarga")
+        // console.log(this.state);
+
+        // console.log(this.extraFieldLists)
+
+
+
+        //const required_sending_entity_fields = this.extraFieldLists.required_sending_entity_fields.map(obj => [obj.name, obj.value])
+
+
+
+
+
+
+
+        //TODO: Validaciones
+        const datosTX = {
+
+
+
+            payer_id: this.payer_id,
+            transaction_type: this.transactionType,
+            sourceCurrency: this.inputSendCurrencyRef.el.value.toUpperCase(),
+            sourceAmount: this.inputSendRef.el.value,
+            destinationAmount: 35785543,
+            purpose_of_remittance: this.concept.el.value,
+            paymentLink: true,
+            merchant_external_id: API.generateRandomID(),
+            mode: "SOURCE_AMOUNT",
+            required_sending_entity_fields: Object.fromEntries(
+                this.extraFieldLists.required_sending_entity_fields.map(obj => [obj.name, obj.value])
+            ),
+            required_receiving_entity_fields: Object.fromEntries(
+                this.extraFieldLists.required_receiving_entity_fields.map(obj => [obj.name, obj.value])
+            ),
+            credit_party_identifiers_accepted: Object.fromEntries(
+                this.extraFieldLists.credit_party_identifiers_accepted.map(obj => [obj.name, obj.value])
+            ),
+            required_documents: Object.fromEntries(
+                this.extraFieldLists.required_documents.map(obj => [obj.name, obj.value])
+            ),
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+        console.log(datosTX);
+
+        // return;
+
+        /*
+         if (!this.validarDatos(datosTX)) {
+             console.log("Validation Errors");
+             return;
+         }*/
+
+
+        try {
+
+
+
+            let resultado = null;
+
+            Swal.fire({
+                title: 'Please Wait..!',
+                text: 'Creating Send operation...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                //showCancelButton: true,
+                showCloseButton: true,
+                didOpen: async () => {
+                    swal.showLoading()
+                    resultado = await this.api.sendToOtherCountrys(datosTX);
+
+                    /*  if (resultado.code) {
+                          if (resultado.code === "ERR_BAD_REQUEST") {
+  
+                              Swal.fire({
+                                  icon: 'error',
+                                  title: 'Error',
+                                  text: resultado.response.data.message
+                              })
+  
+  
+                          }
+                          console.log(resultado.code)
+                      }*/
+
+
+
+
+                    const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+                    await UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
+                    
+                }
+            })
+
+
+
+        } catch (error) {
+            console.log(error);
+            // Swal.fire(resultado.response.data.message);
+        }
     }
 
 
