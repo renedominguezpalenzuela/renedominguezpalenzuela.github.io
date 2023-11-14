@@ -36,7 +36,7 @@ axios_using_interceptors.interceptors.request.use((config) => {
 
 axios.interceptors.response.use(
   response => response,
-  error => {
+  async error => {
     console.log("ERROR in Axios Interceptor")
     console.log(error)
     const status = error.response ? error.response.status : null;
@@ -55,14 +55,25 @@ axios.interceptors.response.use(
       return Promise.reject(error);
 
     } else if (status === 400) {
- 
-      console.log(`Error CODE 400: ${error.code}, Error MSG: ${error.message}`)
+      const errorMSG = error.response.data.message;
+
+      console.log(`Error CODE 400: ${error.code}, Error MSG: ${errorMSG}`)
+
+     
+
+      await Swal.fire({
+        icon: 'error',
+        title: `Error CODE 400`,
+        text:  `Error: ${errorMSG}`
+
+      })
+
       return
       // Promise.resolve();
 
-    } else if (status === 404) {
+    }  else if (status === 404) {
 
-      
+
 
       console.log(`Error CODE 404 - Not Found: ${error.code}, Error MSG: ${error.message}`)
       Swal.fire({
@@ -76,7 +87,7 @@ axios.interceptors.response.use(
       // Handle other errors
 
       console.log(`Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`)
-    
+
       Swal.fire({
         icon: 'error',
         title: `Error CODE Other ERRORS: ${error.code}, Error MSG: ${error.message}`
@@ -483,6 +494,60 @@ export class API {
 
         datos = error;
       });
+
+    return datos;
+
+  }
+
+
+
+  //------------------------------------------------------------------------------------------------
+  // 4. Get Fee
+  //------------------------------------------------------------------------------------------------
+  async getFeeSendMoneyToAnyContry(payer_id, transactionType, mode, sourceAmount, sourceCurrency) {
+
+
+    let datos = null;
+
+
+    var raw = JSON.stringify({
+      "payer_id": payer_id,
+      "transactionType": transactionType,
+      "mode": mode,
+      "sourceAmount": sourceAmount,
+      "sourceCurrency": sourceCurrency
+    });
+
+    console.log("Payload")
+
+    console.log(raw)
+
+
+
+
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/cash-out/rate-fee`,
+      headers: this.headers,
+      data: raw
+    }
+
+    await axios(config).then((response) => {
+      datos = response.data.data;
+    }).catch((error) => {
+      console.log(error);
+      Swal.fire({
+        icon: 'error',
+        title: error.message,
+        text: 'Something went wrong requesting Fee',
+        footer: '<h5> Inspect console for details </h5>'
+      })
+
+      datos = error;
+    });
+
+
 
     return datos;
 

@@ -9,6 +9,16 @@ import { SendMoneyFieldsName } from "../../data/sendmoneyfields.js";
 
 export class SendMoney extends Component {
 
+    
+    inputSendRef = useRef("inputSendRef");
+    inputReceiveRef = useRef("inputReceiveRef");
+    //concept = useRef("concept");
+
+    inputSendCurrencyRef = useRef("inputSendCurrencyRef");
+    inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
+
+
+
     showSpinner = useState({
         paises: true,
         servicios: false,
@@ -21,6 +31,33 @@ export class SendMoney extends Component {
         payers: false,
         sendAmount: false
     })
+
+
+    //si esta en true --- se deshabilita
+    inputsDeshabilitar = useState({
+        sendAmount: true
+
+    })
+
+
+     //Resetear:
+     // al escoger nuevo pais
+     // al escoger nuevo servicio
+    payer_id = null;  //se modifica al seleccionar el payer
+    transactionType = null;  //C2C  (client to client? ) | B2B (business to business) Se modifica al seleccionar el payer
+
+
+
+    evaluarSiPermiteCambiarSendAmount() {
+
+
+        if (this.payer_id && this.transactionType) {
+            this.inputsDeshabilitar.sendAmount = false;
+        } else {
+            this.inputsDeshabilitar.sendAmount = true;
+        }
+
+    }
 
 
 
@@ -80,12 +117,6 @@ export class SendMoney extends Component {
     static components = { ListaTR };
 
 
-    inputSendRef = useRef("inputSendRef");
-    //inputReceiveRef = useRef("inputReceiveRef");
-    //concept = useRef("concept");
-    inputSendCurrencyRef = useRef("inputSendCurrencyRef");
-    //inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
-
     conversionRate = useState({ value: 0 });
 
 
@@ -120,7 +151,10 @@ export class SendMoney extends Component {
 
                             <div class="tw-join">                        
                          
-                                <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"/>
+                                <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput" 
+                                 onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
+                                  class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
+                                  t-att-disabled="this.inputsDeshabilitar.sendAmount" />
                                         
                                 
                                 <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
@@ -394,12 +428,12 @@ export class SendMoney extends Component {
   `;
 
 
-  onChangeExtraFields = API.debounce(async (event) => {
+    onChangeExtraFields = API.debounce(async (event) => {
 
-    console.log(event.target.id)
-    console.log("ONCHange")
-    ///this.errores.providerValue = this.validarSiVacio(event.target.value);
-  }, 700);
+        console.log(event.target.id)
+        console.log("ONCHange")
+        ///this.errores.providerValue = this.validarSiVacio(event.target.value);
+    }, 700);
 
     static props = ["urlHome"];
     static defaultProps = {
@@ -489,6 +523,16 @@ export class SendMoney extends Component {
                 this.extraFieldLists.credit_party_identifiers_accepted = [];
                 this.extraFieldLists.required_documents = [];
 
+                
+                //Al cambiar el pais, resetear todo
+                this.payer_id = null;
+                this.transactionType = null;
+                this.inputSendRef.el.value = UImanager.roundDec(0);
+                this.inputReceiveRef.el.value =UImanager.roundDec(0);
+                this.evaluarSiPermiteCambiarSendAmount();
+                this.actualizarUIConTipoCambioyFee(0,0,0);
+                
+
                 await this.getListaServicios(cod_iso3);
             });
 
@@ -555,7 +599,10 @@ export class SendMoney extends Component {
         this.extraFieldLists.credit_party_identifiers_accepted = [];
         this.extraFieldLists.required_documents = [];
 
-       
+
+        this.inputSendRef.el.value = UImanager.roundDec(0);
+        this.inputReceiveRef.el.value = UImanager.roundDec(0);
+
         const service_id = event.target.value;
         if (service_id != -1) {
             const cod_iso3 = this.getCodigoPaisFromList();
@@ -564,6 +611,13 @@ export class SendMoney extends Component {
             console.log(cod_iso3)
             await this.getListaPayers(service_id, cod_iso3)
 
+        } else {
+
+            
+            this.payer_id = null;
+            this.transactionType = null;
+            this.evaluarSiPermiteCambiarSendAmount();
+            this.actualizarUIConTipoCambioyFee(0,0,0);
         }
 
     }
@@ -571,7 +625,7 @@ export class SendMoney extends Component {
     async onChangePayer(event) {
 
 
-   
+
 
         this.extraFieldLists.required_receiving_entity_fields = [];
         this.extraFieldLists.required_sending_entity_fields = [];
@@ -580,12 +634,37 @@ export class SendMoney extends Component {
 
         console.log("Change Payer")
         console.log(event.target.value)
-        const id_payer = event.target.value;
+        this.payer_id = event.target.value;
 
-        const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == id_payer)[0];
+
+
+        const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id)[0];
         console.log(payer_seleccionado)
+        this.inputSendRef.el.value = UImanager.roundDec(0);
+        this.inputReceiveRef.el.value = UImanager.roundDec(0);
+        this.actualizarUIConTipoCambioyFee(0,0,0);
+        if (payer_seleccionado) {
 
-        this.crearExtraFields(payer_seleccionado);
+            if (payer_seleccionado.transaction_types.B2B) {
+                console.log("B2B")
+                this.transactionType = 'B2B';
+            } else if (payer_seleccionado.transaction_types.C2C) {
+                console.log("C2C")
+                this.transactionType = 'C2C';
+            }
+
+
+            this.crearExtraFields(payer_seleccionado, this.transactionType);
+        } else {
+            this.payer_id = null;
+            this.transactionType = null;
+            
+        }
+
+
+
+
+        this.evaluarSiPermiteCambiarSendAmount();
 
 
     }
@@ -609,7 +688,7 @@ export class SendMoney extends Component {
 
 
         this.state.listaPayers = await this.api.getListaPayers(service_id, country_iso_code)
-        console.log(this.state.listaPayers)
+
 
 
 
@@ -627,26 +706,17 @@ export class SendMoney extends Component {
         }
     }
 
-    crearExtraFields(payerSeleccionado) {
+    crearExtraFields(payerSeleccionado, transactionType) {
 
 
-        let tipo_transaccion = '';
-
-        if (payerSeleccionado.transaction_types.B2B) {
-            console.log("B2B")
-            tipo_transaccion = 'B2B';
-        } else if (payerSeleccionado.transaction_types.C2C) {
-            console.log("C2C")
-            tipo_transaccion = 'C2C';
-        }
 
         //console.log("PAYER SELECCIONADO")
 
 
-        //console.log(payerSeleccionado.transaction_types[tipo_transaccion].required_receiving_entity_fields)
+        //console.log(payerSeleccionado.transaction_types[this.transactionType].required_receiving_entity_fields)
 
 
-        this.extraFieldLists.required_receiving_entity_fields = payerSeleccionado.transaction_types[tipo_transaccion].required_receiving_entity_fields.map(
+        this.extraFieldLists.required_receiving_entity_fields = payerSeleccionado.transaction_types[transactionType].required_receiving_entity_fields.map(
             (unField) => {
                 return {
                     name: unField,
@@ -656,7 +726,7 @@ export class SendMoney extends Component {
             }
         );
 
-        this.extraFieldLists.required_sending_entity_fields = payerSeleccionado.transaction_types[tipo_transaccion].required_sending_entity_fields.map(
+        this.extraFieldLists.required_sending_entity_fields = payerSeleccionado.transaction_types[transactionType].required_sending_entity_fields.map(
             (unField) => {
                 return {
                     name: unField,
@@ -667,10 +737,10 @@ export class SendMoney extends Component {
         );
 
 
-        
 
 
-        this.extraFieldLists.credit_party_identifiers_accepted = payerSeleccionado.transaction_types[tipo_transaccion].credit_party_identifiers_accepted.map(
+
+        this.extraFieldLists.credit_party_identifiers_accepted = payerSeleccionado.transaction_types[transactionType].credit_party_identifiers_accepted.map(
             (unField) => {
                 return {
                     name: unField,
@@ -680,7 +750,7 @@ export class SendMoney extends Component {
             }
         );
 
-        this.extraFieldLists.required_documents = payerSeleccionado.transaction_types[tipo_transaccion].required_documents.map(
+        this.extraFieldLists.required_documents = payerSeleccionado.transaction_types[transactionType].required_documents.map(
             (unField) => {
                 return {
                     name: unField,
@@ -690,11 +760,11 @@ export class SendMoney extends Component {
             }
         );
 
-        
 
 
 
-        
+
+
 
         console.log(this.extraFieldLists)
 
@@ -952,18 +1022,57 @@ export class SendMoney extends Component {
 
 
 
-    onChangeSendInput = API.debounce(async (event) => {
+    actualizarUIConTipoCambioyFee(tc, fee, cantidadEnviada) {
 
-        /*const cantidadEnviada = this.inputSendRef.el.value;
-        this.errores.sendAmount = UImanager.validarSiMenorQueCero(cantidadEnviada);
+        this.conversionRate.value = UImanager.roundDec(tc, 4);
+        this.feeSTR.value = fee;
     
     
+        this.totalSendCost.value = Number(cantidadEnviada) + Number(fee);
+        this.totalSendCostSTR.value = UImanager.roundDec(this.totalSendCost.value);
+
+    }
+
+
+    onChangeSendInput = API.debounce(async (event) => {
+       
+       // const cantidadEnviada = event.target.value;
+       const cantidadEnviada = this.inputSendRef.el.value;
+
+        const hayErrorCantidadaEnviar = UImanager.validarSiMenorQueCero(cantidadEnviada);      
+        this.errores.sendAmount = hayErrorCantidadaEnviar;
+        if (hayErrorCantidadaEnviar) return;
         const monedaEnviada = this.inputSendCurrencyRef.el.value;
         const monedaRecibida = this.inputReceiveCurrencyRef.el.value;
     
         this.monedas.enviada = monedaEnviada.toUpperCase()
         this.monedas.recibida = monedaRecibida.toUpperCase()
     
+
+        const modo = 'SOURCE_AMOUNT';
+
+        const feeResponse =  await this.api.getFeeSendMoneyToAnyContry(this.payer_id,this.transactionType, modo, cantidadEnviada, monedaEnviada);
+        console.log(feeResponse)
+        const feeAmount = feeResponse.fee.amount;
+        const feeCurrency = feeResponse.fee.currency;
+        const tipoCambio = feeResponse.rate;
+        console.log(feeAmount)
+        console.log(feeCurrency)
+        console.log(tipoCambio)
+
+
+        const cantidadARecibir =  cantidadEnviada * tipoCambio;
+        this.inputReceiveRef.el.value = UImanager.roundDec(cantidadARecibir);
+
+        this.actualizarUIConTipoCambioyFee(tipoCambio, feeAmount, cantidadEnviada);
+
+
+
+
+
+        /*
+        
+       
         const cantidadRecibida = UImanager.calcularCantidadRecibida(cantidadEnviada, this.tiposCambio, monedaEnviada, monedaRecibida);
     
         this.inputReceiveRef.el.value = UImanager.roundDec(cantidadRecibida);
@@ -994,6 +1103,7 @@ export class SendMoney extends Component {
 
     //Evento al cambiar la moneda a enviar
     onChangeCurrencySend() {
+        console.log("Cambio moneda")
         this.onChangeSendInput()
     }
 
