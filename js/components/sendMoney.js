@@ -45,6 +45,7 @@ export class SendMoney extends Component {
     // al escoger nuevo servicio
     payer_id = null;  //se modifica al seleccionar el payer
     transactionType = null;  //C2C  (client to client? ) | B2B (business to business) Se modifica al seleccionar el payer
+    service_id = null;
 
 
 
@@ -593,6 +594,8 @@ export class SendMoney extends Component {
     //   Get Payers {{baseURL}}/api/private/transactions/cash-out/payers
     // Datos: iso, servicio
     async onChangeService(event) {
+
+        console.log(event.target)
         this.state.listaPayers = [];
 
         this.extraFieldLists.required_receiving_entity_fields = [];
@@ -604,13 +607,13 @@ export class SendMoney extends Component {
         this.inputSendRef.el.value = UImanager.roundDec(0);
         this.inputReceiveRef.el.value = UImanager.roundDec(0);
 
-        const service_id = event.target.value;
-        if (service_id != -1) {
+        this.service_id = event.target.value;
+        if (this.service_id != -1) {
             const cod_iso3 = this.getCodigoPaisFromList();
 
-            console.log(service_id)
+            console.log(this.service_id)
             console.log(cod_iso3)
-            await this.getListaPayers(service_id, cod_iso3)
+            await this.getListaPayers(this.service_id, cod_iso3)
 
         } else {
 
@@ -813,6 +816,9 @@ export class SendMoney extends Component {
         console.log(this.state);
 
 
+
+
+
         //TODO: Validaciones
         const datosTX = {
 
@@ -822,12 +828,18 @@ export class SendMoney extends Component {
              currency: this.state.currency,
              isScheduled: false,
              scheduledDate: null,*/
+             payer_id: this.payer_id,
+            transaction_type : this.transactionType,
+            sourceCurrency: this.inputSendCurrencyRef.el.value, 
+            sourceAmount: this.inputSendRef.el.value,
             paymentLink: true,
             merchant_external_id: API.generateRandomID()
 
         }
 
         console.log(datosTX);
+
+        return;
 
         if (!this.validarDatos(datosTX)) {
             console.log("Validation Errors");
@@ -885,63 +897,6 @@ export class SendMoney extends Component {
         }
     }
 
-
-
-    async onSend() {
-        console.log(this.extraFieldLists)
-
-        return;
-
-
-        Swal.fire({
-            title: 'do you really want to send this recharge',
-            icon: 'warning',
-            html: `
-            <div> To: ${this.state.phoneOwnerName}</div>
-            <div>
-
-
-            
-                                Operator: ${this.state.operator}
-                            </div>
-                            <div class="tw-ml-3">
-                            Description:  ${this.state.productoDesc}
-                            </div>                        
-                            <div class="tw-ml-3">
-                                Cost:
-                                ${this.state.salePrice}
-                                <span class="tw-mr-2"></span>
-                                ${this.state.currency}
-                                <span class="tw-mr-2"></span>
-                                <div>
-                                ${this.state.label}
-                                </div>
-                            </div>
-              
-            
-            
-            
-            `,
-            showCloseButton: true,
-            showCancelButton: true,
-            focusConfirm: true,
-            reverseButtons: false,
-
-            cancelButtonText: `No`,
-            confirmButtonText: `Yes`
-        }).then((result) => {
-            if (result.value) {
-
-                this.ejecutarEnvio()
-            }
-        });
-
-
-
-
-
-
-    }
 
 
 
@@ -1146,6 +1101,91 @@ export class SendMoney extends Component {
 
 
     }, 700);
+
+
+
+    
+
+    async onSend() {
+        console.log(this.extraFieldLists)
+
+        const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData").name;
+
+        const servicio = this.state.listaServicios.filter((unServicio)=>unServicio.id==this.service_id)[0].name
+        console.log(servicio)
+        
+        console.log(pais_seleccionado)
+
+        const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id)[0].name;
+
+        const enviar =  this.inputSendRef.el.value;
+        const recibir =  this.inputReceiveRef.el.value;
+        const monedaEnviar = this.inputSendCurrencyRef.el.value;
+        const monedaRecibir = this.inputReceiveCurrencyRef.el.value;
+       
+
+     
+
+        
+
+
+
+        /*
+        <div> Operator: ${this.state.operator} </div>
+            <div class="tw-ml-3">
+               Description:  ${this.state.productoDesc}
+            </div>                        
+            <div class="tw-ml-3">
+                Cost:
+                ${this.state.salePrice}
+                <span class="tw-mr-2"></span>
+                ${this.state.currency}
+                <span class="tw-mr-2"></span>
+                <div>
+                ${this.state.label}
+                </div>
+            </div>
+            
+        */
+
+
+        Swal.fire({
+            title: 'do you really want to send this recharge',
+            icon: 'warning',
+            html: `
+            <div> Country: ${pais_seleccionado} </div>
+            <div> Service: ${servicio} </div>
+            <div> Service: ${payer_seleccionado} </div>
+            <div> Send: ${enviar} ${monedaEnviar.toUpperCase()} Send Fee: ${this.feeSTR.value} ${monedaEnviar.toUpperCase()}</div>
+     
+            <div> Total Send Cost: ${this.totalSendCost.value} ${monedaEnviar.toUpperCase()}</div>
+            <div> Receive: ${recibir} ${monedaRecibir}</div>
+            
+              
+            
+            
+            
+            `,
+            showCloseButton: true,
+            showCancelButton: true,
+            focusConfirm: true,
+            reverseButtons: false,
+
+            cancelButtonText: `No`,
+            confirmButtonText: `Yes`
+        }).then((result) => {
+            if (result.value) {
+
+                this.ejecutarEnvio()
+            }
+        });
+
+
+
+
+
+
+    }
 
 
 
