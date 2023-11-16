@@ -57,6 +57,9 @@ export class ListaTR extends Component {
             
                 <th data-priority="3" >Curr.</th>
                 <th class="centrar">Created <br/> (yyyy/mm/dd) </th>    
+                <th> Benef. Name  </th>  
+                <th> Benef. Phone  </th>  
+                <th> Benef. Card  </th>  
                 <!-- <th class="centrar">Fee <br/> (USD)</th>   
               
                 <th >Type</th>
@@ -128,11 +131,11 @@ export class ListaTR extends Component {
             if (!accessToken) { return }
 
 
-           /* if (!accessToken) {
-                console.error("NO ACCESS TOKEN - Lista TX")
-                window.location.assign(API.redirectURLLogin);
-                return;
-            }*/
+            /* if (!accessToken) {
+                 console.error("NO ACCESS TOKEN - Lista TX")
+                 window.location.assign(API.redirectURLLogin);
+                 return;
+             }*/
 
             this.api = new API(accessToken);
 
@@ -154,10 +157,10 @@ export class ListaTR extends Component {
             }
 
 
-          
+
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-          
+
 
 
 
@@ -169,6 +172,7 @@ export class ListaTR extends Component {
 
 
             this.datos = await this.transformarRawDatos(raw_datos);
+            
 
 
 
@@ -347,13 +351,13 @@ export class ListaTR extends Component {
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
                 columns: [
-                    { data: 'transactionID', width: '12%' },
-                    { data: 'userTextType', width: '14%' },
+                    { data: 'transactionID', width: '10%' },
+                    { data: 'userTextType', width: '12%' },
 
 
 
                     {
-                        data: 'transactionStatus', width: '8%',
+                        data: 'transactionStatus', width: '6%',
                         render: function (data, type, row) {
                             let color = colorStatus(data)
                             return `<span class="state" style="background-color:${color};"> ${data} </span>`;
@@ -391,6 +395,9 @@ export class ListaTR extends Component {
                             //moment(data).format("MM/DD/YYYY");
                         },
                     },
+                    { data: 'beneficiaryName', width: '5%'  },
+                    { data: 'beneficiaryPhone', width: '5%' },
+                    { data: 'beneficiaryCardNumber', width: '5%'},
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
                         render: function (data, type, row) {
@@ -535,7 +542,7 @@ export class ListaTR extends Component {
 
 
             //if (otra_table) {
-           // console.log("Existe otra tabla")
+            // console.log("Existe otra tabla")
             //console.log(otra_table)
             //              $(`${base_name_otra_table}_length`).empty();
             //              $(`${base_name_otra_table}_filter`).empty();
@@ -564,7 +571,95 @@ export class ListaTR extends Component {
 
     }
 
+    getBeneficiaryData(type2, unDato) {
+        console.log("DATOS")
+        console.log(unDato.type)
+        console.log(type2)
+        console.log(unDato)
 
+        const type = unDato.type;
+
+        let datosBeneficiario = {
+            beneficiaryName: '',
+            beneficiaryPhone: '',
+            beneficiaryCardNumber: ''
+        }
+
+        //type2 == metadata.method
+        //type = PAYMENT_REQUEST | type2 = PAYMENT_LINK -- no data
+        //type = CASH_OUT_TRANSACTION | type2 = THUNES_TRANSACTION -- no data
+        //type = DYNAMIC_PAYMENT  --- no data
+        //type = TOKEN_EXCHANGE   --- no data
+        //type = P2P_TRANSFER     --- no data
+        //type = CASH_OUT_TRANSACTION | type2 = CREDIT_CARD_TRANSACTION 
+        /*
+          metadata
+            cardHolderName   :        "Darian Alvarez Tamayo"
+            cardNumber       :        "9225959870121891"
+            contactName      :        "Darian Alvarez Tamayo"
+            contactPhone     :        "52552615"
+        */
+        //type = CASH_OUT_TRANSACTION |  type2 = DELIVERY_TRANSACTION
+        /*
+         metadata 
+            contactName : "Darian Alvarez Tamayo"
+            contactPhone : "52552615"
+        */
+
+        //type = CASH_OUT_TRANSACTION | type2 = DELIVERY_TRANSACTION_USD
+        /*
+         metadata
+            contactName : "Darian Alvarez Tamayo"
+            contactPhone : "52552615"
+        */
+
+        //type = TOPUP_RECHARGE | type2 = DIRECT_TOPUP 
+        /* 
+          metadata 
+              receiverName
+            
+        
+        */
+
+        //type = PAYMENT_REQUEST | type2 = DIRECT_TOPUP
+        /**
+          metadata 
+            receiver_name : "Pepe Cuenca" 
+          
+         */
+
+        if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
+            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
+            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
+            datosBeneficiario.beneficiaryCardNumber = unDato.metadata.cardNumber;
+        } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION') {
+            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
+            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
+        } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
+            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
+            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
+        } else if (type === 'TOPUP_RECHARGE' && type2 === 'DIRECT_TOPUP') {
+            datosBeneficiario.beneficiaryName = unDato.metadata.receiverName;
+            datosBeneficiario.beneficiaryPhone = unDato.metadata.destination;
+
+        } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
+            datosBeneficiario.beneficiaryName = unDato.metadata.receiver_name;
+        }
+
+
+
+
+
+        return datosBeneficiario;
+
+
+
+
+
+
+
+
+    }
 
     transformarRawDatos(raw_datos) {
 
@@ -669,6 +764,10 @@ export class ListaTR extends Component {
             const tipoOperacion = userTypeObj ? userTypeObj.cod_tipo : '-'
 
 
+            const beneficiaryData = this.getBeneficiaryData(type2, unDato);
+            //console.log(beneficiaryData)
+
+
 
 
 
@@ -678,6 +777,7 @@ export class ListaTR extends Component {
                 feeusd: feeUSD,
                 feeusercurr: feeUserCurr,
                 ...unDato,
+                ...beneficiaryData,
                 transactionAmount: txAmount,
                 userTextType: userTextType,
                 tipoOperacion: tipoOperacion,
