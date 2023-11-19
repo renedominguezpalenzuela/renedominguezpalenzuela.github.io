@@ -127,7 +127,7 @@ table{
 
 
   .amount-value {
-    text-align: right;
+    text-align: right!important;
   }
 
   .centrar {
@@ -296,3 +296,4 @@ body > div.blockUI.blockMsg.blockPage {
  
 
 }
+

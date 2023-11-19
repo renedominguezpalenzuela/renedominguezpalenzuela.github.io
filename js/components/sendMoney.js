@@ -112,7 +112,7 @@ export class SendMoney extends Component {
 
 
 
-    tipo_operacion = [1, 2];
+    tipo_operacion = [];
 
 
     static components = { ListaTR };

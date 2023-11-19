@@ -89,7 +89,7 @@ export class HomeDeliveryCuba extends Component {
     recibida: "CUP"
   })
 
-  tipo_operacion = [3, 4, 5];
+  tipo_operacion = [3, 4, 5, 8];
 
   beneficiariosNames = []
 

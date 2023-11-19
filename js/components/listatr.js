@@ -18,6 +18,7 @@ export class ListaTR extends Component {
     datos = null;
     //grid = null;
     tabla = null;
+    senderName = '-';
 
     //Variables para el socket
     socketActivo = true;
@@ -42,24 +43,25 @@ export class ListaTR extends Component {
     static template = xml`  
 
     
-    <table  id="container-listtr" class="display nowrap " style="width:100%" >
+    <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
     <thead class="tw-bg-[#4F50E9] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
         <tr>
-                <th data-priority="1">Transaction ID</th>    
-                <th>UserType</th>
+                <th >Transaction ID</th>    
+                 <th class="centrar">Type</th> 
                 
                
-                <th class="centrar">Status</th>
+                <th  class="centrar">Status</th>
             
             
-                <th data-priority="2">Amount <br/> (No fee)</th>
-                <th data-priority="2">Fee <br/> </th>
+                <th class="amount-value">Amount <br/> (No fee)</th>
+                <th >Fee <br/> </th>
             
-                <th data-priority="3" >Curr.</th>
-                <th class="centrar">Created <br/> (yyyy/mm/dd) </th>    
-                <th> Benef. Name  </th>  
-                <th> Benef. Phone  </th>  
-                <th> Benef. Card  </th>  
+                <th >Curr.</th>
+                <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
+                <th  >  Beneficiary Name  </th>  
+                <th >  Beneficiary Phone  </th>  
+                <th >  Beneficiary Card  </th> 
+                <th >  Sender Name </th>
                 <!-- <th class="centrar">Fee <br/> (USD)</th>   
               
                 <th >Type</th>
@@ -142,6 +144,8 @@ export class ListaTR extends Component {
 
             const walletAddress = window.sessionStorage.getItem('walletAddress');
             const userId = window.sessionStorage.getItem('userId');
+            this.senderName = window.sessionStorage.getItem('nameFull');
+            console.log(this.senderName);
 
 
             const query = {
@@ -164,15 +168,14 @@ export class ListaTR extends Component {
 
 
 
-            //console.log("Tipo operacion a filtrar")
-            //console.log(this.props.tipooperacion)
+
 
 
             this.datos = [];
 
 
             this.datos = await this.transformarRawDatos(raw_datos);
-            
+
 
 
 
@@ -347,24 +350,32 @@ export class ListaTR extends Component {
             //CCreando la tabla
 
 
-
+            //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
+                /* "columnDefs": [
+                     { responsivePriority: 1, targets: 0 },
+                     { responsivePriority: 2, targets: 1 },
+                     { responsivePriority: 3, targets: 2 },
+                     { responsivePriority: 4, targets: 3 },
+                     { responsivePriority: 5, targets: 4 }
+ 
+                 ],*/
                 columns: [
-                    { data: 'transactionID', width: '10%' },
-                    { data: 'userTextType', width: '12%' },
+                    { data: 'transactionID', width: '20%' },
+                    { data: 'userTextType', width: '30%' },
 
 
 
                     {
-                        data: 'transactionStatus', width: '6%',
+                        data: 'transactionStatus', width: '20%',
                         render: function (data, type, row) {
                             let color = colorStatus(data)
                             return `<span class="state" style="background-color:${color};"> ${data} </span>`;
                         }
                     },
                     {
-                        data: 'transactionAmount', width: '7%', className: "amount-value",
+                        data: 'transactionAmount', width: '20%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
@@ -373,16 +384,16 @@ export class ListaTR extends Component {
                     },
 
                     {
-                        data: 'feeusercurr', width: '3%', className: "amount-value",
+                        data: 'feeusercurr', width: '8%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
                         }
                     },
 
-                    { data: 'currency', width: '5%', className: "centrar" },
+                    { data: 'currency', width: '10%', className: "centrar" },
                     {
-                        data: 'createdAt', width: '13%',
+                        data: 'createdAt', width: '30%',
                         render: function (data, type, row) {
 
 
@@ -395,9 +406,10 @@ export class ListaTR extends Component {
                             //moment(data).format("MM/DD/YYYY");
                         },
                     },
-                    { data: 'beneficiaryName', width: '5%'  },
-                    { data: 'beneficiaryPhone', width: '5%' },
-                    { data: 'beneficiaryCardNumber', width: '5%'},
+                    { data: 'beneficiaryName', width: '35%', },
+                    { data: 'beneficiaryPhone', width: '35%', },
+                    { data: 'beneficiaryCardNumber', width: '35%', },
+                    { data: 'senderName', width: '35%', },
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
                         render: function (data, type, row) {
@@ -579,10 +591,11 @@ export class ListaTR extends Component {
 
         const type = unDato.type;
 
-        let datosBeneficiario = {
-            beneficiaryName: '',
-            beneficiaryPhone: '',
-            beneficiaryCardNumber: ''
+        let otrosDatos = {
+            beneficiaryName: '-',
+            beneficiaryPhone: '-',
+            beneficiaryCardNumber: '-',
+            senderName: '-'
         }
 
         //type2 == metadata.method
@@ -591,7 +604,7 @@ export class ListaTR extends Component {
         //type = DYNAMIC_PAYMENT  --- no data
         //type = TOKEN_EXCHANGE   --- no data
         //type = P2P_TRANSFER     --- no data
-        //type = CASH_OUT_TRANSACTION | type2 = CREDIT_CARD_TRANSACTION 
+        //type = CASH_OUT_TRANSACTION | type2 = CREDIT_CARD_TRANSACTION  ---- Envio a tarjeta
         /*
           metadata
             cardHolderName   :        "Darian Alvarez Tamayo"
@@ -599,14 +612,14 @@ export class ListaTR extends Component {
             contactName      :        "Darian Alvarez Tamayo"
             contactPhone     :        "52552615"
         */
-        //type = CASH_OUT_TRANSACTION |  type2 = DELIVERY_TRANSACTION
+        //type = CASH_OUT_TRANSACTION |  type2 = DELIVERY_TRANSACTION  ---- Envio a casa
         /*
          metadata 
             contactName : "Darian Alvarez Tamayo"
             contactPhone : "52552615"
         */
 
-        //type = CASH_OUT_TRANSACTION | type2 = DELIVERY_TRANSACTION_USD
+        //type = CASH_OUT_TRANSACTION | type2 = DELIVERY_TRANSACTION_USD ---- Envio a casa USD
         /*
          metadata
             contactName : "Darian Alvarez Tamayo"
@@ -628,29 +641,32 @@ export class ListaTR extends Component {
           
          */
 
+        otrosDatos.senderName = this.senderName;
+
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
-            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
-            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
-            datosBeneficiario.beneficiaryCardNumber = unDato.metadata.cardNumber;
+            otrosDatos.beneficiaryName = unDato.metadata.contactName;
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
+            otrosDatos.beneficiaryCardNumber = unDato.metadata.cardNumber;
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION') {
-            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
-            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
+            otrosDatos.beneficiaryName = unDato.metadata.contactName;
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
-            datosBeneficiario.beneficiaryName = unDato.metadata.contactName;
-            datosBeneficiario.beneficiaryPhone = unDato.metadata.contactPhone;
+            otrosDatos.beneficiaryName = unDato.metadata.contactName;
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
         } else if (type === 'TOPUP_RECHARGE' && type2 === 'DIRECT_TOPUP') {
-            datosBeneficiario.beneficiaryName = unDato.metadata.receiverName;
-            datosBeneficiario.beneficiaryPhone = unDato.metadata.destination;
+            otrosDatos.beneficiaryName = unDato.metadata.receiverName;
+            otrosDatos.beneficiaryPhone = unDato.metadata.destination;
+
 
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
-            datosBeneficiario.beneficiaryName = unDato.metadata.receiver_name;
+            otrosDatos.beneficiaryName = unDato.metadata.receiver_name;
         }
 
 
 
 
 
-        return datosBeneficiario;
+        return otrosDatos;
 
 
 
@@ -676,16 +692,7 @@ export class ListaTR extends Component {
 
 
 
-        //se busca el nombre de la operacoin
-        //this.props.tipooperacion
-        //let userTextTypeObj = tipos_operaciones.filter((unTipo) => unTipo.cod_tipo === this.props.tipooperacion)[0];
 
-        /*this.userTextType = '';
-        if (userTextTypeObj) {
-            //console.log(userTextTypeObj)
-            this.userTextType = userTextTypeObj.usertext;
-
-        }*/
 
 
         const raw_datos1 = raw_datos.data.data.map((unDato) => {
@@ -792,19 +799,20 @@ export class ListaTR extends Component {
         //filtrando las operaciones
         //this.props.tipooperacion --- arreglo de tipos_operacion
         //ejemplp [1,2]
-        if (this.props.tipooperacion) {
+
+        console.log(this.props.tipooperacion)
+        if (this.props.tipooperacion && this.props.tipooperacion.length > 0) {
             //console.log("filtro")
             //Filtrar solo para un tipo de operacion
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
 
 
 
-            return raw_datos1.filter(
-                (unaOperacion) => {
+            return raw_datos1.filter((unaOperacion) => {
 
-                    return this.props.tipooperacion.includes(unaOperacion.tipoOperacion)
+                return this.props.tipooperacion.includes(unaOperacion.tipoOperacion)
 
-                }
+            }
 
 
                 /*(unaOperacion) => {
@@ -820,6 +828,7 @@ export class ListaTR extends Component {
             )
         } else {
             //mostrar todas las operaciones de la wallet
+
             return raw_datos1;
         }
 

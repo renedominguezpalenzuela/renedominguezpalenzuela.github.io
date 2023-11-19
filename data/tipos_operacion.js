@@ -39,27 +39,28 @@ export const tipos_operaciones = [
     {
         cod_tipo: 7,
         type1: ["PAYMENT_REQUEST"],
+        type2: ["DIRECT_TOPUP"],
+        usertext: "Payment Request P. Rech."
+    },
+    {
+        cod_tipo: 8,
+        type1: ["PAYMENT_REQUEST"],
         type2: ["PAYMENT_LINK"],
         usertext: "Payment gateway"
     },
     {
-        cod_tipo: 8,
+        cod_tipo: 9,
         type1: ["MLC_PAYMENT_REQUEST"],
         type2: ["MLC_PAYMENT_REQUEST"],
         usertext: "MLC Payment Request"
     },
     {
-        cod_tipo: 9,
+        cod_tipo: 10,
         type1: ["EMAIL_PAYMENT_REQUEST"],
         type2: ["EMAIL_PAYMENT_REQUEST"],
         usertext: "Mail Payment Request"
     },
-    {
-        cod_tipo: 10,
-        type1: ["PAYMENT_REQUEST"],
-        type2: ["DIRECT_TOPUP"],
-        usertext: "Payment Request"
-    },
+    
     	
     
     
