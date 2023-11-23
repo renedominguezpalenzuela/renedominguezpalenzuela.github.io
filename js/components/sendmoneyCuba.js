@@ -85,7 +85,7 @@ export class SendMoneyCuba extends Component {
 
 
 
-  tipo_operacion = [1, 2, 8];
+  tipo_operacion = [1, 2, 8 ,12];
 
 
   beneficiariosNames = useState({

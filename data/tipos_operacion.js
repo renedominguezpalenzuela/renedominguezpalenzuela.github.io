@@ -66,6 +66,22 @@ export const tipos_operaciones = [
         type2: ["THUNES_TRANSACTION"],
         usertext: "Send Money"
     },
+    {
+        cod_tipo: 12,
+        type1: ["TOKENS_BUY"],
+        type2: ["CREDIT_CARD_TRANSACTION"],
+        usertext: "Token Buy Credit Card"
+    },
+    {
+        cod_tipo: 13,
+        type1: ["TOKENS_BUY"],
+        type2: ["DELIVERY_TRANSACTION"],
+        usertext: "Token Buy Home Delivery"
+    },
+
+
+    
+
     
     	
     
