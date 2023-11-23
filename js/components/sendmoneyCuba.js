@@ -859,10 +859,16 @@ export class SendMoneyCuba extends Component {
 
 
   onChangeSelectedTX = async (datos) => {
+    console.log(datos)
     this.datosSelectedTX.txID = datos._id;
     this.datosSelectedTX.allData = { ...datos }
     this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
-    this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
+    if (datos.metadata.deliveryCurrency) {
+      this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
+    }
+    
+
+    
     this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
     this.concept.el.value = datos.concept;
     const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
@@ -1030,7 +1036,10 @@ export class SendMoneyCuba extends Component {
 
     }
     this.beneficiarioData.cardHolderName = this.datosSelectedTX.allData.metadata.cardHolderName;
-    this.beneficiarioData.selectedCard = this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
+    if (this.datosSelectedTX.allData.metadata.cardNumber) {
+      this.beneficiarioData.selectedCard = this.datosSelectedTX.allData.metadata.cardNumber.replace(/ /g, "")
+    }
+    
     console.log("Operacion")
 
     console.log(this.datosSelectedTX.allData);

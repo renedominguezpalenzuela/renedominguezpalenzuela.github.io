@@ -18,7 +18,7 @@ export class ListaTR extends Component {
     datos = null;
     //grid = null;
     tabla = null;
-    senderName = '-';
+   // senderName = '-';
 
     //Variables para el socket
     socketActivo = true;
@@ -54,7 +54,7 @@ export class ListaTR extends Component {
             
             
                 <th class="amount-value">Amount <br/> (No fee)</th>
-                <th >Fee <br/> </th>
+                <th >Fee: <br/> </th>
             
                 <th >Curr.</th>
                 <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
@@ -62,11 +62,17 @@ export class ListaTR extends Component {
                 <th >  Beneficiary Phone  </th>  
                 <th >  Beneficiary Card  </th> 
                 <th >  Sender Name </th>
-                <!-- <th class="centrar">Fee <br/> (USD)</th>   
-              
-                <th >Type</th>
+                <th >  Received Amount </th>
+                <th >  Received Currency </th>
+
+                <th>Type</th>
                 <th>Type2</th> 
-                <th>External ID</th> -->
+                <th>External ID</th>
+
+                
+
+
+                
                 
            
         </tr>
@@ -144,8 +150,8 @@ export class ListaTR extends Component {
 
             const walletAddress = window.sessionStorage.getItem('walletAddress');
             const userId = window.sessionStorage.getItem('userId');
-            this.senderName = window.sessionStorage.getItem('nameFull');
-            console.log(this.senderName);
+            //this.senderName = window.sessionStorage.getItem('nameFull');
+            //console.log(this.senderName);
 
 
             const query = {
@@ -410,6 +416,13 @@ export class ListaTR extends Component {
                     { data: 'beneficiaryPhone', width: '35%', },
                     { data: 'beneficiaryCardNumber', width: '35%', },
                     { data: 'senderName', width: '35%', },
+                    { data: 'receivedAmount', width: '35%', },
+                    { data: 'receivedCurrency', width: '35%', },
+
+                    { data: 'type', width: '15%' },
+                    { data: 'type2', width: '15%' },
+                    { data: 'externalID', width: '13%' }
+
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
                         render: function (data, type, row) {
@@ -594,8 +607,10 @@ export class ListaTR extends Component {
         let otrosDatos = {
             beneficiaryName: '-',
             beneficiaryPhone: '-',
-            beneficiaryCardNumber: '-',
-            senderName: '-'
+            beneficiaryCardNumber: '-',       
+            senderName: '-',
+            receivedAmount:'-',
+            receivedCurrency:'-'
         }
 
         //type2 == metadata.method
@@ -641,26 +656,50 @@ export class ListaTR extends Component {
           
          */
 
-        otrosDatos.senderName = this.senderName;
+      
 
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName;
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
             otrosDatos.beneficiaryCardNumber = unDato.metadata.cardNumber;
+
+            otrosDatos.senderName = unDato.metadata.senderName
+
+            
+         //   Amount source --  transactionAmount
+//Currency source -- currency
+//amount destinatario  -- metadata.deliveryAmount
+//Currency destinatario   -- metadata.deliveryCurrency
+
+
+            //Sender   -- metadata.senderName + metadata.senderLastName
+            //Receiver  -- metadata.deliveryContact + -- metadata.deliveryLastName + -- metadata .deliveryLastName
+
+
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName;
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
+            otrosDatos.senderName = unDato.metadata.senderName
+
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName;
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
         } else if (type === 'TOPUP_RECHARGE' && type2 === 'DIRECT_TOPUP') {
             otrosDatos.beneficiaryName = unDato.metadata.receiverName;
             otrosDatos.beneficiaryPhone = unDato.metadata.destination;
+            otrosDatos.senderName = unDato.metadata.senderName
 
 
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
             otrosDatos.beneficiaryName = unDato.metadata.receiver_name;
+        } else if (type === 'PAYMENT_REQUEST' && type2 === 'PAYMENT_LINK') {
+            otrosDatos.beneficiaryName = unDato.metadata.cardHolderName ? unDato.metadata.cardHolderName : '-';
+            const senderName = unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName;
+            otrosDatos.senderName = unDato.metadata.senderName ? senderName : '-';
+           
+
         }
+
 
 
 
