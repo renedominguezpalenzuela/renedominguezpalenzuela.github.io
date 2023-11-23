@@ -60,6 +60,12 @@ export const tipos_operaciones = [
         type2: ["EMAIL_PAYMENT_REQUEST"],
         usertext: "Mail Payment Request"
     },
+    {
+        cod_tipo: 11,
+        type1: ["CASH_OUT_TRANSACTION"],
+        type2: ["THUNES_TRANSACTION"],
+        usertext: "Send Money"
+    },
     
     	
     

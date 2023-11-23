@@ -33,6 +33,8 @@ export class SendMoney extends Component {
     })
 
 
+    tipo_operacion = [];
+
     //si esta en true --- se deshabilita
     inputsDeshabilitar = useState({
         sendAmount: true
@@ -112,7 +114,7 @@ export class SendMoney extends Component {
 
 
 
-    tipo_operacion = [];
+
 
 
     static components = { ListaTR };

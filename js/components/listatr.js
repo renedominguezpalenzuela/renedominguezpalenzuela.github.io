@@ -703,6 +703,12 @@ export class ListaTR extends Component {
             otrosDatos.senderName = unDato.metadata.senderName ? senderName : '-';
            
 
+        } else if ( type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION' ) {
+
+            otrosDatos.receivedAmount = unDato.metadata.destinationAmount;
+            otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency;
+
+
         }
 
 
