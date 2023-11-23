@@ -665,6 +665,9 @@ export class ListaTR extends Component {
 
             otrosDatos.senderName = unDato.metadata.senderName
 
+            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount;
+            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency
+
             
          //   Amount source --  transactionAmount
 //Currency source -- currency
@@ -680,6 +683,8 @@ export class ListaTR extends Component {
             otrosDatos.beneficiaryName = unDato.metadata.contactName;
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
             otrosDatos.senderName = unDato.metadata.senderName
+            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount;
+            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency
 
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName;
