@@ -659,56 +659,37 @@ export class ListaTR extends Component {
       
 
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
-            otrosDatos.beneficiaryName = unDato.metadata.contactName;
-            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
-            otrosDatos.beneficiaryCardNumber = unDato.metadata.cardNumber;
-
-            otrosDatos.senderName = unDato.metadata.senderName
-
-            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount;
-            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency
-
-            
-         //   Amount source --  transactionAmount
-//Currency source -- currency
-//amount destinatario  -- metadata.deliveryAmount
-//Currency destinatario   -- metadata.deliveryCurrency
-
-
-            //Sender   -- metadata.senderName + metadata.senderLastName
-            //Receiver  -- metadata.deliveryContact + -- metadata.deliveryLastName + -- metadata .deliveryLastName
-
-
+            otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone ? unDato.metadata.contactPhone : '-';
+            otrosDatos.beneficiaryCardNumber = unDato.metadata.cardNumber ? unDato.metadata.cardNumber : '-';
+            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount ? unDato.metadata.deliveryAmount : '-';
+            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency ? unDato.metadata.deliveryCurrency : '-'
+            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName ;
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION') {
-            otrosDatos.beneficiaryName = unDato.metadata.contactName;
-            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
-            otrosDatos.senderName = unDato.metadata.senderName
-            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount;
-            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency
-
+            otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone ? unDato.metadata.contactPhone : '-';
+            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName ;
+            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount ? unDato.metadata.deliveryAmount: '-';
+            otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency ? unDato.metadata.deliveryCurrency : '-'
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
-            otrosDatos.beneficiaryName = unDato.metadata.contactName;
-            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone;
+            otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
+            otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone ? unDato.metadata.contactPhone : '-';
         } else if (type === 'TOPUP_RECHARGE' && type2 === 'DIRECT_TOPUP') {
-            otrosDatos.beneficiaryName = unDato.metadata.receiverName;
-            otrosDatos.beneficiaryPhone = unDato.metadata.destination;
-            otrosDatos.senderName = unDato.metadata.senderName
-
-
+            otrosDatos.beneficiaryName = unDato.metadata.receiverName ? unDato.metadata.receiverName: '-';
+            otrosDatos.beneficiaryPhone = unDato.metadata.destination ? unDato.metadata.destination: '-';
+            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName : '-';
+            otrosDatos.senderName = senderName ;
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
-            otrosDatos.beneficiaryName = unDato.metadata.receiver_name;
+            otrosDatos.beneficiaryName = unDato.metadata.receiver_name ? unDato.metadata.receiver_name : '-';
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'PAYMENT_LINK') {
             otrosDatos.beneficiaryName = unDato.metadata.cardHolderName ? unDato.metadata.cardHolderName : '-';
-            const senderName = unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName;
-            otrosDatos.senderName = unDato.metadata.senderName ? senderName : '-';
-           
-
+            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName ;           
         } else if ( type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION' ) {
-
-            otrosDatos.receivedAmount = unDato.metadata.destinationAmount;
-            otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency;
-
-
+            otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
+            otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency: '-';
         }
 
 
