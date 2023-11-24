@@ -170,11 +170,11 @@ export class Profile extends Component {
         </div>       
 
         <div  t-if="!this.props.newUser" class="sm:tw-flex sm:tw-flex-row  tw-w-full">
-            <a class="tw-ml-1" href="/forgotpass.html">    
-               <button id="login-btn" class="submit-btn" t-on-click="login_btn">
+            <!-- <a class="tw-ml-1" href="/forgotpass.html">     -->
+               <button  class="submit-btn" t-on-click="change_pass">
                   Change Password
                 </button>
-            </a>            
+            <!-- </a>             -->
         </div>            
 
      
@@ -822,6 +822,10 @@ export class Profile extends Component {
 
   }
 
+  
+  change_pass() {
+     window.location.assign('/forgotpass');
+  }
 
   toggler_visibility() {
 
