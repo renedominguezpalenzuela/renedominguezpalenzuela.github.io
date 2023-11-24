@@ -597,10 +597,10 @@ export class ListaTR extends Component {
     }
 
     getBeneficiaryData(type2, unDato) {
-        console.log("DATOS")
+        /*console.log("DATOS")
         console.log(unDato.type)
         console.log(type2)
-        console.log(unDato)
+        console.log(unDato)*/
 
         const type = unDato.type;
 

@@ -183,12 +183,18 @@ export class Beneficiarios extends Component {
 
       this.provincias = Provincias;
       this.municipios = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
+
+      if (!this.accessToken) {
+       // console.error("NO ACCESS TOKEN - Balance")
+       // await window.location.assign(API.redirectURLLogin);
+        return;
+      }
     });
 
     onRendered(() => {
 
 
-      if (!this.accessToken) { return }
+     // if (!this.accessToken) { return }
 
       if (this.cambioBeneficiario) {
         this.cambioBeneficiario = false;

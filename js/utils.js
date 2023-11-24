@@ -2190,9 +2190,18 @@ export class UImanager {
 
 
 
-  static gestionResultado(resultado, urlHome, menuController) {
+  static async gestionResultado(resultado, urlHome, menuController) {
 
     console.log(resultado)
+
+     if (!resultado) 
+     {
+      console.log("Resultado null, sending money")
+
+      await Swal.fire('Null result');
+      return;
+      
+     }
 
     //TODO: refactorizar
     if (resultado.data) {
@@ -2224,9 +2233,58 @@ export class UImanager {
     //Error pero aun responde el API
     if (resultado.response) {
       console.log(resultado)
-      /*"error": "BAD_REQUEST",
-      "message": "The externalID field is required",
-      "statusCode": 400*/
+
+      Swal.fire(resultado.response.data.message);
+    }
+
+  }
+
+
+  
+  static async gestionResultadoSendMoney(resultado, urlHome, menuController) {
+
+    console.log(resultado)
+
+     if (!resultado) 
+     {
+      console.log("Resultado null, sending money")
+
+      await Swal.fire('Null result');
+      return;
+      
+     }
+
+    //TODO: refactorizar
+    if (resultado.status) {
+      //se proceso correctamente la operacion
+      if (resultado.status === 200 && !resultado.paymentLink) {
+        console.log("Saldo suficiente")
+        Swal.fire(resultado.payload);
+        return;
+      }
+
+      //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+      if (resultado.status === 200 && resultado.paymentLink) {
+        //redireccionar a otra pagina 
+        const paymentLink = resultado.paymentLink.url;
+
+        console.log("Saldo insuficiente pago con stripe")
+        console.log(urlHome)
+        //debugger
+
+        UImanager.dialogoStripe(paymentLink, menuController, urlHome)
+        return;
+      }
+
+
+
+
+    }
+
+    //Error pero aun responde el API
+    if (resultado.response) {
+      console.log(resultado)
+
       Swal.fire(resultado.response.data.message);
     }
 

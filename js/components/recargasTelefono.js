@@ -220,23 +220,16 @@ export class RecargasTelefono extends Component {
         urlHome: '/',
     };
 
-
+    accessToken = '';
     setup() {
-        const accessToken = API.getTokenFromsessionStorage();
+        this.accessToken = API.getTokenFromsessionStorage();
 
         API.setRedirectionURL(this.props.urlHome);
 
         //if (!accessToken) { return }
 
 
-        if (!accessToken) {
-            console.error("NO ACCESS TOKEN - Recargas")
-            window.location.assign(API.redirectURLLogin);
-            return;
-        }
-
-        const walletAddress = window.sessionStorage.getItem('walletAddress');
-        const userId = window.sessionStorage.getItem('userId');
+       
 
 
         //  this.select_product.el.value=-1;
@@ -244,6 +237,15 @@ export class RecargasTelefono extends Component {
 
 
         onWillStart(async () => {
+            if (!this.accessToken) {
+                console.error("NO ACCESS TOKEN - Recargas")
+                window.location.assign(API.redirectURLLogin);
+                return;
+            }
+    
+            const walletAddress = window.sessionStorage.getItem('walletAddress');
+            const userId = window.sessionStorage.getItem('userId');
+
             this.seleccionCodigosPaises = [];
             this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
 

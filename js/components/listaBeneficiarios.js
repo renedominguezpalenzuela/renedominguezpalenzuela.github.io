@@ -58,16 +58,6 @@ export class ListaBeneficiarios extends Component {
     setup() {
 
 
-        // console.log("ListaBeneficiarios")
-        // console.log(this.props.listaBeneficiarios)
-
-
-       /* accessToken = API.getTokenFromsessionStorage();
-   
-
-  
-
-        this.api = new API(accessToken);*/
 
 
        

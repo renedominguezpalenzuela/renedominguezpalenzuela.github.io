@@ -435,7 +435,7 @@ export class Beneficiarios extends Component {
 
 
                 console.error("NO ACCESS TOKEN - Beneficiario")
-                window.location.assign(API.redirectURLLogin);
+                await window.location.assign(API.redirectURLLogin);
                 return;
 
             }

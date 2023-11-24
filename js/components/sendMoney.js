@@ -33,7 +33,7 @@ export class SendMoney extends Component {
     })
 
 
-    tipo_operacion = [];
+    tipo_operacion = [11];
 
     //si esta en true --- se deshabilita
     inputsDeshabilitar = useState({
@@ -445,6 +445,7 @@ export class SendMoney extends Component {
     };
 
 
+    accessToken = '';
 
     //Cuando selecciona el pais, debe setearse la moneda destino
     //inhabilitar todos los controls
@@ -458,17 +459,18 @@ export class SendMoney extends Component {
 
 
 
-        if (!this.accessToken) {
-            console.error("NO ACCESS TOKEN - Recargas")
-            window.location.assign(API.redirectURLLogin);
-            return;
-        }
-
-
-        this.api = new API(this.accessToken);
+       
 
 
         onWillStart(async () => {
+            if (!this.accessToken) {
+                console.error("NO ACCESS TOKEN - Recargas")
+                window.location.assign(API.redirectURLLogin);
+                return;
+            }
+    
+    
+            this.api = new API(this.accessToken);
 
 
 
@@ -1070,10 +1072,10 @@ export class SendMoney extends Component {
             <div> Country: ${pais_seleccionado} </div>
             <div> Service: ${servicio} </div>
             <div> Service: ${payer_seleccionado} </div>
-            <div> Send: ${enviar} ${monedaEnviar.toUpperCase()} Send Fee: ${this.feeSTR.value} ${monedaEnviar.toUpperCase()}</div>
+            <div> Send: ${UImanager.roundDec(enviar)} ${monedaEnviar.toUpperCase()} Send Fee: ${UImanager.roundDec(this.feeSTR.value)} ${monedaEnviar.toUpperCase()}</div>
      
-            <div> Total Send Cost: ${this.totalSendCost.value} ${monedaEnviar.toUpperCase()}</div>
-            <div> Receive: ${recibir} ${monedaRecibir}</div>
+            <div> Total Send Cost: ${UImanager.roundDec(this.totalSendCost.value)} ${monedaEnviar.toUpperCase()}</div>
+            <div> Receive: ${UImanager.roundDec(recibir)} ${monedaRecibir}</div>
             
               
             
@@ -1129,8 +1131,8 @@ export class SendMoney extends Component {
             payer_id: this.payer_id,
             transaction_type: this.transactionType,
             sourceCurrency: this.inputSendCurrencyRef.el.value.toUpperCase(),
-            sourceAmount: this.inputSendRef.el.value,
-            destinationAmount: 35785543,
+            sourceAmount: Number(this.inputSendRef.el.value),
+            destinationAmount: Number(this.inputReceiveRef.el.value),
             purpose_of_remittance: this.concept.el.value,
             paymentLink: true,
             merchant_external_id: API.generateRandomID(),
@@ -1162,6 +1164,8 @@ export class SendMoney extends Component {
 
 
         console.log(datosTX);
+
+       
 
         // return;
 
@@ -1209,7 +1213,7 @@ export class SendMoney extends Component {
 
                     const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
-                    await UImanager.gestionResultado(resultado, urlHome, this.props.menuController);
+                    await UImanager.gestionResultadoSendMoney(resultado, urlHome, this.props.menuController);
                     
                 }
             })

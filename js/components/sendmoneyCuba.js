@@ -418,7 +418,7 @@ export class SendMoneyCuba extends Component {
   };
 
 
-
+  accessToken = '';
 
   //CASH_OUT_TRANSACTION
   setup() {
@@ -441,6 +441,15 @@ export class SendMoneyCuba extends Component {
       this.provincias = Provincias;
       this.municipios.names = UImanager.addKeyToMunicipios(this.provincias[0].municipios);
 
+        // if (!this.accessToken) { return }
+
+
+        if (!this.accessToken) {
+          console.error("NO ACCESS TOKEN - Send Money cuba")
+          window.location.assign(API.redirectURLLogin);
+          return;
+        }
+
 
 
 
@@ -452,14 +461,7 @@ export class SendMoneyCuba extends Component {
 
     onMounted(async () => {
 
-      // if (!this.accessToken) { return }
-
-
-      if (!this.accessToken) {
-        console.error("NO ACCESS TOKEN - Send Money cuba")
-        window.location.assign(API.redirectURLLogin);
-        return;
-      }
+    
 
 
       const api = new API(this.accessToken);

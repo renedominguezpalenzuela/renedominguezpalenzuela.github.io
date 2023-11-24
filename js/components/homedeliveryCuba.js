@@ -230,18 +230,27 @@ export class HomeDeliveryCuba extends Component {
     urlHome: '/',
   };
 
+  accessToken = '';
 
   setup() {
 
     //console.log(this.props)
 
     API.setRedirectionURL(this.props.urlHome);
+    this.accessToken = API.getTokenFromsessionStorage();
 
     //const walletAddress = window.sessionStorage.getItem('walletAddress');
     //const userId = window.sessionStorage.getItem('userId');
 
 
-    onWillStart(() => {
+    onWillStart(async () => {
+
+      
+      if (!this.accessToken) {
+        console.error("NO ACCESS TOKEN - HomeDeliveryCuba")
+        await window.location.assign(API.redirectURLLogin);
+        return;
+      }
 
 
 
@@ -258,16 +267,11 @@ export class HomeDeliveryCuba extends Component {
 
       this.beneficiarioData = []
 
-      this.accessToken = API.getTokenFromsessionStorage();
+     
 
 
 
 
-      if (!this.accessToken) {
-        console.error("NO ACCESS TOKEN - HomeDeliveryCuba")
-        window.location.assign(API.redirectURLLogin);
-        return;
-      }
 
 
       const api = new API(this.accessToken);

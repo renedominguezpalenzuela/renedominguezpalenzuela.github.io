@@ -466,26 +466,28 @@ export class Profile extends Component {
     urlHome: '/',
   };
 
-
+  accessToken = '';
   setup() {
-    const accessToken = API.getTokenFromsessionStorage();
+    this.accessToken = API.getTokenFromsessionStorage();
 
     API.setRedirectionURL(this.props.urlHome);
 
     // if (!accessToken) { return }
 
 
-    if (!accessToken && !this.props.newUser) {
-      console.error("NO ACCESS TOKEN - Profile")
-      window.location.assign(API.redirectURLLogin);
-      return;
-    }
 
     const walletAddress = window.sessionStorage.getItem('walletAddress');
     const userId = window.sessionStorage.getItem('userId');
 
 
     onWillStart(async () => {
+
+      
+    if (!this.accessToken && !this.props.newUser) {
+      console.error("NO ACCESS TOKEN - Profile")
+      await window.location.assign(API.redirectURLLogin);
+      return;
+    }
 
       this.seleccionCodigosPaises = [];
       this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
