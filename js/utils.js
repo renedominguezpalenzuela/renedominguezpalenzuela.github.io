@@ -2402,6 +2402,63 @@ export class UImanager {
     return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
   }
 
+  
+
+  static timeZoneTransformer = (stringDate, timeZone = "UTC") => {
+    const now = new Date();
+    const serverDate = new Date(stringDate);
+    const utcDate = new Date(
+      Date.UTC(
+        serverDate.getFullYear(),
+        serverDate.getMonth(),
+        serverDate.getDate(),
+        serverDate.getHours(),
+        serverDate.getMinutes(),
+        serverDate.getSeconds()
+      )
+    );
+    const invdate = new Date(
+      serverDate.toLocaleString("en-US", {
+        timeZone,
+      })
+    );
+    const diff = now.getTime() - invdate.getTime();
+    const adjustedDate = new Date(now.getTime() - diff);
+    return {
+      toUtc: utcDate,
+      fromUtc: adjustedDate,
+    };
+  };
+
+
+  static formatDateForInputs(inputDate) {
+    let dia, month, year //,  segundos, minutos, horas;
+    console.log(inputDate)
+    
+
+    /*segundos = inputDate.getSeconds();
+    minutos = inputDate.getMinutes();
+    horas = inputDate.getHours();*/
+
+    //console.log(`H: ${horas} M: ${minutos} S: ${segundos}`);
+
+    month = inputDate.getMonth() + 1;
+
+   
+
+    year = inputDate.getFullYear();
+    dia = inputDate.getDate().toString().padStart(2, '0');
+    month = month.toString().padStart(2, '0');
+
+    console.log(`YYYY: ${year}  MM: ${month} DD: ${dia}`);
+
+   
+
+
+    return `${year}-${month}-${dia}`;
+    
+  }
+
 
 
 }

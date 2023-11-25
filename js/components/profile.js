@@ -24,6 +24,8 @@ export class Profile extends Component {
   iconPassVisibility1 = useRef("iconPassVisibility1");
   iconPassVisibility2 = useRef("iconPassVisibility2");
 
+  inputBirthDate = useRef("inputBirthDate");
+
   errores = useState({
     phoneField: false,
     firstName: false,
@@ -252,12 +254,13 @@ export class Profile extends Component {
                     <label class="tw-label">
                       <span class="tw-label-text">Birth Date</span>
                     </label>
-                    <input type="date" t-model="this.state.birthDate" placeholder="Birth Date" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangebirthDate" t-on-blur="onBlurbirthDate" /> 
+                    <input type="date" t-model="this.state.birthDate"  t-ref="inputBirthDate" placeholder="Birth Date" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangebirthDate" t-on-blur="onBlurbirthDate" /> 
                  
                     <span t-if="this.errores.birthDate==true" class="error">
                     Required field!!!
                     </span>
                 </div>
+                
             </div>  
 
             <div class="tw-card-actions">
@@ -482,12 +485,12 @@ export class Profile extends Component {
 
     onWillStart(async () => {
 
-      
-    if (!this.accessToken && !this.props.newUser) {
-      console.error("NO ACCESS TOKEN - Profile")
-      await window.location.assign(API.redirectURLLogin);
-      return;
-    }
+
+      if (!this.accessToken && !this.props.newUser) {
+        console.error("NO ACCESS TOKEN - Profile")
+        await window.location.assign(API.redirectURLLogin);
+        return;
+      }
 
       this.seleccionCodigosPaises = [];
       this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
@@ -511,16 +514,24 @@ export class Profile extends Component {
         const accessToken = API.getTokenFromsessionStorage();
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
-        console.log("User profile")
-        console.log(userData)
+      
 
+       const fecha = UImanager.timeZoneTransformer(userData.birthDate).fromUtc;
 
-        if (userData.kyc) {
+    
+       
+        this.state.birthDate = UImanager.formatDateForInputs(fecha);
+      
+
+        /*if (userData.kyc) {
           const kyc = JSON.parse(userData.kyc.gatheredInfo);
           console.log(kyc);
          // this.state.province = kyc.Location.City;
           this.state.birthDate = kyc.PersonInfo.YearOfBirth + "-" + kyc.PersonInfo.MonthOfBirth + "-" + kyc.PersonInfo.DayOfBirth;
-        }
+        } else {
+          const date = new Date(userData.birthDate);
+          this.state.birthDate = userData.birthDate;
+        }*/
 
         this.state.firstName = userData.firstName
         this.state.lastName = userData.lastName;
@@ -538,7 +549,7 @@ export class Profile extends Component {
 
         this.state.zipcode = userData.zipcode;
 
-        this.state.birthDate = userData.birthDate;
+
 
         //
         this.state.avatar = userData.avatar ? userData.avatar : null;
@@ -722,8 +733,8 @@ export class Profile extends Component {
 
 
 
-//DEvuelve true si datos ok
-// false si hay error
+  //DEvuelve true si datos ok
+  // false si hay error
   validarDatos(datos) {
 
 
@@ -822,9 +833,9 @@ export class Profile extends Component {
 
   }
 
-  
+
   change_pass() {
-     window.location.assign('/forgotpass');
+    window.location.assign('/forgotpass');
   }
 
   toggler_visibility() {
@@ -883,6 +894,14 @@ export class Profile extends Component {
     var countryData = $("#country").countrySelect("getSelectedCountryData");
     this.state.country = countryData.name;
     this.state.country_iso_code = countryData.iso2;
+
+
+
+
+
+    this.state.phone = this.phonInputSelect.getNumber();
+
+
     //this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
     const datosAEnviar = this.prepararDatosaEnviar(this.state);
@@ -904,8 +923,10 @@ export class Profile extends Component {
     } else {
       console.log("No hay error")
     }
+
+
     this.showSpinner.boton = true;
-    
+
     $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
 
 
@@ -963,7 +984,7 @@ export class Profile extends Component {
         console.log("---- Respuesta OK ----- ")
         console.log(respuesta)
 
-       
+
 
         //Enviar OTP
         if (this.props.newUser) {
@@ -978,7 +999,7 @@ export class Profile extends Component {
           const respuestaOK = respuesta2.completed;
         }
 
-       
+
 
         Swal.fire({
           title: 'User data have been saved',
@@ -999,7 +1020,7 @@ export class Profile extends Component {
             if (ususarioVerificadoOK) {
               window.location.assign(API.redirectURLLogin);
               this.showSpinner.boton = false;
-              
+
             }
 
           }
@@ -1012,7 +1033,7 @@ export class Profile extends Component {
         console.log(respuesta)
         const respuestatxt = respuesta.response ? respuesta.response.data.message : "Not expected response, see console for details";
         this.showSpinner.boton = false;
-        
+
         Swal.fire({
           icon: 'error',
           title: 'Error: ' + cod_respuesta,
@@ -1025,7 +1046,7 @@ export class Profile extends Component {
       console.log("----ERROR: Sin Respuesta del API----- ")
       console.log(error)
       this.showSpinner.boton = false;
-     // $.unblockUI();
+      // $.unblockUI();
       Swal.fire({
         icon: 'error',
         title: 'Unexpected Error',
@@ -1168,12 +1189,12 @@ export class Profile extends Component {
 
 
   onChangeprovince = API.debounce(async (event) => {
-//    this.errores.province = this.validarSiVacio(event.target.value);
+    //    this.errores.province = this.validarSiVacio(event.target.value);
   }, this.timeToBlur);
 
 
   onBlurprovince = (event) => {
-   // this.errores.province = this.validarSiVacio(event.target.value);
+    // this.errores.province = this.validarSiVacio(event.target.value);
   }
 
   onChangecountry = API.debounce(async (event) => {
