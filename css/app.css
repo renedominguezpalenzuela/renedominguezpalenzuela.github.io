@@ -24,6 +24,7 @@
   border-bottom-left-radius: 10px;
 }
 
+/*
 .right {
   background: linear-gradient(212.38deg, rgba(107, 106, 106, 0.7) 0%, rgba(175, 70, 189, 0.71) 100%),
     url('../img/main.jpg');
@@ -32,6 +33,16 @@
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
 
+}*/
+
+
+.right {
+  background: linear-gradient(322deg, rgb(63 63 63 / 74%) 0%, rgb(1 1 229 / 53%) 100%),
+url(../img/main.jpg);
+  color: #fff;
+  position: relative;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 .border-rounded {
