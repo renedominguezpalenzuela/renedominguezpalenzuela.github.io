@@ -170,6 +170,7 @@ export class ListaTR extends Component {
 
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+            console.log(raw_datos)
 
 
 
@@ -681,6 +682,7 @@ export class ListaTR extends Component {
             otrosDatos.beneficiaryPhone = unDato.metadata.destination ? unDato.metadata.destination: '-';
             const senderName =unDato.metadata.senderName ? unDato.metadata.senderName : '-';
             otrosDatos.senderName = senderName ;
+            otrosDatos.receivedAmount = unDato.metadata.amount ? unDato.metadata.amount : '-';
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
             otrosDatos.beneficiaryName = unDato.metadata.receiver_name ? unDato.metadata.receiver_name : '-';
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'PAYMENT_LINK') {
