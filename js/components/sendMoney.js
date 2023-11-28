@@ -142,113 +142,7 @@ export class SendMoney extends Component {
 
     static template = xml`    
     <div class="sm:tw-grid sm:tw-grid-cols-2 tw-gap-2 ">
-            <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-1">
-
-                    
-                <div class="tw-card-body tw-items-center "> 
-
-                        <div class="tw-form-control  tw-w-full ">
-                            <label class="tw-label">
-                                <span class="tw-label-text">You Send (before fee)</span>  
-                            </label> 
-
-                            <div class="tw-join">                        
-                         
-                                <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput" 
-                                 onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
-                                  class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
-                                  t-att-disabled="this.inputsDeshabilitar.sendAmount" />
-                                        
-                                
-                                <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
-                                    <option value="usd">USD</option>
-                                    <option value="eur">EUR</option>
-                                    <option value="cad">CAD</option>   
-                                </select>
-                            </div>
-
-                            <span t-if="this.errores.sendAmount==true" class="error">
-                                Error in field!!!
-                            </span>  
-
-                            <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
-                        
-                            
-                            
-                                <div class=" tw-text-right ">  
-                                    <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
-                                    <t t-esc="this.conversionRate.value"/> 
-                                    <span class="tw-ml-1"> 
-                                    <t t-esc="this.monedas.recibida"/> 
-                                    </span>
-                                </div>
-
-                                
-                                <div class=" tw-text-right "> 
-                                <span class="tw-mr-2"> Send Fee: </span>
-                                    <t t-esc="this.feeSTR.value"/> 
-                                    <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
-                                </div>
-
-
-
-                                <div class=" tw-text-right  "> 
-                                <span class="tw-mr-2"> Total Sending Cost (plus fee): </span>
-                                    <t t-esc="this.totalSendCostSTR.value"/>
-                                    <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
-                                </div> 
-
-                        </div> 
-                    </div>
-                
-                   <div class="tw-form-control tw-w-full ">
-                        <label class="tw-label">
-                            <span class="tw-label-text">Received Amount</span>  
-                        </label> 
-
-                        <div class="tw-join">        
-                                                    
-                            <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   t-on-blur="onBlurReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
-                            class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
-                            t-att-disabled="this.inputsDeshabilitar.sendAmount" />    
-                        
-                            
-                            <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
-                                    <t t-if="(this.state.listaMonedasARecibir) and (this.state.listaMonedasARecibir.length>0)">   
-                                <t t-foreach="this.state.listaMonedasARecibir" t-as="unaMoneda" t-key="unaMoneda">
-                                    <option t-att-value="unaMoneda"   >                                      
-                                        <t t-esc="unaMoneda"/>                                                                                        
-                                    </option>
-                                </t>             
-                                </t>
-                            </select>
-                        </div>
-
-                        <span t-if="this.errores.receiveAmount==true" class="error">
-                            Error in field!!!
-                        </span> 
-
-                        <div class="tw-form-control   row-start-4 col-span-2 w-full ">
-                            <label class="tw-label">
-                                <span class="tw-label-text">Concept</span>
-                            </label>
-                            
-                            <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
-                            <span t-if="this.errores.concept==true" class="error">
-                                Required field!!!
-                            </span> 
-                        </div>
-                    </div> 
-
-                    <div class="tw-card-actions">
-                    <button class="tw-btn tw-btn-primary" t-on-click="onSend">Send</button>
-                </div>
-                    
-                    
-
-
-                </div>
-        </div>
+      
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2">
             <div class="tw-card-body tw-items-center ">
@@ -332,6 +226,115 @@ export class SendMoney extends Component {
 
             </div>
         </div>
+
+
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-1">
+
+                    
+        <div class="tw-card-body tw-items-center "> 
+
+                <div class="tw-form-control  tw-w-full ">
+                    <label class="tw-label">
+                        <span class="tw-label-text">You Send (before fee)</span>  
+                    </label> 
+
+                    <div class="tw-join">                        
+                 
+                        <input type="text" t-ref="inputSendRef"  t-on-input="onChangeSendInput" t-on-blur="onBlurSendInput" 
+                         onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
+                          class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
+                          t-att-disabled="this.inputsDeshabilitar.sendAmount" />
+                                
+                        
+                        <select class="tw-select tw-select-bordered tw-join-item" t-on-input="onChangeCurrencySend" t-ref="inputSendCurrencyRef" >                    
+                            <option value="usd">USD</option>
+                            <option value="eur">EUR</option>
+                            <option value="cad">CAD</option>   
+                        </select>
+                    </div>
+
+                    <span t-if="this.errores.sendAmount==true" class="error">
+                        Error in field!!!
+                    </span>  
+
+                    <div class="tw-text-[0.8rem]  tw-pr-[3vw] tw-mt-[0.5rem]">
+                
+                    
+                    
+                        <div class=" tw-text-right ">  
+                            <span > Exchange rate: 1 <t t-esc="this.monedas.enviada"/> = </span>
+                            <t t-esc="this.conversionRate.value"/> 
+                            <span class="tw-ml-1"> 
+                            <t t-esc="this.monedas.recibida"/> 
+                            </span>
+                        </div>
+
+                        
+                        <div class=" tw-text-right "> 
+                        <span class="tw-mr-2"> Send Fee: </span>
+                            <t t-esc="this.feeSTR.value"/> 
+                            <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                        </div>
+
+
+
+                        <div class=" tw-text-right  "> 
+                        <span class="tw-mr-2"> Total Sending Cost (plus fee): </span>
+                            <t t-esc="this.totalSendCostSTR.value"/>
+                            <span class="tw-ml-1"> <t t-esc="this.monedas.enviada"/> </span>
+                        </div> 
+
+                </div> 
+            </div>
+        
+           <div class="tw-form-control tw-w-full ">
+                <label class="tw-label">
+                    <span class="tw-label-text">Received Amount</span>  
+                </label> 
+
+                <div class="tw-join">        
+                                            
+                    <input type="text" t-ref="inputReceiveRef" t-on-input="onChangeReceiveInput"   t-on-blur="onBlurReceiveInput"  onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"  
+                    class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00"
+                    t-att-disabled="this.inputsDeshabilitar.sendAmount" />    
+                
+                    
+                    <select class="tw-select tw-select-bordered tw-join-item" t-ref="inputReceiveCurrencyRef" t-on-input="onChangeCurrencyRecib" >     
+                            <t t-if="(this.state.listaMonedasARecibir) and (this.state.listaMonedasARecibir.length>0)">   
+                        <t t-foreach="this.state.listaMonedasARecibir" t-as="unaMoneda" t-key="unaMoneda">
+                            <option t-att-value="unaMoneda"   >                                      
+                                <t t-esc="unaMoneda"/>                                                                                        
+                            </option>
+                        </t>             
+                        </t>
+                    </select>
+                </div>
+
+                <span t-if="this.errores.receiveAmount==true" class="error">
+                    Error in field!!!
+                </span> 
+
+                <div class="tw-form-control   row-start-4 col-span-2 w-full ">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Concept</span>
+                    </label>
+                    
+                    <textarea t-ref="concept" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
+                    <span t-if="this.errores.concept==true" class="error">
+                        Required field!!!
+                    </span> 
+                </div>
+            </div> 
+
+            <div class="tw-card-actions">
+            <button class="tw-btn tw-btn-primary" t-on-click="onSend">Send</button>
+        </div>
+            
+            
+
+
+        </div>
+</div>
 
 
         <t t-if="((this.extraFieldLists.credit_party_identifiers_accepted) and (this.extraFieldLists.credit_party_identifiers_accepted.length>0)) or ((this.extraFieldLists.required_documents) and (this.extraFieldLists.required_documents>0))">
@@ -538,6 +541,9 @@ export class SendMoney extends Component {
                 this.evaluarSiPermiteCambiarSendAmount();
                 this.actualizarUIConTipoCambioyFee(0, 0, 0);
 
+                this.errores.servicios = false;
+                this.errores.payers = false;
+
 
                 await this.getListaServicios(cod_iso3);
             });
@@ -612,12 +618,18 @@ export class SendMoney extends Component {
         this.inputReceiveRef.el.value = UImanager.roundDec(0);
 
         this.service_id = event.target.value;
+
+        this.errores.servicios = false;
+            this.errores.payers = false;
+
         if (this.service_id != -1) {
+            
             const cod_iso3 = this.getCodigoPaisFromList();
 
             console.log(this.service_id)
             console.log(cod_iso3)
             await this.getListaPayers(this.service_id, cod_iso3)
+            
 
         } else {
 
@@ -626,6 +638,7 @@ export class SendMoney extends Component {
             this.transactionType = null;
             this.evaluarSiPermiteCambiarSendAmount();
             this.actualizarUIConTipoCambioyFee(0, 0, 0);
+            
         }
 
     }
@@ -644,6 +657,8 @@ export class SendMoney extends Component {
         console.log(event.target.value)
         this.payer_id = event.target.value;
 
+        
+
 
 
         const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id)[0];
@@ -652,6 +667,7 @@ export class SendMoney extends Component {
         this.inputReceiveRef.el.value = UImanager.roundDec(0);
         this.actualizarUIConTipoCambioyFee(0, 0, 0);
         if (payer_seleccionado) {
+            this.errores.payers = false;
 
             if (payer_seleccionado.transaction_types.B2B) {
                 console.log("B2B")
@@ -825,49 +841,49 @@ export class SendMoney extends Component {
     validarDatos(datos) {
         console.log(datos)
         //--------------------- Product ID --------------------------------------------
-        if (!datos.productId || datos.productId == -1) {
+       /* if (!datos.productId || datos.productId == -1) {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Please select the product'
             })
             return false;
-        }
+        }*/
 
         //--------------------- Phone number --------------------------------------------
         //TODO: Validar que sea un numero correcto
-        if (datos.destinations.length <= 0) {
+        /*if (datos.destinations.length <= 0) {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Please enter the phone number to recharge'
             })
             return false;
-        }
+        }*/
 
-        if (!datos.destinations[0] || datos.destinations[0] === '') {
+        /*if (!datos.destinations[0] || datos.destinations[0] === '') {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Please enter the phone number to recharge'
             })
             return false;
-        }
+        }*/
 
         //--------------------- Receiver Name --------------------------------------------
-        if (!datos.receiverName || datos.receiverName === '') {
+        /*if (!datos.receiverName || datos.receiverName === '') {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: "Please enter receiver's name"
             })
             return false;
-        }
+        }*/
 
         //--------------------- Currency --------------------------------------------
-        if (!datos.currency || datos.currency === '') {
+        /*if (!datos.currency || datos.currency === '') {
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Please select currency'
             })
             return false;
-        }
+        }*/
 
 
 
@@ -1028,15 +1044,103 @@ export class SendMoney extends Component {
 
         const pais_seleccionado = $("#country").countrySelect("getSelectedCountryData").name;
 
-        const servicio = this.state.listaServicios.filter((unServicio) => unServicio.id == this.service_id)[0].name
+        
+        let servicio = null;
+
+        if(this.state.listaServicios) {
+            const servicioOBJ = this.state.listaServicios.filter((unServicio) => unServicio.id == this.service_id);
+
+            if (servicioOBJ && servicioOBJ.length>0) {
+                servicio = servicioOBJ[0].name;
+                this.errores.servicios = false;
+            } 
+        } 
+        
+        if (!servicio) {
+            console.log("Selecciona servicio")
+            this.errores.servicios = true;
+            return;
+        }
+        
 
 
-        const payer_seleccionado = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id)[0].name;
+        let payer_seleccionado = null;
+
+        if(this.state.listaServicios) {
+            const payer_seleccionadoOBJ = this.state.listaPayers.filter(unPayer => unPayer.id == this.payer_id);
+            if (payer_seleccionadoOBJ && payer_seleccionadoOBJ.length>0) {
+                payer_seleccionado = payer_seleccionadoOBJ[0].name
+                this.errores.payers = false;
+            }
+        } 
+        
+        if (!payer_seleccionado) {
+            console.log("Selecciona Payer")
+            this.errores.payers = true;
+            return;
+        }
 
         const enviar = this.inputSendRef.el.value;
         const recibir = this.inputReceiveRef.el.value;
         const monedaEnviar = this.inputSendCurrencyRef.el.value;
         const monedaRecibir = this.inputReceiveCurrencyRef.el.value;
+
+
+        
+
+        //TODO: Validaciones
+        const datosTX = {
+
+
+
+            payer_id: this.payer_id,
+            transaction_type: this.transactionType,
+            sourceCurrency: this.inputSendCurrencyRef.el.value.toUpperCase(),
+            sourceAmount: Number(this.inputSendRef.el.value),
+            destinationAmount: Number(this.inputReceiveRef.el.value),
+            purpose_of_remittance: this.concept.el.value,
+            paymentLink: true,
+            merchant_external_id: API.generateRandomID(),
+            mode: "SOURCE_AMOUNT",
+            required_sending_entity_fields: Object.fromEntries(
+                this.extraFieldLists.required_sending_entity_fields.map(obj => [obj.name, obj.value])
+            ),
+            required_receiving_entity_fields: Object.fromEntries(
+                this.extraFieldLists.required_receiving_entity_fields.map(obj => [obj.name, obj.value])
+            ),
+            credit_party_identifiers_accepted: Object.fromEntries(
+                this.extraFieldLists.credit_party_identifiers_accepted.map(obj => [obj.name, obj.value])
+            ),
+            required_documents: Object.fromEntries(
+                this.extraFieldLists.required_documents.map(obj => [obj.name, obj.value])
+            ),
+
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+        console.log(datosTX);
+
+       
+
+        // return;
+
+        
+         if (!this.validarDatos(datosTX)) {
+             console.log("Validation Errors");
+             return;
+         }
+
+         return;
 
 
 
@@ -1122,58 +1226,6 @@ export class SendMoney extends Component {
 
 
 
-
-        //TODO: Validaciones
-        const datosTX = {
-
-
-
-            payer_id: this.payer_id,
-            transaction_type: this.transactionType,
-            sourceCurrency: this.inputSendCurrencyRef.el.value.toUpperCase(),
-            sourceAmount: Number(this.inputSendRef.el.value),
-            destinationAmount: Number(this.inputReceiveRef.el.value),
-            purpose_of_remittance: this.concept.el.value,
-            paymentLink: true,
-            merchant_external_id: API.generateRandomID(),
-            mode: "SOURCE_AMOUNT",
-            required_sending_entity_fields: Object.fromEntries(
-                this.extraFieldLists.required_sending_entity_fields.map(obj => [obj.name, obj.value])
-            ),
-            required_receiving_entity_fields: Object.fromEntries(
-                this.extraFieldLists.required_receiving_entity_fields.map(obj => [obj.name, obj.value])
-            ),
-            credit_party_identifiers_accepted: Object.fromEntries(
-                this.extraFieldLists.credit_party_identifiers_accepted.map(obj => [obj.name, obj.value])
-            ),
-            required_documents: Object.fromEntries(
-                this.extraFieldLists.required_documents.map(obj => [obj.name, obj.value])
-            ),
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        console.log(datosTX);
-
-       
-
-        // return;
-
-        /*
-         if (!this.validarDatos(datosTX)) {
-             console.log("Validation Errors");
-             return;
-         }*/
 
 
         try {
