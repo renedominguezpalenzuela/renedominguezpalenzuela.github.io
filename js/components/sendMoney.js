@@ -326,9 +326,9 @@ export class SendMoney extends Component {
                 </div>
             </div> 
 
-            <div class="tw-card-actions">
-            <button class="tw-btn tw-btn-primary" t-on-click="onSend">Send</button>
-        </div>
+           
+            <button class="btn-primary tw-w-[30%]" t-on-click="onSend">Send</button>
+        
             
             
 

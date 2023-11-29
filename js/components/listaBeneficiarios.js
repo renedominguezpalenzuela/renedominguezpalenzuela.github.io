@@ -32,7 +32,7 @@ export class ListaBeneficiarios extends Component {
 
     
     <table  id="container-listbeneficiary" class="display nowrap tw-mt-2 " style="width:100%" >
-        <thead class="tw-bg-[#4F50E9] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+        <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
             <tr>
                     <th data-priority="1">Beneficiary</th>    
                     <th>ID</th>        

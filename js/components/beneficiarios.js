@@ -345,7 +345,7 @@ export class Beneficiarios extends Component {
 
         <div class="tw-card-actions">
                 <div class=" tw-w-full tw-flex tw-justify-start  tw-mt-3 tw-mb-2  ">
-                      <button id="benSaveBeneficiario" class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
+                      <button id="benSaveBeneficiario" class="btn-primary  tw-w-[30%] tw-mr-3" t-on-click="onSaveBeneficiario">Save</button>
                 </div>
 
       

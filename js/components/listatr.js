@@ -44,7 +44,7 @@ export class ListaTR extends Component {
 
     
     <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
-    <thead class="tw-bg-[#4F50E9] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+    <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
         <tr>
                 <th >Transaction ID</th>    
                  <th class="centrar">Type</th> 

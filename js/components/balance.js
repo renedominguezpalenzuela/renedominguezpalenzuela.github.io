@@ -24,7 +24,7 @@ export class Balance extends Component {
   static template = xml`  
 
 
-    <div class=" tw-bg-[#4F50E9] tw-p-2 tw-mt-1  tw-text-[#ffffff]  tw-rounded-md">
+    <div class=" tw-bg-[#0652AC] tw-p-2 tw-mt-1  tw-text-[#ffffff]  tw-rounded-md">
        <t t-if="balance.saldos">
         <t t-foreach="balance.saldos" t-as="undato" t-key="undato.currency">                
           <div class="tw-flex tw-flex-row  ">

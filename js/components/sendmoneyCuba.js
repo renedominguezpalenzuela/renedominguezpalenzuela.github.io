@@ -395,7 +395,7 @@ export class SendMoneyCuba extends Component {
         <!-- Beneficiario END -->
 
 
-       <button class="tw-btn tw-btn-primary tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[30%]" t-on-click="onSendMoney">Send</button>
+       <button class="btn-primary  tw-mt-2 sm:tw-row-start-2 tw-row-start-3 tw-w-[40%]" t-on-click="onSendMoney">Send</button>
 
 
      <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 sm:tw-row-start-3 tw-row-start-4 sm:tw-col-span-2 tw-p-3">

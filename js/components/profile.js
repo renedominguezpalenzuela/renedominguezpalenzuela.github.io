@@ -173,7 +173,7 @@ export class Profile extends Component {
 
         <div  t-if="!this.props.newUser" class="sm:tw-flex sm:tw-flex-row  tw-w-full">
             <!-- <a class="tw-ml-1" href="/forgotpass.html">     -->
-               <button  class="submit-btn" t-on-click="change_pass">
+               <button  class="btn-secondary" t-on-click="change_pass">
                   Change Password
                 </button>
             <!-- </a>             -->
@@ -440,7 +440,7 @@ export class Profile extends Component {
         </div>
 
 
-        <button class="tw-btn tw-btn-primary tw-w-[30%]" t-on-click="onSaveAllData">
+        <button class="btn-primary  tw-w-[30%]" t-on-click="onSaveAllData">
         <!-- <span> -->
         Save
       <!-- </span>

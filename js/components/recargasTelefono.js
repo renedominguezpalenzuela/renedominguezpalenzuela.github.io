@@ -135,9 +135,9 @@ export class RecargasTelefono extends Component {
             </div>
 
               
-            <div class="tw-card-actions">
-            <button class="tw-btn tw-btn-primary" t-on-click="onSendRecharge">Send Recharge</button>
-          </div>
+           
+            <button class=" btn-primary tw-w-[60%]" t-on-click="onSendRecharge">Send Recharge</button>
+        
                 
             </div>
         </div>
