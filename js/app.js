@@ -30,7 +30,7 @@ class Root extends Component {
             <h3>SIGN IN</h3>
             <input type="text" placeholder="USERNAME" id="usr" t-ref="input_user"/>
             <input type="password" placeholder="PASSWORD" id="pass" t-ref="input_pass"/> 
-            <div class="tw-flex ">                 
+            <div class="tw-flex gray-text-color">                 
                <a class="tw-ml-1" href="/forgotpass.html">Forgot password?</a>
             </div>
 
@@ -40,7 +40,7 @@ class Root extends Component {
             </div>
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
 
-            <div class="tw-mt-6 tw-flex tw-justify-center">Don't have an account yet?
+            <div class="tw-mt-6 tw-flex tw-justify-center gray-text-color">Don't have an account yet?
              <a class="tw-ml-1" href="/register.html">Sign Up</a>
             </div>
           </div>
