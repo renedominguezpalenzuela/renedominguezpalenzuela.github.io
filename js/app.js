@@ -48,7 +48,7 @@ class Root extends Component {
           <div class="tw-h-full tw-w-[100%] tw-hidden sm:tw-block right tw-p-5 ">
             <div class="right-text">
               <h2>Volttus</h2>
-              <h5>Lorem, ipsum dolor sit amet consectetur </h5>
+              <h5>End-to-End Payment Platform </h5>
             </div>
           </div>
 

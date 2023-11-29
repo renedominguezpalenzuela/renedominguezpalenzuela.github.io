@@ -37,8 +37,9 @@
 
 
 .right {
-  background: linear-gradient(322deg, rgb(63 63 63 / 74%) 0%, rgb(1 1 229 / 53%) 100%),
-url(../img/main.jpg);
+  background: url(../img/main.jpg);
+  background-size:cover;
+  background-repeat:  no-repeat;
   color: #fff;
   position: relative;
   border-top-right-radius: 10px;
@@ -115,7 +116,7 @@ color: #fff; */
 .right .right-text {
   /* height: 100%; */
   /* position: relative; */
-  transform: translate(0%, 256%);
+  transform: translate(0%, 169%);
   
 }
 

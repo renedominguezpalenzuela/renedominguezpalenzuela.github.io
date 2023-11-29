@@ -350,10 +350,10 @@ export class SendMoney extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                             </label>
-                            <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" />   
-                            <!--  <span t-if="this.errores.unField.name==true" class="error">
+                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" />   
+                              <span t-if="unField.error==true" class="error" >
                                     Required field!!!
-                                </span>  -->
+                              </span>  
                         </div>                             
                     </t>     
                     
@@ -362,10 +362,10 @@ export class SendMoney extends Component {
                         <label class="tw-label">
                             <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                         </label>
-                        <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields"  />   
-                        <!-- <span t-if="this.errores.unField.name==true" class="error">
+                        <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields"  />   
+                        <span t-if="unField.error==true" class="error" >
                                     Required field!!!
-                        </span>  -->
+                        </span> 
                     </div>                             
                 </t>       
 
@@ -387,10 +387,10 @@ export class SendMoney extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                             </label>
-                            <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
-                            <!-- <span t-if="this.errores.unField.name==true" class="error">
-                            Required field!!!
-                            </span>  -->
+                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                            <span t-if="unField.error==true" class="error" >
+                                 Required field!!!
+                            </span> 
                         </div>                             
                     </t>                 
                 </div>
@@ -410,10 +410,10 @@ export class SendMoney extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                                 </label>
-                                <input type="text" t-model="unField.value" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
-                                <!-- <span t-if="this.errores.unField.name==true" class="error">
+                                <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                                <span t-if="unField.error==true" class="error" >
                                     Required field!!!
-                                </span>  -->
+                                </span> 
                             </div>                             
                         </t>            
             </div>
@@ -436,9 +436,20 @@ export class SendMoney extends Component {
 
 
     onChangeExtraFields = API.debounce(async (event) => {
-
-        console.log(event.target.id)
         console.log("ONCHange")
+        //console.log(event.target.id)
+
+        const id = event.target.id;
+
+        //myarray.find(someobject => someobject.key == 'B').mark = "marked!"
+
+
+        this.extraFieldLists.required_receiving_entity_fields.find(unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(event.target.value);
+
+
+
+        
+        
         ///this.errores.providerValue = this.validarSiVacio(event.target.value);
     }, 700);
 
@@ -745,7 +756,11 @@ export class SendMoney extends Component {
                 return {
                     name: unField,
                     label: this.getFieldLabel(unField),
-                    value: ''
+                    value: '',
+                    error: false,
+                    id_input:  "required_receiving_entity_fields"+unField
+                   
+                    
                 }
             }
         );
@@ -755,7 +770,10 @@ export class SendMoney extends Component {
                 return {
                     name: unField,
                     label: this.getFieldLabel(unField),
-                    value: ''
+                    value: '',
+                    error: false,
+                    id_input:  "required_sending_entity_fields"+unField
+                  
                 }
             }
         );
@@ -769,7 +787,10 @@ export class SendMoney extends Component {
                 return {
                     name: unField,
                     label: this.getFieldLabel(unField),
-                    value: ''
+                    value: '',
+                    error: false,
+                    id_input:  "credit_party_identifiers_accepted"+unField
+                   
                 }
             }
         );
@@ -779,7 +800,11 @@ export class SendMoney extends Component {
                 return {
                     name: unField,
                     label: this.getFieldLabel(unField),
-                    value: ''
+                    value: '',
+                    error: false,
+                    id_input:  "required_documents"+unField
+                   
+
                 }
             }
         );
@@ -840,6 +865,54 @@ export class SendMoney extends Component {
 
     validarDatos(datos) {
         console.log(datos)
+        let hayerror = false;
+
+        for (let i = 0; i < this.extraFieldLists.required_receiving_entity_fields.length; i++) {
+            if (!this.extraFieldLists.required_receiving_entity_fields[i].value) {
+                console.log(this.extraFieldLists.required_receiving_entity_fields[i].value)
+                hayerror = true;
+                this.extraFieldLists.required_receiving_entity_fields[i].error = true;
+            } else {
+                this.extraFieldLists.required_receiving_entity_fields[i].error = false;
+            }
+            
+        } 
+         
+
+        for (let i = 0; i < this.extraFieldLists.required_sending_entity_fields.length; i++) {
+            if (!this.extraFieldLists.required_sending_entity_fields[i].value) {
+                console.log(this.extraFieldLists.required_sending_entity_fields[i].value)
+                hayerror = true;
+                this.extraFieldLists.required_sending_entity_fields[i].error = true;
+            } else {
+                this.extraFieldLists.required_sending_entity_fields[i].error = false;
+            }
+            
+        } 
+
+        for (let i = 0; i < this.extraFieldLists.credit_party_identifiers_accepted.length; i++) {
+            if (!this.extraFieldLists.credit_party_identifiers_accepted[i].value) {
+                console.log(this.extraFieldLists.credit_party_identifiers_accepted[i].value)
+                hayerror = true;
+                this.extraFieldLists.credit_party_identifiers_accepted[i].error = true;
+            } else {
+                this.extraFieldLists.credit_party_identifiers_accepted[i].error = false;
+            }
+            
+        } 
+
+        for (let i = 0; i < this.extraFieldLists.required_documents.length; i++) {
+            if (!this.extraFieldLists.required_documents[i].value) {
+                console.log(this.extraFieldLists.required_documents[i].value)
+                hayerror = true;
+                this.extraFieldLists.required_documents[i].error = true;
+            } else {
+                this.extraFieldLists.required_documents[i].error = false;
+            }
+            
+        }
+
+
         //--------------------- Product ID --------------------------------------------
        /* if (!datos.productId || datos.productId == -1) {
             Swal.fire({
@@ -888,7 +961,7 @@ export class SendMoney extends Component {
 
 
 
-        return true;
+        return hayerror;
 
     }
 
