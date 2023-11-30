@@ -33,7 +33,7 @@ export class SendMoney extends Component {
     })
 
 
-    tipo_operacion = [11];
+    tipo_operacion = [11, 6];
 
     tipoVista = 'SEND_MONEY';
 
