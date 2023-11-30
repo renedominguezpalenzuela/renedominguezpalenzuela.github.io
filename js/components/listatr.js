@@ -420,9 +420,9 @@ export class ListaTR extends Component {
                     { data: 'receivedAmount', width: '35%', },
                     { data: 'receivedCurrency', width: '35%', },
 
-                    { data: 'type', width: '15%' },
-                    { data: 'type2', width: '15%' },
-                    { data: 'externalID', width: '13%' }
+                    { data: 'type', width: '15%', visible: false },
+                    { data: 'type2', width: '15%', visible: false },
+                    { data: 'externalID', width: '13%', visible: false  }
 
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
