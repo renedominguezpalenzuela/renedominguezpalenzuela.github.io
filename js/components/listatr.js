@@ -355,74 +355,59 @@ export class ListaTR extends Component {
             }
 
             //CCreando la tabla
+            const showCol = await this.mostrarColumnas(this.props.tipoVista)
 
 
             //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
-                /* "columnDefs": [
-                     { responsivePriority: 1, targets: 0 },
-                     { responsivePriority: 2, targets: 1 },
-                     { responsivePriority: 3, targets: 2 },
-                     { responsivePriority: 4, targets: 3 },
-                     { responsivePriority: 5, targets: 4 }
- 
-                 ],*/
+        
                 columns: [
-                    { data: 'transactionID', width: '20%' },
-                    { data: 'userTextType', width: '30%' },
-
-
-
-                    {
-                        data: 'transactionStatus', width: '20%',
+                    { data: 'transactionID', width: '25%' , visible: showCol.transactionID },
+                    { data: 'userTextType', width: '30%' , visible: showCol.userTextType },
+                    { data: 'transactionStatus', width: '23%',
                         render: function (data, type, row) {
                             let color = colorStatus(data)
                             return `<span class="state" style="background-color:${color};"> ${data} </span>`;
-                        }
+                        },
+                        visible: showCol.transactionID 
                     },
-                    {
-                        data: 'transactionAmount', width: '20%', className: "amount-value",
+                    { data: 'transactionAmount', width: '18%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
-                        }
+                        },
+                        visible: showCol.transactionStatus 
 
                     },
-
-                    {
-                        data: 'feeusercurr', width: '8%', className: "amount-value",
+                    { data: 'feeusercurr', width: '10%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
-                        }
+                        },
+                        visible: showCol.feeusercurr 
                     },
-
-                    { data: 'currency', width: '10%', className: "centrar" },
-                    {
-                        data: 'createdAt', width: '30%',
+                    { data: 'currency', width: '8%', className: "centrar", visible: showCol.currency },
+                    { data: 'createdAt', width: '30%',
                         render: function (data, type, row) {
-
-
                             //const options = { year: 'numeric', month: 'long', day: 'numeric' };
-
                             const fecha = new Date(data);
                             return format(fecha)
                             //fecha.toLocaleTimeString('en-EN', options)
                             //event.toLocaleDateString(undefined, options)
                             //moment(data).format("MM/DD/YYYY");
                         },
+                        visible: showCol.createdAt 
                     },
-                    { data: 'beneficiaryName', width: '35%', },
-                    { data: 'beneficiaryPhone', width: '35%', },
-                    { data: 'beneficiaryCardNumber', width: '35%', },
-                    { data: 'senderName', width: '35%', },
-                    { data: 'receivedAmount', width: '35%', },
-                    { data: 'receivedCurrency', width: '35%', },
-
-                    { data: 'type', width: '15%', visible: false },
-                    { data: 'type2', width: '15%', visible: false },
-                    { data: 'externalID', width: '13%', visible: false  }
+                    { data: 'beneficiaryName', width: '35%', visible: showCol.beneficiaryName },
+                    { data: 'beneficiaryPhone', width: '35%', visible: showCol.beneficiaryPhone },
+                    { data: 'beneficiaryCardNumber', width: '35%', visible: showCol.beneficiaryCardNumber },
+                    { data: 'senderName', width: '35%', visible: showCol.senderName },
+                    { data: 'receivedAmount', width: '35%', visible: showCol.receivedAmount },
+                    { data: 'receivedCurrency', width: '35%', visible: showCol.receivedCurrency },
+                    { data: 'type', width: '15%', visible: showCol.type  },
+                    { data: 'type2', width: '15%', visible: showCol.type2  },
+                    { data: 'externalID', width: '13%', visible: showCol.externalID   }
 
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
@@ -878,6 +863,77 @@ export class ListaTR extends Component {
         }
 
 
+    }
+
+    //se le pasa de parametro un string con el nombre de la columna y el tipo de vista
+    // devuelve
+    // objeto donde cada elemento indica si se muestra o no la columna correspondiente
+    // true -- mostrar  | false -- no mostrar
+    mostrarColumnas = async (tipoVista) => {
+
+        console.log("Tipo de vista")
+        console.log(tipoVista);
+
+        let showCol = {
+            transactionID: true,
+            userTextType: true,
+            transactionStatus: true,
+            transactionAmount: true,
+            feeusercurr: true,
+            currency: true,
+            createdAt: true,
+            beneficiaryName: true,
+            beneficiaryPhone: true,
+            beneficiaryCardNumber: true,
+            senderName: true,
+            receivedAmount: true,
+            receivedCurrency: true,
+            type: true,
+            type2: true,
+            externalID: true,
+        }
+
+        
+        switch (tipoVista) {
+            case 'SEND_MONEY':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+                
+                break;
+
+            case 'SEND_MONEY_CUBA':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+
+                break;  
+
+            case 'HOME_DELIVERY':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+                
+                break; 
+
+            case 'PHONE_RECHARGE':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+                
+                break;                
+        
+            default:
+                break;
+        }
+
+
+
+
+        return showCol;
     }
 
 

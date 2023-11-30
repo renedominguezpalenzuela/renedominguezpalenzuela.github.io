@@ -35,6 +35,8 @@ export class SendMoney extends Component {
 
     tipo_operacion = [11];
 
+    tipoVista = 'SEND_MONEY';
+
     //si esta en true --- se deshabilita
     inputsDeshabilitar = useState({
         sendAmount: true
@@ -350,7 +352,7 @@ export class SendMoney extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                             </label>
-                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" />   
+                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" t-on-blur="onBlurExtraFields"/>   
                               <span t-if="unField.error==true" class="error" >
                                     Required field!!!
                               </span>  
@@ -362,7 +364,7 @@ export class SendMoney extends Component {
                         <label class="tw-label">
                             <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                         </label>
-                        <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields"  />   
+                        <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeExtraFields" t-on-blur="onBlurExtraFields" />   
                         <span t-if="unField.error==true" class="error" >
                                     Required field!!!
                         </span> 
@@ -387,7 +389,7 @@ export class SendMoney extends Component {
                             <label class="tw-label">
                                 <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                             </label>
-                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                            <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" t-on-blur="onBlurExtraFields"/>   
                             <span t-if="unField.error==true" class="error" >
                                  Required field!!!
                             </span> 
@@ -410,7 +412,7 @@ export class SendMoney extends Component {
                                 <label class="tw-label">
                                     <span class="tw-label-text"><t t-esc="unField.label"/> </span>
                                 </label>
-                                <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" />   
+                                <input type="text" t-model="unField.value" t-att-id="unField.id_input" t-att-placeholder="unField.label" class="tw-input tw-input-bordered tw-w-full "   t-on-input="onChangeExtraFields" t-on-blur="onBlurExtraFields" />   
                                 <span t-if="unField.error==true" class="error" >
                                     Required field!!!
                                 </span> 
@@ -426,7 +428,7 @@ export class SendMoney extends Component {
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
             <div class="tw-card-body tw-items-center  ">            
-                <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+                <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
             </div>
         </div>
 
@@ -439,23 +441,52 @@ export class SendMoney extends Component {
   `;
 
 
+    validarExtraFields(id , value) {
+        const id01 = 'credit_party_identifiers_accepted';      
+        if (id.substring(0, id01.length )===id01) {
+            this.extraFieldLists.credit_party_identifiers_accepted.find(
+                unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(value);
+
+        }
+  
+        const id02 = 'required_receiving_entity_fields';
+        if (id.substring(0, id02.length )===id02) {
+            this.extraFieldLists.required_receiving_entity_fields.find(
+                unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(value);
+        }
+
+        const id03 = 'required_sending_entity_fields';
+        if (id.substring(0, id03.length )===id03) {
+            this.extraFieldLists.required_sending_entity_fields.find(
+                unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(value);
+        }
+
+        const id04 = 'required_documents';
+        if (id.substring(0, id04.length )===id04) {
+            this.extraFieldLists.required_documents.find(
+                unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(value);
+        }
+
+    }
+
     onChangeExtraFields = API.debounce(async (event) => {
         console.log("ONCHange")
-        //console.log(event.target.id)
+        console.log(event.target.id)
 
         const id = event.target.id;
+        this.validarExtraFields(id, event.target.value);
 
-        //myarray.find(someobject => someobject.key == 'B').mark = "marked!"
-
-
-        this.extraFieldLists.required_receiving_entity_fields.find(unObjeto => unObjeto.id_input === id).error = UImanager.validarSiVacio(event.target.value);
-
-
-
-        
-        
-        ///this.errores.providerValue = this.validarSiVacio(event.target.value);
     }, 700);
+
+
+    onBlurExtraFields = (event) => {
+        console.log("ONBLUR")
+        console.log(event.target.id)
+
+        const id = event.target.id;
+        this.validarExtraFields(id);
+
+    }
 
     static props = ["urlHome"];
     static defaultProps = {

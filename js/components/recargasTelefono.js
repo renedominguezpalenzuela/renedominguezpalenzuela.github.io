@@ -62,6 +62,7 @@ export class RecargasTelefono extends Component {
     }*/
 
     tipo_operacion = [6, 7];
+    tipoVista = 'PHONE_RECHARGE';
 
 
     static components = { ListaTR };
@@ -199,7 +200,7 @@ export class RecargasTelefono extends Component {
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
             <div class="tw-card-body tw-items-center  ">
             
-            <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+            <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
             </div>
         </div>
 

@@ -86,6 +86,7 @@ export class SendMoneyCuba extends Component {
 
 
   tipo_operacion = [1, 2];
+  tipoVista = 'SEND_MONEY_CUBA';
 
 
   beneficiariosNames = useState({
@@ -400,7 +401,7 @@ export class SendMoneyCuba extends Component {
 
      <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 sm:tw-row-start-3 tw-row-start-4 sm:tw-col-span-2 tw-p-3">
       
-         <ListaTR tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
+         <ListaTR  tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
       
      </div>
       
