@@ -124,7 +124,8 @@ export class Beneficiarios extends Component {
                         </div> 
 
                         <div class=" tw-w-full sm:tw-row-start-1 sm:tw-col-start-2 tw-flex tw-justify-start tw-items-end tw-mt-3  ">
-                            <button class="tw-btn tw-btn-primary  tw-w-[38%] tw-mr-3" t-on-click="onNewBeneficiario">New</button>
+                            <button class="tw-btn btn-secundary  tw-w-[38%] tw-mr-3" t-on-click="onNewBeneficiario">New</button>
+                            
                           
                             
                         </div>
