@@ -294,7 +294,7 @@ html, body {
   /* hsl(var(--b2) / var(--tw-bg-opacity));*/
   --tw-text-opacity: 1;
   color:  white;
-  // hsl(var(--bc) / var(--tw-text-opacity));
+  
 }
 
 
