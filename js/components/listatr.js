@@ -18,7 +18,7 @@ export class ListaTR extends Component {
     datos = null;
     //grid = null;
     tabla = null;
-   // senderName = '-';
+    // senderName = '-';
 
     //Variables para el socket
     socketActivo = true;
@@ -31,10 +31,15 @@ export class ListaTR extends Component {
 
     total_tx_a_solicitar = 50;
 
+    minDateFiltro = null;
+    maxDateFiltro = null;
+
+    tipoOperacionFiltro = -1;
 
 
 
 
+  
 
 
 
@@ -42,6 +47,56 @@ export class ListaTR extends Component {
 
     static template = xml`  
 
+
+    <table class="inputs tw-mb-2">
+        <tbody>
+            <tr  >
+
+               <td class="tw-w-[22rem] ">
+                    <div>
+                        <span>From:</span>
+                        <span class="tw-ml-2">
+                           <input type="text" id="min" name="min"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered" />
+                        </span> 
+                    </div>
+                    
+                    <div>
+                        <span>To:</span>
+                        <span class="tw-ml-2">
+                            <input type="text" id="max" name="max"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered"/>
+                        </span>
+                    </div>
+                    
+                </td>
+
+                <td>
+                    <button  class="tw-btn"  t-on-click="resetRange" >Reset range </button>
+                </td>
+
+                <td t-if="this.props.tipoVista=='' || this.props.tipoVista==null" class="tw-w-[16rem] ">
+                <div>
+                    <span>Type:</span>
+                    <span class="tw-ml-2">
+                         <select class="tw-select tw-select-bordered tw-join-item" t-att-value="this.tipos_operaciones"  t-on-input="onChangeType" t-ref="inputType" >                    
+                        <option  t-att-value="-1" >Select Tr. Type</option>
+                          <t t-if="(this.tipos_operaciones) and (this.tipos_operaciones.length>0) ">
+                           <t  t-foreach="this.tipos_operaciones" t-as="unTipo" t-key="unTipo.cod_tipo">
+                                <option t-att-value="unTipo.cod_tipo">
+                                    <t t-esc="unTipo.usertext"/>                                  
+                                </option>
+                          </t>       
+                        </t>        
+                        </select> 
+                    </span> 
+                </div>
+                  
+                </td>
+
+            </tr>
+        </tbody>
+    </table>
+
+   
     
     <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
     <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
@@ -98,6 +153,10 @@ export class ListaTR extends Component {
 
     setup() {
 
+        this.tipos_operaciones = tipos_operaciones;
+
+   
+
         API.setRedirectionURL(this.props.urlHome);
 
 
@@ -110,12 +169,7 @@ export class ListaTR extends Component {
 
         onWillStart(async () => {
 
-
-
-
-
-
-
+          
 
 
 
@@ -125,6 +179,8 @@ export class ListaTR extends Component {
 
         onMounted(async () => {
             // do something here
+
+      
 
 
 
@@ -169,6 +225,8 @@ export class ListaTR extends Component {
 
 
 
+
+            
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
             console.log(raw_datos)
 
@@ -247,6 +305,10 @@ export class ListaTR extends Component {
                 this.datos = await this.transformarRawDatos(raw_datos);
                 if (this.datos) {
                     this.actualizarDatos(this.datos);
+
+                    // Create date inputs
+
+             
                 }
 
 
@@ -358,37 +420,51 @@ export class ListaTR extends Component {
             const showCol = await this.mostrarColumnas(this.props.tipoVista)
 
 
+            this.minDateFiltro = new DateTime('#min', {
+                format: 'YYYY-MM-DD',
+
+            });
+            this.maxDateFiltro = new DateTime('#max', {
+                format: 'YYYY-MM-DD',
+
+            });
+
+
             //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
             this.tabla = $(tableId).DataTable({
                 data: this.datos,
-        
+
                 columns: [
-                    { data: 'transactionID', width: '25%' , visible: showCol.transactionID },
-                    { data: 'userTextType', width: '30%' , visible: showCol.userTextType },
-                    { data: 'transactionStatus', width: '23%',
+                    { data: 'transactionID', width: '25%', visible: showCol.transactionID },
+                    { data: 'userTextType', width: '30%', visible: showCol.userTextType },
+                    {
+                        data: 'transactionStatus', width: '23%',
                         render: function (data, type, row) {
                             let color = colorStatus(data)
                             return `<span class="state" style="background-color:${color};"> ${data} </span>`;
                         },
-                        visible: showCol.transactionID 
+                        visible: showCol.transactionID
                     },
-                    { data: 'transactionAmount', width: '18%', className: "amount-value",
+                    {
+                        data: 'transactionAmount', width: '18%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
                         },
-                        visible: showCol.transactionStatus 
+                        visible: showCol.transactionStatus
 
                     },
-                    { data: 'feeusercurr', width: '10%', className: "amount-value",
+                    {
+                        data: 'feeusercurr', width: '10%', className: "amount-value",
                         render: function (data, type, row) {
                             let valor = UImanager.roundDec(data);
                             return `<span class="amount-value" > ${valor} </span>`;
                         },
-                        visible: showCol.feeusercurr 
+                        visible: showCol.feeusercurr
                     },
                     { data: 'currency', width: '8%', className: "centrar", visible: showCol.currency },
-                    { data: 'createdAt', width: '30%',
+                    {
+                        data: 'createdAt', width: '30%',
                         render: function (data, type, row) {
                             //const options = { year: 'numeric', month: 'long', day: 'numeric' };
                             const fecha = new Date(data);
@@ -397,7 +473,7 @@ export class ListaTR extends Component {
                             //event.toLocaleDateString(undefined, options)
                             //moment(data).format("MM/DD/YYYY");
                         },
-                        visible: showCol.createdAt 
+                        visible: showCol.createdAt
                     },
                     { data: 'beneficiaryName', width: '35%', visible: showCol.beneficiaryName },
                     { data: 'beneficiaryPhone', width: '35%', visible: showCol.beneficiaryPhone },
@@ -405,9 +481,9 @@ export class ListaTR extends Component {
                     { data: 'senderName', width: '35%', visible: showCol.senderName },
                     { data: 'receivedAmount', width: '35%', visible: showCol.receivedAmount },
                     { data: 'receivedCurrency', width: '35%', visible: showCol.receivedCurrency },
-                    { data: 'type', width: '15%', visible: showCol.type  },
-                    { data: 'type2', width: '15%', visible: showCol.type2  },
-                    { data: 'externalID', width: '13%', visible: showCol.externalID   }
+                    { data: 'type', width: '15%', visible: showCol.type },
+                    { data: 'type2', width: '15%', visible: showCol.type2 },
+                    { data: 'externalID', width: '13%', visible: showCol.externalID }
 
                     /*{
                         data: 'feeusd', width: '4%', className: "amount-value",
@@ -509,6 +585,10 @@ export class ListaTR extends Component {
 
 
 
+
+
+
+
             // this.tabla.columns.adjust().draw();
 
 
@@ -536,6 +616,80 @@ export class ListaTR extends Component {
 
 
             }
+
+
+                
+
+                    //Refilter the table
+                    document.querySelectorAll('#min, #max').forEach((el) => {
+                        el.addEventListener('change', () => this.tabla.draw());
+                    })
+
+
+                    // Filtro para las fechas
+                    DataTable.ext.search.push( (settings, data, dataIndex) => {
+
+                        if ((this.minDateFiltro==null || this.maxDateFiltro == null)) {
+                            return true;
+                        } 
+                      
+                        //UImanager.timeZoneTransformer(userData.birthDate).fromUtc
+                        let min = UImanager.timeZoneTransformer(this.minDateFiltro.val()).fromUtc;
+                        let max = UImanager.timeZoneTransformer(this.maxDateFiltro.val()).fromUtc;
+
+                        if (min.getFullYear() < 1980) {
+                            min = null;
+                        } else {
+                            min = new Date(min).setHours(0,0,0,0)
+
+                        }
+
+                        if (max.getFullYear() < 1980) {
+                            max = null;
+                        } else {
+                            max = new Date(max).setHours(0,0,0,0)
+
+                        }
+
+                        let date = new Date(data[6]).setHours(0,0,0,0);
+                   
+                        if (
+                            (min === null && max === null) ||
+                            (min === null && date <= max) ||
+                            (date >= min && max === null) || 
+                            (date >= min  && date <= max) 
+                            
+                        ) {
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    // Filtro para los tipos de operacion
+                    DataTable.ext.search.push( (settings, data, dataIndex) => {
+
+                        if (this.tipoOperacionFiltro=='-1' ) {
+                            return true;
+                        }
+                       
+                        let tipoOperacion = data[1];
+
+                        const codigoOperacion = this.tipos_operaciones.filter(unTipo =>unTipo.usertext === tipoOperacion);
+                        if (codigoOperacion && codigoOperacion.length>0) {
+      
+                            if ( codigoOperacion[0].cod_tipo == this.tipoOperacionFiltro ) {                            
+                                return true;
+                            }
+                            
+                        }
+                       
+                        return false;
+                    });
+
+
+
+
+
 
 
 
@@ -569,14 +723,6 @@ export class ListaTR extends Component {
         });
 
 
-        /* onWillUnmount(async()=>{
-             console.log("sss")
-         })*/
-
-        /* onWillDestroy(() => {
-            // do some cleanup
-            console.log('destro')
-          });*/
 
 
 
@@ -593,10 +739,10 @@ export class ListaTR extends Component {
         let otrosDatos = {
             beneficiaryName: '-',
             beneficiaryPhone: '-',
-            beneficiaryCardNumber: '-',       
+            beneficiaryCardNumber: '-',
             senderName: '-',
-            receivedAmount:'-',
-            receivedCurrency:'-'
+            receivedAmount: '-',
+            receivedCurrency: '-'
         }
 
         //type2 == metadata.method
@@ -642,7 +788,7 @@ export class ListaTR extends Component {
           
          */
 
-      
+
 
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
@@ -650,33 +796,33 @@ export class ListaTR extends Component {
             otrosDatos.beneficiaryCardNumber = unDato.metadata.cardNumber ? unDato.metadata.cardNumber : '-';
             otrosDatos.receivedAmount = unDato.metadata.deliveryAmount ? unDato.metadata.deliveryAmount : '-';
             otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency ? unDato.metadata.deliveryCurrency : '-'
-            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
-            otrosDatos.senderName = senderName ;
+            const senderName = unDato.metadata.senderName ? unDato.metadata.senderName + ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName;
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone ? unDato.metadata.contactPhone : '-';
-            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
-            otrosDatos.senderName = senderName ;
-            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount ? unDato.metadata.deliveryAmount: '-';
+            const senderName = unDato.metadata.senderName ? unDato.metadata.senderName + ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName;
+            otrosDatos.receivedAmount = unDato.metadata.deliveryAmount ? unDato.metadata.deliveryAmount : '-';
             otrosDatos.receivedCurrency = unDato.metadata.deliveryCurrency ? unDato.metadata.deliveryCurrency : '-'
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'DELIVERY_TRANSACTION_USD') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
             otrosDatos.beneficiaryPhone = unDato.metadata.contactPhone ? unDato.metadata.contactPhone : '-';
         } else if (type === 'TOPUP_RECHARGE' && type2 === 'DIRECT_TOPUP') {
-            otrosDatos.beneficiaryName = unDato.metadata.receiverName ? unDato.metadata.receiverName: '-';
-            otrosDatos.beneficiaryPhone = unDato.metadata.destination ? unDato.metadata.destination: '-';
-            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName : '-';
-            otrosDatos.senderName = senderName ;
+            otrosDatos.beneficiaryName = unDato.metadata.receiverName ? unDato.metadata.receiverName : '-';
+            otrosDatos.beneficiaryPhone = unDato.metadata.destination ? unDato.metadata.destination : '-';
+            const senderName = unDato.metadata.senderName ? unDato.metadata.senderName : '-';
+            otrosDatos.senderName = senderName;
             otrosDatos.receivedAmount = unDato.metadata.amount ? unDato.metadata.amount : '-';
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'DIRECT_TOPUP') {
             otrosDatos.beneficiaryName = unDato.metadata.receiver_name ? unDato.metadata.receiver_name : '-';
         } else if (type === 'PAYMENT_REQUEST' && type2 === 'PAYMENT_LINK') {
             otrosDatos.beneficiaryName = unDato.metadata.cardHolderName ? unDato.metadata.cardHolderName : '-';
-            const senderName =unDato.metadata.senderName ? unDato.metadata.senderName +  ' ' + unDato.metadata.senderLastName : '-';
-            otrosDatos.senderName = senderName ;           
-        } else if ( type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION' ) {
+            const senderName = unDato.metadata.senderName ? unDato.metadata.senderName + ' ' + unDato.metadata.senderLastName : '-';
+            otrosDatos.senderName = senderName;
+        } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION') {
             otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
-            otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency: '-';
+            otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency : '-';
         }
 
 
@@ -893,14 +1039,14 @@ export class ListaTR extends Component {
             externalID: true,
         }
 
-        
+
         switch (tipoVista) {
             case 'SEND_MONEY':
                 showCol.userTextType = false;
                 showCol.type = false;
                 showCol.type2 = false;
                 showCol.beneficiaryCardNumber = false;
-                
+
                 break;
 
             case 'SEND_MONEY_CUBA':
@@ -908,24 +1054,24 @@ export class ListaTR extends Component {
                 showCol.type = false;
                 showCol.type2 = false;
 
-                break;  
+                break;
 
             case 'HOME_DELIVERY':
                 showCol.userTextType = false;
                 showCol.type = false;
                 showCol.type2 = false;
                 showCol.beneficiaryCardNumber = false;
-                
-                break; 
+
+                break;
 
             case 'PHONE_RECHARGE':
                 showCol.userTextType = false;
                 showCol.type = false;
                 showCol.type2 = false;
                 showCol.beneficiaryCardNumber = false;
-                
-                break;                
-        
+
+                break;
+
             default:
                 break;
         }
@@ -936,7 +1082,19 @@ export class ListaTR extends Component {
         return showCol;
     }
 
+    resetRange() {
+        this.minDateFiltro.val(null);
+        this.maxDateFiltro.val(null);
+        this.tabla.draw();
 
+    }
+
+    onChangeType(value) {
+
+        console.log(value.target.value)
+        this.tipoOperacionFiltro = value.target.value;
+        this.tabla.draw();
+    }
 
 
 }

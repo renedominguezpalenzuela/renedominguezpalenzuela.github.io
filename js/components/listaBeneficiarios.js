@@ -36,7 +36,7 @@ export class ListaBeneficiarios extends Component {
             <tr>
                     <th data-priority="1">Beneficiary</th>    
                     <th>ID</th>        
-                    <th class="">EMail</th>
+                    <th class="">Email</th>
                     <th class="">Phone</th>
                     <th class="">Country</th>
             </tr>
