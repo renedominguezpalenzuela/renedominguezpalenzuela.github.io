@@ -423,7 +423,7 @@ export class SendMoney extends Component {
         </t>
 
         <div>
-          <button class="btn-primary tw-w-[30%]" t-on-click="onSend">Send</button>
+          <button class="submit-btn tw-w-[30%]" t-on-click="onSend">Send</button>
         </div>
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">

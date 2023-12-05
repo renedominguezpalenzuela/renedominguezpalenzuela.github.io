@@ -2224,6 +2224,14 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 15%;
 }
 
+.tw-w-\[16rem\] {
+  width: 16rem;
+}
+
+.tw-w-\[22rem\] {
+  width: 22rem;
+}
+
 .tw-w-\[30\%\] {
   width: 30%;
 }
@@ -2266,18 +2274,6 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-w-full {
   width: 100%;
-}
-
-.tw-w-\[12rem\] {
-  width: 12rem;
-}
-
-.tw-w-\[22rem\] {
-  width: 22rem;
-}
-
-.tw-w-\[16rem\] {
-  width: 16rem;
 }
 
 .tw-max-w-xs {

@@ -38,7 +38,9 @@ class Root extends Component {
               <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           
               <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
             </div>
+            <div class="tw-mt-6 tw-flex tw-justify-center ">
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
+            </div>
 
             <div class="tw-mt-6 tw-flex tw-justify-center gray-text-color">Don't have an account yet?
              <a class="tw-ml-1" href="/register.html">Sign Up</a>

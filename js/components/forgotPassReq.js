@@ -71,7 +71,7 @@ export class ForgotPassReq extends Component {
          
 
             <div class="tw-card-actions tw-mt-5">
-            <button class="tw-btn tw-btn-primary tw-w-full" t-on-click="onSaveAllData">
+            <button class="submit-btn tw-w-full" t-on-click="onSaveAllData">
             <!-- <span> -->
             Send
           <!-- </span>
