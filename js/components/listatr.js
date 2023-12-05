@@ -29,6 +29,8 @@ export class ListaTR extends Component {
         saldos: []
     });
 
+
+
     total_tx_a_solicitar = 50;
 
     minDateFiltro = null;
@@ -37,9 +39,15 @@ export class ListaTR extends Component {
     tipoOperacionFiltro = -1;
 
 
+    state = useState({
+        beneficiaryID: null,
+        selectedBeneficiaryName: null,
+        tipo_operacion: '-1'
+    })
 
-
-  
+    beneficiarios = useState({
+        nameList: []
+    })
 
 
 
@@ -60,7 +68,7 @@ export class ListaTR extends Component {
                         </span> 
                     </div>
                     
-                    <div>
+                    <div class="tw-mt-1">
                         <span>To:</span>
                         <span class="tw-ml-2">
                             <input type="text" id="max" name="max"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered"/>
@@ -73,12 +81,12 @@ export class ListaTR extends Component {
                     <button  class="tw-btn"  t-on-click="resetRange" >Reset range </button>
                 </td>
 
-                <td t-if="this.props.tipoVista=='' || this.props.tipoVista==null" class="tw-w-[16rem] ">
-                <div>
-                    <span>Type:</span>
+                <td class="tw-w-[16rem] ">
+                <div t-if="this.props.tipoVista==='' || this.props.tipoVista==null" >
+                   
                     <span class="tw-ml-2">
-                         <select class="tw-select tw-select-bordered tw-join-item" t-att-value="this.tipos_operaciones"  t-on-input="onChangeType" t-ref="inputType" >                    
-                        <option  t-att-value="-1" >Select Tr. Type</option>
+                         <select class="tw-select tw-select-bordered tw-join-item" t-att-value="this.state.tipo_operacion"  t-on-input="onChangeType" t-ref="inputType" >                    
+                        <option  t-att-value="-1" >All Types</option>
                           <t t-if="(this.tipos_operaciones) and (this.tipos_operaciones.length>0) ">
                            <t  t-foreach="this.tipos_operaciones" t-as="unTipo" t-key="unTipo.cod_tipo">
                                 <option t-att-value="unTipo.cod_tipo">
@@ -89,6 +97,19 @@ export class ListaTR extends Component {
                         </select> 
                     </span> 
                 </div>
+
+                <!-- Seleccionar beneficiario -->
+                <div t-if="this.beneficiarios and  this.beneficiarios.nameList.length > 0" class="tw-mt-1">
+      
+                    <select  id="listaBeneficiarios" t-att-value="this.state.beneficiaryID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
+                        <option  t-att-value="-1" >All beneficiaries</option>
+                        <t t-foreach="this.beneficiarios.nameList" t-as="unBeneficiario" t-key="unBeneficiario.id">
+                            <option t-att-value="unBeneficiario.id">
+                               <t t-esc="unBeneficiario.beneficiaryFullName"/>
+                            </option>
+                        </t>             
+                    </select>
+                </div> 
                   
                 </td>
 
@@ -151,11 +172,13 @@ export class ListaTR extends Component {
     };
 
 
+
+
     setup() {
 
         this.tipos_operaciones = tipos_operaciones;
 
-   
+
 
         API.setRedirectionURL(this.props.urlHome);
 
@@ -169,8 +192,6 @@ export class ListaTR extends Component {
 
         onWillStart(async () => {
 
-          
-
 
 
         });
@@ -180,7 +201,7 @@ export class ListaTR extends Component {
         onMounted(async () => {
             // do something here
 
-      
+
 
 
 
@@ -226,10 +247,9 @@ export class ListaTR extends Component {
 
 
 
-            
-            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log(raw_datos)
 
+            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+       
 
 
 
@@ -240,6 +260,34 @@ export class ListaTR extends Component {
 
 
             this.datos = await this.transformarRawDatos(raw_datos);
+
+            //creando lista de beneficiarios
+          
+
+            this.datos.map((unDato, i) => {
+
+                if (unDato.beneficiaryName === '-') {
+                    return;
+                }
+
+                const existe = this.beneficiarios.nameList.filter(unNombre => unNombre.beneficiaryFullName === unDato.beneficiaryName)[0];
+          
+
+
+                if (!existe) {
+                    this.beneficiarios.nameList.push({
+                        id: i,
+                        beneficiaryFullName: unDato.beneficiaryName
+                    })
+
+                }
+            })
+
+
+          
+
+
+
 
 
 
@@ -308,7 +356,7 @@ export class ListaTR extends Component {
 
                     // Create date inputs
 
-             
+
                 }
 
 
@@ -589,10 +637,6 @@ export class ListaTR extends Component {
 
 
 
-            // this.tabla.columns.adjust().draw();
-
-
-            //console.log(this.tabla)
 
             if (this.tabla) {
                 this.tabla.on('select', (e, dt, type, indexes) => {
@@ -618,73 +662,96 @@ export class ListaTR extends Component {
             }
 
 
-                
-
-                    //Refilter the table
-                    document.querySelectorAll('#min, #max').forEach((el) => {
-                        el.addEventListener('change', () => this.tabla.draw());
-                    })
 
 
-                    // Filtro para las fechas
-                    DataTable.ext.search.push( (settings, data, dataIndex) => {
+            //Refilter the table
+            document.querySelectorAll('#min, #max').forEach((el) => {
+                el.addEventListener('change', () => this.tabla.draw());
+            })
 
-                        if ((this.minDateFiltro==null || this.maxDateFiltro == null)) {
-                            return true;
-                        } 
-                      
-                        //UImanager.timeZoneTransformer(userData.birthDate).fromUtc
-                        let min = UImanager.timeZoneTransformer(this.minDateFiltro.val()).fromUtc;
-                        let max = UImanager.timeZoneTransformer(this.maxDateFiltro.val()).fromUtc;
 
-                        if (min.getFullYear() < 1980) {
-                            min = null;
-                        } else {
-                            min = new Date(min).setHours(0,0,0,0)
+            // Filtro para las fechas
+            DataTable.ext.search.push((settings, data, dataIndex) => {
 
-                        }
+                if ((this.minDateFiltro == null || this.maxDateFiltro == null)) {
+                    return true;
+                }
 
-                        if (max.getFullYear() < 1980) {
-                            max = null;
-                        } else {
-                            max = new Date(max).setHours(0,0,0,0)
+                //UImanager.timeZoneTransformer(userData.birthDate).fromUtc
+                let min = UImanager.timeZoneTransformer(this.minDateFiltro.val()).fromUtc;
+                let max = UImanager.timeZoneTransformer(this.maxDateFiltro.val()).fromUtc;
 
-                        }
+                if (min.getFullYear() < 1980) {
+                    min = null;
+                } else {
+                    min = new Date(min).setHours(0, 0, 0, 0)
 
-                        let date = new Date(data[6]).setHours(0,0,0,0);
-                   
-                        if (
-                            (min === null && max === null) ||
-                            (min === null && date <= max) ||
-                            (date >= min && max === null) || 
-                            (date >= min  && date <= max) 
-                            
-                        ) {
-                            return true;
-                        }
-                        return false;
-                    });
+                }
 
-                    // Filtro para los tipos de operacion
-                    DataTable.ext.search.push( (settings, data, dataIndex) => {
+                if (max.getFullYear() < 1980) {
+                    max = null;
+                } else {
+                    max = new Date(max).setHours(0, 0, 0, 0)
 
-                        if (this.tipoOperacionFiltro=='-1' ) {
-                            return true;
-                        }
-                       
-                        let tipoOperacion = data[1];
+                }
 
-                        const codigoOperacion = this.tipos_operaciones.filter(unTipo =>unTipo.usertext === tipoOperacion);
-                        if (codigoOperacion && codigoOperacion.length>0) {
-      
-                            if ( codigoOperacion[0].cod_tipo == this.tipoOperacionFiltro ) {                            
-                                return true;
-                            }
-                            
-                        }
-                       
-                        return false;
-                    });
+                let date = new Date(data[6]).setHours(0, 0, 0, 0);
+
+                if (
+                    (min === null && max === null) ||
+                    (min === null && date <= max) ||
+                    (date >= min && max === null) ||
+                    (date >= min && date <= max)
+
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+            // Filtro para los tipos de operacion
+            DataTable.ext.search.push((settings, data, dataIndex) => {
+
+                if (this.tipoOperacionFiltro == '-1') {
+                    return true;
+                }
+
+                let tipoOperacion = data[1];
+
+                const codigoOperacion = this.tipos_operaciones.filter(unTipo => unTipo.usertext === tipoOperacion);
+                if (codigoOperacion && codigoOperacion.length > 0) {
+
+                    if (codigoOperacion[0].cod_tipo == this.tipoOperacionFiltro) {
+                        return true;
+                    }
+
+                }
+
+                return false;
+            });
+
+            //Filtro para el beneficiario
+            //this.state.beneficiaryID
+            DataTable.ext.search.push((settings, data, dataIndex) => {
+
+                if (this.state.beneficiaryID == '-1') {
+                    return true;
+                }
+
+                let beneficiarioNombre = data[7];
+
+
+
+                if (beneficiarioNombre === this.state.selectedBeneficiaryName) {
+
+
+                    return true;
+
+
+                }
+
+                return false;
+            });
 
 
 
@@ -706,18 +773,9 @@ export class ListaTR extends Component {
             const otra_table = $(`${base_name_otra_table}_wrapper`)
 
 
-            //if (otra_table) {
-            // console.log("Existe otra tabla")
-            //console.log(otra_table)
-            //              $(`${base_name_otra_table}_length`).empty();
-            //              $(`${base_name_otra_table}_filter`).empty();
+      
             $(`${base_name_otra_table}_wrapper`).remove();
-            //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
-            //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
-            //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
-            //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-            //}
-
+           
 
 
         });
@@ -729,10 +787,7 @@ export class ListaTR extends Component {
     }
 
     getBeneficiaryData(type2, unDato) {
-        /*console.log("DATOS")
-        console.log(unDato.type)
-        console.log(type2)
-        console.log(unDato)*/
+  
 
         const type = unDato.type;
 
@@ -874,7 +929,7 @@ export class ListaTR extends Component {
                 })
 
             //const fecha2 = fecha.substring(0, 10) + " " + fecha.substring(11, 20);
-            // console.log(fecha2)
+        
 
             let type2 = '-';
             if (unDato.metadata) {
@@ -964,7 +1019,7 @@ export class ListaTR extends Component {
         //this.props.tipooperacion --- arreglo de tipos_operacion
         //ejemplp [1,2]
 
-        console.log(this.props.tipooperacion)
+     
         if (this.props.tipooperacion && this.props.tipooperacion.length > 0) {
             //console.log("filtro")
             //Filtrar solo para un tipo de operacion
@@ -1017,8 +1072,7 @@ export class ListaTR extends Component {
     // true -- mostrar  | false -- no mostrar
     mostrarColumnas = async (tipoVista) => {
 
-        console.log("Tipo de vista")
-        console.log(tipoVista);
+
 
         let showCol = {
             transactionID: true,
@@ -1093,6 +1147,20 @@ export class ListaTR extends Component {
 
         console.log(value.target.value)
         this.tipoOperacionFiltro = value.target.value;
+        this.tabla.draw();
+    }
+
+    onChangeSelectedBeneficiario(value) {
+        console.log(value.target.value);
+        this.state.beneficiaryID = value.target.value;
+
+        const beneficiario = this.beneficiarios.nameList.find(unBeneficiario => unBeneficiario.id == this.state.beneficiaryID);
+
+        if (beneficiario) {
+            this.state.selectedBeneficiaryName = beneficiario.beneficiaryFullName
+        }
+
+
         this.tabla.draw();
     }
 
