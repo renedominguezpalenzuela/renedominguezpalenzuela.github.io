@@ -423,7 +423,7 @@ export class Profile extends Component {
                               <label class="tw-label">
                               <span class="tw-label-text">Pick a file</span>  
                               </label>       
-                              <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangeDriverLicenceImg" t-ref="inputDriverLicence"  type="file"   accept="image/jpeg, image/png, image/jpg"/>            
+                              <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangeDriverLicenceImg" t-ref="inputDriverLicence"  type="file"   accept="image/jpeg, image/png, image/jpg" capture="camera"/>            
                           </div>
 
                           <div> Driver License </div>

@@ -21,7 +21,7 @@ module.exports = {
       ],
     },
   
-  /*theme: {
+  theme: {
     extend: {
       gridRowStart: {
         '8': '8',
@@ -34,7 +34,7 @@ module.exports = {
         '15': '15',
        }
     },
-  },*/
+  },
   plugins: [
     require("daisyui")
 

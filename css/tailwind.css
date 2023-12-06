@@ -2004,6 +2004,10 @@ details.tw-collapse summary::-webkit-details-marker {
   grid-column: span 2 / span 2;
 }
 
+.tw-row-start-10 {
+  grid-row-start: 10;
+}
+
 .tw-row-start-3 {
   grid-row-start: 3;
 }
@@ -2405,6 +2409,10 @@ details.tw-collapse summary::-webkit-details-marker {
     grid-row-start: 1;
   }
 
+  .sm\:tw-row-start-10 {
+    grid-row-start: 10;
+  }
+
   .sm\:tw-row-start-2 {
     grid-row-start: 2;
   }
@@ -2427,6 +2435,14 @@ details.tw-collapse summary::-webkit-details-marker {
 
   .sm\:tw-row-start-7 {
     grid-row-start: 7;
+  }
+
+  .sm\:tw-row-start-8 {
+    grid-row-start: 8;
+  }
+
+  .sm\:tw-row-start-9 {
+    grid-row-start: 9;
   }
 
   .sm\:tw-ml-2 {
