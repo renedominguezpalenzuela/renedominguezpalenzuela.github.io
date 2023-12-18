@@ -8,18 +8,19 @@ import { HomeDeliveryCuba } from "./components/homedeliveryCuba.js";
 import { Beneficiarios } from "./components/beneficiarios.js";
 import { RecargasTelefono } from "./components/recargasTelefono.js";
 import { SendMoney } from "./components/sendMoney.js";
+import { SendAll } from "./components/sendAll.js";
 import { ListaTR } from "./components/listatr.js";
 import { API } from "./utils.js";
 
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, SendMoney,  RecargasTelefono, ListaTR };
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, SendMoney,SendAll,  RecargasTelefono, ListaTR };
 
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 8, title: 'Transactions List' });
+  state = useState({ menuId: 9, title: 'Send to All' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -36,7 +37,7 @@ class Root extends Component {
       ]
     },
     { id: 7, name: "Phone Recharge", type: 2 },
-   
+    { id: 9, name: "Send to All", type: 2 },
     { id: 8, name: "Transactions List", type: 2 },
 
 
@@ -88,6 +89,11 @@ class Root extends Component {
           <t t-elif="this.state.menuId === 8">
            <ListaTR />
           </t>
+
+          <t t-elif="this.state.menuId === 9">
+          <SendAll />
+         </t>
+
 
       
           

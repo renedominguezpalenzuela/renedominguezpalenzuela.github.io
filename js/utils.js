@@ -398,7 +398,11 @@ export class API {
 
         seleccionCodigosPaises.push(paisConISO2.isoAlpha2.toLowerCase())
       }
+
+
     })
+
+    seleccionCodigosPaises.push('cu');
 
     //  
     return seleccionCodigosPaises;
