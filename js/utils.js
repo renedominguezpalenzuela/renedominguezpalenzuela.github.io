@@ -402,7 +402,7 @@ export class API {
 
     })
 
-    seleccionCodigosPaises.push('cu');
+  
 
     //  
     return seleccionCodigosPaises;

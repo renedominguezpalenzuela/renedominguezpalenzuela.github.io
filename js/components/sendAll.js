@@ -544,11 +544,12 @@ export class SendAll extends Component {
             // 1. Get Countries {{baseURL}}/api/private/transactions/cash-out/countries
             //--------------------------------------------------------------------------------------
             const listaPaisesFromAPI = await this.api.getListaPaises();
-            console.log(listaPaisesFromAPI)
-            this.seleccionCodigosPaises = [];
+            //console.log(listaPaisesFromAPI)
+            //this.seleccionCodigosPaises = [];
             this.state.listaMonedasARecibir = [];
             if (listaPaisesFromAPI) {
                 this.seleccionCodigosPaises = await API.transformarISO2toISO3(listaPaisesFromAPI, Paises);
+                this.seleccionCodigosPaises.push('cu');
 
 
             } else {
