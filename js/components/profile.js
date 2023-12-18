@@ -225,9 +225,9 @@ export class Profile extends Component {
 
                 <div class="tw-form-control tw-w-full  tw-pl-1">
                     <label class="tw-label">
-                      <span class="tw-label-text">eMail</span>
+                      <span class="tw-label-text">Email</span>
                     </label>
-                    <input type="text" t-model="this.state.providerValue" placeholder="eMail" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeProviderValue" t-on-blur="onBlurProviderValue"   />   
+                    <input type="text" t-model="this.state.providerValue" placeholder="Email" class="tw-input tw-input-bordered tw-w-full " t-on-input="onChangeProviderValue" t-on-blur="onBlurProviderValue"   />   
                     <span t-if="this.errores.providerValue==true" class="error">
                       Required field!!!
                     </span>
