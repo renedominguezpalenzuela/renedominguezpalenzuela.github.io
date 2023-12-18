@@ -528,7 +528,7 @@ export class API {
         "transactionType": transactionType,
         "mode": mode,
         "sourceAmount": amount,
-        "sourceCurrency": sourceCurrency
+        "sourceCurrency": sourceCurrency.toUpperCase()
       });
 
     } else if (mode === "DESTINATION_AMOUNT") {
@@ -538,7 +538,7 @@ export class API {
         "transactionType": transactionType,
         "mode": mode,
         "destinationAmount": amount,
-        "sourceCurrency": sourceCurrency
+        "sourceCurrency": sourceCurrency.toUpperCase()
       });
     }
 
