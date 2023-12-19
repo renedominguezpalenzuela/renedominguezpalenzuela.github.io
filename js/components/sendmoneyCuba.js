@@ -755,7 +755,7 @@ export class SendMoneyCuba extends Component {
       this.beneficiarioData.bankName = '';
 
     } else {
-      const tarjeta = await UImanager.buscarLogotipoBanco(datos.cardNumber, this.accessToken);
+      const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(datos.cardNumber, this.accessToken);
 
       if (tarjeta) {
         this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;
@@ -903,8 +903,8 @@ export class SendMoneyCuba extends Component {
       this.inputCardNumber.el.value = this.beneficiarioData.cardNumber;
       this.inputcardHolderName.el.value = this.beneficiarioData.cardHolderName;
 
-      //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.selectedCard, this.accessToken);
+      //await this.validarTarjetayObtenerLogoBanco(this.beneficiarioData.selectedCard);
+      const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(this.beneficiarioData.selectedCard, this.accessToken);
       console.log("Banco de tarjeta")
       console.log(tarjeta)
       console.log(this.beneficiarioData.selectedCard)
@@ -1051,8 +1051,8 @@ export class SendMoneyCuba extends Component {
     const formatedCardNumber = UImanager.formatCardNumber(this.beneficiarioData.selectedCard);
     this.beneficiarioData.cardNumber = formatedCardNumber;
 
-    //await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
-    const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
+    //await this.validarTarjetayObtenerLogoBanco(this.beneficiarioData.selectedCard);
+    const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(this.beneficiarioData.cardNumber, this.accessToken);
     console.log("Setear datos de benficiario")
     console.log(tarjeta)
     if (tarjeta) {
@@ -1084,7 +1084,7 @@ export class SendMoneyCuba extends Component {
     /*
     if (event.target.value.length === 19) {
       this.beneficiarioData.selectedCard = event.target.value.replace(/ /g, "");
-      await this.buscarLogotipoBanco(this.beneficiarioData.selectedCard);
+      await this.validarTarjetayObtenerLogoBanco(this.beneficiarioData.selectedCard);
     }*/
 
 
@@ -1119,7 +1119,7 @@ export class SendMoneyCuba extends Component {
     this.beneficiarioData.bankName = '';
 
     if (event.target.value.length === 19) {
-      const tarjeta = await UImanager.buscarLogotipoBanco(this.beneficiarioData.cardNumber, this.accessToken);
+      const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(this.beneficiarioData.cardNumber, this.accessToken);
       if (tarjeta) {
         console.log("onChangeCardInput")
         this.beneficiarioData.cardBankImage = tarjeta.cardBankImage;

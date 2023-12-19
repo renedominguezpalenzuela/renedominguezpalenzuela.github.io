@@ -20,7 +20,7 @@ class Root extends Component {
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 9, title: 'Send to All' });
+  state = useState({ menuId: 9, title: 'Send Money' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -29,7 +29,7 @@ class Root extends Component {
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
     { id: 2, name: "Beneficiaries", type: 2 },
-    { id: 3, name: "Send Money", type: 2 },
+    { id: 3, name: "Send Money Old", type: 2 },
     {
       id: 4, name: "Send Money To Cuba", type: 1, subitems: [
         { id: 5, name: "To Credit Card" },
@@ -37,7 +37,7 @@ class Root extends Component {
       ]
     },
     { id: 7, name: "Phone Recharge", type: 2 },
-    { id: 9, name: "Send to All", type: 2 },
+    { id: 9, name: "Send Money", type: 2 },
     { id: 8, name: "Transactions List", type: 2 },
 
 

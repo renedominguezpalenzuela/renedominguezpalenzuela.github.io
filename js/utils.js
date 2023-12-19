@@ -63,13 +63,13 @@ axios.interceptors.response.use(
 
       await Swal.fire({
         icon: 'error',
-        title: `Error CODE 400`,
+       /* title: `Error CODE 400`,*/
         text: `Error: ${errorMSG}`
 
       })
-      
 
-      return ;
+
+      return;
       // Promise.resolve();
 
     } else if (status === 404) {
@@ -105,7 +105,7 @@ axios.interceptors.response.use(
 // Login
 //-----------------------------------------------------------------------------------------
 
-export async function login(usr, pass) {
+export async function login(usr, pass, test = false) {
   const config = {
     headers: {
       "x-api-key": x_api_key,
@@ -116,44 +116,59 @@ export async function login(usr, pass) {
   const datos = { "email": usr, "password": pass };
 
   let resultado = false;
+  let token ='';
   await axios.post(`${base_url}/api/auth/login`, datos, config)
-    //await axios_using_interceptors.post("/api/auth/login", datos)
     .then(response => {
       const datos = response.data;
       if (datos.accessToken) {
         resultado = true;
-        console.log(datos);
-        window.sessionStorage.setItem('accessToken', datos.accessToken)
+        if (!test) {
+          window.sessionStorage.setItem('accessToken', datos.accessToken)
+        } else {
+          token = datos.accessToken;
+        }
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Login error',
-          text: 'Check your credential data',
-          footer: '<div>Press "Set Test Data" Button to get Test User credentials</div>'
-        });
+        if (!test) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Login error',
+            text: 'Check your credential data',
+            footer: '<div>Press "Set Test Data" Button to get Test User credentials</div>'
+          });
+        }
       }
     }).catch(error => {
-      console.log('Login Error ');
+      console.log('--- Login Error ----');
+      console.error(error);
       if (error.response) {
         console.error(error.response);
-        Swal.fire({
-          icon: 'error',
-          title: error.response.data.error + ' code ' + error.response.data.statusCode,
-          text: error.response.data.message,
-        })
+        if (!test) {
+          Swal.fire({
+            icon: 'error',
+            title: error.response.data.error + ' code ' + error.response.data.statusCode,
+            text: error.response.data.message,
+          })
+        }
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Something went wrong in login process',
-          footer: '<h5> Inspect console for details </h5>'
-        })
+        if (!test) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Something went wrong in login process',
+            footer: '<h5> Inspect console for details </h5>'
+          })
+        }
+
       }
       return error;
 
     });
 
-  return resultado;
+    if (!test) {
+      return resultado;
+    } else {
+      return token;
+    }
 }
 
 
@@ -402,7 +417,7 @@ export class API {
 
     })
 
-  
+
 
     //  
     return seleccionCodigosPaises;
@@ -542,12 +557,6 @@ export class API {
       });
     }
 
-    console.log("Payload")
-
-    console.log(raw)
-
-
-
 
 
     var config = {
@@ -608,7 +617,7 @@ export class API {
 
     raw = JSON.stringify(sendData)
 
-   
+
     console.log("Payload")
 
     console.log(raw)
@@ -634,7 +643,7 @@ export class API {
 
     }
 
-   
+
 
 
 
@@ -644,7 +653,7 @@ export class API {
 
 
 
-  
+
 
   //------------------------------------------------------------------------------------------------
   // Confirmar usuario
@@ -1108,8 +1117,11 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
-      console.log(datos);
+      if (response.data){
+        datos = response.data;
+        console.log(datos);
+      }
+      
     }).catch(function (error) {
       console.log("ERRROR")
       console.log(error);
@@ -1803,12 +1815,16 @@ export class UImanager {
 
 
 
+  //---------------------------------------------------------------------------
   //CardNumber --- se le pasa el numero de tarjeta sin espacios
-  static async buscarLogotipoBanco(CardNumber, accessToken) {
+  //Es el que realiza la validacion de tarjetas
+  //--------------------------------------------------------------------
+  static async validarTarjetayObtenerLogoBanco(CardNumber, accessToken) {
     // const cardWithoutSpaces = this.state.cardNumber.replace(/ /g, "");
     const cardWithoutSpaces = CardNumber.replace(/ /g, "");
 
-    console.log(`Card Length ${cardWithoutSpaces.length}`)
+     console.log(`Card Length ${cardWithoutSpaces.length}`)
+     console.log(cardWithoutSpaces)
     if (cardWithoutSpaces.length != 16) {
 
       return {
@@ -2198,14 +2214,13 @@ export class UImanager {
 
     console.log(resultado)
 
-     if (!resultado) 
-     {
+    if (!resultado) {
       console.log("Resultado null, sending money")
 
       await Swal.fire('Null result');
       return;
-      
-     }
+
+    }
 
     //TODO: refactorizar
     if (resultado.data) {
@@ -2244,19 +2259,18 @@ export class UImanager {
   }
 
 
-  
+
   static async gestionResultadoSendMoney(resultado, urlHome, menuController) {
 
     console.log(resultado)
 
-     if (!resultado) 
-     {
+    if (!resultado) {
       console.log("Resultado null, sending money")
 
       await Swal.fire('Null result');
       return;
-      
-     }
+
+    }
 
     //TODO: refactorizar
     if (resultado.status) {
@@ -2406,7 +2420,7 @@ export class UImanager {
     return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
   }
 
-  
+
 
   static timeZoneTransformer = (stringDate, timeZone = "UTC") => {
     const now = new Date();
@@ -2438,7 +2452,7 @@ export class UImanager {
   static formatDateForInputs(inputDate) {
     let dia, month, year //,  segundos, minutos, horas;
     console.log(inputDate)
-    
+
 
     /*segundos = inputDate.getSeconds();
     minutos = inputDate.getMinutes();
@@ -2448,7 +2462,7 @@ export class UImanager {
 
     month = inputDate.getMonth() + 1;
 
-   
+
 
     year = inputDate.getFullYear();
     dia = inputDate.getDate().toString().padStart(2, '0');
@@ -2456,11 +2470,11 @@ export class UImanager {
 
     console.log(`YYYY: ${year}  MM: ${month} DD: ${dia}`);
 
-   
+
 
 
     return `${year}-${month}-${dia}`;
-    
+
   }
 
 

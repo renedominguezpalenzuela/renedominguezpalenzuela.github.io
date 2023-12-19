@@ -1,11 +1,11 @@
 
 
-import { API, UImanager } from "../utils";
+import { API, UImanager , login} from "../utils";
 
 
 
-const user = 'darian.alvarez.t@gmail.com';
-const pass = 'Buvosic8*';
+const user = 'renedsoft@gmail.com';
+const pass = 'Abcd1234';
 
 let accessToken = null;
 
@@ -16,14 +16,14 @@ let accessToken = null;
 describe("Login", () => {
     test('Debe loguearse correctamente', async () => {
 
-        //console.log("login...");
-        const resultado = await API.login(user, pass)
+        console.log("login...");
+        const resultado = await login(user, pass, true)
 
-        if (resultado.accessToken) {
-            accessToken = resultado.accessToken;
+        if (resultado) {
+            accessToken = resultado;
         }
-       // console.log('login complete');
-       // console.log(resultado.accessToken)
+        console.log('login complete');
+        console.log(accessToken)
 
         expect(accessToken).toBeTruthy()  //comprueba que existe un token
     });

@@ -3,11 +3,14 @@ import { API, UImanager } from "../utils.js";
 import { Paises } from "../../data/paises.js";
 import { ListaTR } from "./listatr.js";
 import { SendMoneyFieldsName } from "../../data/sendmoneyfields.js";
+import { SendMoneyCuba } from "./sendmoneyCuba.js";
+import { HomeDeliveryCuba } from "./homedeliveryCuba.js";
 
 
 
 
 export class SendAll extends Component {
+    static components = { SendMoneyCuba, HomeDeliveryCuba ,ListaTR };
 
 
     inputSendRef = useRef("inputSendRef");
@@ -18,7 +21,8 @@ export class SendAll extends Component {
     inputReceiveCurrencyRef = useRef("inputReceiveCurrencyRef");
 
     pais = useState({
-        esCuba: false
+        esCuba: false,
+        servicio: -1
     })
 
 
@@ -123,7 +127,7 @@ export class SendAll extends Component {
 
 
 
-    static components = { ListaTR };
+ 
 
 
     conversionRate = useState({ value: 0 });
@@ -175,7 +179,7 @@ export class SendAll extends Component {
                 <!-- **************************************************** -->
                 <!-- *************** Services *************************** -->
                 <!-- **************************************************** -->
-                <t t-if="this.pais.esCuba==false">
+                
                     <div class="tw-form-control tw-w-full   ">  
                         <label class="tw-label">
                             <span class="tw-label-text">Services </span>
@@ -198,7 +202,7 @@ export class SendAll extends Component {
                             Service is required!!!
                         </span> 
                     </div> 
-                </t> 
+                
 
                 <!-- **************************************************** -->
                 <!-- *************** Payers   *************************** -->
@@ -441,11 +445,29 @@ export class SendAll extends Component {
         </div>
         </t>
 
-       <!-- <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+
+        <t t-if="this.pais.esCuba==true and (this.pais.servicio==1 or this.pais.servicio==2)">
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">                               
+            <div class="tw-card-body tw-items-center" id="general_data">  
+            <t t-if="this.pais.servicio==1">
+               <SendMoneyCuba  urlHome=""/>
+            </t>
+
+            <t t-if="this.pais.servicio==2">
+               <HomeDeliveryCuba/>
+            </t>
+            
+               
+            </div>
+        </div>    
+        </t>
+
+
+        <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2" t-if="this.pais.esCuba==false">
             <div class="tw-card-body tw-items-center  ">            
                 <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
             </div>
-        </div> -->
+        </div> 
 
     </div>
 
@@ -575,6 +597,7 @@ export class SendAll extends Component {
 
             if (cod_pais_iso3 === 'CUB') {
                 this.pais.esCuba = true;
+                this.setearServiciosdeCuba() ;
             } else {
                 this.pais.esCuba = false;
             }
@@ -589,7 +612,7 @@ export class SendAll extends Component {
 
                 if (cod_iso3 === 'CUB') {
                     this.pais.esCuba = true;
-                   // return;
+                    this.setearServiciosdeCuba() ;
                 } else {
                     this.pais.esCuba = false;
                     
@@ -661,6 +684,19 @@ export class SendAll extends Component {
     }
 
 
+    setearServiciosdeCuba() {
+        this.state.listaServicios = [];
+        this.state.listaServicios.push({
+            id:1, name: 'To Credit Card'
+        })
+        this.state.listaServicios.push({
+            id:2, name: 'Home Delivery'
+        })
+
+
+    }
+
+
 
     //-------------------------------------------------------------------------------------------
     // Obtiene el pais seleccionado en la lista
@@ -701,6 +737,12 @@ export class SendAll extends Component {
         console.log("Change Service")
 
         console.log(event.target.value)
+        if (this.pais.esCuba) {
+            this.pais.servicio = event.target.value;
+            return;
+        }
+
+        
         this.state.listaPayers = [];
 
         this.extraFieldLists.required_receiving_entity_fields = [];
@@ -925,6 +967,7 @@ export class SendAll extends Component {
         if (cod_iso3) {
             this.state.cod_pais_iso3 = cod_iso3;
             this.state.listaServicios = await this.api.getListaServicios(cod_iso3);
+            
             if (this.state.listaServicios && this.state.listaServicios.length > 0) {
                 this.state.cod_servicio = this.state.listaServicios[0].id
             }
@@ -948,11 +991,12 @@ export class SendAll extends Component {
 
 
     validarDatos(datos) {
-        console.log(datos)
+       
         let hayerror = false;
 
         for (let i = 0; i < this.extraFieldLists.required_receiving_entity_fields.length; i++) {
             if (!this.extraFieldLists.required_receiving_entity_fields[i].value) {
+                console.log("Error on required_receiving_entity_fields")
                 console.log(this.extraFieldLists.required_receiving_entity_fields[i].value)
                 hayerror = true;
                 this.extraFieldLists.required_receiving_entity_fields[i].error = true;
@@ -965,6 +1009,7 @@ export class SendAll extends Component {
 
         for (let i = 0; i < this.extraFieldLists.required_sending_entity_fields.length; i++) {
             if (!this.extraFieldLists.required_sending_entity_fields[i].value) {
+                console.log("Error on required_sending_entity_fields")
                 console.log(this.extraFieldLists.required_sending_entity_fields[i].value)
                 hayerror = true;
                 this.extraFieldLists.required_sending_entity_fields[i].error = true;
@@ -976,6 +1021,7 @@ export class SendAll extends Component {
 
         for (let i = 0; i < this.extraFieldLists.credit_party_identifiers_accepted.length; i++) {
             if (!this.extraFieldLists.credit_party_identifiers_accepted[i].value) {
+                console.log("Error on credit_party_identifiers_accepted")
                 console.log(this.extraFieldLists.credit_party_identifiers_accepted[i].value)
                 hayerror = true;
                 this.extraFieldLists.credit_party_identifiers_accepted[i].error = true;
@@ -987,6 +1033,7 @@ export class SendAll extends Component {
 
         for (let i = 0; i < this.extraFieldLists.required_documents.length; i++) {
             if (!this.extraFieldLists.required_documents[i].value) {
+                console.log("Error on required_documents")
                 console.log(this.extraFieldLists.required_documents[i].value)
                 hayerror = true;
                 this.extraFieldLists.required_documents[i].error = true;
@@ -1293,12 +1340,12 @@ export class SendAll extends Component {
         // return;
 
 
-        if (!this.validarDatos(datosTX)) {
+        if (this.validarDatos(datosTX)) {
             console.log("Validation Errors");
             return;
         }
 
-        return;
+      
 
 
 
@@ -1354,7 +1401,7 @@ export class SendAll extends Component {
         }).then((result) => {
             if (result.value) {
 
-                this.ejecutarEnvio()
+                this.ejecutarEnvio(datosTX)
             }
         });
 
@@ -1369,9 +1416,10 @@ export class SendAll extends Component {
 
 
 
-    async ejecutarEnvio() {
+    async ejecutarEnvio(datosTX) {
         console.log("Ejecutando recarga")
         // console.log(this.state);
+      
 
         // console.log(this.extraFieldLists)
 

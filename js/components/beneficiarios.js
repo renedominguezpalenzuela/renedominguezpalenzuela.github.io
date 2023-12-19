@@ -667,7 +667,7 @@ export class Beneficiarios extends Component {
           if (event.target.value.length === 19) {
   
   
-              this.buscarLogotipoBanco(this.state.cardNumber);
+              this.validarTarjetayObtenerLogoBanco(this.state.cardNumber);
   
               //TODO: si es un card nuevo agregarlo?
           }
@@ -692,9 +692,9 @@ export class Beneficiarios extends Component {
     //t-on-input
     async onChangeCardInput(event) {
 
-        console.log(event)
+       /* console.log(event)
         console.log(`state.cardNumber ${this.state.cardNumber}`)
-        console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)
+        console.log(`input.cardNumber ${this.inputCardNumber.el.value}`)*/
         if (!this.backspace) {
             this.inputCardNumber.el.value = UImanager.formatCardNumber(event.target.value);
 
@@ -704,7 +704,7 @@ export class Beneficiarios extends Component {
 
 
         if (event.target.value.length === 19) {
-            const tarjeta = await UImanager.buscarLogotipoBanco(this.state.cardNumber, this.accessToken);
+            const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(this.state.cardNumber, this.accessToken);
             this.state.cardBankImage = tarjeta.cardBankImage;
             this.state.bankName = tarjeta.bankName;
             this.errores.card = !tarjeta.tarjetaValida;
@@ -735,8 +735,8 @@ export class Beneficiarios extends Component {
     onChangeSelectedCard = async (event) => {
         const id = event.target.value;
         this.state.selectedCardId = id;
-        console.log('Card Seleccionado')
-        console.log(id)
+        //console.log('Card Seleccionado')
+        //console.log(id)
 
         if (id === '-1') {
             return
@@ -750,9 +750,9 @@ export class Beneficiarios extends Component {
             const formatedCardNumber = UImanager.formatCardNumber(cardData.number)
             this.state.cardNumber = formatedCardNumber;
             this.state.cardHolderName = cardData.cardHolderName;
-            // await this.buscarLogotipoBanco(this.state.cardNumber);
+            // await this.validarTarjetayObtenerLogoBanco(this.state.cardNumber);
 
-            const tarjeta = await UImanager.buscarLogotipoBanco(this.state.cardNumber, this.accessToken);
+            const tarjeta = await UImanager.validarTarjetayObtenerLogoBanco(this.state.cardNumber, this.accessToken);
             this.state.cardBankImage = tarjeta.cardBankImage;
             this.state.bankName = tarjeta.bankName;
             this.errores.card = !tarjeta.tarjetaValida;
@@ -866,8 +866,8 @@ export class Beneficiarios extends Component {
                 })
             )
 
-            console.log('Cards del beneficiario')
-            console.log(this.cardsList)
+            //console.log('Cards del beneficiario')
+            //console.log(this.cardsList)
             this.state.cardNumber = '';
 
             this.inicializando = false;
@@ -955,20 +955,21 @@ export class Beneficiarios extends Component {
     async salvar() {
 
         if (!this.validarDatos(this.state)) {
+            console.log("Validation Errors");
             Swal.fire({
                 icon: 'error', title: 'Error',
                 text: 'Validation errors'
             })
 
 
-            console.log("Validation Errors");
+          
 
             return;
         }
 
 
-        console.log('Modificando datos de beneficiario')
-        console.log(this.state)
+        //console.log('Modificando datos de beneficiario')
+        //console.log(this.state)
         let respuesta = false;
         try {
             const api = new API(this.accessToken);
@@ -976,17 +977,17 @@ export class Beneficiarios extends Component {
 
 
             if (this.creandoNuevoBeneficiario) {
-                console.log("Nuevo")
-                console.log(this.state)
+               // console.log("Nuevo")
+               // console.log(this.state)
                 resultado = await api.createBeneficiario(this.state);
             } else {
-                console.log("Actualizandro")
+               // console.log("Actualizandro")
                 resultado = await api.updateBeneficiario(this.state);
             }
 
 
 
-            console.log(resultado)
+            //console.log(resultado)
             //TODO OK
             if (resultado.status === 200 || resultado.status === 201) {
 
@@ -1027,12 +1028,12 @@ export class Beneficiarios extends Component {
 
         if (respuesta) {
 
-            console.log('Pidiendo beneficiarios en usuario ')
+            //console.log('Pidiendo beneficiarios en usuario ')
 
             const api = new API(this.accessToken);
             const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
 
-            console.log(allDatosBeneficiarios)
+            //console.log(allDatosBeneficiarios)
 
             if (allDatosBeneficiarios) {
                 window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -1049,8 +1050,8 @@ export class Beneficiarios extends Component {
 
             if (this.creandoNuevoBeneficiario) {
                 this.creandoNuevoBeneficiario = false;
-                console.log('nuevo')
-                console.log(this.beneficiariosNames.length)
+                //console.log('nuevo')
+                //console.log(this.beneficiariosNames.length)
                 this.inicializarDatosBeneficiario(this.beneficiariosNames[this.beneficiariosNames.length - 1]._id);
                 //this.state.selectedBeneficiaryId =this.beneficiariosNames.length - 1;
             } else {
@@ -1098,9 +1099,11 @@ export class Beneficiarios extends Component {
 
         this.state.cardNumber = this.inputCardNumber.el.value;
         const nuevaCard = this.state.cardNumber;
-        console.log(`Salvando card ${nuevaCard}`)
+       // console.log(`Salvando card ${nuevaCard}`)
+        const validacion =await UImanager.validarTarjetayObtenerLogoBanco(nuevaCard, this.accessToken);
+       // console.log(validacion)
 
-        if (await UImanager.buscarLogotipoBanco(nuevaCard, this.accessToken).tarjetaValida) {
+        if (validacion.tarjetaValida) {
             if (this.salvarNuevaCard(nuevaCard)) {
                 Swal.fire({
                     icon: 'success',
@@ -1136,22 +1139,22 @@ export class Beneficiarios extends Component {
             bankName: this.state.bankName,
             cardHolderName: this.state.cardHolderName
         })
-        console.log("Combo box")
-        console.log(this.cardsList)
+        //console.log("Combo box")
+        //console.log(this.cardsList)
     }
 
 
     salvarNuevaCard(nuevaCard) {
 
-        console.log('Card  a salvar')
-        console.log(nuevaCard);
+        //console.log('Card  a salvar')
+        //console.log(nuevaCard);
         if (nuevaCard) {
             if (this.cardsList && this.cardsList.length > 0) {
 
                 //la busco en cardList
                 const cardExisteenLista = this.cardsList.filter(unCard => UImanager.formatCardNumber(unCard.number) === UImanager.formatCardNumber(nuevaCard))[0];
-                console.log('Comprobando si Card Existe:')
-                console.log(cardExisteenLista)
+          //      console.log('Comprobando si Card Existe:')
+            //    console.log(cardExisteenLista)
 
                 if (!cardExisteenLista) { //no existe puede salvarse
 
@@ -1167,8 +1170,8 @@ export class Beneficiarios extends Component {
             } else {
 
                 this.state.creditCards.push(nuevaCard.split(" ").join(""))
-                console.log("Salvando")
-                console.log(this.state.creditCards)
+                //console.log("Salvando")
+                //console.log(this.state.creditCards)
                 this.addCardToComboBox(nuevaCard)
                 return true;
 

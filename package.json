@@ -10,7 +10,7 @@
     "daisyui": "^3.0.3"
   },
   "scripts": {
-    "test": "jest --detectOpenHandles"
+    "test-jest": "jest --detectOpenHandles"
   },
   "type": "module",
   "jest": {
