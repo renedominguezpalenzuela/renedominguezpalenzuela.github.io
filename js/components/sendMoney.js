@@ -427,7 +427,8 @@ export class SendMoney extends Component {
         </div>
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
-            <div class="tw-card-body tw-items-center  ">            
+            <div class="tw-card-body tw-items-center  "> 
+                
                 <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
             </div>
         </div>

@@ -29,6 +29,8 @@ export class ListaTR extends Component {
         saldos: []
     });
 
+
+
     total_tx_a_solicitar = 50;
 
     minDateFiltro = null;
@@ -47,6 +49,10 @@ export class ListaTR extends Component {
         nameList: []
     })
 
+    spinner = useState({
+        show: true
+    })
+
 
 
 
@@ -58,8 +64,8 @@ export class ListaTR extends Component {
 
     static template = xml`  
 
-
-    <table class="inputs tw-mb-2">
+    <t t-if="this.datos and this.datos.length>0">
+    <table class="inputs tw-mb-2" >
         <tbody>
             <tr  >
 
@@ -123,10 +129,26 @@ export class ListaTR extends Component {
         </tbody>
     </table>
 
+    </t>
+
+    <t t-if="this.datos==null">
+        <span  class="display nowrap responsive " style="width:100%"   >
+               No data available yet            
+        </span>
+
+        <t t-if="this.spinner.show==true">
+        <span>
+          <img src="img/Spinner-1s-200px.png" width="35rem"/>
+        </span>
+        </t>
+    </t> 
+
    
     
     <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
+    
     <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+ 
         <tr>
                 <th >Transaction ID</th>    
                  <th class="centrar">Type</th> 
@@ -158,7 +180,9 @@ export class ListaTR extends Component {
                 
            
         </tr>
+       
     </thead>
+   
 </table>
 
 
@@ -181,6 +205,8 @@ export class ListaTR extends Component {
     setup() {
 
         this.tipos_operaciones = tipos_operaciones;
+
+        
 
 
 
@@ -255,6 +281,7 @@ export class ListaTR extends Component {
 
 
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+            console.log("RAW DATOS")
             console.log(raw_datos)
 
 
@@ -268,9 +295,15 @@ export class ListaTR extends Component {
 
             this.datos = await this.transformarRawDatos(raw_datos);
 
+            console.log("DATOS del TX")
+            console.log(this.datos)
+
+            this.spinner.show = false;
 
 
 
+            //obteniendo lista de beneficiarios
+            //this.beneficiarios.nameList
             this.datos.map((unDato, i) => {
 
                 if (unDato.beneficiaryName === '-') {
@@ -593,15 +626,19 @@ export class ListaTR extends Component {
                 ],
 
                 autoWidth: false,
-                "pageLength": 10,
+                pageLength: 10,
                 order: [[6, 'desc']],
                 select: true,
                 responsive: true,
                 destroy: true,
                 language: {
                     emptyTable: "No data",
-                    infoEmpty: "No entries to show"
-                }
+                   infoEmpty: "No entries to show",
+                   zeroRecords: "No data match the filter"
+                },
+                
+
+                
                 //footer: false
 
                 /*'rowCallback': function(row, data, index){
@@ -666,7 +703,7 @@ export class ListaTR extends Component {
             if (!this.datos || this.datos.length <= 0) {
                 //$('#container-listtr').DataTable().clear().destroy();
 
-                // this.tabla.clear();
+                //this.tabla.clear();
                 //this.tabla.destroy();
                 //2nd empty html
                 $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
@@ -800,6 +837,11 @@ export class ListaTR extends Component {
             //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
             //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
             //}
+
+            if (this.tabla) {
+                this.tabla.draw();
+            }
+            
 
 
 
