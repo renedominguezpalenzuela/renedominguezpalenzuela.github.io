@@ -33,12 +33,9 @@ export class ListaGiftCards extends Component {
 
 
 
-    /*
-        <button class="submit-btn tw-w-[30%]" t-on-click="onCreate">Expire</button>
-        <button class="submit-btn tw-w-[30%]" t-on-click="onCreate">Credit</button>
-        <button class="submit-btn tw-w-[30%]" t-on-click="onCreate">Debit</button>*/
+    
 
-    //sm:tw-grid-cols-2
+    
     static template = xml`  
 
    
@@ -124,8 +121,21 @@ export class ListaGiftCards extends Component {
 
     setup() {
 
+
+        this.accessToken = API.getTokenFromsessionStorage();
+
         API.setRedirectionURL(this.props.urlHome);
         onWillStart(async () => {
+
+            if (!this.accessToken) {
+                console.error("NO ACCESS TOKEN - Recargas")
+                window.location.assign(API.redirectURLLogin);
+                return;
+            }
+
+
+            this.api = new API(this.accessToken);
+
 
 
         });
@@ -134,16 +144,16 @@ export class ListaGiftCards extends Component {
 
         onMounted(async () => {
 
-            const accessToken = API.getTokenFromsessionStorage();
-            if (!accessToken) { return }
+            // const accessToken = API.getTokenFromsessionStorage();
+            // if (!accessToken) { return }
 
 
-            const query = {
-                token: accessToken
-            }
+            // const query = {
+            //     token: accessToken
+            // }
 
 
-            this.api = new API(accessToken);
+            // this.api = new API(this.accessToken);
 
             //const newCard =await this.api.createGiftCard("Juan Perez");
             //console.log(newCard)
@@ -162,6 +172,38 @@ export class ListaGiftCards extends Component {
 
             console.log("DATOS del TX")
             console.log(this.datos)
+
+
+               //obteniendo todos los datos de los beneficiarios desde el API
+            if (this.accessToken) {
+
+            
+                const allDatosBeneficiarios = await this.api.getAllDatosBeneficiarios();
+                console.log(allDatosBeneficiarios)
+
+
+              
+
+                if (allDatosBeneficiarios) {
+                    window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
+                }
+
+                this.allDatosBeneficiariosFromStorage = JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));
+
+                if (this.allDatosBeneficiariosFromStorage) {
+                    this.beneficiariosNames = this.allDatosBeneficiariosFromStorage.map(el => ({
+                        beneficiaryFullName: el.beneficiaryFullName,
+                        _id: el._id
+                    }));
+                }
+
+
+                  console.log(this.beneficiariosNames)
+
+            } else {
+                console.error("NO ACCESS TOKEN - Beneficiario")              
+            }
+
 
             this.spinner.show = false;
 
@@ -249,7 +291,7 @@ export class ListaGiftCards extends Component {
 
 
 
-            function creditFn(event){
+            function creditFn(event) {
                 console.log(event);
 
             }
@@ -259,17 +301,17 @@ export class ListaGiftCards extends Component {
                 // `d` is the original data object for the row
 
 
-              
-               const numero=d.number;
+
+                const numero = d.number;
 
                 return (
                     '<dl>' +
                     '<dt>Actions:</dt>' +
                     '<dd>' +
                     '<div class="tw-flex">' +
-                    '<button  class="tw-btn   tw-mr-3 creditfn" card-number="'+numero +'">Credit </button>' +
-                    '<button  class="tw-btn  tw-mr-3 debitfn" card-number="'+numero +'">Debit</button>' +
-                    '<button  class="tw-btn  tw-mr-3 cancelfn" card-number="'+numero +'">Cancel</button>' +
+                    '<button  class="tw-btn   tw-mr-3 creditfn" card-number="' + numero + '">Credit </button>' +
+                    '<button  class="tw-btn  tw-mr-3 debitfn" card-number="' + numero + '">Debit</button>' +
+                    '<button  class="tw-btn  tw-mr-3 cancelfn" card-number="' + numero + '">Cancel</button>' +
                     '</div>' +
 
                     '</dd>' +
@@ -423,7 +465,7 @@ export class ListaGiftCards extends Component {
                 // Add event listener for opening and closing details
                 this.tabla.on('click', 'td.dt-control', (e) => {
                     let tr = e.target.closest('tr');
-               
+
                     let row = this.tabla.row(tr);
 
 
@@ -440,37 +482,37 @@ export class ListaGiftCards extends Component {
 
                 this.tabla.on('click', '.creditfn', (e) => {
                     let tr = e.target.closest('tr');
-               
+
                     let row = this.tabla.row(tr);
 
                     const cardNumber = $(e.target)[0].attributes['card-number'].value;
 
                     this.creditCard(cardNumber);
-                    
 
-                    
+
+
                 });
 
                 this.tabla.on('click', '.debitfn', (e) => {
                     let tr = e.target.closest('tr');
-               
+
                     let row = this.tabla.row(tr);
                     const cardNumber = $(e.target)[0].attributes['card-number'].value;
 
                     this.debitCard(cardNumber);
 
-                    
+
                 });
 
                 this.tabla.on('click', '.cancelfn', (e) => {
                     let tr = e.target.closest('tr');
-               
+
                     let row = this.tabla.row(tr);
                     const cardNumber = $(e.target)[0].attributes['card-number'].value;
 
                     this.cancelCard(cardNumber);
 
-                    
+
                 });
             }
 
@@ -591,13 +633,178 @@ export class ListaGiftCards extends Component {
         console.log(number)
     }
 
-    creditCard = (number) => {
-        console.log(number)
+    creditCard = async (number) => {          
+        const { value: formValues } = await Swal.fire({
+            title: "Gift Card Add Token",
+
+            html: `
+            <div class="tw-form-control tw-w-full tw-p-2">
+            <label class="tw-label">
+                <span class="tw-label-text">Gift Card to Credit: ${number}</span>
+            </label>
+            </div>
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <label class="tw-label">
+                        <span class="tw-label-text">Credit Amount</span>
+                </label>
+        
+              <div class="tw-join">                        
+                 
+                <input type="text" id="amount"  class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00" />
+                        
+                
+                <select id="currency" class="tw-select tw-select-bordered tw-join-item"   >                    
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="CAD">CAD</option>   
+                </select>
+
+              </div>
+
+              <div class="tw-form-control  tw-w-full  tw-p-2">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Concept</span>
+                    </label>
+                    
+                    <textarea id="concept" class="tw-textarea tw-textarea-bordered tw-w-full" placeholder="" rows="4" cols="10" maxlength="200" style="resize:none;" ></textarea>
+                </div>
+
+             
+
+            </div>
+
+
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                const resultado = {
+                    amount: document.getElementById("amount").value,
+                    currency: document.getElementById("currency").value,
+                    concept: document.getElementById("concept").value
+                }
+                return resultado;
+            }
+        });
+
+        let respuesta = null;
+
+        if (formValues) {
+           
+
+            try {
+
+                let datos = {
+                    number: number,
+                    externalID: API.generateRandomID(),
+                    paymentMethod: {
+                        paymentLink: true,
+                    },
+                    ...formValues
+                }
+    
+                $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
+                respuesta = await this.api.giftCardCredit(datos);
+                $.unblockUI();
+    
+
+                const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+                UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
+
+            } catch (error) {
+                console.log(error);
+            }
+
+            console.log(respuesta.data.status)
+       
+
+        }
+
+
+      
+
+
+
+
     }
 
 
     cancelCard = (number) => {
         console.log(number)
+    }
+
+
+    onCreate = async () => {
+        console.log("OnCreate")
+
+        let optionsBeneficiario = '';
+
+         this.beneficiariosNames.map((el)=>{
+            optionsBeneficiario = optionsBeneficiario  + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
+
+        })
+
+ 
+
+        const { value: beneficiario } = await Swal.fire({
+            title: "Create Gift Card",
+
+            html: `
+        
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <label class="tw-label">
+                        <span class="tw-label-text">Select Beneficiary</span>
+                </label>
+                
+                <select id="beneficiary" class="tw-select tw-select-bordered tw-join-item"   > 
+                   ${optionsBeneficiario}                                        
+                </select>    
+
+            </div>
+
+
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                const resultado = {
+                    selectedBeneficiary: document.getElementById("beneficiary").value,                    
+                }
+                return resultado;
+            }
+        });
+
+        
+        console.log(beneficiario);
+
+        if (!beneficiario) {
+            return;
+        }
+        this.spinner.show = true;
+
+        const creandoGiftCardRespuesta = await this.api.createGiftCard(beneficiario.selectedBeneficiary);
+
+        console.log(creandoGiftCardRespuesta);
+
+        //Actualizar table
+
+        const raw_datos = await this.api.getGiftCardData();
+
+
+
+        this.datos = [];
+
+
+        this.datos = await this.transformarRawDatos(raw_datos);
+        if (this.datos) {
+            this.actualizarDatos(this.datos);
+        }
+
+        this.spinner.show = false;
+
+
+       // await this.createGiftCard(holderName) ;
     }
 
 

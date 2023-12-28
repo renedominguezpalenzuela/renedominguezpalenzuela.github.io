@@ -1486,11 +1486,7 @@ export class API {
     var config = {
       method: 'post',
       url: `${base_url}/api/private/cards/create`,
-      headers: {
-        'authorization': `Bearer ${this.accessToken}`,
-        'x-api-key': x_api_key,
-        'Content-Type': 'application/json',
-      },
+      headers: this.headers,
       data: body
     }
 
@@ -1615,6 +1611,135 @@ export class API {
     return resultado;
 
   }
+
+//----------------------------------------------------------------------------------------------
+  // Credit Gift Card
+  //----------------------------------------------------------------------------------------------
+  
+   async giftCardCredit(creditData) {
+
+    var body = JSON.stringify(creditData)
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/cards/credit`,
+      headers: this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+  
+
+  //----------------------------------------------------------------------------------------------
+  // Credit Gift Card Window
+  //----------------------------------------------------------------------------------------------
+  /* async giftCardCreditWindow(datos) {
+
+    let respuesta_api = null;
+    let resultado = false;
+
+    await Swal.fire({
+      title: 'Execute credit operation?',      
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'OK',
+      showLoaderOnConfirm: true,
+      preConfirm: async () => {
+
+        
+        respuesta_api = await API.confirmUser(IDUsuario, verificationCode)
+        console.log("Respuesta del API de Confirmar usuario")
+        console.log(respuesta_api)
+
+        return respuesta_api;
+
+
+
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then(async (result) => {
+      
+
+
+      if (result.isConfirmed) {   //si usuario le dio al boton confirmar
+        console.log("Respuesta del API de Confirmar usuario 2")
+        console.log(respuesta_api)
+        console.log(result.value)
+        let verificado_correctamente = false;
+        let message = "Error in verification code"
+        if (respuesta_api) {
+          verificado_correctamente = result.value.data.validatedUser;
+          message = result.value.data.message;
+        }
+
+
+
+
+        if (verificado_correctamente && verificado_correctamente == true) {
+          console.log("Usuario verificado correctamente")
+          resultado = true;
+          await Swal.fire({
+            icon: 'success',
+            title: 'Activating user',
+            text: message,
+            confirmButtonText: 'Ok',
+            timer: 3000
+          })
+
+
+
+        } else {
+          let cod_error = '???';
+          resultado = false;
+
+          if (respuesta_api) {
+            const cod_error = respuesta_api.response ? respuesta_api.response.data.message : "Error activating user"
+            console.log("Error verificando usuario")
+            console.log(respuesta_api)
+
+          }
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Activating user error',
+            text: cod_error + ' ' + message
+          })
+
+        }
+
+
+
+
+       // value: {
+       //   contiene la respuesta del paso anterior
+       //   result.value.code
+       // }
+
+        //Swal.fire({
+        //  title: `Codigo de verificacion: ${result.value.code}`
+
+       // })
+      }
+    })
+    return resultado;
+
+  }*/
+
+
+
 
 
 }
@@ -2276,7 +2401,41 @@ export class UImanager {
     return cantidadConvertida
   }
 
+/**------------------------------------------------------------------------------
+ * Llamado para todas las funciones
+ * si no hay fondos llama y gestiona ventana de Stripe
+ * 
+ * @param {*} resultado --- resultado de la llamada anterior
+ * @param {*} urlHome 
+ * @param {*} menuController 
+ * @returns 
+ * 
+ * 
+ *   try {
 
+                let datos = {
+                    number: number,
+                    externalID: API.generateRandomID(),
+                    paymentMethod: {
+                        paymentLink: true,
+                    },
+                    ...formValues
+                }
+    
+                $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
+                respuesta = await this.api.giftCardCredit(datos);
+                $.unblockUI();
+    
+
+                const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+                UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
+
+            } catch (error) {
+                console.log(error);
+            }
+ * 
+ */
 
   static async gestionResultado(resultado, urlHome, menuController) {
 
