@@ -2020,6 +2020,10 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-bottom: 0.5rem;
 }
 
+.tw-mb-4 {
+  margin-bottom: 1rem;
+}
+
 .tw-ml-1 {
   margin-left: 0.25rem;
 }

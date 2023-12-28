@@ -194,7 +194,18 @@ export class ListaBeneficiarios extends Component {
             //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
             //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
             //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
+
+
             //}
+
+            //$('#container-listbeneficiary_wrapper').remove();
+            $('#container-listtr_wrapper').remove();
+            $('#container-listgift-cards_wrapper').remove();
+
+            $('#container-listtr').DataTable().clear().destroy();
+           // $('#container-listbeneficiary').DataTable().clear().destroy();
+            $('#container-listgift-cards').DataTable().clear().destroy();
+
 
 
 

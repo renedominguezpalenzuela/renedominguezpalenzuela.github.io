@@ -1441,6 +1441,74 @@ export class API {
 
   }
 
+
+  
+  //----------------------------------------------------------------------------------------------
+  // Obtener lista de GiftCards
+  //----------------------------------------------------------------------------------------------
+  async getGiftCardData() {
+
+
+
+
+
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/cards`,
+      headers: this.headers,
+    
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response;
+      
+     
+    }).catch(function (error) {
+      //console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+  //------------------------------------------------------------------------------------------------
+  // Crear giftCard
+  //------------------------------------------------------------------------------------------------
+   async createGiftCard(holderName) {
+    var body = JSON.stringify({
+      holderName: holderName,
+    })
+
+   
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/cards/create`,
+      headers: {
+        'authorization': `Bearer ${this.accessToken}`,
+        'x-api-key': x_api_key,
+        'Content-Type': 'application/json',
+      },
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+
   //----------------------------------------------------------------------------------------------
   // Verificar usuario
   //----------------------------------------------------------------------------------------------

@@ -838,6 +838,15 @@ export class ListaTR extends Component {
             //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
             //}
 
+
+            $('#container-listbeneficiary_wrapper').remove();
+            //$('#container-listtr_wrapper').remove();
+            $('#container-listgift-cards_wrapper').remove();
+
+            //$('#container-listtr').DataTable().clear().destroy();
+            $('#container-listbeneficiary').DataTable().clear().destroy();
+            $('#container-listgift-cards').DataTable().clear().destroy();
+
             if (this.tabla) {
                 this.tabla.draw();
             }

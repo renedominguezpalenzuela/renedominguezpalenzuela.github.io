@@ -11,16 +11,17 @@ import { SendMoney } from "./components/sendMoney.js";
 import { SendAll } from "./components/sendAll.js";
 import { ListaTR } from "./components/listatr.js";
 import { API } from "./utils.js";
+import { ListaGiftCards } from "./components/giftCards.js";
 
 
 
 class Root extends Component {
-  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, HomeDeliveryCuba, Beneficiarios, SendMoney,SendAll,  RecargasTelefono, ListaTR };
+  static components = { Menu, LeftMenu, Profile, SendMoneyCuba, ListaGiftCards, HomeDeliveryCuba, Beneficiarios, SendMoney, SendAll, RecargasTelefono, ListaTR };
 
   //Opcion inicial del menu
 
 
-  state = useState({ menuId: 9, title: 'Send Money' });
+  state = useState({ menuId: 10, title: 'Gift Cards' });
 
   // tipo_operacion = {
   //   name: "CASH_OUT_TRANSACTION"
@@ -39,6 +40,7 @@ class Root extends Component {
     { id: 7, name: "Phone Recharge", type: 2 },
     { id: 9, name: "Send Money", type: 2 },
     { id: 8, name: "Transactions List", type: 2 },
+    { id: 10, name: "Gift Cards", type: 2 },
 
 
   ];
@@ -95,6 +97,9 @@ class Root extends Component {
          </t>
 
 
+         <t t-elif="this.state.menuId === 10">
+         <ListaGiftCards />
+        </t>
       
           
 
