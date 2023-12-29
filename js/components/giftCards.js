@@ -2,13 +2,14 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 
 import { API, UImanager } from "../utils.js";
+import { ListaTR } from "./listatr.js";
 
 
 
 export class ListaGiftCards extends Component {
 
 
-
+    static components = { ListaTR };
 
     datos = null;
     //grid = null;
@@ -27,6 +28,9 @@ export class ListaGiftCards extends Component {
     spinner = useState({
         show: true
     })
+
+    tipo_operacion = [8];
+    tipoVista = 'GIFT_CARDS';
 
 
 
@@ -78,16 +82,18 @@ export class ListaGiftCards extends Component {
     </t> 
 
    
-    
+    <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
+    <div class="tw-card-body tw-items-center  "> 
+            
     <table  id="container-listgift-cards" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
     
         <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
 
             <tr>
                     <th></th>
-                    <th  > Gift Card</th>    
-                    <th  class="centrar">Holder</th> 
-                    <th  class="centrar">Cvv2</th>
+                    <th data-priority="1" > Gift Card</th>    
+                    <th  data-priority="1" class="centrar">Holder</th> 
+                    <th  data-priority="1" class="centrar">Cvv2</th>
                     <th  class="centrar">Exp. Date <br/> (yy/mm) </th>    
                     <th  class="centrar">Is Exp?</th>
                     <th  class="centrar">USD</th>
@@ -101,6 +107,13 @@ export class ListaGiftCards extends Component {
         </thead>
    
     </table>
+    </div>
+    </div>
+
+
+        
+        <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion"  />
+   
 
 
 
@@ -309,9 +322,9 @@ export class ListaGiftCards extends Component {
                     '<dt>Actions:</dt>' +
                     '<dd>' +
                     '<div class="tw-flex">' +
-                    '<button  class="tw-btn   tw-mr-3 creditfn" card-number="' + numero + '">Credit </button>' +
-                    '<button  class="tw-btn  tw-mr-3 debitfn" card-number="' + numero + '">Debit</button>' +
-                    '<button  class="tw-btn  tw-mr-3 cancelfn" card-number="' + numero + '">Cancel</button>' +
+                    '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
+                    '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
+                    '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Cancel</button>' +
                     '</div>' +
 
                     '</dd>' +
@@ -384,27 +397,14 @@ export class ListaGiftCards extends Component {
                         },
                         className: "amount-value"
                     },
-                    /*{
-                        "mData": null,
-                        "bSortable": false,
-                        "mRender": function(data, type, full) {
-                          return '<a class="btn btn-info btn-sm" href=#/' + full[0] + '>' + 'Edit' + '</a>';
-                        }
-                      }*/
-
-
-
-
-
-
-
-
-
+                   
                 ],
 
                 responsive: true,
+                autoWidth: false,
 
                 dom: 'lBfrtip',
+                
                 buttons: [
                     'copy',
                     'csv',
@@ -419,7 +419,7 @@ export class ListaGiftCards extends Component {
                     'print'
                 ],
 
-                autoWidth: false,
+             
                 pageLength: 10,
                 order: [],  //[6, 'desc']
                 select: true,
@@ -429,6 +429,11 @@ export class ListaGiftCards extends Component {
                     emptyTable: "No data",
                     infoEmpty: "No entries to show",
                     zeroRecords: "No data match the filter"
+                },
+                language: {
+                    emptyTable: "No data",
+                   infoEmpty: "No entries to show",
+                   zeroRecords: "No data match the filter"
                 },
 
 
@@ -633,15 +638,27 @@ export class ListaGiftCards extends Component {
         console.log(number)
     }
 
-    creditCard = async (number) => {          
+    creditCard = async (number) => { 
+        
+        const ownerObj = this.datos.find((unCard)=>unCard.number===number);
+        console.log(ownerObj);
+        
+        
         const { value: formValues } = await Swal.fire({
             title: "Gift Card Add Token",
 
             html: `
             <div class="tw-form-control tw-w-full tw-p-2">
+            <div>
             <label class="tw-label">
                 <span class="tw-label-text">Gift Card to Credit: ${number}</span>
             </label>
+            </div>
+            <div>
+            <label class="tw-label">
+                <span class="tw-label-text">Owner: ${ownerObj.holder}</span>
+            </label>
+            </div>
             </div>
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">

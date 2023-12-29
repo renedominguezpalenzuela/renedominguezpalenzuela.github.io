@@ -2096,6 +2096,10 @@ details.tw-collapse summary::-webkit-details-marker {
   height: 100%;
 }
 
+.tw-h-\[2rem\] {
+  height: 2rem;
+}
+
 .tw-w-24 {
   width: 6rem;
 }
@@ -2206,6 +2210,10 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-gap-2 {
   gap: 0.5rem;
+}
+
+.tw-gap-0 {
+  gap: 0px;
 }
 
 .tw-gap-x-2 {
@@ -2407,6 +2415,10 @@ details.tw-collapse summary::-webkit-details-marker {
 
   .sm\:tw-col-start-2 {
     grid-column-start: 2;
+  }
+
+  .sm\:tw-col-start-3 {
+    grid-column-start: 3;
   }
 
   .sm\:tw-row-start-1 {

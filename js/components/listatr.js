@@ -64,70 +64,86 @@ export class ListaTR extends Component {
 
     static template = xml`  
 
+    <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 ">
+    <div class="tw-card-body tw-items-center  "> 
+
     <t t-if="this.datos and this.datos.length>0">
-    <table class="inputs tw-mb-2" >
-        <tbody>
-            <tr  >
 
-               <td class="tw-w-[22rem] ">
-                    <div>
-                        <span>From:</span>
-                        <span class="tw-ml-2">
-                           <input type="text" id="min" name="min"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered" />
-                        </span> 
-                    </div>
-                    
-                    <div>
-                        <span>To:</span>
-                        <span class="tw-ml-2">
-                            <input type="text" id="max" name="max"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered"/>
-                        </span>
-                    </div>
-                    
-                </td>
 
-                <td>
-                    <button  class="tw-btn"  t-on-click="resetRange" >Reset range </button>
-                </td>
+                
 
-                <td  class="tw-w-[16rem] ">
-                <div t-if="this.props.tipoVista=='' || this.props.tipoVista==null">
-                    <span>Type:</span>
+        <div class="sm:tw-grid sm:tw-grid-cols-3 tw-gap-2 tw-mb-4">
+           
+        
+            <div class="tw-w-[22rem] sm:tw-row-start-1 sm:tw-col-start-1">
+                
+                <div>
+                    <span>From:</span>
                     <span class="tw-ml-2">
-                         <select class="tw-select tw-select-bordered tw-join-item" t-att-value="this.state.tipoOperacionFiltro"  t-on-input="onChangeType" t-ref="inputType" >                    
-                        <option  t-att-value="-1" >All types</option>
-                          <t t-if="(this.tipos_operaciones) and (this.tipos_operaciones.length>0) ">
-                           <t  t-foreach="this.tipos_operaciones" t-as="unTipo" t-key="unTipo.cod_tipo">
-                                <option t-att-value="unTipo.cod_tipo">
-                                    <t t-esc="unTipo.usertext"/>                                  
-                                </option>
-                          </t>       
-                        </t>        
-                        </select> 
+                        <input type="text" id="min" name="min"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered" />
                     </span> 
                 </div>
+            </div>
+                
+            
+            <div class="tw-w-[22rem] sm:tw-row-start-2 sm:tw-col-start-1">
+                <div>
+                    <span>To:</span>
+                    <span class="tw-ml-2">
+                        <input type="text" id="max" name="max"  placeholder="yyyy-mm-dd" class="tw-input tw-input-bordered"/>
+                    </span>
+                </div>
 
-                <!-- Seleccionar beneficiario -->
-                <div class="tw-mt-1">
-      
-                  <select  id="listaBeneficiarios" t-att-value="this.state.beneficiaryID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
-                        <option  t-att-value="-1" >All beneficiaries</option>
-                         <t  t-if="this.beneficiarios and  this.beneficiarios.nameList.length > 0">
+                
+            </div>
+
+            <div class="tw-w-[22rem] sm:tw-row-start-1 sm:tw-col-start-2">
+                    <button  class="tw-btn"  t-on-click="resetRange" >Reset range </button>
+            </div>
+                
+                
+
+              
+
+            <!-- Seleccionar Tipo de Operacion -->
+            <div class="tw-w-[22rem] sm:tw-row-start-1 sm:tw-col-start-3" t-if="this.props.tipoVista=='' || this.props.tipoVista==null">
+                <span>Type:</span>
+                <span class="tw-ml-2">
+                    <select class="tw-select tw-select-bordered tw-join-item" t-att-value="this.state.tipoOperacionFiltro"  t-on-input="onChangeType" t-ref="inputType" >                    
+                    <option  t-att-value="-1" >All types</option>
+                    <t t-if="(this.tipos_operaciones) and (this.tipos_operaciones.length>0) ">
+                    <t  t-foreach="this.tipos_operaciones" t-as="unTipo" t-key="unTipo.cod_tipo">
+                            <option t-att-value="unTipo.cod_tipo">
+                                <t t-esc="unTipo.usertext"/>                                  
+                            </option>
+                    </t>       
+                    </t>        
+                    </select> 
+                </span> 
+            </div>
+
+
+            <!-- Seleccionar beneficiario -->
+            
+            <div class="tw-w-[22rem] sm:tw-row-start-2 sm:tw-col-start-3" t-if="this.props.tipoVista=='' || this.props.tipoVista==null">
+                <select  id="listaBeneficiarios" t-att-value="this.state.beneficiaryID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
+                    <option  t-att-value="-1" >All beneficiaries</option>
+                    <t  t-if="this.beneficiarios and  this.beneficiarios.nameList.length > 0">
                         <t t-foreach="this.beneficiarios.nameList" t-as="unBeneficiario" t-key="unBeneficiario.id">
                             <option t-att-value="unBeneficiario.id">
-                               <t t-esc="unBeneficiario.beneficiaryFullName"/>
+                            <t t-esc="unBeneficiario.beneficiaryFullName"/>
                             </option>
                         </t>  
-                        </t>  
-                             
-                    </select> 
-                </div>   
+                    </t>          
+                </select> 
+            </div>   
                   
-                </td>
+                
 
-            </tr>
-        </tbody>
-    </table>
+            
+
+        </div>
+
 
     </t>
 
@@ -144,46 +160,49 @@ export class ListaTR extends Component {
     </t> 
 
    
+
+
     
     <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
-    
+
     <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
- 
-        <tr>
-                <th >Transaction ID</th>    
-                 <th class="centrar">Type</th> 
-                
-               
-                <th  class="centrar">Status</th>
-            
-            
-                <th class="amount-value">Amount <br/> (No fee)</th>
-                <th >Fee: <br/> </th>
-            
-                <th >Curr.</th>
-                <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
-                <th  >  Beneficiary Name  </th>  
-                <th >  Beneficiary Phone  </th>  
-                <th >  Beneficiary Card  </th> 
-                <th >  Sender Name </th>
-                <th >  Received Amount </th>
-                <th >  Received Currency </th>
 
-                <th>Type</th>
-                <th>Type2</th> 
-                <th>External ID</th>
-
-                
+        <tr >
+            <th   >Transaction ID</th>    
+            <th   class="centrar">Type</th> 
 
 
-                
-                
-           
+            <th  class="centrar">Status</th>
+
+
+            <th class="amount-value">Amount <br/> (No fee)</th>
+            <th >Fee: <br/> </th>
+
+            <th >Curr.</th>
+            <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
+            <th  >  Beneficiary Name  </th>  
+            <th >  Beneficiary Phone  </th>  
+            <th >  Beneficiary Card  </th> 
+            <th >  Sender Name </th>
+            <th >  Received Amount </th>
+            <th >  Received Currency </th>
+
+            <th>Type</th>
+            <th>Type2</th> 
+            <th>External ID</th>
+
         </tr>
-       
+
     </thead>
-   
-</table>
+
+    </table>
+    
+
+
+</div>
+</div>
+
+
 
 
 
@@ -298,7 +317,7 @@ export class ListaTR extends Component {
             console.log("DATOS del TX")
             console.log(this.datos)
 
-            this.spinner.show = false;
+       
 
 
 
@@ -335,6 +354,10 @@ export class ListaTR extends Component {
                 }
 
             })
+
+
+            this.spinner.show = false;
+   
 
 
 
@@ -425,6 +448,9 @@ export class ListaTR extends Component {
                 }*/
             }
 
+
+
+           
 
             );
 
@@ -577,39 +603,13 @@ export class ListaTR extends Component {
                     { data: 'type2', width: '15%', visible: showCol.type2 },
                     { data: 'externalID', width: '13%', visible: showCol.externalID }
 
-                    /*{
-                        data: 'feeusd', width: '4%', className: "amount-value",
-                        render: function (data, type, row) {
-                            let valor = UImanager.roundDec(data);
-                            return `<span class="" > ${valor} </span>`;
-                        }
-                    },
-                    { data: 'type', width: '15%' },
-                    { data: 'type2', width: '15%' },
-                    { data: 'externalID', width: '13%' },*/
-
-
+                   
 
 
 
 
                 ],
-                /* dom: 'Bfrtip',
-                 buttons: [
- 
-                     'copy', 'csv', 'excel', 'pdf', 'print'
-                     'copy','excel', 'csv',
-                     
-                     {
-                         extend: 'pdf',
-                         messageTop: 'TX List'
-                     },
-                     // {
-                     //     extend: 'print',
-                     //     messageTop: 'TX List'
-                     // }
- 
-                 ],*/
+              
                 dom: 'lBfrtip',
                 buttons: [
                     'copy',
@@ -639,43 +639,7 @@ export class ListaTR extends Component {
                 
 
                 
-                //footer: false
-
-                /*'rowCallback': function(row, data, index){
-                    console.log(data.transactionStatus)
-                    console.log($(row).find('td:eq(3)')[0])
-                    if(data.transactionStatus==="pending"){
-                        $(row).find('td:eq(4)').css('color', 'white');
-                        $(row).find('td:eq(4)').css('background-color', 'blue');
-                        $(row).find('td:eq(4)').css('margin', '3px');
-                       // $(row).find('td:eq(3)').addClass('state-requested');
-                        //row.querySelector(':nth-child(3)').classList.add('state-requested');
-                    }
-                   // if(data[2].toUpperCase() == 'EE'){
-                   //     $(row).find('td:eq(2)').css('color', 'blue');
-                   // }
-                  }*/
-
-                /* createdRow: (row, data, index) => {
-                     //console.log(data.transactionStatus)
-                     console.log("-------")
-                     console.log(row.querySelector('tr.child'))
-                     // console.log($(row).find('td:eq(3)'))
-                     if (data.transactionStatus === "confirmed") {
-                         row.querySelector(':nth-child(5)').classList.add('state-requested');
-                         //   row.querySelector('li:nth-child(1) > span.dtr-data').classList.add('state-requested');
-                         //tr.child > td > ul > li:nth-child(1) > span.dtr-data
- 
-                     }
-                 }*/
-
-                /* "createdRow": function (row, data, dataIndex) {
-                     console.log($('td', row).child)
-                     if (data.transactionStatus==="pending") {
-                         $('td', row).eq(4).addClass('state-requested');
-                     }
-                 }*/
-
+             
 
             });
 
@@ -809,6 +773,7 @@ export class ListaTR extends Component {
 
 
 
+           
 
 
 
@@ -841,11 +806,17 @@ export class ListaTR extends Component {
 
             $('#container-listbeneficiary_wrapper').remove();
             //$('#container-listtr_wrapper').remove();
-            $('#container-listgift-cards_wrapper').remove();
+
+            if (this.props.tipoVista!='GIFT_CARDS') {
+                $('#container-listgift-cards_wrapper').remove();
+            }
+            
 
             //$('#container-listtr').DataTable().clear().destroy();
             $('#container-listbeneficiary').DataTable().clear().destroy();
-            $('#container-listgift-cards').DataTable().clear().destroy();
+            if (this.props.tipoVista!='GIFT_CARDS') {
+                $('#container-listgift-cards').DataTable().clear().destroy();
+            }
 
             if (this.tabla) {
                 this.tabla.draw();
