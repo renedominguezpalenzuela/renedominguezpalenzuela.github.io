@@ -37,9 +37,9 @@ export class ListaGiftCards extends Component {
 
 
 
-    
 
-    
+
+
     static template = xml`  
 
    
@@ -187,15 +187,15 @@ export class ListaGiftCards extends Component {
             console.log(this.datos)
 
 
-               //obteniendo todos los datos de los beneficiarios desde el API
+            //obteniendo todos los datos de los beneficiarios desde el API
             if (this.accessToken) {
 
-            
+
                 const allDatosBeneficiarios = await this.api.getAllDatosBeneficiarios();
                 console.log(allDatosBeneficiarios)
 
 
-              
+
 
                 if (allDatosBeneficiarios) {
                     window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -211,10 +211,10 @@ export class ListaGiftCards extends Component {
                 }
 
 
-                  console.log(this.beneficiariosNames)
+                console.log(this.beneficiariosNames)
 
             } else {
-                console.error("NO ACCESS TOKEN - Beneficiario")              
+                console.error("NO ACCESS TOKEN - Beneficiario")
             }
 
 
@@ -324,7 +324,7 @@ export class ListaGiftCards extends Component {
                     '<div class="tw-flex">' +
                     '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
                     '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
-                    '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Cancel</button>' +
+                    '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
                     '</div>' +
 
                     '</dd>' +
@@ -397,14 +397,14 @@ export class ListaGiftCards extends Component {
                         },
                         className: "amount-value"
                     },
-                   
+
                 ],
 
                 responsive: true,
                 autoWidth: false,
 
                 dom: 'lBfrtip',
-                
+
                 buttons: [
                     'copy',
                     'csv',
@@ -419,7 +419,7 @@ export class ListaGiftCards extends Component {
                     'print'
                 ],
 
-             
+
                 pageLength: 10,
                 order: [],  //[6, 'desc']
                 select: true,
@@ -432,8 +432,8 @@ export class ListaGiftCards extends Component {
                 },
                 language: {
                     emptyTable: "No data",
-                   infoEmpty: "No entries to show",
-                   zeroRecords: "No data match the filter"
+                    infoEmpty: "No entries to show",
+                    zeroRecords: "No data match the filter"
                 },
 
 
@@ -634,31 +634,169 @@ export class ListaGiftCards extends Component {
     }
 
 
-    debitCard = (number) => {
-        console.log(number)
-    }
-
-    creditCard = async (number) => { 
-        
-        const ownerObj = this.datos.find((unCard)=>unCard.number===number);
+    debitCard = async (number) => {
+        const ownerObj = this.datos.find((unCard) => unCard.number === number);
         console.log(ownerObj);
-        
-        
+
+
         const { value: formValues } = await Swal.fire({
-            title: "Gift Card Add Token",
+            title: "Gift Card Debit Token",
 
             html: `
             <div class="tw-form-control tw-w-full tw-p-2">
-            <div>
-            <label class="tw-label">
-                <span class="tw-label-text">Gift Card to Credit: ${number}</span>
-            </label>
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Gift Card to Debit: ${number}</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Owner: ${ownerObj.holder}</span>
+                    </label>
+                </div>
             </div>
-            <div>
-            <label class="tw-label">
-                <span class="tw-label-text">Owner: ${ownerObj.holder}</span>
-            </label>
+
+            <div class="tw-w-full tw-p-2">
+               <div class="tw-flex tw-flex-row tw-w-full tw-items-center tw-mb-4">
+                    
+                       
+                        <span class="tw-label-text tw-mr-4">CVV2</span>
+                      
+                    
+                    
+                        <input type="text" id="cvv2"  class="tw-input tw-input-bordered tw-w-[20%]  "  />
+                        <span class="tw-label-text tw-mr-4">Exp Date</span>
+                       
+                    
+                    
+                        
+                        <input type="text" id="month"  class="tw-input tw-input-bordered tw-w-[20%] tw-mr-2  " placeholder='MM'  />
+                    
+                     /  
+                    
+                        <input type="text" id="year"  class="tw-input tw-input-bordered  tw-w-[20%] tw-ml-2"  placeholder='YY' />
+                     
+                    
+                </div>
+
+               <!-- <div class="tw-flex tw-flex-row tw-w-full tw-items-center">
+                    
+                       
+                          
+                    
+                </div> -->
+
             </div>
+
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <label class="tw-label">
+                        <span class="tw-label-text">Debit Amount</span>
+                </label>
+        
+                <div class="tw-join">                        
+                 
+                    <input type="text" id="amount"  class="tw-input tw-input-bordered tw-join-item tw-text-right tw-w-full" placeholder="0.00" />
+                            
+                    
+                    <select id="currency" class="tw-select tw-select-bordered tw-join-item"   >                    
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="CAD">CAD</option>   
+                    </select>
+
+                </div>
+
+                <div class="">
+                    <label class="tw-label">
+                        <span class="tw-label-text">Concept</span>
+                    </label>
+                    
+                    <textarea id="concept" class="tw-textarea tw-textarea-bordered tw-w-full" placeholder="" rows="3"  maxlength="200" style="resize:none;" ></textarea>
+                </div>            
+            </div>
+
+
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            preConfirm: () => {
+                const resultado = {
+                    amount: document.getElementById("amount").value,
+                    currency: document.getElementById("currency").value,
+                    concept: document.getElementById("concept").value,
+                    cvv2:  document.getElementById("cvv2").value,
+                    month:  document.getElementById("month").value,
+                    year:  document.getElementById("year").value,
+                }
+                return resultado;
+            }
+        });
+
+        let respuesta = null;
+
+        if (formValues) {
+
+
+            try {
+
+                let datos = {
+                    number: number,
+                    externalID: API.generateRandomID(),
+                    paymentMethod: {
+                        paymentLink: true,
+                    },
+                    ...formValues
+                }
+
+                $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
+                respuesta = await this.api.giftCardDebit(datos);
+                $.unblockUI();
+
+
+                const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+                UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
+
+            } catch (error) {
+                console.log(error);
+            }
+
+            console.log(respuesta.data.status)
+
+
+        }
+
+
+
+
+
+
+
+    }
+
+
+
+    creditCard = async (number) => {
+
+        const ownerObj = this.datos.find((unCard) => unCard.number === number);
+        console.log(ownerObj);
+
+
+        const { value: formValues } = await Swal.fire({
+            title: "Gift Card Credit Token",
+
+            html: `
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Gift Card to Credit: ${number}</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Owner: ${ownerObj.holder}</span>
+                    </label>
+                </div>
             </div>
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">
@@ -678,7 +816,7 @@ export class ListaGiftCards extends Component {
 
               </div>
 
-              <div class="tw-form-control  tw-w-full  tw-p-2">
+              <div class="">
                     <label class="tw-label">
                         <span class="tw-label-text">Concept</span>
                     </label>
@@ -707,7 +845,7 @@ export class ListaGiftCards extends Component {
         let respuesta = null;
 
         if (formValues) {
-           
+
 
             try {
 
@@ -719,11 +857,11 @@ export class ListaGiftCards extends Component {
                     },
                     ...formValues
                 }
-    
+
                 $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
                 respuesta = await this.api.giftCardCredit(datos);
                 $.unblockUI();
-    
+
 
                 const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
@@ -734,12 +872,12 @@ export class ListaGiftCards extends Component {
             }
 
             console.log(respuesta.data.status)
-       
+
 
         }
 
 
-      
+
 
 
 
@@ -757,12 +895,12 @@ export class ListaGiftCards extends Component {
 
         let optionsBeneficiario = '';
 
-         this.beneficiariosNames.map((el)=>{
-            optionsBeneficiario = optionsBeneficiario  + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
+        this.beneficiariosNames.map((el) => {
+            optionsBeneficiario = optionsBeneficiario + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
 
         })
 
- 
+
 
         const { value: beneficiario } = await Swal.fire({
             title: "Create Gift Card",
@@ -786,13 +924,13 @@ export class ListaGiftCards extends Component {
             showCancelButton: true,
             preConfirm: () => {
                 const resultado = {
-                    selectedBeneficiary: document.getElementById("beneficiary").value,                    
+                    selectedBeneficiary: document.getElementById("beneficiary").value,
                 }
                 return resultado;
             }
         });
 
-        
+
         console.log(beneficiario);
 
         if (!beneficiario) {
@@ -821,7 +959,7 @@ export class ListaGiftCards extends Component {
         this.spinner.show = false;
 
 
-       // await this.createGiftCard(holderName) ;
+        // await this.createGiftCard(holderName) ;
     }
 
 

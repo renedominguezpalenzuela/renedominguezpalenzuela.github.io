@@ -1641,6 +1641,35 @@ export class API {
 
   }
 
+
+  //----------------------------------------------------------------------------------------------
+  // Credit Gift Card
+  //----------------------------------------------------------------------------------------------
+  
+  async giftCardDebit(creditData) {
+
+    var body = JSON.stringify(creditData)
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/cards/debit`,
+      headers: this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
   
 
   //----------------------------------------------------------------------------------------------
