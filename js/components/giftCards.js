@@ -172,6 +172,8 @@ export class ListaGiftCards extends Component {
             //console.log(newCard)
 
             const raw_datos = await this.api.getGiftCardData();
+            console.log("DATOS RAW")
+            console.log(raw_datos)
 
 
 
@@ -312,20 +314,25 @@ export class ListaGiftCards extends Component {
             // Formatting function for row details - modify as you need
             function format(d) {
                 // `d` is the original data object for the row
+                console.log(d);
 
 
 
                 const numero = d.number;
+                const id = d._id;
 
                 return (
                     '<dl>' +
                     '<dt>Actions:</dt>' +
+                   
                     '<dd>' +
                     '<div class="tw-flex">' +
                     '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
                     '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
                     '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
+                    
                     '</div>' +
+                    '<div class="tw-ml-8"> ID: '+ id +'</div>'+
 
                     '</dd>' +
 
@@ -573,7 +580,7 @@ export class ListaGiftCards extends Component {
 
     }
 
-    transformarRawDatos(raw_datos) {
+    async transformarRawDatos  (raw_datos) {
 
 
         console.log(raw_datos)
@@ -591,7 +598,31 @@ export class ListaGiftCards extends Component {
 
 
 
-        const datosOK = raw_datos.data.data.map((unDato) => {
+
+        //Extrayendo datos
+        const datosOK = await raw_datos.data.data.map((unDato) => {
+            console.log(unDato)
+            let usdv =null 
+            let eurv =null 
+            let cadv =null 
+            let cupv =null 
+
+            if (unDato.balance) {
+
+                //console.log("Balance")
+                //console.log(unDato.balance)
+
+               
+                usdv = unDato.balance.filter(unSaldo=>unSaldo.currency=='USD')[0].amount;                    
+                eurv = unDato.balance.filter(unSaldo=>unSaldo.currency=='EUR')[0].amount;
+                cadv = unDato.balance.filter(unSaldo=>unSaldo.currency=='CAD')[0].amount;
+                cupv = unDato.balance.filter(unSaldo=>unSaldo.currency=='CUP')[0].amount;
+
+                console.log(usdv)
+
+            }
+
+           
 
             return {
 
@@ -600,10 +631,12 @@ export class ListaGiftCards extends Component {
                 cvv2: unDato.cvv2,
                 expiry: unDato.expiry.year + ' / ' + unDato.expiry.month,
                 isExpired: unDato.isExpired,
-                usd: unDato.usd ? unDato.usd : '',
-                eur: unDato.eur ? unDato.eur : '',
-                cad: unDato.cad ? unDato.cad : '',
-                cup: unDato.cad ? unDato.cad : ''
+                usd: usdv ?  usdv : '',
+                eur: eurv ?  eurv : '',
+                cad: cadv ?  cadv : '',
+                cup: cupv ?  cupv : '',
+                _id: unDato._id
+
 
             }
         })
@@ -658,34 +691,14 @@ export class ListaGiftCards extends Component {
 
             <div class="tw-w-full tw-p-2">
                <div class="tw-flex tw-flex-row tw-w-full tw-items-center tw-mb-4">
-                    
-                       
                         <span class="tw-label-text tw-mr-4">CVV2</span>
-                      
-                    
-                    
                         <input type="text" id="cvv2"  class="tw-input tw-input-bordered tw-w-[20%]  "  />
-                        <span class="tw-label-text tw-mr-4">Exp Date</span>
-                       
-                    
-                    
-                        
-                        <input type="text" id="month"  class="tw-input tw-input-bordered tw-w-[20%] tw-mr-2  " placeholder='MM'  />
-                    
-                     /  
-                    
-                        <input type="text" id="year"  class="tw-input tw-input-bordered  tw-w-[20%] tw-ml-2"  placeholder='YY' />
-                     
-                    
+                        <span class="tw-label-text tw-mr-4 tw-ml-8">Exp Date</span>
+                      
+                        <input type="text" id="year"  class="tw-input tw-input-bordered  tw-w-[15%] tw-ml-2"  placeholder='YY' />
+                        <span class="tw-ml-1 tw-mr-1">/</span>                          
+                        <input type="text" id="month"  class="tw-input tw-input-bordered tw-w-[15%] tw-mr-2  " placeholder='MM'  />
                 </div>
-
-               <!-- <div class="tw-flex tw-flex-row tw-w-full tw-items-center">
-                    
-                       
-                          
-                    
-                </div> -->
-
             </div>
 
             <div class="tw-form-control tw-w-full tw-p-2">
@@ -725,8 +738,12 @@ export class ListaGiftCards extends Component {
                     currency: document.getElementById("currency").value,
                     concept: document.getElementById("concept").value,
                     cvv2:  document.getElementById("cvv2").value,
-                    month:  document.getElementById("month").value,
-                    year:  document.getElementById("year").value,
+                    expiry: {
+                        month:  document.getElementById("month").value,
+                        year:  document.getElementById("year").value,
+                    }
+
+                   
                 }
                 return resultado;
             }
@@ -750,18 +767,35 @@ export class ListaGiftCards extends Component {
 
                 $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
                 respuesta = await this.api.giftCardDebit(datos);
+
+                
                 $.unblockUI();
 
+              
 
-                const urlHome = this.props.urlHome ? this.props.urlHome : null;
+                if (respuesta.status==200) {
+                  
 
-                UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
+                    Swal.fire({
+                        icon: 'info', text: respuesta.payload
+                    })  
+                    
+                } else {
+                    Swal.fire({
+                        icon: 'error', text: "Error creating Debit to Card"
+                    })  
+                }
+
+
+                //const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+               // UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
 
             } catch (error) {
                 console.log(error);
             }
 
-            console.log(respuesta.data.status)
+          
 
 
         }

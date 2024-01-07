@@ -2036,12 +2036,24 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-left: 0.75rem;
 }
 
+.tw-ml-8 {
+  margin-left: 2rem;
+}
+
+.tw-mr-1 {
+  margin-right: 0.25rem;
+}
+
 .tw-mr-2 {
   margin-right: 0.5rem;
 }
 
 .tw-mr-3 {
   margin-right: 0.75rem;
+}
+
+.tw-mr-4 {
+  margin-right: 1rem;
 }
 
 .tw-mt-1 {
@@ -2070,10 +2082,6 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-mt-\[0\.5rem\] {
   margin-top: 0.5rem;
-}
-
-.tw-mr-4 {
-  margin-right: 1rem;
 }
 
 .tw-flex {

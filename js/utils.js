@@ -2566,7 +2566,61 @@ export class UImanager {
 
 
 
-  static dialogoStripe(paymentLink, menuController, homeURL) {
+  //-----------------------------------------------------
+  //Abre directamente el dialogo de refund
+  //-----------------------------------------------------
+  static dialogoStripe(paymentLink, menuController, homeURL) { 
+  
+      this.cerrando = false;
+      const stripeWindows = window.open(paymentLink, 'popup', 'width=600,height=840');
+      stripeWindows.focus();
+
+      var timer = setInterval(function () {
+        if (stripeWindows && stripeWindows.closed) {
+          clearInterval(timer);
+          Swal.fire({
+            title: '',
+            text: "Do you wan't to proccess another operation",
+            icon: 'question',
+            showCancelButton: true,
+            // confirmButtonColor: '#3085d6',
+            // cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              //no hacer nada
+              console.log("No hacer nada, procesar otra operacion")
+
+            } else {
+              //redireccionar al home page
+              if (!this.redirectURLHome) {
+                console.log("Redireccionar al home page solo si no esta el prop homeURL")
+                const menuId = 7
+                const menuName = 'Transactions List';
+                if (menuController) {
+                  menuController(menuId, menuName)
+                }
+              } else {
+                console.log('redireccionar usando props')
+                console.log(this.redirectURLHome)
+                window.location.assign(this.redirectURLHome);
+              }
+            }
+
+          });
+        }
+      }, 600);
+
+
+      
+
+
+    
+
+  }
+
+  static dialogoStripeOLD(paymentLink, menuController, homeURL) {
 
     Swal.fire({
       title: 'Insuficient Funds',
