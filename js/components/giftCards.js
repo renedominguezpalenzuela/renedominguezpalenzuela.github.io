@@ -57,8 +57,8 @@ export class ListaGiftCards extends Component {
 
                
               
-             
-                <button class="submit-btn tw-w-[30%]" t-on-click="onCreate">Create</button>
+             <!-- tw-w-[30%] -->
+                <button class="submit-btn tw-ml-auto" t-on-click="onCreate">Create</button>
              
               
                 

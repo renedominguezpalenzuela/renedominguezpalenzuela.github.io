@@ -2084,6 +2084,10 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-top: 0.5rem;
 }
 
+.tw-ml-auto {
+  margin-left: auto;
+}
+
 .tw-flex {
   display: flex;
 }
