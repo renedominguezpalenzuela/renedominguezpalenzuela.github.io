@@ -1681,14 +1681,14 @@ export class API {
    console.log(giftCardID)
 
     var config = {
-      method: 'get',
+      method: 'post',
       url: `${base_url}/api/private/cards/expire/${giftCardID}`,
       headers: this.headers      
     }
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
+      datos = response;
       console.log(datos);
     }).catch(function (error) {
       console.log("ERRROR")

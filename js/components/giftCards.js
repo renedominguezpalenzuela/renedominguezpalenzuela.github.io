@@ -976,10 +976,12 @@ export class ListaGiftCards extends Component {
                 if (respuesta.status==200) {
                   
                     Swal.fire({
-                        icon: 'info', text: respuesta.payload
+                        icon: 'info', text: respuesta.data.message
                     })  
                     
                 } else {
+                    console.log("ERROR Expiring Card")
+                    console.log(respuesta)
                     Swal.fire({
                         icon: 'error', text: "Error expiring Card"
                     })  
