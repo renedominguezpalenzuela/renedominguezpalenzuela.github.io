@@ -919,8 +919,86 @@ export class ListaGiftCards extends Component {
     }
 
 
-    cancelCard = (number) => {
+    cancelCard = async (number) => {
+
+
         console.log(number)
+
+        const cardObj = this.datos.find((unCard) => unCard.number === number);
+        console.log(cardObj);
+
+
+        const { value: formValues } = await Swal.fire({
+            title: "Gift Card Expire",
+
+            html: `
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Gift Card to Expire: ${number}</span>
+                    </label>
+                </div>
+                <div>
+                    <label class="tw-label">
+                        <span class="tw-label-text">Owner: ${cardObj.holder}</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="tw-form-control tw-w-full tw-p-2">
+                <label class="tw-label">
+                        <span class="tw-label-text">Do you really want to expire this card?</span>
+                </label>
+            </div>
+
+
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+           
+        });
+
+        let respuesta = null;
+
+       
+
+
+            try {
+
+               
+
+                $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
+                respuesta = await this.api.giftCardExpire(cardObj._id);
+                $.unblockUI();
+
+
+                const urlHome = this.props.urlHome ? this.props.urlHome : null;
+                if (respuesta.status==200) {
+                  
+                    Swal.fire({
+                        icon: 'info', text: respuesta.payload
+                    })  
+                    
+                } else {
+                    Swal.fire({
+                        icon: 'error', text: "Error expiring Card"
+                    })  
+                }
+
+                
+
+            } catch (error) {
+                console.log(error);
+            }
+
+           // console.log(respuesta.data.status)
+
+
+       
+
+
+
+
     }
 
 

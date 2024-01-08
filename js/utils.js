@@ -1670,6 +1670,37 @@ export class API {
     return datos;
 
   }
+
+
+//----------------------------------------------------------------------------------------------
+// Credit Gift Expire
+//----------------------------------------------------------------------------------------------
+  
+  async giftCardExpire(giftCardID) {
+
+   console.log(giftCardID)
+
+    var config = {
+      method: 'get',
+      url: `${base_url}/api/private/cards/expire/${giftCardID}`,
+      headers: this.headers      
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+
+  }
+
+ 
   
 
   //----------------------------------------------------------------------------------------------
