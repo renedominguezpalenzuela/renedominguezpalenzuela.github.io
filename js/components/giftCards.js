@@ -157,20 +157,9 @@ export class ListaGiftCards extends Component {
 
         onMounted(async () => {
 
-            // const accessToken = API.getTokenFromsessionStorage();
-            // if (!accessToken) { return }
+            
 
-
-            // const query = {
-            //     token: accessToken
-            // }
-
-
-            // this.api = new API(this.accessToken);
-
-            //const newCard =await this.api.createGiftCard("Juan Perez");
-            //console.log(newCard)
-
+            
             const raw_datos = await this.api.getGiftCardData();
             console.log("DATOS RAW")
             console.log(raw_datos)
@@ -194,6 +183,7 @@ export class ListaGiftCards extends Component {
 
 
                 const allDatosBeneficiarios = await this.api.getAllDatosBeneficiarios();
+                console.log("Benficiarios")
                 console.log(allDatosBeneficiarios)
 
 
@@ -223,65 +213,7 @@ export class ListaGiftCards extends Component {
             this.spinner.show = false;
 
 
-            /*
-        
-                    // -----   Creando el socket  ------------------------------------------------
-                    this.socket = io(API.baseSocketURL, {
-                        path: this.subscriptionPath,
-                        query: query,
-                    });
-        
-                    // ----- Si ocurre algun error --------------------------------------------------
-                    this.socket.on('error', (error) => {
-                        console.log('Socket ListTX ERROR: ', {
-                            event: 'error',
-                            data: error
-                        });
-                    });
-        
-        
-            
-                    // ----- Socket conectado  ---------------------------------------------------
-                    this.socket.on("connect", (datos) => {
-                        console.log("Socket LIST TX conectado correctamente");
-                        console.log("socket LIST TX id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
-        
-                        // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
-                        //Creando subscripcion a todas las transacciones de la wallet
-                        this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
-                    });
-        
-                    // ----- Socket ReConectado  --------------------------------------------------- 
-                    this.socket.on('reconnect', () => {
-                        console.log('Socket LIST TX RE conectado ', this.socket.connected);
-                    });
-        
-        
-        
-        
-                    // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
-                    this.socket.on('TRANSACTION_UPDATE', async (data) => {
-                        console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
-                        console.log('TR Status LIST TX ' + data.transactionStatus);
-                        console.log("Solicitando lista de TX al servidor en SOCKET")
-                        const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-                        console.log("lista de TX recibidas en SOCKET")
-        
-                        //console.log(raw_datos)
-                        this.datos = [];
-        
-                        this.datos = await this.transformarRawDatos(raw_datos);
-                        if (this.datos) {
-                            this.actualizarDatos(this.datos);
-                        }
-        
-                    }
-        
-        
-                    );
-        
-                    */
-
+           
 
 
 
@@ -306,14 +238,11 @@ export class ListaGiftCards extends Component {
 
 
 
-            function creditFn(event) {
-                console.log(event);
-
-            }
 
             // Formatting function for row details - modify as you need
             function format(d) {
                 // `d` is the original data object for the row
+                console.log("Formateando una tupla")
                 console.log(d);
 
 
@@ -324,15 +253,15 @@ export class ListaGiftCards extends Component {
                 return (
                     '<dl>' +
                     '<dt>Actions:</dt>' +
-                   
+
                     '<dd>' +
                     '<div class="tw-flex">' +
                     '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
                     '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
                     '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
-                    
+
                     '</div>' +
-                    '<div class="tw-ml-8"> ID: '+ id +'</div>'+
+                    '<div class="tw-ml-8"> ID: ' + id + '</div>' +
 
                     '</dd>' +
 
@@ -355,7 +284,7 @@ export class ListaGiftCards extends Component {
 
 
             //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
-            console.log(this.tableId)
+            
             this.tabla = $(this.tableId).DataTable({
                 data: this.datos,
 
@@ -463,7 +392,7 @@ export class ListaGiftCards extends Component {
             this.tabla.columns.adjust().draw();
 
 
-            //console.log(this.tabla)
+            
 
             if (this.tabla) {
                 /* this.tabla.on('select', (e, dt, type, indexes) => {
@@ -479,6 +408,8 @@ export class ListaGiftCards extends Component {
                     let tr = e.target.closest('tr');
 
                     let row = this.tabla.row(tr);
+                    console.log("Seleccionando tupla")
+                    console.log(row);
 
 
                     if (row.child.isShown()) {
@@ -580,10 +511,10 @@ export class ListaGiftCards extends Component {
 
     }
 
-    async transformarRawDatos  (raw_datos) {
+    async transformarRawDatos(raw_datos) {
 
 
-        console.log(raw_datos)
+        
 
         if (!raw_datos || !raw_datos.status) {
             return [];
@@ -601,28 +532,89 @@ export class ListaGiftCards extends Component {
 
         //Extrayendo datos
         const datosOK = await raw_datos.data.data.map((unDato) => {
+            console.log('Creando tuplas')
             console.log(unDato)
-            let usdv =null 
-            let eurv =null 
-            let cadv =null 
-            let cupv =null 
+            let balance_usd = null
+            let balance_eur = null
+            let balance_cad = null
+            let balance_cup = null
+
+            let retencion_neg_usd = null;
+            let retencion_neg_eur = null;
+            let retencion_neg_cad = null;
+            let retencion_neg_cup  = null;
+
+            let retencion_pos_usd = null;
+            let retencion_pos_eur = null;
+            let retencion_pos_cad = null;
+            let retencion_pos_cup  = null;
+
+            let balance_usd_obj = null
+            let balance_eur_obj = null
+            let balance_cad_obj = null
+            let balance_cup_obj = null
+
+            let retencion_neg_usd_obj = null;
+            let retencion_neg_eur_obj = null;
+            let retencion_neg_cad_obj = null;
+            let retencion_neg_cup_obj  = null;
+
+            let retencion_pos_usd_obj = null;
+            let retencion_pos_eur_obj = null;
+            let retencion_pos_cad_obj = null;
+            let retencion_pos_cup_obj  = null;
 
             if (unDato.balance) {
 
-                //console.log("Balance")
-                //console.log(unDato.balance)
+                console.log("Balance")
+                console.log(unDato.balance)
+
+
+                balance_usd_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'USD');
+                balance_eur_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'EUR');
+                balance_cad_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'CAD');
+                balance_cup_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'CUP');
+
+                retencion_pos_usd_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'USD');
+                retencion_pos_eur_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'EUR');
+                retencion_pos_cad_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'CAD');
+                retencion_pos_cup_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'CUP');
+                
+                retencion_neg_usd_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'USD');
+                retencion_neg_eur_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'EUR');
+                retencion_neg_cad_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'CAD');
+                retencion_neg_cup_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'CUP');
+
+
+                balance_usd = balance_usd_obj ? balance_usd_obj.amount : null;
+                balance_eur = balance_eur_obj ? balance_eur_obj.amount: null;
+                balance_cad = balance_cad_obj ? balance_cad_obj.amount: null;
+                balance_cup = balance_cup_obj ? balance_cup_obj.amount: null;
+
+                retencion_pos_usd = retencion_pos_usd_obj ? retencion_pos_usd_obj.amount: null;
+                retencion_pos_eur = retencion_pos_eur_obj ? retencion_pos_eur_obj.amount: null;
+                retencion_pos_cad = retencion_pos_cad_obj ? retencion_pos_cad_obj.amount: null;
+                retencion_pos_cup = retencion_pos_cup_obj ? retencion_pos_cup_obj.amount: null;
+
+                retencion_neg_usd = retencion_neg_usd_obj ? retencion_neg_usd_obj.amount: null;
+                retencion_neg_eur = retencion_neg_eur_obj ? retencion_neg_eur_obj.amount: null;
+                retencion_neg_cad = retencion_neg_cad_obj ? retencion_neg_cad_obj.amount: null;
+                retencion_neg_cup = retencion_neg_cup_obj ? retencion_neg_cup_obj.amount: null;
+            
+
 
                
-                usdv = unDato.balance.filter(unSaldo=>unSaldo.currency=='USD')[0].amount;                    
-                eurv = unDato.balance.filter(unSaldo=>unSaldo.currency=='EUR')[0].amount;
-                cadv = unDato.balance.filter(unSaldo=>unSaldo.currency=='CAD')[0].amount;
-                cupv = unDato.balance.filter(unSaldo=>unSaldo.currency=='CUP')[0].amount;
 
-                console.log(usdv)
+
+
+
+
+
+                //console.log(balance_usd)
 
             }
 
-           
+
 
             return {
 
@@ -631,10 +623,19 @@ export class ListaGiftCards extends Component {
                 cvv2: unDato.cvv2,
                 expiry: unDato.expiry.year + ' / ' + unDato.expiry.month,
                 isExpired: unDato.isExpired,
-                usd: usdv ?  usdv : '',
-                eur: eurv ?  eurv : '',
-                cad: cadv ?  cadv : '',
-                cup: cupv ?  cupv : '',
+                usd: balance_usd ? balance_usd : '',
+                eur: balance_eur ? balance_eur : '',
+                cad: balance_cad ? balance_cad : '',
+                cup: balance_cup ? balance_cup : '',
+                retencion_pos_usd: retencion_pos_usd ? retencion_pos_usd : '',
+                retencion_pos_eur: retencion_pos_eur ? retencion_pos_eur : '',
+                retencion_pos_cad: retencion_pos_cad ? retencion_pos_cad : '',
+                retencion_pos_cup: retencion_pos_cup ? retencion_pos_cup : '',
+
+                retencion_neg_usd: retencion_neg_usd ? retencion_neg_usd : '',
+                retencion_neg_eur: retencion_neg_eur ? retencion_neg_eur : '',
+                retencion_neg_cad: retencion_neg_cad ? retencion_neg_cad : '',
+                retencion_neg_cup: retencion_neg_cup ? retencion_neg_cup : '',
                 _id: unDato._id
 
 
@@ -654,7 +655,7 @@ export class ListaGiftCards extends Component {
 
 
     actualizarDatos = async (datos) => {
-        console.log(this.tabla)
+        
 
         if (this.tabla) {
 
@@ -737,13 +738,13 @@ export class ListaGiftCards extends Component {
                     amount: document.getElementById("amount").value,
                     currency: document.getElementById("currency").value,
                     concept: document.getElementById("concept").value,
-                    cvv2:  document.getElementById("cvv2").value,
+                    cvv2: document.getElementById("cvv2").value,
                     expiry: {
-                        month:  document.getElementById("month").value,
-                        year:  document.getElementById("year").value,
+                        month: document.getElementById("month").value,
+                        year: document.getElementById("year").value,
                     }
 
-                   
+
                 }
                 return resultado;
             }
@@ -768,34 +769,34 @@ export class ListaGiftCards extends Component {
                 $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
                 respuesta = await this.api.giftCardDebit(datos);
 
-                
+
                 $.unblockUI();
 
-              
 
-                if (respuesta.status==200) {
-                  
+
+                if (respuesta.status == 200) {
+
 
                     Swal.fire({
                         icon: 'info', text: respuesta.payload
-                    })  
-                    
+                    })
+
                 } else {
                     Swal.fire({
                         icon: 'error', text: "Error creating Debit to Card"
-                    })  
+                    })
                 }
 
 
                 //const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
-               // UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
+                // UImanager.gestionResultado(respuesta, urlHome, this.props.menuController);
 
             } catch (error) {
                 console.log(error);
             }
 
-          
+
 
 
         }
@@ -813,7 +814,7 @@ export class ListaGiftCards extends Component {
     creditCard = async (number) => {
 
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
-        console.log(ownerObj);
+        
 
 
         const { value: formValues } = await Swal.fire({
@@ -905,7 +906,7 @@ export class ListaGiftCards extends Component {
                 console.log(error);
             }
 
-            console.log(respuesta.data.status)
+            
 
 
         }
@@ -922,10 +923,10 @@ export class ListaGiftCards extends Component {
     cancelCard = async (number) => {
 
 
-        console.log(number)
+        
 
         const cardObj = this.datos.find((unCard) => unCard.number === number);
-        console.log(cardObj);
+        
 
 
         const { value: formValues } = await Swal.fire({
@@ -955,48 +956,48 @@ export class ListaGiftCards extends Component {
             `,
             focusConfirm: false,
             showCancelButton: true,
-           
+
         });
 
         let respuesta = null;
 
-       
 
 
-            try {
 
-               
-
-                $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
-                respuesta = await this.api.giftCardExpire(cardObj._id);
-                $.unblockUI();
+        try {
 
 
-                const urlHome = this.props.urlHome ? this.props.urlHome : null;
-                if (respuesta.status==200) {
-                  
-                    Swal.fire({
-                        icon: 'info', text: respuesta.data.message
-                    })  
-                    
-                } else {
-                    console.log("ERROR Expiring Card")
-                    console.log(respuesta)
-                    Swal.fire({
-                        icon: 'error', text: "Error expiring Card"
-                    })  
-                }
 
-                
+            $.blockUI({ message: '<span> <img src="img/Spinner-1s-200px.png" /></span> ' });
+            respuesta = await this.api.giftCardExpire(cardObj._id);
+            $.unblockUI();
 
-            } catch (error) {
-                console.log(error);
+
+            const urlHome = this.props.urlHome ? this.props.urlHome : null;
+            if (respuesta.status == 200) {
+
+                Swal.fire({
+                    icon: 'info', text: respuesta.data.message
+                })
+
+            } else {
+                console.log("ERROR Expiring Card")
+                console.log(respuesta)
+                Swal.fire({
+                    icon: 'error', text: "Error expiring Card"
+                })
             }
 
-           // console.log(respuesta.data.status)
 
 
-       
+        } catch (error) {
+            console.log(error);
+        }
+
+        
+
+
+
 
 
 
@@ -1005,7 +1006,7 @@ export class ListaGiftCards extends Component {
 
 
     onCreate = async () => {
-        console.log("OnCreate")
+        
 
         let optionsBeneficiario = '';
 
@@ -1045,7 +1046,7 @@ export class ListaGiftCards extends Component {
         });
 
 
-        console.log(beneficiario);
+        
 
         if (!beneficiario) {
             return;
@@ -1054,7 +1055,7 @@ export class ListaGiftCards extends Component {
 
         const creandoGiftCardRespuesta = await this.api.createGiftCard(beneficiario.selectedBeneficiary);
 
-        console.log(creandoGiftCardRespuesta);
+        
 
         //Actualizar table
 

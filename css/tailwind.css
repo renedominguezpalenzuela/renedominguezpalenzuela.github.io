@@ -2040,6 +2040,10 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-left: 2rem;
 }
 
+.tw-ml-auto {
+  margin-left: auto;
+}
+
 .tw-mr-1 {
   margin-right: 0.25rem;
 }
@@ -2082,10 +2086,6 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-mt-\[0\.5rem\] {
   margin-top: 0.5rem;
-}
-
-.tw-ml-auto {
-  margin-left: auto;
 }
 
 .tw-flex {
