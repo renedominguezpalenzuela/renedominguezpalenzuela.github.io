@@ -2088,6 +2088,18 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-top: 0.5rem;
 }
 
+.tw-ml-4 {
+  margin-left: 1rem;
+}
+
+.tw-ml-6 {
+  margin-left: 1.5rem;
+}
+
+.tw-ml-12 {
+  margin-left: 3rem;
+}
+
 .tw-flex {
   display: flex;
 }

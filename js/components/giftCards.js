@@ -220,7 +220,7 @@ export class ListaGiftCards extends Component {
 
 
 
-            function format(inputDate) {
+           /* function format(inputDate) {
                 let date, month, year, segundos, minutos, horas;
                 date = inputDate.getDate();
 
@@ -234,13 +234,24 @@ export class ListaGiftCards extends Component {
                 month = month.toString().padStart(2, '0');
 
                 return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
+            }*/
+
+
+
+            function formatRetention(label, dato) {
+                let cadena = '';
+                console.log(label)
+                console.log(dato)
+                
+                if (dato) {
+                   cadena = `<div class="tw-ml-8"> ${label}:  ${dato} </div>`;
+                }
+
+                return cadena;
             }
 
-
-
-
             // Formatting function for row details - modify as you need
-            function format(d) {
+            function formatTuplaOculta(d) {
                 // `d` is the original data object for the row
                 console.log("Formateando una tupla")
                 console.log(d);
@@ -255,15 +266,38 @@ export class ListaGiftCards extends Component {
                     '<dt>Actions:</dt>' +
 
                     '<dd>' +
-                    '<div class="tw-flex">' +
-                    '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
-                    '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
-                    '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
+                        
+                    '<div class="tw-flex tw-flex-row">' +
+                        '<div> '+
+                            '<div class="tw-flex">' +
+                                '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
+                                '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
+                                '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
 
-                    '</div>' +
-                    '<div class="tw-ml-8"> ID: ' + id + '</div>' +
+                            '</div>' +
+                            '<div class="tw-ml-8"> ID: ' + id + '</div>' +
+                        '</div>'   +
+
+                        '<div class="tw-ml-12"> Positive Retentions'+
+                            formatRetention('USD',d.retencion_pos_usd ) +
+                            formatRetention('EUR',d.retencion_pos_eur ) +
+                            formatRetention('CAD',d.retencion_pos_cad ) +
+                            formatRetention('CUP',d.retencion_pos_cup ) +                    
+                        '</div>'+
+
+                        '<div class="tw-ml-12"> Negative Retentions'+
+                            formatRetention('USD',d.retencion_neg_usd ) +
+                            formatRetention('EUR',d.retencion_neg_eur ) +
+                            formatRetention('CAD',d.retencion_neg_cad ) +
+                            formatRetention('CUP',d.retencion_neg_cup ) +                    
+                        '</div>'+
+                    '</div>'+    
+
 
                     '</dd>' +
+
+                    
+
 
 
                     /* '<dt>Full name:</dt>' +
@@ -409,7 +443,7 @@ export class ListaGiftCards extends Component {
 
                     let row = this.tabla.row(tr);
                     console.log("Seleccionando tupla")
-                    console.log(row);
+                    
 
 
                     if (row.child.isShown()) {
@@ -418,7 +452,7 @@ export class ListaGiftCards extends Component {
                     }
                     else {
                         // Open this row
-                        row.child(format(row.data())).show();
+                        row.child(formatTuplaOculta(row.data())).show();
                     }
                 });
 
@@ -532,8 +566,8 @@ export class ListaGiftCards extends Component {
 
         //Extrayendo datos
         const datosOK = await raw_datos.data.data.map((unDato) => {
-            console.log('Creando tuplas')
-            console.log(unDato)
+            //console.log('Creando tuplas')
+            //console.log(unDato)
             let balance_usd = null
             let balance_eur = null
             let balance_cad = null
@@ -566,8 +600,8 @@ export class ListaGiftCards extends Component {
 
             if (unDato.balance) {
 
-                console.log("Balance")
-                console.log(unDato.balance)
+               // console.log("Balance")
+               // console.log(unDato.balance)
 
 
                 balance_usd_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'USD');
