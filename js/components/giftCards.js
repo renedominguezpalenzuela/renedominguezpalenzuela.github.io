@@ -4,7 +4,8 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 import { API, UImanager } from "../utils.js";
 import { ListaTR } from "./listatr.js";
 
-
+//TODO: Cada X segundo pedir el balance
+//TODO: validar parametro del usuario  el nuevo campo es isMerchant y el valor va a ser true or false
 
 export class ListaGiftCards extends Component {
 
@@ -131,6 +132,95 @@ export class ListaGiftCards extends Component {
         urlHome: '/',
     };
 
+    formatRetention = (label, dato) => {
+        let cadena = '';
+        console.log(label)
+        console.log(dato)
+
+        if (dato) {
+            cadena = `<div class="tw-ml-8"> ${label}:  ${dato} </div>`;
+        }
+
+        return cadena;
+    }
+
+    // Formatting function for row details - modify as you need
+    formatTuplaOculta = (d) => {
+        // `d` is the original data object for the row
+        console.log("Formateando una tupla")
+        console.log(d);
+
+
+
+        const numero = d.number;
+        const id = d._id;
+
+      
+
+        console.log(`Merchant  ${this.isMerchant}`)
+        console.log(typeof(this.isMerchant))
+        let cadenaBotonDEBIT = '';
+        let cadenaBotonExpire = '';
+
+        if (this.isMerchant==true) {
+            console.log("SI ")
+            cadenaBotonDEBIT =  `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + ${numero} + '">Debit</button>` ;
+            cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + ${numero} + '">Expire</button>`;
+        } else {
+            console.log("NO")
+        }
+
+       
+        
+
+
+        
+        console.log('Cadena DEBIT')
+        console.log(cadenaBotonDEBIT);
+
+        return (
+            '<dl>' +
+                '<dt>Actions:</dt>' +
+
+                '<dd>' +
+
+                    '<div class="tw-flex tw-flex-row">' +
+                        '<div> ' +
+                            '<div class="tw-flex">' +
+                                '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
+                                 cadenaBotonDEBIT + 
+                                    cadenaBotonExpire +
+                            '</div>' +
+                            '<div class="tw-ml-8"> ID: ' + id + '</div>' +
+                        '</div>' +
+
+                        '<div class="tw-ml-12"> Positive Retentions' +
+                            this.formatRetention('USD', d.retencion_pos_usd) +
+                            this.formatRetention('EUR', d.retencion_pos_eur) +
+                            this.formatRetention('CAD', d.retencion_pos_cad) +
+                            this.formatRetention('CUP', d.retencion_pos_cup) +
+                        '</div>' +
+
+                        '<div class="tw-ml-12"> Negative Retentions' +
+                            this.formatRetention('USD', d.retencion_neg_usd) +
+                            this.formatRetention('EUR', d.retencion_neg_eur) +
+                            this.formatRetention('CAD', d.retencion_neg_cad) +
+                            this.formatRetention('CUP', d.retencion_neg_cup) +
+                        '</div>' +
+                    '</div>' +
+
+
+                '</dd>' +
+
+
+
+
+
+            '</dl>'
+        );
+    }
+
+
 
     setup() {
 
@@ -138,6 +228,15 @@ export class ListaGiftCards extends Component {
         this.accessToken = API.getTokenFromsessionStorage();
 
         API.setRedirectionURL(this.props.urlHome);
+
+        this.isMerchant = false;
+
+     
+        if (  window.sessionStorage.getItem('isMerchant')) {
+            this.isMerchant = JSON.parse(window.sessionStorage.getItem('isMerchant'));
+        }
+
+
         onWillStart(async () => {
 
             if (!this.accessToken) {
@@ -157,9 +256,9 @@ export class ListaGiftCards extends Component {
 
         onMounted(async () => {
 
-            
 
-            
+
+
             const raw_datos = await this.api.getGiftCardData();
             console.log("DATOS RAW")
             console.log(raw_datos)
@@ -213,112 +312,39 @@ export class ListaGiftCards extends Component {
             this.spinner.show = false;
 
 
+
+
+
+
+
+
+
+            /* function format(inputDate) {
+                 let date, month, year, segundos, minutos, horas;
+                 date = inputDate.getDate();
+ 
+                 segundos = inputDate.getSeconds().toString().padStart(2, '0');
+                 minutos = inputDate.getMinutes().toString().padStart(2, '0');;
+                 horas = inputDate.getHours().toString().padStart(2, '0');;
+ 
+                 month = inputDate.getMonth() + 1;
+                 year = inputDate.getFullYear();
+                 date = date.toString().padStart(2, '0');
+                 month = month.toString().padStart(2, '0');
+ 
+                 return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
+             }*/
+
+
+
            
 
 
 
 
 
-
-           /* function format(inputDate) {
-                let date, month, year, segundos, minutos, horas;
-                date = inputDate.getDate();
-
-                segundos = inputDate.getSeconds().toString().padStart(2, '0');
-                minutos = inputDate.getMinutes().toString().padStart(2, '0');;
-                horas = inputDate.getHours().toString().padStart(2, '0');;
-
-                month = inputDate.getMonth() + 1;
-                year = inputDate.getFullYear();
-                date = date.toString().padStart(2, '0');
-                month = month.toString().padStart(2, '0');
-
-                return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
-            }*/
-
-
-
-            function formatRetention(label, dato) {
-                let cadena = '';
-                console.log(label)
-                console.log(dato)
-                
-                if (dato) {
-                   cadena = `<div class="tw-ml-8"> ${label}:  ${dato} </div>`;
-                }
-
-                return cadena;
-            }
-
-            // Formatting function for row details - modify as you need
-            function formatTuplaOculta(d) {
-                // `d` is the original data object for the row
-                console.log("Formateando una tupla")
-                console.log(d);
-
-
-
-                const numero = d.number;
-                const id = d._id;
-
-                return (
-                    '<dl>' +
-                    '<dt>Actions:</dt>' +
-
-                    '<dd>' +
-                        
-                    '<div class="tw-flex tw-flex-row">' +
-                        '<div> '+
-                            '<div class="tw-flex">' +
-                                '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
-                                '<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + numero + '">Debit</button>' +
-                                '<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + numero + '">Expire</button>' +
-
-                            '</div>' +
-                            '<div class="tw-ml-8"> ID: ' + id + '</div>' +
-                        '</div>'   +
-
-                        '<div class="tw-ml-12"> Positive Retentions'+
-                            formatRetention('USD',d.retencion_pos_usd ) +
-                            formatRetention('EUR',d.retencion_pos_eur ) +
-                            formatRetention('CAD',d.retencion_pos_cad ) +
-                            formatRetention('CUP',d.retencion_pos_cup ) +                    
-                        '</div>'+
-
-                        '<div class="tw-ml-12"> Negative Retentions'+
-                            formatRetention('USD',d.retencion_neg_usd ) +
-                            formatRetention('EUR',d.retencion_neg_eur ) +
-                            formatRetention('CAD',d.retencion_neg_cad ) +
-                            formatRetention('CUP',d.retencion_neg_cup ) +                    
-                        '</div>'+
-                    '</div>'+    
-
-
-                    '</dd>' +
-
-                    
-
-
-
-                    /* '<dt>Full name:</dt>' +
-                         '<dd>' +
-                         d.name +
-                         '</dd>' +
-                     '<dt>Extension number:</dt>' +
-                         '<dd>' +
-                         d.extn +
-                         '</dd>' +
-                     '<dt>Extra info:</dt>' +
-                         '<dd>And any further details here (images etc)...</dd>' +*/
-                    '</dl>'
-                );
-            }
-
-
-
-
             //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
-            
+
             this.tabla = $(this.tableId).DataTable({
                 data: this.datos,
 
@@ -426,7 +452,7 @@ export class ListaGiftCards extends Component {
             this.tabla.columns.adjust().draw();
 
 
-            
+
 
             if (this.tabla) {
                 /* this.tabla.on('select', (e, dt, type, indexes) => {
@@ -443,7 +469,7 @@ export class ListaGiftCards extends Component {
 
                     let row = this.tabla.row(tr);
                     console.log("Seleccionando tupla")
-                    
+
 
 
                     if (row.child.isShown()) {
@@ -452,7 +478,7 @@ export class ListaGiftCards extends Component {
                     }
                     else {
                         // Open this row
-                        row.child(formatTuplaOculta(row.data())).show();
+                        row.child(this.formatTuplaOculta(row.data())).show();
                     }
                 });
 
@@ -516,6 +542,8 @@ export class ListaGiftCards extends Component {
 
         onRendered(async () => {
 
+          
+
             const base_name_otra_table = "#container-listbeneficiary"
 
             const otra_table = $(`${base_name_otra_table}_wrapper`)
@@ -548,7 +576,7 @@ export class ListaGiftCards extends Component {
     async transformarRawDatos(raw_datos) {
 
 
-        
+
 
         if (!raw_datos || !raw_datos.status) {
             return [];
@@ -576,12 +604,12 @@ export class ListaGiftCards extends Component {
             let retencion_neg_usd = null;
             let retencion_neg_eur = null;
             let retencion_neg_cad = null;
-            let retencion_neg_cup  = null;
+            let retencion_neg_cup = null;
 
             let retencion_pos_usd = null;
             let retencion_pos_eur = null;
             let retencion_pos_cad = null;
-            let retencion_pos_cup  = null;
+            let retencion_pos_cup = null;
 
             let balance_usd_obj = null
             let balance_eur_obj = null
@@ -591,17 +619,17 @@ export class ListaGiftCards extends Component {
             let retencion_neg_usd_obj = null;
             let retencion_neg_eur_obj = null;
             let retencion_neg_cad_obj = null;
-            let retencion_neg_cup_obj  = null;
+            let retencion_neg_cup_obj = null;
 
             let retencion_pos_usd_obj = null;
             let retencion_pos_eur_obj = null;
             let retencion_pos_cad_obj = null;
-            let retencion_pos_cup_obj  = null;
+            let retencion_pos_cup_obj = null;
 
             if (unDato.balance) {
 
-               // console.log("Balance")
-               // console.log(unDato.balance)
+                // console.log("Balance")
+                // console.log(unDato.balance)
 
 
                 balance_usd_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'USD');
@@ -613,7 +641,7 @@ export class ListaGiftCards extends Component {
                 retencion_pos_eur_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'EUR');
                 retencion_pos_cad_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'CAD');
                 retencion_pos_cup_obj = unDato.positiveRetentions.find(unSaldo => unSaldo.currency == 'CUP');
-                
+
                 retencion_neg_usd_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'USD');
                 retencion_neg_eur_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'EUR');
                 retencion_neg_cad_obj = unDato.negativeRetentions.find(unSaldo => unSaldo.currency == 'CAD');
@@ -621,23 +649,23 @@ export class ListaGiftCards extends Component {
 
 
                 balance_usd = balance_usd_obj ? balance_usd_obj.amount : null;
-                balance_eur = balance_eur_obj ? balance_eur_obj.amount: null;
-                balance_cad = balance_cad_obj ? balance_cad_obj.amount: null;
-                balance_cup = balance_cup_obj ? balance_cup_obj.amount: null;
+                balance_eur = balance_eur_obj ? balance_eur_obj.amount : null;
+                balance_cad = balance_cad_obj ? balance_cad_obj.amount : null;
+                balance_cup = balance_cup_obj ? balance_cup_obj.amount : null;
 
-                retencion_pos_usd = retencion_pos_usd_obj ? retencion_pos_usd_obj.amount: null;
-                retencion_pos_eur = retencion_pos_eur_obj ? retencion_pos_eur_obj.amount: null;
-                retencion_pos_cad = retencion_pos_cad_obj ? retencion_pos_cad_obj.amount: null;
-                retencion_pos_cup = retencion_pos_cup_obj ? retencion_pos_cup_obj.amount: null;
+                retencion_pos_usd = retencion_pos_usd_obj ? retencion_pos_usd_obj.amount : null;
+                retencion_pos_eur = retencion_pos_eur_obj ? retencion_pos_eur_obj.amount : null;
+                retencion_pos_cad = retencion_pos_cad_obj ? retencion_pos_cad_obj.amount : null;
+                retencion_pos_cup = retencion_pos_cup_obj ? retencion_pos_cup_obj.amount : null;
 
-                retencion_neg_usd = retencion_neg_usd_obj ? retencion_neg_usd_obj.amount: null;
-                retencion_neg_eur = retencion_neg_eur_obj ? retencion_neg_eur_obj.amount: null;
-                retencion_neg_cad = retencion_neg_cad_obj ? retencion_neg_cad_obj.amount: null;
-                retencion_neg_cup = retencion_neg_cup_obj ? retencion_neg_cup_obj.amount: null;
-            
+                retencion_neg_usd = retencion_neg_usd_obj ? retencion_neg_usd_obj.amount : null;
+                retencion_neg_eur = retencion_neg_eur_obj ? retencion_neg_eur_obj.amount : null;
+                retencion_neg_cad = retencion_neg_cad_obj ? retencion_neg_cad_obj.amount : null;
+                retencion_neg_cup = retencion_neg_cup_obj ? retencion_neg_cup_obj.amount : null;
 
 
-               
+
+
 
 
 
@@ -689,7 +717,7 @@ export class ListaGiftCards extends Component {
 
 
     actualizarDatos = async (datos) => {
-        
+
 
         if (this.tabla) {
 
@@ -848,7 +876,7 @@ export class ListaGiftCards extends Component {
     creditCard = async (number) => {
 
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
-        
+
 
 
         const { value: formValues } = await Swal.fire({
@@ -940,7 +968,7 @@ export class ListaGiftCards extends Component {
                 console.log(error);
             }
 
-            
+
 
 
         }
@@ -957,10 +985,10 @@ export class ListaGiftCards extends Component {
     cancelCard = async (number) => {
 
 
-        
+
 
         const cardObj = this.datos.find((unCard) => unCard.number === number);
-        
+
 
 
         const { value: formValues } = await Swal.fire({
@@ -1028,7 +1056,7 @@ export class ListaGiftCards extends Component {
             console.log(error);
         }
 
-        
+
 
 
 
@@ -1040,7 +1068,7 @@ export class ListaGiftCards extends Component {
 
 
     onCreate = async () => {
-        
+
 
         let optionsBeneficiario = '';
 
@@ -1080,7 +1108,7 @@ export class ListaGiftCards extends Component {
         });
 
 
-        
+
 
         if (!beneficiario) {
             return;
@@ -1089,7 +1117,7 @@ export class ListaGiftCards extends Component {
 
         const creandoGiftCardRespuesta = await this.api.createGiftCard(beneficiario.selectedBeneficiary);
 
-        
+
 
         //Actualizar table
 

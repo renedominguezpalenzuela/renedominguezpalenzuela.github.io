@@ -120,6 +120,15 @@ export async function login(usr, pass, test = false) {
   await axios.post(`${base_url}/api/auth/login`, datos, config)
     .then(response => {
       const datos = response.data;
+     
+
+      if (datos.isMerchant!=null) {
+       
+        window.sessionStorage.setItem('isMerchant',  datos.isMerchant)
+      }
+
+    
+
       if (datos.accessToken) {
         resultado = true;
         if (!test) {

@@ -109,21 +109,6 @@ class Root extends Component {
       const api = new API(accessToken);
 
 
-      //obteniendo todos los datos de los beneficiarios
-      /*const allDatosBeneficiarios = await api.getAllDatosBeneficiarios();
-
-
-      if (allDatosBeneficiarios) {
-        window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
-      }*/
-
-      //const  allDatosBeneficiariosFromStorage =JSON.parse(window.sessionStorage.getItem('beneficiariesFullData'));      
-      //console.log(allDatosBeneficiariosFromStorage);
-
-
-
-
-
       // const userInfo = await getUsrInfo();
       const userData = await api.getUserProfile();
       console.log("User Data")
@@ -226,16 +211,3 @@ class Root extends Component {
 }
 
 mount(Root, document.body);
-
-// or alternatively
-/*
-const env = {
-  _t: myTranslateFunction,
-  user: {...},
-  services: {
-      ...
-  },
-};
-*/
-
-//mount(App, document.body, { env });
