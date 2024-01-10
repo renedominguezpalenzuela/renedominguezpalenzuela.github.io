@@ -164,8 +164,8 @@ export class ListaGiftCards extends Component {
 
         if (this.isMerchant==true) {
             console.log("SI ")
-            cadenaBotonDEBIT =  `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="' + ${numero} + '">Debit</button>` ;
-            cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="' + ${numero} + '">Expire</button>`;
+            cadenaBotonDEBIT =  `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="${numero}">Debit</button>` ;
+            cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="${numero}">Expire</button>`;
         } else {
             console.log("NO")
         }
@@ -731,6 +731,8 @@ export class ListaGiftCards extends Component {
 
 
     debitCard = async (number) => {
+        console.log("Numero")
+        console.log(number)
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
         console.log(ownerObj);
 
@@ -874,6 +876,8 @@ export class ListaGiftCards extends Component {
 
 
     creditCard = async (number) => {
+        console.log("Numero")
+        console.log(number)
 
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
 
