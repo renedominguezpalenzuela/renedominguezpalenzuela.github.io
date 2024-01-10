@@ -5,7 +5,8 @@ import { API, UImanager } from "../utils.js";
 import { ListaTR } from "./listatr.js";
 
 //TODO: Cada X segundo pedir el balance
-//TODO: validar parametro del usuario  el nuevo campo es isMerchant y el valor va a ser true or false
+//TODO-DONE: validar parametro del usuario  el nuevo campo es isMerchant y el valor va a ser true or false
+
 
 export class ListaGiftCards extends Component {
 
@@ -32,6 +33,10 @@ export class ListaGiftCards extends Component {
 
     tipo_operacion = [8];
     tipoVista = 'GIFT_CARDS';
+
+
+
+    tiempoEntreConsultasSaldo = 30; //30 segundos
 
 
 
@@ -134,8 +139,7 @@ export class ListaGiftCards extends Component {
 
     formatRetention = (label, dato) => {
         let cadena = '';
-        console.log(label)
-        console.log(dato)
+       
 
         if (dato) {
             cadena = `<div class="tw-ml-8"> ${label}:  ${dato} </div>`;
@@ -222,6 +226,26 @@ export class ListaGiftCards extends Component {
 
 
 
+
+    consultarSaldoTarjetas = async () => {
+        console.log("Consultando Saldo Tarjetas")
+        //console.timeEnd('loop')
+
+        this.spinner.show = true;
+        //Actualizar table
+        const raw_datos = await this.api.getGiftCardData();
+        this.datos = [];
+        this.datos = await this.transformarRawDatos(raw_datos);
+        if (this.datos) {
+            this.actualizarDatos(this.datos);
+        }
+        this.spinner.show = false;
+
+        this.finContadorTiempo = Date.now();
+
+        console.log(this.finContadorTiempo - this.inicioContadorTiempo )
+    }
+
     setup() {
 
 
@@ -237,6 +261,9 @@ export class ListaGiftCards extends Component {
         }
 
 
+      
+
+
         onWillStart(async () => {
 
             if (!this.accessToken) {
@@ -247,6 +274,11 @@ export class ListaGiftCards extends Component {
 
 
             this.api = new API(this.accessToken);
+           this.inicioContadorTiempo = Date.now();
+
+            const timeoutId = setInterval(this.consultarSaldoTarjetas, this.tiempoEntreConsultasSaldo * 1000);
+        
+            //clearTimeout(timeoutId);
 
 
 
