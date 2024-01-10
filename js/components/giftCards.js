@@ -28,7 +28,8 @@ export class ListaGiftCards extends Component {
     selectedBeneficiaryName = ''
 
     spinner = useState({
-        show: true
+        show: true,
+        showSecond: false
     })
 
     tipo_operacion = [8];
@@ -52,7 +53,7 @@ export class ListaGiftCards extends Component {
   
 
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg sm:tw-col-2 tw-mb-4">
-            <div class="tw-card-body ">
+            <div class="tw-card-body tw-flex tw-flex-row  ">
                 
                 <!-- **************************************************** -->
                 <!-- ***************  Crear Gift Card   ***************** -->
@@ -64,7 +65,24 @@ export class ListaGiftCards extends Component {
                
               
              <!-- tw-w-[30%] -->
-                <button class="submit-btn tw-ml-auto" t-on-click="onCreate">Create</button>
+                <button class="submit-btn2 tw-ml-auto tw-p-4" t-on-click="onCreate">Create</button>
+
+               
+               
+                <button class="submit-btn2  tw-ml-auto tw-p-4" t-on-click="onRefresh">
+               
+                    Refresh   
+                    <img   t-if="this.spinner.showSecond==true" src="img/Spinner-1s-200px.png" width="35rem" class="tw-mb-2 colornew tw-ml-4"/>               
+
+                
+                </button>
+               
+              
+             
+               
+                
+               
+                
              
               
                 
@@ -137,9 +155,34 @@ export class ListaGiftCards extends Component {
         urlHome: '/',
     };
 
+
+
+    consultarSaldoTarjetas = async () => {
+        console.log("Consultando Saldo Tarjetas")
+        //console.timeEnd('loop')
+
+        this.spinner.showSecond = true;
+        console.log(this.spinner)
+        //Actualizar table
+        const raw_datos = await this.api.getGiftCardData();
+        console.log(raw_datos)
+
+        this.datos = [];
+        this.datos = await this.transformarRawDatos(raw_datos);
+       
+        if (this.datos) {
+            this.actualizarDatos(this.datos);
+        }
+        this.spinner.showSecond = false;
+
+        //    this.finContadorTiempo = Date.now();
+
+        //console.log(this.finContadorTiempo - this.inicioContadorTiempo )
+    }
+
     formatRetention = (label, dato) => {
         let cadena = '';
-       
+
 
         if (dato) {
             cadena = `<div class="tw-ml-8"> ${label}:  ${dato} </div>`;
@@ -159,62 +202,62 @@ export class ListaGiftCards extends Component {
         const numero = d.number;
         const id = d._id;
 
-      
+
 
         console.log(`Merchant  ${this.isMerchant}`)
-        console.log(typeof(this.isMerchant))
+        console.log(typeof (this.isMerchant))
         let cadenaBotonDEBIT = '';
         let cadenaBotonExpire = '';
 
-        if (this.isMerchant==true) {
+        if (this.isMerchant == true) {
             console.log("SI ")
-            cadenaBotonDEBIT =  `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="${numero}">Debit</button>` ;
+            cadenaBotonDEBIT = `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="${numero}">Debit</button>`;
             cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="${numero}">Expire</button>`;
         } else {
             console.log("NO")
         }
 
-       
-        
 
 
-        
+
+
+
         console.log('Cadena DEBIT')
         console.log(cadenaBotonDEBIT);
 
         return (
             '<dl>' +
-                '<dt>Actions:</dt>' +
+            '<dt>Actions:</dt>' +
 
-                '<dd>' +
+            '<dd>' +
 
-                    '<div class="tw-flex tw-flex-row">' +
-                        '<div> ' +
-                            '<div class="tw-flex">' +
-                                '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
-                                 cadenaBotonDEBIT + 
-                                    cadenaBotonExpire +
-                            '</div>' +
-                            '<div class="tw-ml-8"> ID: ' + id + '</div>' +
-                        '</div>' +
+            '<div class="tw-flex tw-flex-row">' +
+            '<div> ' +
+            '<div class="tw-flex">' +
+            '<button  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" card-number="' + numero + '">Credit </button>' +
+            cadenaBotonDEBIT +
+            cadenaBotonExpire +
+            '</div>' +
+            '<div class="tw-ml-8"> ID: ' + id + '</div>' +
+            '</div>' +
 
-                        '<div class="tw-ml-12"> Positive Retentions' +
-                            this.formatRetention('USD', d.retencion_pos_usd) +
-                            this.formatRetention('EUR', d.retencion_pos_eur) +
-                            this.formatRetention('CAD', d.retencion_pos_cad) +
-                            this.formatRetention('CUP', d.retencion_pos_cup) +
-                        '</div>' +
+            '<div class="tw-ml-12"> Positive Retentions' +
+            this.formatRetention('USD', d.retencion_pos_usd) +
+            this.formatRetention('EUR', d.retencion_pos_eur) +
+            this.formatRetention('CAD', d.retencion_pos_cad) +
+            this.formatRetention('CUP', d.retencion_pos_cup) +
+            '</div>' +
 
-                        '<div class="tw-ml-12"> Negative Retentions' +
-                            this.formatRetention('USD', d.retencion_neg_usd) +
-                            this.formatRetention('EUR', d.retencion_neg_eur) +
-                            this.formatRetention('CAD', d.retencion_neg_cad) +
-                            this.formatRetention('CUP', d.retencion_neg_cup) +
-                        '</div>' +
-                    '</div>' +
+            '<div class="tw-ml-12"> Negative Retentions' +
+            this.formatRetention('USD', d.retencion_neg_usd) +
+            this.formatRetention('EUR', d.retencion_neg_eur) +
+            this.formatRetention('CAD', d.retencion_neg_cad) +
+            this.formatRetention('CUP', d.retencion_neg_cup) +
+            '</div>' +
+            '</div>' +
 
 
-                '</dd>' +
+            '</dd>' +
 
 
 
@@ -227,25 +270,6 @@ export class ListaGiftCards extends Component {
 
 
 
-    consultarSaldoTarjetas = async () => {
-        console.log("Consultando Saldo Tarjetas")
-        //console.timeEnd('loop')
-
-        this.spinner.show = true;
-        //Actualizar table
-        const raw_datos = await this.api.getGiftCardData();
-        this.datos = [];
-        this.datos = await this.transformarRawDatos(raw_datos);
-        if (this.datos) {
-            this.actualizarDatos(this.datos);
-        }
-        this.spinner.show = false;
-
-        this.finContadorTiempo = Date.now();
-
-        console.log(this.finContadorTiempo - this.inicioContadorTiempo )
-    }
-
     setup() {
 
 
@@ -255,13 +279,13 @@ export class ListaGiftCards extends Component {
 
         this.isMerchant = false;
 
-     
-        if (  window.sessionStorage.getItem('isMerchant')) {
+
+        if (window.sessionStorage.getItem('isMerchant')) {
             this.isMerchant = JSON.parse(window.sessionStorage.getItem('isMerchant'));
         }
 
 
-      
+
 
 
         onWillStart(async () => {
@@ -274,10 +298,10 @@ export class ListaGiftCards extends Component {
 
 
             this.api = new API(this.accessToken);
-           this.inicioContadorTiempo = Date.now();
+            this.inicioContadorTiempo = Date.now();
 
-            const timeoutId = setInterval(this.consultarSaldoTarjetas, this.tiempoEntreConsultasSaldo * 1000);
-        
+            //const timeoutId = setInterval(this.consultarSaldoTarjetas, this.tiempoEntreConsultasSaldo * 1000);
+
             //clearTimeout(timeoutId);
 
 
@@ -369,7 +393,7 @@ export class ListaGiftCards extends Component {
 
 
 
-           
+
 
 
 
@@ -574,7 +598,7 @@ export class ListaGiftCards extends Component {
 
         onRendered(async () => {
 
-          
+
 
             const base_name_otra_table = "#container-listbeneficiary"
 
@@ -1102,6 +1126,12 @@ export class ListaGiftCards extends Component {
 
     }
 
+
+
+    onRefresh = async () => {
+        this.consultarSaldoTarjetas();
+
+    }
 
     onCreate = async () => {
 

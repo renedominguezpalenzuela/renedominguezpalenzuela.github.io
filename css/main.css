@@ -304,3 +304,26 @@ body > div.blockUI.blockMsg.blockPage {
     min-height: 2.8rem;
 
 }
+
+.colornew {
+  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%);
+  position: relative;
+  left: -48px;
+  top: -28px;
+}
+
+.submit-btn2 {
+  border: none;
+  padding: 0.8rem 2.3rem;
+  /* border-radius: 8px; */
+  display: block;
+  margin: auto;
+  height: 3.5rem;
+  /* margin-top: 120px; */
+  background-color: #0652ac;
+  color: #fff;
+  font-weight: bold;
+  -webkit-box-shadow: 0px 9px 15px -11px rgba(88, 54, 114, 1);
+  -moz-box-shadow: 0px 9px 15px -11px rgba(88, 54, 114, 1);
+  box-shadow: 0px 9px 15px -11px rgba(88, 54, 114, 1);
+}

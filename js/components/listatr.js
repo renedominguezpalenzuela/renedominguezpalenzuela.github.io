@@ -414,7 +414,7 @@ export class ListaTR extends Component {
 
 
 
-                //console.log(raw_datos)
+                console.log(raw_datos)
                 this.datos = [];
 
                 this.datos = await this.transformarRawDatos(raw_datos);
