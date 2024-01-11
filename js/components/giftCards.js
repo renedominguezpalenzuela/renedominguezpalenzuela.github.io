@@ -32,7 +32,7 @@ export class ListaGiftCards extends Component {
         showSecond: false
     })
 
-    tipo_operacion = [8];
+    tipo_operacion = [14,15];
     tipoVista = 'GIFT_CARDS';
 
 

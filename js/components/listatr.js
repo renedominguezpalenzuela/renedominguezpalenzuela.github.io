@@ -31,7 +31,7 @@ export class ListaTR extends Component {
 
 
 
-    total_tx_a_solicitar = 50;
+    total_tx_a_solicitar = 100;
 
     minDateFiltro = null;
     maxDateFiltro = null;
@@ -292,8 +292,13 @@ export class ListaTR extends Component {
 
 
 
+
+                
             }
 
+            console.log("Tipos oper")
+            console.log(this.props.tipooperacion)
+            console.log(this.tipos_operacion)
 
 
 
@@ -314,7 +319,7 @@ export class ListaTR extends Component {
 
             this.datos = await this.transformarRawDatos(raw_datos);
 
-            console.log("DATOS del TX")
+            console.log("DATOS normalizados TR LIST")
             console.log(this.datos)
 
        
@@ -965,6 +970,9 @@ export class ListaTR extends Component {
 
 
         const raw_datos1 = raw_datos.data.data.map((unDato) => {
+
+            console.log("Lista TX un Dato")
+            console.log(unDato)
 
 
 

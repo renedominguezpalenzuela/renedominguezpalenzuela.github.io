@@ -78,6 +78,18 @@ export const tipos_operaciones = [
         type2: ["DELIVERY_TRANSACTION"],
         usertext: "Token Buy Home Delivery"
     },
+    {
+        cod_tipo: 14,
+        type1: ["GIFT_CARD_ADD_TOKEN"],
+        type2: ["-"],
+        usertext: "Gift Card Credit"
+    },
+    {
+        cod_tipo: 15,
+        type1: ["GIFT_CARD_SUB_TOKEN"],
+        type2: ["-"],
+        usertext: "Gift Card Debit"
+    }
 
 
     
