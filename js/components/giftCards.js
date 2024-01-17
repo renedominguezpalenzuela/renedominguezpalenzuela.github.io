@@ -37,10 +37,6 @@ export class ListaGiftCards extends Component {
 
 
 
-    tiempoEntreConsultasSaldo = 30; //30 segundos
-
-
-
 
 
 
@@ -95,7 +91,7 @@ export class ListaGiftCards extends Component {
 
     <t t-if="this.datos==null">
         <span  class="display nowrap responsive " style="width:100%"   >
-               No data available yet            
+        Requesting data
         </span>
 
         <t t-if="this.spinner.show==true">
@@ -300,9 +296,7 @@ export class ListaGiftCards extends Component {
             this.api = new API(this.accessToken);
             this.inicioContadorTiempo = Date.now();
 
-            //const timeoutId = setInterval(this.consultarSaldoTarjetas, this.tiempoEntreConsultasSaldo * 1000);
-
-            //clearTimeout(timeoutId);
+          
 
 
 
@@ -400,6 +394,8 @@ export class ListaGiftCards extends Component {
 
 
             //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
+
+            this.tableId = '#container-listgift-cards';
 
             this.tabla = $(this.tableId).DataTable({
                 data: this.datos,
@@ -606,10 +602,10 @@ export class ListaGiftCards extends Component {
 
 
             $('#container-listbeneficiary_wrapper').remove();
-            $('#container-listtr_wrapper').remove();
+           // $('#container-listtr_wrapper').remove();
             //$('#container-listgift-cards_wrapper').remove();
 
-            $('#container-listtr').DataTable().clear().destroy();
+            //$('#container-listtr').DataTable().clear().destroy();
             $('#container-listbeneficiary').DataTable().clear().destroy();
             //            $('#container-listgift-cards').DataTable().clear().destroy();
 

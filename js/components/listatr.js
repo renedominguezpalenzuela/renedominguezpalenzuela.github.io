@@ -147,17 +147,18 @@ export class ListaTR extends Component {
 
     </t>
 
-    <t t-if="this.datos==null">
-        <span  class="display nowrap responsive " style="width:100%"   >
-               No data available yet            
-        </span>
+    <!-- <t t-if="this.datos==null"> -->
+       
 
         <t t-if="this.spinner.show==true">
+        <span  class="display nowrap responsive " style="width:100%"   >
+        Requesting data           
+        </span>
         <span>
           <img src="img/Spinner-1s-200px.png" width="35rem"/>
         </span>
         </t>
-    </t> 
+    <!-- </t>  -->
 
    
 
@@ -165,35 +166,35 @@ export class ListaTR extends Component {
     
     <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
 
-    <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
+        <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
 
-        <tr >
-            <th   >Transaction ID</th>    
-            <th   class="centrar">Type</th> 
-
-
-            <th  class="centrar">Status</th>
+            <tr >
+                <th   >Transaction ID</th>    
+                <th   class="centrar">Type</th> 
 
 
-            <th class="amount-value">Amount <br/> (No fee)</th>
-            <th >Fee: <br/> </th>
+                <th  class="centrar">Status</th>
 
-            <th >Curr.</th>
-            <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
-            <th  >  Beneficiary Name  </th>  
-            <th >  Beneficiary Phone  </th>  
-            <th >  Beneficiary Card  </th> 
-            <th >  Sender Name </th>
-            <th >  Received Amount </th>
-            <th >  Received Currency </th>
 
-            <th>Type</th>
-            <th>Type2</th> 
-            <th>External ID</th>
+                <th class="amount-value">Amount <br/> (No fee)</th>
+                <th >Fee: <br/> </th>
 
-        </tr>
+                <th >Curr.</th>
+                <th  class="centrar">Created <br/> (yyyy/mm/dd) </th>    
+                <th  >  Beneficiary Name  </th>  
+                <th >  Beneficiary Phone  </th>  
+                <th >  Beneficiary Card  </th> 
+                <th >  Sender Name </th>
+                <th >  Received Amount </th>
+                <th >  Received Currency </th>
 
-    </thead>
+                <th>Type</th>
+                <th>Type2</th> 
+                <th>External ID</th>
+
+            </tr>
+
+        </thead>
 
     </table>
     
@@ -225,7 +226,7 @@ export class ListaTR extends Component {
 
         this.tipos_operaciones = tipos_operaciones;
 
-        
+
 
 
 
@@ -238,31 +239,14 @@ export class ListaTR extends Component {
 
 
 
-
         onWillStart(async () => {
-
-
-
-
-
+            //CCreando los filtros de la tabla
+            this.showCol = await this.mostrarColumnas(this.props.tipoVista)
         });
 
 
 
         onMounted(async () => {
-            // do something here
-
-
-
-
-
-
-
-            // console.log("Operacion")
-            // console.log(this.datos[0])
-
-
-
             const accessToken = API.getTokenFromsessionStorage();
             if (!accessToken) { return }
 
@@ -275,12 +259,8 @@ export class ListaTR extends Component {
 
             this.api = new API(accessToken);
 
-
-            const walletAddress = window.sessionStorage.getItem('walletAddress');
+            this.walletAddress = window.sessionStorage.getItem('walletAddress');
             const userId = window.sessionStorage.getItem('userId');
-            //this.senderName = window.sessionStorage.getItem('nameFull');
-            //console.log(this.senderName);
-
 
             const query = {
                 token: accessToken
@@ -289,259 +269,11 @@ export class ListaTR extends Component {
 
             if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
                 this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
-
-
-
-
-                
             }
 
             console.log("Tipos oper")
             console.log(this.props.tipooperacion)
             console.log(this.tipos_operacion)
-
-
-
-
-
-            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log("RAW DATOS TR LIST")
-            console.log(raw_datos)
-
-
-
-
-
-
-
-            this.datos = [];
-
-
-            this.datos = await this.transformarRawDatos(raw_datos);
-
-            console.log("DATOS normalizados TR LIST")
-            console.log(this.datos)
-
-       
-
-
-
-            //obteniendo lista de beneficiarios
-            //this.beneficiarios.nameList
-            this.datos.map((unDato, i) => {
-
-                if (unDato.beneficiaryName === '-') {
-                    return;
-                }
-
-
-                const existe = this.beneficiarios.nameList.filter(unNombre => unNombre.beneficiaryFullName === unDato.beneficiaryName)[0];
-
-
-
-                if (!existe) {
-                    console.log(i)
-
-                    //  console.log( unDato.beneficiaryName)
-                    //console.log( this.beneficiarios.nameList)
-                    const nuevoObjeto = {
-                        id: i,
-                        beneficiaryFullName: unDato.beneficiaryName
-                    }
-                    console.log(nuevoObjeto)
-
-                    this.beneficiarios.nameList.push(
-                        nuevoObjeto
-                    )
-
-                } else {
-                    console.log(existe)
-                }
-
-            })
-
-
-            this.spinner.show = false;
-   
-
-
-
-
-            // -----   Creando el socket  ------------------------------------------------
-            this.socket = io(API.baseSocketURL, {
-                path: this.subscriptionPath,
-                query: query,
-            });
-
-            // ----- Si ocurre algun error --------------------------------------------------
-            this.socket.on('error', (error) => {
-                console.log('Socket ListTX ERROR: ', {
-                    event: 'error',
-                    data: error
-                });
-            });
-
-
-
-            // ----- Socket conectado  ---------------------------------------------------
-            this.socket.on("connect", (datos) => {
-                console.log("Socket LIST TX conectado correctamente");
-                console.log("socket LIST TX id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
-
-                // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
-                //Creando subscripcion a todas las transacciones de la wallet
-                this.socket.emit('subscribe', [`TRANSACTION_${walletAddress}`]);
-            });
-
-            // ----- Socket ReConectado  --------------------------------------------------- 
-            this.socket.on('reconnect', () => {
-                console.log('Socket LIST TX RE conectado ', this.socket.connected);
-            });
-
-
-
-
-            // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
-            this.socket.on('TRANSACTION_UPDATE', async (data) => {
-                console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
-                console.log('TR Status LIST TX ' + data.transactionStatus);
-
-
-
-                console.log("Solicitando lista de TX al servidor en SOCKET")
-
-                const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-                console.log("lista de TX recibidas en SOCKET")
-
-
-
-
-
-
-
-                console.log(raw_datos)
-                this.datos = [];
-
-                this.datos = await this.transformarRawDatos(raw_datos);
-                if (this.datos) {
-                    this.actualizarDatos(this.datos);
-
-                    // Create date inputs
-
-
-                }
-
-
-
-
-
-
-
-                //this.tabla.config.plugin.remove("pagination");
-                //this.tabla.config.plugin.remove("search");
-
-
-
-
-
-                /*if (data.transactionStatus == "confirmed") {
-                  const saldos = await this.get_data(true);
-                  if (saldos) {
-                    this.balance.saldos = saldos;
-                    console.log(JSON.stringify(this.balance));
-                  }
-                }*/
-            }
-
-
-
-           
-
-            );
-
-
-
-
-            var tableId = "#container-listtr";
-
-
-
-
-
-
-
-            function format(inputDate) {
-                let date, month, year, segundos, minutos, horas;
-                date = inputDate.getDate();
-
-                segundos = inputDate.getSeconds().toString().padStart(2, '0');
-                minutos = inputDate.getMinutes().toString().padStart(2, '0');;
-                horas = inputDate.getHours().toString().padStart(2, '0');;
-
-
-
-
-                month = inputDate.getMonth() + 1;
-                year = inputDate.getFullYear();
-                date = date.toString().padStart(2, '0');
-                month = month.toString().padStart(2, '0');
-
-
-                return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
-            }
-
-            function colorStatus(status) {
-                let color = ""
-                switch (status) {
-                    case "requested":
-                        color = "#658DF7"
-                        break;
-
-                    case "confirmed":
-                        color = "#78D1B5"
-                        break;
-
-                    case "pending":
-                        color = "#C07E00"
-                        break;
-
-                    case "failed":
-                        color = "#D70707"
-                        break;
-
-                    case "canceled":
-                        color = "#F83E54"
-                        break;
-
-                    case "processed":
-                        color = "#3750D1"
-                        break;
-
-                    case "rejected":
-                        color = "#F83E54"
-                        break;
-
-                    case "accepted":
-                        color = "#28A745"
-                        break;
-
-                    case "queued":
-                        color = "#28A215"
-                        break;
-
-
-                    default:
-                        color = "#A0AFD6"
-                        break;
-                }
-
-                return color;
-
-            }
-
-            //CCreando la tabla
-            const showCol = await this.mostrarColumnas(this.props.tipoVista)
-
 
             this.minDateFiltro = new DateTime('#min', {
                 format: 'YYYY-MM-DD',
@@ -553,233 +285,17 @@ export class ListaTR extends Component {
             });
 
 
-            //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
-            this.tabla = $(tableId).DataTable({
-                data: this.datos,
 
-                columns: [
-                    { data: 'transactionID', width: '25%', visible: showCol.transactionID },
-                    { data: 'userTextType', width: '30%', visible: showCol.userTextType },
-                    {
-                        data: 'transactionStatus', width: '23%',
-                        render: function (data, type, row) {
-                            let color = colorStatus(data)
-                            return `<span class="state" style="background-color:${color};"> ${data} </span>`;
-                        },
-                        visible: showCol.transactionID
-                    },
-                    {
-                        data: 'transactionAmount', width: '18%', className: "amount-value",
-                        render: function (data, type, row) {
-                            let valor = UImanager.roundDec(data);
-                            return `<span class="amount-value" > ${valor} </span>`;
-                        },
-                        visible: showCol.transactionStatus
+          
 
-                    },
-                    {
-                        data: 'feeusercurr', width: '10%', className: "amount-value",
-                        render: function (data, type, row) {
-                            let valor = UImanager.roundDec(data);
-                            return `<span class="amount-value" > ${valor} </span>`;
-                        },
-                        visible: showCol.feeusercurr
-                    },
-                    { data: 'currency', width: '8%', className: "centrar", visible: showCol.currency },
-                    {
-                        data: 'createdAt', width: '30%',
-                        render: function (data, type, row) {
-                            //const options = { year: 'numeric', month: 'long', day: 'numeric' };
-                            const fecha = new Date(data);
-                            return format(fecha)
-                            //fecha.toLocaleTimeString('en-EN', options)
-                            //event.toLocaleDateString(undefined, options)
-                            //moment(data).format("MM/DD/YYYY");
-                        },
-                        visible: showCol.createdAt
-                    },
-                    { data: 'beneficiaryName', width: '35%', visible: showCol.beneficiaryName },
-                    { data: 'beneficiaryPhone', width: '35%', visible: showCol.beneficiaryPhone },
-                    { data: 'beneficiaryCardNumber', width: '35%', visible: showCol.beneficiaryCardNumber },
-                    { data: 'senderName', width: '35%', visible: showCol.senderName },
-                    { data: 'receivedAmount', width: '35%', visible: showCol.receivedAmount },
-                    { data: 'receivedCurrency', width: '35%', visible: showCol.receivedCurrency },
-                    { data: 'type', width: '15%', visible: showCol.type },
-                    { data: 'type2', width: '15%', visible: showCol.type2 },
-                    { data: 'externalID', width: '13%', visible: showCol.externalID }
-
-                   
+            // setTimeout(this.crearTabla(this.datos), 10000);
 
 
 
 
-                ],
-              
-                dom: 'lBfrtip',
-                buttons: [
-                    'copy',
-                    'csv',
-                    {
-                        extend: 'excelHtml5',
-                        text: 'Save EXCEL'
-                    },
-                    {
-                        extend: 'pdf',
-                        messageTop: 'TX List'
-                    },
-                    'print'
-                ],
-
-                autoWidth: false,
-                pageLength: 10,
-                order: [[6, 'desc']],
-                select: true,
-                responsive: true,
-                destroy: true,
-                language: {
-                    emptyTable: "No data",
-                   infoEmpty: "No entries to show",
-                   zeroRecords: "No data match the filter"
-                },
-                
-
-                
-             
-
-            });
-
-
-
-
-
-
-
-            // this.tabla.columns.adjust().draw();
-
-
-            //console.log(this.tabla)
-
-            if (this.tabla) {
-                this.tabla.on('select', (e, dt, type, indexes) => {
-                    if (type === 'row') {
-                        if (this.props.onChangeSelectedTX) {
-                            this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
-                        }
-                    }
-                });
-            }
-
-            if (!this.datos || this.datos.length <= 0) {
-                //$('#container-listtr').DataTable().clear().destroy();
-
-                //this.tabla.clear();
-                //this.tabla.destroy();
-                //2nd empty html
-                $(tableId + " tbody").empty();  //LIMPIA EL CUERPO
-                $(tableId + " thead").empty(); //LIMPIA EL HEADER
-                $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-
-
-            }
-
-
-
-
-            //Refilter the table
-            document.querySelectorAll('#min, #max').forEach((el) => {
-                el.addEventListener('change', () => this.tabla.draw());
-            })
-
-
-            // Filtro para las fechas
-            DataTable.ext.search.push((settings, data, dataIndex) => {
-
-                if ((this.minDateFiltro == null || this.maxDateFiltro == null)) {
-                    return true;
-                }
-
-                //UImanager.timeZoneTransformer(userData.birthDate).fromUtc
-                let min = UImanager.timeZoneTransformer(this.minDateFiltro.val()).fromUtc;
-                let max = UImanager.timeZoneTransformer(this.maxDateFiltro.val()).fromUtc;
-
-                if (min.getFullYear() < 1980) {
-                    min = null;
-                } else {
-                    min = new Date(min).setHours(0, 0, 0, 0)
-
-                }
-
-                if (max.getFullYear() < 1980) {
-                    max = null;
-                } else {
-                    max = new Date(max).setHours(0, 0, 0, 0)
-
-                }
-
-                let date = new Date(data[6]).setHours(0, 0, 0, 0);
-
-                if (
-                    (min === null && max === null) ||
-                    (min === null && date <= max) ||
-                    (date >= min && max === null) ||
-                    (date >= min && date <= max)
-
-                ) {
-                    return true;
-                }
-                return false;
-            });
-
-            // Filtro para los tipos de operacion
-            DataTable.ext.search.push((settings, data, dataIndex) => {
-
-                if (this.state.tipoOperacionFiltro == '-1') {
-                    return true;
-                }
-
-                let tipoOperacion = data[1];
-
-                const codigoOperacion = this.tipos_operaciones.filter(unTipo => unTipo.usertext === tipoOperacion);
-                if (codigoOperacion && codigoOperacion.length > 0) {
-
-                    if (codigoOperacion[0].cod_tipo == this.state.tipoOperacionFiltro) {
-                        return true;
-                    }
-
-                }
-
-                return false;
-            });
-
-            //Filtro para el beneficiario
-            //this.state.beneficiaryID
-            DataTable.ext.search.push((settings, data, dataIndex) => {
-
-                if (this.state.beneficiaryID == '-1') {
-                    return true;
-                }
-
-                let beneficiarioNombre = data[7];
-
-
-
-                if (beneficiarioNombre === this.selectedBeneficiaryName) {
-
-
-                    return true;
-
-
-                }
-
-                return false;
-            });
-
-
-
-
-
-           
-
+            /*if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }*/
 
 
 
@@ -788,45 +304,36 @@ export class ListaTR extends Component {
 
         onRendered(async () => {
 
-
-            const base_name_otra_table = "#container-listbeneficiary"
-            //                                           container-listbeneficiary_wrapper
-
-
-            const otra_table = $(`${base_name_otra_table}_wrapper`)
-
-
-            //if (otra_table) {
-            // console.log("Existe otra tabla")
-            //console.log(otra_table)
-            //              $(`${base_name_otra_table}_length`).empty();
-            //              $(`${base_name_otra_table}_filter`).empty();
-            $(`${base_name_otra_table}_wrapper`).remove();
-            //    $(tableId + "tbody").empty();  //LIMPIA EL CUERPO
-            //   $(tableId + "thead").empty(); //LIMPIA EL HEADER
-            //otra_table.empty(); //LIMPIA TODO, EL FOOTER?
-            //  $(tableId + "_wrapper").empty(); //LIMPIA TODO, EL FOOTER?
-            //}
-
-
-            $('#container-listbeneficiary_wrapper').remove();
-            //$('#container-listtr_wrapper').remove();
-
-            if (this.props.tipoVista!='GIFT_CARDS') {
-                $('#container-listgift-cards_wrapper').remove();
-            }
+           
+                        const base_name_otra_table = "#container-listbeneficiary"
+                        //                             container-listbeneficiary_wrapper
+                        //                             container-listgift-cards_wrapper
             
+                        const otra_table = $(`${base_name_otra_table}_wrapper`)
+            
+                        $(`${base_name_otra_table}_wrapper`).remove();
+            
+                        $('#container-listbeneficiary_wrapper').remove();
+            
+                        if (this.props.tipoVista != 'GIFT_CARDS') {
+                            $('#container-listgift-cards_wrapper').remove();
+                        }
+            
+                        $('#container-listbeneficiary').DataTable().clear().destroy();
+            
+                        if (this.props.tipoVista != 'GIFT_CARDS') {
+                            $('#container-listgift-cards').DataTable().clear().destroy();
+                        }
 
-            //$('#container-listtr').DataTable().clear().destroy();
-            $('#container-listbeneficiary').DataTable().clear().destroy();
-            if (this.props.tipoVista!='GIFT_CARDS') {
-                $('#container-listgift-cards').DataTable().clear().destroy();
-            }
-
-            if (this.tabla) {
+           /* if (this.tabla) {
                 this.tabla.draw();
-            }
-            
+            }*/
+            this.getDatosdeTX().then((misDatos) => {           
+                this.crearTabla(misDatos)
+                this.misDatos = misDatos;
+               // this.actualizarDatos(misDatos)
+                this.spinner.show = false;
+            });
 
 
 
@@ -839,10 +346,6 @@ export class ListaTR extends Component {
     }
 
     getBeneficiaryData(type2, unDato) {
-        /*console.log("DATOS")
-        console.log(unDato.type)
-        console.log(type2)
-        console.log(unDato)*/
 
         const type = unDato.type;
 
@@ -854,50 +357,6 @@ export class ListaTR extends Component {
             receivedAmount: '-',
             receivedCurrency: '-'
         }
-
-        //type2 == metadata.method
-        //type = PAYMENT_REQUEST | type2 = PAYMENT_LINK -- no data
-        //type = CASH_OUT_TRANSACTION | type2 = THUNES_TRANSACTION -- no data
-        //type = DYNAMIC_PAYMENT  --- no data
-        //type = TOKEN_EXCHANGE   --- no data
-        //type = P2P_TRANSFER     --- no data
-        //type = CASH_OUT_TRANSACTION | type2 = CREDIT_CARD_TRANSACTION  ---- Envio a tarjeta
-        /*
-          metadata
-            cardHolderName   :        "Darian Alvarez Tamayo"
-            cardNumber       :        "9225959870121891"
-            contactName      :        "Darian Alvarez Tamayo"
-            contactPhone     :        "52552615"
-        */
-        //type = CASH_OUT_TRANSACTION |  type2 = DELIVERY_TRANSACTION  ---- Envio a casa
-        /*
-         metadata 
-            contactName : "Darian Alvarez Tamayo"
-            contactPhone : "52552615"
-        */
-
-        //type = CASH_OUT_TRANSACTION | type2 = DELIVERY_TRANSACTION_USD ---- Envio a casa USD
-        /*
-         metadata
-            contactName : "Darian Alvarez Tamayo"
-            contactPhone : "52552615"
-        */
-
-        //type = TOPUP_RECHARGE | type2 = DIRECT_TOPUP 
-        /* 
-          metadata 
-              receiverName
-            
-        
-        */
-
-        //type = PAYMENT_REQUEST | type2 = DIRECT_TOPUP
-        /**
-          metadata 
-            receiver_name : "Pepe Cuenca" 
-          
-         */
-
 
 
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
@@ -951,6 +410,411 @@ export class ListaTR extends Component {
 
     }
 
+
+
+    actualizarDatos = async (datos) => {
+
+        if (this.tabla) {
+
+            this.tabla.clear();
+            this.tabla.rows.add(datos);
+            this.tabla.draw();
+
+        } else {
+            console.log("Tabla no existe aun")
+        }
+
+
+    }
+
+    //se le pasa de parametro un string con el nombre de la columna y el tipo de vista
+    // devuelve
+    // objeto donde cada elemento indica si se muestra o no la columna correspondiente
+    // true -- mostrar  | false -- no mostrar
+    mostrarColumnas = async (tipoVista) => {
+
+        console.log("Tipo de vista")
+        console.log(tipoVista);
+
+        let showCol = {
+            transactionID: true,
+            userTextType: true,
+            transactionStatus: true,
+            transactionAmount: true,
+            feeusercurr: true,
+            currency: true,
+            createdAt: true,
+            beneficiaryName: true,
+            beneficiaryPhone: true,
+            beneficiaryCardNumber: true,
+            senderName: true,
+            receivedAmount: true,
+            receivedCurrency: true,
+            type: true,
+            type2: true,
+            externalID: true,
+        }
+
+
+        switch (tipoVista) {
+            case 'SEND_MONEY':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+
+                break;
+
+            case 'SEND_MONEY_CUBA':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+
+                break;
+
+            case 'HOME_DELIVERY':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+
+                break;
+
+            case 'PHONE_RECHARGE':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.beneficiaryCardNumber = false;
+
+                break;
+
+            default:
+                break;
+        }
+
+
+
+
+        return showCol;
+    }
+
+    resetRange() {
+        this.minDateFiltro.val(null);
+        this.maxDateFiltro.val(null);
+        this.tabla.draw();
+
+    }
+
+    onChangeType(value) {
+
+        console.log(value.target.value)
+        this.state.tipoOperacionFiltro = value.target.value;
+        this.tabla.draw();
+    }
+
+    onChangeSelectedBeneficiario(value) {
+        console.log(value.target.value);
+        this.state.beneficiaryID = value.target.value;
+
+        const beneficiario = this.beneficiarios.nameList.find(unBeneficiario => unBeneficiario.id == this.state.beneficiaryID);
+
+        if (beneficiario) {
+            this.selectedBeneficiaryName = beneficiario.beneficiaryFullName
+        }
+
+
+        this.tabla.draw();
+    }
+
+
+    colorStatus = (status) => {
+        let color = ""
+        switch (status) {
+            case "requested":
+                color = "#658DF7"
+                break;
+
+            case "confirmed":
+                color = "#78D1B5"
+                break;
+
+            case "pending":
+                color = "#C07E00"
+                break;
+
+            case "failed":
+                color = "#D70707"
+                break;
+
+            case "canceled":
+                color = "#F83E54"
+                break;
+
+            case "processed":
+                color = "#3750D1"
+                break;
+
+            case "rejected":
+                color = "#F83E54"
+                break;
+
+            case "accepted":
+                color = "#28A745"
+                break;
+
+            case "queued":
+                color = "#28A215"
+                break;
+
+
+            default:
+                color = "#A0AFD6"
+                break;
+        }
+
+        return color;
+
+    }
+
+
+    formatFecha = (inputDate) => {
+        let date, month, year, segundos, minutos, horas;
+        date = inputDate.getDate();
+
+        segundos = inputDate.getSeconds().toString().padStart(2, '0');
+        minutos = inputDate.getMinutes().toString().padStart(2, '0');;
+        horas = inputDate.getHours().toString().padStart(2, '0');;
+
+
+
+
+        month = inputDate.getMonth() + 1;
+        year = inputDate.getFullYear();
+        date = date.toString().padStart(2, '0');
+        month = month.toString().padStart(2, '0');
+
+
+        return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
+    }
+
+
+    crearTabla = (datos) => {
+
+       
+           
+      
+
+        var tableId = "#container-listtr";
+
+       // $(tableId).DataTable().clear().destroy();
+
+        //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
+        this.tabla = $(tableId).DataTable({
+            data: datos,
+
+            columns: [
+                { data: 'transactionID', width: '25%', visible: this.showCol.transactionID },
+                { data: 'userTextType', width: '30%', visible: this.showCol.userTextType },
+                {
+                    data: 'transactionStatus', width: '23%',
+                    render: (data, type, row) => {
+                        let color = this.colorStatus(data)
+                        return `<span class="state" style="background-color:${color};"> ${data} </span>`;
+                    },
+                    visible: this.showCol.transactionID
+                },
+                {
+                    data: 'transactionAmount', width: '18%', className: "amount-value",
+                    render: function (data, type, row) {
+                        let valor = UImanager.roundDec(data);
+                        return `<span class="amount-value" > ${valor} </span>`;
+                    },
+                    visible: this.showCol.transactionStatus
+
+                },
+                {
+                    data: 'feeusercurr', width: '10%', className: "amount-value",
+                    render: function (data, type, row) {
+                        let valor = UImanager.roundDec(data);
+                        return `<span class="amount-value" > ${valor} </span>`;
+                    },
+                    visible: this.showCol.feeusercurr
+                },
+                { data: 'currency', width: '8%', className: "centrar", visible: this.showCol.currency },
+                {
+                    data: 'createdAt', width: '30%',
+                    render: (data, type, row) => {
+
+                        const fecha = new Date(data);
+                        return this.formatFecha(fecha)
+
+                    },
+                    visible: this.showCol.createdAt
+                },
+                { data: 'beneficiaryName', width: '35%', visible: this.showCol.beneficiaryName },
+                { data: 'beneficiaryPhone', width: '35%', visible: this.showCol.beneficiaryPhone },
+                { data: 'beneficiaryCardNumber', width: '35%', visible: this.showCol.beneficiaryCardNumber },
+                { data: 'senderName', width: '35%', visible: this.showCol.senderName },
+                { data: 'receivedAmount', width: '35%', visible: this.showCol.receivedAmount },
+                { data: 'receivedCurrency', width: '35%', visible: this.showCol.receivedCurrency },
+                { data: 'type', width: '15%', visible: this.showCol.type },
+                { data: 'type2', width: '15%', visible: this.showCol.type2 },
+                { data: 'externalID', width: '13%', visible: this.showCol.externalID }
+
+
+
+
+
+
+            ],
+
+            dom: 'lBfrtip',
+            buttons: [
+                'copy',
+                'csv',
+                {
+                    extend: 'excelHtml5',
+                    text: 'Save EXCEL'
+                },
+                {
+                    extend: 'pdf',
+                    messageTop: 'TX List'
+                },
+                'print'
+            ],
+
+            autoWidth: false,
+            pageLength: 10,
+            order: [[6, 'desc']],
+            select: true,
+            responsive: true,
+            destroy: true,
+            language: {
+                emptyTable: "No data to show",
+                infoEmpty: "No entries to show",
+                zeroRecords: "No data match the filter"
+            },
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+        // this.tabla.columns.adjust().draw();
+
+
+        //console.log(this.tabla)
+
+        if (this.tabla) {
+            this.tabla.on('select', (e, dt, type, indexes) => {
+                if (type === 'row') {
+                    if (this.props.onChangeSelectedTX) {
+                        this.props.onChangeSelectedTX(this.tabla.rows(indexes).data()[0])
+                    }
+                }
+            });
+        }
+
+        
+        //Refilter the table
+        document.querySelectorAll('#min, #max').forEach((el) => {
+            el.addEventListener('change', () => this.tabla.draw());
+        })
+
+
+        // Filtro para las fechas
+        DataTable.ext.search.push((settings, data, dataIndex) => {
+
+            if ((this.minDateFiltro == null || this.maxDateFiltro == null)) {
+                return true;
+            }
+
+            //UImanager.timeZoneTransformer(userData.birthDate).fromUtc
+            let min = UImanager.timeZoneTransformer(this.minDateFiltro.val()).fromUtc;
+            let max = UImanager.timeZoneTransformer(this.maxDateFiltro.val()).fromUtc;
+
+            if (min.getFullYear() < 1980) {
+                min = null;
+            } else {
+                min = new Date(min).setHours(0, 0, 0, 0)
+
+            }
+
+            if (max.getFullYear() < 1980) {
+                max = null;
+            } else {
+                max = new Date(max).setHours(0, 0, 0, 0)
+
+            }
+
+            let date = new Date(data[6]).setHours(0, 0, 0, 0);
+
+            if (
+                (min === null && max === null) ||
+                (min === null && date <= max) ||
+                (date >= min && max === null) ||
+                (date >= min && date <= max)
+
+            ) {
+                return true;
+            }
+            return false;
+        });
+
+        // Filtro para los tipos de operacion
+        DataTable.ext.search.push((settings, data, dataIndex) => {
+
+            if (this.state.tipoOperacionFiltro == '-1') {
+                return true;
+            }
+
+            let tipoOperacion = data[1];
+
+            const codigoOperacion = this.tipos_operaciones.filter(unTipo => unTipo.usertext === tipoOperacion);
+            if (codigoOperacion && codigoOperacion.length > 0) {
+
+                if (codigoOperacion[0].cod_tipo == this.state.tipoOperacionFiltro) {
+                    return true;
+                }
+
+            }
+
+            return false;
+        });
+
+        //Filtro para el beneficiario
+        //this.state.beneficiaryID
+        DataTable.ext.search.push((settings, data, dataIndex) => {
+
+            if (this.state.beneficiaryID == '-1') {
+                return true;
+            }
+
+            let beneficiarioNombre = data[7];
+
+
+
+            if (beneficiarioNombre === this.selectedBeneficiaryName) {
+
+
+                return true;
+
+
+            }
+
+            return false;
+        });
+
+
+
+    }
     transformarRawDatos(raw_datos) {
 
 
@@ -971,8 +835,6 @@ export class ListaTR extends Component {
 
         const raw_datos1 = raw_datos.data.data.map((unDato) => {
 
-            console.log("Lista TX un Dato")
-            console.log(unDato)
 
 
 
@@ -1112,117 +974,153 @@ export class ListaTR extends Component {
     }
 
 
-    actualizarDatos = async (datos) => {
+    getDatosdeTX = async () => {
+        const accessToken = API.getTokenFromsessionStorage();
 
-        if (this.tabla) {
+        this.api = new API(accessToken);
 
-            this.tabla.clear();
-            this.tabla.rows.add(datos);
-            this.tabla.draw();
+
+        const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+        console.log("lista de TX recibidas de Servidor")
+        console.log(raw_datos)
+
+        let datos = [];
+        datos = await this.transformarRawDatos(raw_datos);
+
+        console.log("DATOS normalizados TR LIST")
+        console.log(datos)
+
+
+
+
+
+        //obteniendo lista de beneficiarios
+        //this.beneficiarios.nameList
+        await datos.map((unDato, i) => {
+
+            if (unDato.beneficiaryName === '-') {
+                return;
+            }
+
+
+            const existe = this.beneficiarios.nameList.filter(unNombre => unNombre.beneficiaryFullName === unDato.beneficiaryName)[0];
+
+
+
+            if (!existe) {
+                console.log(i)
+
+                //  console.log( unDato.beneficiaryName)
+                //console.log( this.beneficiarios.nameList)
+                const nuevoObjeto = {
+                    id: i,
+                    beneficiaryFullName: unDato.beneficiaryName
+                }
+                console.log(nuevoObjeto)
+
+                this.beneficiarios.nameList.push(
+                    nuevoObjeto
+                )
+
+            } else {
+                console.log(existe)
+            }
+
+        })
+
+        return new Promise((resolve, reject) => {
+
+            console.log("Resolviendo promesa")
+            console.log(datos)
+
+
+
+
+
+            resolve(datos);
+
+
+            /*
+                        if(somethingSuccesfulHappened) {
+                           const successObject = {
+                              msg: 'Success',
+                              data,//...some data we got back
+                           }
+                           resolve(successObject); 
+                        } else {
+                           const errorObject = {
+                              msg: 'An error occured',
+                              error, //...some error we got back
+                           }
+                           reject(errorObject);
+                        }
+                    
+            
+                    
+            */
         }
+        );
+
+
+
+
 
 
     }
 
-    //se le pasa de parametro un string con el nombre de la columna y el tipo de vista
-    // devuelve
-    // objeto donde cada elemento indica si se muestra o no la columna correspondiente
-    // true -- mostrar  | false -- no mostrar
-    mostrarColumnas = async (tipoVista) => {
 
-        console.log("Tipo de vista")
-        console.log(tipoVista);
+    crearSocket = () => {
+        // -----   Creando el socket  ------------------------------------------------
+        this.socket = io(API.baseSocketURL, {
+            path: this.subscriptionPath,
+            query: query,
+        });
 
-        let showCol = {
-            transactionID: true,
-            userTextType: true,
-            transactionStatus: true,
-            transactionAmount: true,
-            feeusercurr: true,
-            currency: true,
-            createdAt: true,
-            beneficiaryName: true,
-            beneficiaryPhone: true,
-            beneficiaryCardNumber: true,
-            senderName: true,
-            receivedAmount: true,
-            receivedCurrency: true,
-            type: true,
-            type2: true,
-            externalID: true,
-        }
+        // ----- Si ocurre algun error --------------------------------------------------
+        this.socket.on('error', (error) => {
+            console.log('Socket ListTX ERROR: ', {
+                event: 'error',
+                data: error
+            });
+        });
 
 
-        switch (tipoVista) {
-            case 'SEND_MONEY':
-                showCol.userTextType = false;
-                showCol.type = false;
-                showCol.type2 = false;
-                showCol.beneficiaryCardNumber = false;
 
-                break;
+        // ----- Socket conectado  ---------------------------------------------------
+        this.socket.on("connect", (datos) => {
+            console.log("Socket LIST TX conectado correctamente");
+            console.log("socket LIST TX id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
 
-            case 'SEND_MONEY_CUBA':
-                showCol.userTextType = false;
-                showCol.type = false;
-                showCol.type2 = false;
+            // this.socket.emit('subscribe', ['TRANSACTIONS']); //recibe todas las transacciones ok
+            //Creando subscripcion a todas las transacciones de la wallet
+            this.socket.emit('subscribe', [`TRANSACTION_${this.walletAddress}`]);
+        });
 
-                break;
-
-            case 'HOME_DELIVERY':
-                showCol.userTextType = false;
-                showCol.type = false;
-                showCol.type2 = false;
-                showCol.beneficiaryCardNumber = false;
-
-                break;
-
-            case 'PHONE_RECHARGE':
-                showCol.userTextType = false;
-                showCol.type = false;
-                showCol.type2 = false;
-                showCol.beneficiaryCardNumber = false;
-
-                break;
-
-            default:
-                break;
-        }
+        // ----- Socket ReConectado  --------------------------------------------------- 
+        this.socket.on('reconnect', () => {
+            console.log('Socket LIST TX RE conectado ', this.socket.connected);
+        });
 
 
 
 
-        return showCol;
-    }
+        // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
+        this.socket.on('TRANSACTION_UPDATE', async (data) => {
+            console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
+            console.log('TR Status LIST TX ' + data.transactionStatus);
 
-    resetRange() {
-        this.minDateFiltro.val(null);
-        this.maxDateFiltro.val(null);
-        this.tabla.draw();
+            console.log("Solicitando lista de TX al servidor en SOCKET")
+            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+            console.log("lista de TX recibidas en SOCKET")
+            console.log(raw_datos)
+            this.datos = [];
+            this.datos = await this.transformarRawDatos(raw_datos);
+            if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }
+        });
 
     }
-
-    onChangeType(value) {
-
-        console.log(value.target.value)
-        this.state.tipoOperacionFiltro = value.target.value;
-        this.tabla.draw();
-    }
-
-    onChangeSelectedBeneficiario(value) {
-        console.log(value.target.value);
-        this.state.beneficiaryID = value.target.value;
-
-        const beneficiario = this.beneficiarios.nameList.find(unBeneficiario => unBeneficiario.id == this.state.beneficiaryID);
-
-        if (beneficiario) {
-            this.selectedBeneficiaryName = beneficiario.beneficiaryFullName
-        }
-
-
-        this.tabla.draw();
-    }
-
 
 
 }

@@ -41,27 +41,22 @@ class Root extends Component {
     { id: 9, name: "Send Money", type: 2 },
     { id: 8, name: "Transactions List", type: 2 },
     { id: 10, name: "Gift Cards", type: 2 },
-
-
   ];
 
   static template = xml` 
-
   
-<div class="sm:tw-grid  sm:tw-grid-cols-[19%_82%]   tw-w-full tw-bg-[#F1F2F7]   ">
-   <div class="tw-p-2 sm:tw-h-full "> 
-      <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
+  <div class="sm:tw-grid  sm:tw-grid-cols-[19%_82%]   tw-w-full tw-bg-[#F1F2F7]   ">
+     <div class="tw-p-2 sm:tw-h-full "> 
+        <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
      </div> 
 
-    <div class="tw-p-2   ">
+    <div class="tw-p-2">
       <div class="sm:tw-h-[4rem]">
          <Menu title="state.title"/>
       </div>
       <main class="tw-flex  tw-justify-center  tw-rounded-lg   ">       
         <div class="tw-p-3 tw-bg-[#FFFFFF] tw-rounded-lg    tw-w-full tw-h-full ">       
-
-        
-        
+      
           <t t-if="this.state.menuId === 1">
             <Profile newUser="false"/>
           </t>
@@ -69,37 +64,34 @@ class Root extends Component {
           <t t-elif="this.state.menuId === 2">
              <Beneficiarios/>
           </t>
-
-          
+         
           <t t-elif="this.state.menuId === 3">
              <SendMoney/>
           </t>
 
           <t t-elif="this.state.menuId === 5">
-            <SendMoneyCuba menuController.bind="leftMenuController" urlHome=""/>
+             <SendMoneyCuba menuController.bind="leftMenuController" urlHome=""/>
           </t>
 
           <t t-elif="this.state.menuId === 6">
-            <HomeDeliveryCuba/>
+             <HomeDeliveryCuba/>
           </t>
 
           <t t-elif="this.state.menuId === 7">
              <RecargasTelefono/>
           </t>
 
-
           <t t-elif="this.state.menuId === 8">
-           <ListaTR />
+             <ListaTR />
           </t>
 
           <t t-elif="this.state.menuId === 9">
-          <SendAll />
-         </t>
+             <SendAll />
+          </t>
 
-
-         <t t-elif="this.state.menuId === 10">
-         <ListaGiftCards />
-        </t>
+          <t t-elif="this.state.menuId === 10">
+             <ListaGiftCards />
+          </t>
       
           
 
