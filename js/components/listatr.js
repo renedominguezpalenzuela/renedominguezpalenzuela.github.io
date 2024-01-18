@@ -18,6 +18,10 @@ export class ListaTR extends Component {
     datos = null;
     //grid = null;
     tabla = null;
+    api = null;
+    accessToken = null;
+    walletAddress = null;
+    userId = null;
     // senderName = '-';
 
     //Variables para el socket
@@ -226,121 +230,75 @@ export class ListaTR extends Component {
 
         this.tipos_operaciones = tipos_operaciones;
 
-
-
-
-
         API.setRedirectionURL(this.props.urlHome);
 
 
-
-
-
-
-
-
         onWillStart(async () => {
+            this.accessToken = API.getTokenFromsessionStorage();
+            if (!this.accessToken) { return }
+
+            this.api = new API(this.accessToken);
+
             //CCreando los filtros de la tabla
             this.showCol = await this.mostrarColumnas(this.props.tipoVista)
+
+            this.walletAddress = window.sessionStorage.getItem('walletAddress');
+            this.userId = window.sessionStorage.getItem('userId'); 
         });
 
 
-
-        onMounted(async () => {
-            const accessToken = API.getTokenFromsessionStorage();
-            if (!accessToken) { return }
-
-
-            /* if (!accessToken) {
-                 console.error("NO ACCESS TOKEN - Lista TX")
-                 window.location.assign(API.redirectURLLogin);
-                 return;
-             }*/
-
-            this.api = new API(accessToken);
-
-            this.walletAddress = window.sessionStorage.getItem('walletAddress');
-            const userId = window.sessionStorage.getItem('userId');
-
-            const query = {
-                token: accessToken
-            }
-
+        onMounted(async () => {              
 
             if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
                 this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
             }
 
-            console.log("Tipos oper")
-            console.log(this.props.tipooperacion)
-            console.log(this.tipos_operacion)
-
             this.minDateFiltro = new DateTime('#min', {
                 format: 'YYYY-MM-DD',
-
             });
             this.maxDateFiltro = new DateTime('#max', {
                 format: 'YYYY-MM-DD',
-
             });
 
-
-
-          
-
-            // setTimeout(this.crearTabla(this.datos), 10000);
-
-
-
-
-            /*if (this.datos) {
-                this.actualizarDatos(this.datos);
-            }*/
-
-
-
-        });
-
-
-        onRendered(async () => {
-
-           
-                        const base_name_otra_table = "#container-listbeneficiary"
-                        //                             container-listbeneficiary_wrapper
-                        //                             container-listgift-cards_wrapper
-            
-                        const otra_table = $(`${base_name_otra_table}_wrapper`)
-            
-                        $(`${base_name_otra_table}_wrapper`).remove();
-            
-                        $('#container-listbeneficiary_wrapper').remove();
-            
-                        if (this.props.tipoVista != 'GIFT_CARDS') {
-                            $('#container-listgift-cards_wrapper').remove();
-                        }
-            
-                        $('#container-listbeneficiary').DataTable().clear().destroy();
-            
-                        if (this.props.tipoVista != 'GIFT_CARDS') {
-                            $('#container-listgift-cards').DataTable().clear().destroy();
-                        }
-
-           /* if (this.tabla) {
-                this.tabla.draw();
-            }*/
-            this.getDatosdeTX().then((misDatos) => {           
+              //Obteniendo datos por primera ves
+              this.getDatosdeTX().then((misDatos) => {           
                 this.crearTabla(misDatos)
                 this.misDatos = misDatos;
                // this.actualizarDatos(misDatos)
                 this.spinner.show = false;
             });
 
-
-
+            this.crearSocket();
+   
         });
 
 
+        onRendered(async () => {
+    
+            const base_name_otra_table = "#container-listbeneficiary"
+            //                             container-listbeneficiary_wrapper
+            //                             container-listgift-cards_wrapper
 
+            const otra_table = $(`${base_name_otra_table}_wrapper`)
+
+            $(`${base_name_otra_table}_wrapper`).remove();
+
+            $('#container-listbeneficiary_wrapper').remove();
+
+            if (this.props.tipoVista != 'GIFT_CARDS') {
+                $('#container-listgift-cards_wrapper').remove();
+            }
+
+            $('#container-listbeneficiary').DataTable().clear().destroy();
+
+            if (this.props.tipoVista != 'GIFT_CARDS') {
+                $('#container-listgift-cards').DataTable().clear().destroy();
+            }
+
+
+          
+
+        });
 
 
     }
@@ -357,7 +315,6 @@ export class ListaTR extends Component {
             receivedAmount: '-',
             receivedCurrency: '-'
         }
-
 
         if (type === 'CASH_OUT_TRANSACTION' && type2 === 'CREDIT_CARD_TRANSACTION') {
             otrosDatos.beneficiaryName = unDato.metadata.contactName ? unDato.metadata.contactName : '-';
@@ -394,19 +351,7 @@ export class ListaTR extends Component {
             otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency : '-';
         }
 
-
-
-
-
-
         return otrosDatos;
-
-
-
-
-
-
-
 
     }
 
@@ -433,8 +378,7 @@ export class ListaTR extends Component {
     // true -- mostrar  | false -- no mostrar
     mostrarColumnas = async (tipoVista) => {
 
-        console.log("Tipo de vista")
-        console.log(tipoVista);
+   
 
         let showCol = {
             transactionID: true,
@@ -507,13 +451,13 @@ export class ListaTR extends Component {
 
     onChangeType(value) {
 
-        console.log(value.target.value)
+    
         this.state.tipoOperacionFiltro = value.target.value;
         this.tabla.draw();
     }
 
     onChangeSelectedBeneficiario(value) {
-        console.log(value.target.value);
+       
         this.state.beneficiaryID = value.target.value;
 
         const beneficiario = this.beneficiarios.nameList.find(unBeneficiario => unBeneficiario.id == this.state.beneficiaryID);
@@ -710,7 +654,7 @@ export class ListaTR extends Component {
         // this.tabla.columns.adjust().draw();
 
 
-        //console.log(this.tabla)
+        
 
         if (this.tabla) {
             this.tabla.on('select', (e, dt, type, indexes) => {
@@ -848,8 +792,7 @@ export class ListaTR extends Component {
                     minute: '2-digit',
                 })
 
-            //const fecha2 = fecha.substring(0, 10) + " " + fecha.substring(11, 20);
-            // console.log(fecha2)
+                       
 
             let type2 = '-';
             if (unDato.metadata) {
@@ -902,7 +845,7 @@ export class ListaTR extends Component {
             } else {
 
                 userTypeObj = tipos_operaciones.filter((unTipo) => unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2))[0];
-                //console.log(userTypeObj)        
+                
 
             }
 
@@ -911,11 +854,7 @@ export class ListaTR extends Component {
 
 
             const beneficiaryData = this.getBeneficiaryData(type2, unDato);
-            //console.log(beneficiaryData)
-
-
-
-
+            
 
             return {
                 fecha_creada: fecha,
@@ -939,9 +878,9 @@ export class ListaTR extends Component {
         //this.props.tipooperacion --- arreglo de tipos_operacion
         //ejemplp [1,2]
 
-        console.log(this.props.tipooperacion)
+        
         if (this.props.tipooperacion && this.props.tipooperacion.length > 0) {
-            //console.log("filtro")
+        
             //Filtrar solo para un tipo de operacion
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
 
@@ -956,7 +895,7 @@ export class ListaTR extends Component {
 
                 /*(unaOperacion) => {
 
-                    console.log(unaOperacion)
+                    
 
                     if (this.tipos_operacion.type2 && this.tipos_operacion.type2.length > 0) {
                         return (this.tipos_operacion.type1.includes(unaOperacion.type) && this.tipos_operacion.type2.includes(unaOperacion.type2));
@@ -975,20 +914,20 @@ export class ListaTR extends Component {
 
 
     getDatosdeTX = async () => {
-        const accessToken = API.getTokenFromsessionStorage();
+        //const accessToken = API.getTokenFromsessionStorage();
 
-        this.api = new API(accessToken);
+        //this.api = new API(accessToken);
 
 
         const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-        console.log("lista de TX recibidas de Servidor")
-        console.log(raw_datos)
+        //console.log("lista de TX recibidas de Servidor")
+        //console.log(raw_datos)
 
         let datos = [];
         datos = await this.transformarRawDatos(raw_datos);
 
-        console.log("DATOS normalizados TR LIST")
-        console.log(datos)
+        //console.log("DATOS normalizados TR LIST")
+        //console.log(datos)
 
 
 
@@ -1007,35 +946,23 @@ export class ListaTR extends Component {
 
 
 
-            if (!existe) {
-                console.log(i)
-
-                //  console.log( unDato.beneficiaryName)
-                //console.log( this.beneficiarios.nameList)
+            if (!existe) {                
                 const nuevoObjeto = {
                     id: i,
                     beneficiaryFullName: unDato.beneficiaryName
-                }
-                console.log(nuevoObjeto)
-
+                }                
                 this.beneficiarios.nameList.push(
                     nuevoObjeto
                 )
-
             } else {
-                console.log(existe)
+                //console.log(existe)
             }
 
         })
 
         return new Promise((resolve, reject) => {
 
-            console.log("Resolviendo promesa")
-            console.log(datos)
-
-
-
-
+          
 
             resolve(datos);
 
@@ -1070,6 +997,11 @@ export class ListaTR extends Component {
 
 
     crearSocket = () => {
+
+        const query = {
+            token: this.accessToken
+        }
+        
         // -----   Creando el socket  ------------------------------------------------
         this.socket = io(API.baseSocketURL, {
             path: this.subscriptionPath,
@@ -1106,12 +1038,13 @@ export class ListaTR extends Component {
 
         // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
         this.socket.on('TRANSACTION_UPDATE', async (data) => {
-            console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor', data);
+            console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor');
             console.log('TR Status LIST TX ' + data.transactionStatus);
+            console.log(data)
 
-            console.log("Solicitando lista de TX al servidor en SOCKET")
+            //console.log("Solicitando lista de TX al servidor en SOCKET")
             const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            console.log("lista de TX recibidas en SOCKET")
+            //console.log("lista de TX recibidas en SOCKET")
             console.log(raw_datos)
             this.datos = [];
             this.datos = await this.transformarRawDatos(raw_datos);

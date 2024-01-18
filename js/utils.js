@@ -1502,7 +1502,7 @@ export class API {
     let datos = null;
     await axios(config).then(function (response) {
       datos = response.data;
-      console.log(datos);
+     // console.log(datos);
     }).catch(function (error) {
       console.log("ERRROR")
       console.log(error);

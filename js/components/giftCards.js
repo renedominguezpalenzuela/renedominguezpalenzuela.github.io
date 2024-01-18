@@ -14,8 +14,14 @@ export class ListaGiftCards extends Component {
     static components = { ListaTR };
 
     datos = null;
-    //grid = null;
     tabla = null;
+
+    api = null;
+    accessToken = null;
+    walletAddress = null;
+    userId = null;
+
+
     // senderName = '-';
 
     tableId = "#container-listgift-cards";
@@ -32,7 +38,7 @@ export class ListaGiftCards extends Component {
         showSecond: false
     })
 
-    tipo_operacion = [14,15];
+    tipo_operacion = [14, 15];
     tipoVista = 'GIFT_CARDS';
 
 
@@ -154,26 +160,26 @@ export class ListaGiftCards extends Component {
 
 
     consultarSaldoTarjetas = async () => {
-        console.log("Consultando Saldo Tarjetas")
-        //console.timeEnd('loop')
+        
+        
 
         this.spinner.showSecond = true;
-        console.log(this.spinner)
+        
         //Actualizar table
         const raw_datos = await this.api.getGiftCardData();
-        console.log(raw_datos)
+        
 
         this.datos = [];
         this.datos = await this.transformarRawDatos(raw_datos);
-       
+
         if (this.datos) {
             this.actualizarDatos(this.datos);
         }
         this.spinner.showSecond = false;
 
-        //    this.finContadorTiempo = Date.now();
+        
 
-        //console.log(this.finContadorTiempo - this.inicioContadorTiempo )
+        
     }
 
     formatRetention = (label, dato) => {
@@ -190,9 +196,11 @@ export class ListaGiftCards extends Component {
     // Formatting function for row details - modify as you need
     formatTuplaOculta = (d) => {
         // `d` is the original data object for the row
-        console.log("Formateando una tupla")
-        console.log(d);
 
+        console.log("Tupla seleccionada")
+        console.log(d)
+
+        
 
 
         const numero = d.number;
@@ -200,17 +208,16 @@ export class ListaGiftCards extends Component {
 
 
 
-        console.log(`Merchant  ${this.isMerchant}`)
-        console.log(typeof (this.isMerchant))
+        
         let cadenaBotonDEBIT = '';
         let cadenaBotonExpire = '';
 
         if (this.isMerchant == true) {
-            console.log("SI ")
+        
             cadenaBotonDEBIT = `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="${numero}">Debit</button>`;
             cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="${numero}">Expire</button>`;
         } else {
-            console.log("NO")
+        
         }
 
 
@@ -218,9 +225,7 @@ export class ListaGiftCards extends Component {
 
 
 
-        console.log('Cadena DEBIT')
-        console.log(cadenaBotonDEBIT);
-
+        
         return (
             '<dl>' +
             '<dt>Actions:</dt>' +
@@ -284,6 +289,15 @@ export class ListaGiftCards extends Component {
 
 
 
+
+
+        this.walletAddress = window.sessionStorage.getItem('walletAddress');
+
+
+
+
+
+
         onWillStart(async () => {
 
             if (!this.accessToken) {
@@ -296,7 +310,7 @@ export class ListaGiftCards extends Component {
             this.api = new API(this.accessToken);
             this.inicioContadorTiempo = Date.now();
 
-          
+
 
 
 
@@ -310,9 +324,7 @@ export class ListaGiftCards extends Component {
 
 
             const raw_datos = await this.api.getGiftCardData();
-            console.log("DATOS RAW")
-            console.log(raw_datos)
-
+            
 
 
             this.datos = [];
@@ -323,20 +335,12 @@ export class ListaGiftCards extends Component {
                 this.actualizarDatos(this.datos);
             }
 
-            console.log("DATOS del TX")
-            console.log(this.datos)
-
+            
 
             //obteniendo todos los datos de los beneficiarios desde el API
             if (this.accessToken) {
 
-
                 const allDatosBeneficiarios = await this.api.getAllDatosBeneficiarios();
-                console.log("Benficiarios")
-                console.log(allDatosBeneficiarios)
-
-
-
 
                 if (allDatosBeneficiarios) {
                     window.sessionStorage.setItem('beneficiariesFullData', JSON.stringify(allDatosBeneficiarios));
@@ -351,45 +355,11 @@ export class ListaGiftCards extends Component {
                     }));
                 }
 
-
-                console.log(this.beneficiariosNames)
-
             } else {
                 console.error("NO ACCESS TOKEN - Beneficiario")
             }
 
-
             this.spinner.show = false;
-
-
-
-
-
-
-
-
-
-            /* function format(inputDate) {
-                 let date, month, year, segundos, minutos, horas;
-                 date = inputDate.getDate();
- 
-                 segundos = inputDate.getSeconds().toString().padStart(2, '0');
-                 minutos = inputDate.getMinutes().toString().padStart(2, '0');;
-                 horas = inputDate.getHours().toString().padStart(2, '0');;
- 
-                 month = inputDate.getMonth() + 1;
-                 year = inputDate.getFullYear();
-                 date = date.toString().padStart(2, '0');
-                 month = month.toString().padStart(2, '0');
- 
-                 return `${year}/${month}/${date} ${horas}:${minutos}:${segundos}`;
-             }*/
-
-
-
-
-
-
 
 
 
@@ -520,8 +490,9 @@ export class ListaGiftCards extends Component {
                     let tr = e.target.closest('tr');
 
                     let row = this.tabla.row(tr);
-                    console.log("Seleccionando tupla")
 
+                
+                   
 
 
                     if (row.child.isShown()) {
@@ -587,6 +558,11 @@ export class ListaGiftCards extends Component {
 
 
 
+            this.crearSocket();
+
+
+
+
 
 
         });
@@ -602,7 +578,7 @@ export class ListaGiftCards extends Component {
 
 
             $('#container-listbeneficiary_wrapper').remove();
-           // $('#container-listtr_wrapper').remove();
+            // $('#container-listtr_wrapper').remove();
             //$('#container-listgift-cards_wrapper').remove();
 
             //$('#container-listtr').DataTable().clear().destroy();
@@ -626,17 +602,22 @@ export class ListaGiftCards extends Component {
     }
 
     async transformarRawDatos(raw_datos) {
-
-
+        
 
 
         if (!raw_datos || !raw_datos.status) {
+            
             return [];
         } else if (!(raw_datos.status != 200 || raw_datos.status != 201)) {
+            
             return [];
         } else if (!raw_datos.data) {
+            
             return [];
+
         }
+
+
 
 
 
@@ -646,8 +627,7 @@ export class ListaGiftCards extends Component {
 
         //Extrayendo datos
         const datosOK = await raw_datos.data.data.map((unDato) => {
-            //console.log('Creando tuplas')
-            //console.log(unDato)
+            
             let balance_usd = null
             let balance_eur = null
             let balance_cad = null
@@ -680,9 +660,7 @@ export class ListaGiftCards extends Component {
 
             if (unDato.balance) {
 
-                // console.log("Balance")
-                // console.log(unDato.balance)
-
+                
 
                 balance_usd_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'USD');
                 balance_eur_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'EUR');
@@ -724,7 +702,7 @@ export class ListaGiftCards extends Component {
 
 
 
-                //console.log(balance_usd)
+                
 
             }
 
@@ -783,10 +761,9 @@ export class ListaGiftCards extends Component {
 
 
     debitCard = async (number) => {
-        console.log("Numero")
-        console.log(number)
+        
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
-        console.log(ownerObj);
+        
 
 
         const { value: formValues } = await Swal.fire({
@@ -928,9 +905,7 @@ export class ListaGiftCards extends Component {
 
 
     creditCard = async (number) => {
-        console.log("Numero")
-        console.log(number)
-
+        
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
 
 
@@ -1183,18 +1158,18 @@ export class ListaGiftCards extends Component {
 
         //Actualizar table
 
-        const raw_datos = await this.api.getGiftCardData();
-
-
-
-        this.datos = [];
-
-
-        this.datos = await this.transformarRawDatos(raw_datos);
-        if (this.datos) {
-            this.actualizarDatos(this.datos);
-        }
-
+        /* const raw_datos = await this.api.getGiftCardData();
+  
+  
+  
+          this.datos = [];
+  
+  
+          this.datos = await this.transformarRawDatos(raw_datos);
+          if (this.datos) {
+              this.actualizarDatos(this.datos);
+          }
+  */
         this.spinner.show = false;
 
 
@@ -1204,6 +1179,185 @@ export class ListaGiftCards extends Component {
 
 
 
+    crearSocket = () => {
+
+        
+
+
+        const query = {
+            token: this.accessToken
+        }
+
+        this.subscriptionPath = "/api/subscription";
+
+        // -----   Creando el socket  ------------------------------------------------
+        this.socket = io(API.baseSocketURL, {
+            path: this.subscriptionPath,
+            query: query,
+        });
+
+        // ----- Si ocurre algun error --------------------------------------------------
+        this.socket.on('error', (error) => {
+            console.log('Socket GiftCards ERROR: ', {
+                event: 'error',
+                data: error
+            });
+        });
+
+
+
+        // ----- Socket conectado  ---------------------------------------------------
+        this.socket.on("connect", (datos) => {
+            console.log("Socket  GiftCards conectado correctamente");
+            console.log("socket  GiftCards id:" + this.socket.id); // x8WIv7-mJelg7on_ALbx
+
+
+
+            this.socket.emit('subscribe', [`GIFT_CARD`]);
+        });
+
+        // ----- Socket ReConectado  --------------------------------------------------- 
+        this.socket.on('reconnect', () => {
+            console.log('Socket  GiftCards RE conectado ', this.socket.connected);
+        });
+
+
+
+
+        // ----- Si recibe mensaje del tipo  GIFT_CARD_UPDATE --------------------------------------------------
+        this.socket.on('GIFT_CARD_UPDATE', async (data) => {
+            console.log('Socket GIFT_CARD_UPDATE Recibiendo datos ');
+
+            console.log(data)
+            const raw_datos = {
+                status: 200,
+                data: {
+                    data: new Array(data)
+                }
+            }
+
+            
+
+            const datoNuevo = await this.transformarRawDatos(raw_datos);  //podria ser que llegue mas de un dato
+            console.log("Dato nuevo recibido")
+            console.log(datoNuevo[0])
+
+            
+            for (let v of this.datos) {
+                if (v.number === datoNuevo[0].number)  {
+                  
+
+                    v.cad = datoNuevo[0].cad;
+                    v.cup = datoNuevo[0].cup;
+                    v.eur = datoNuevo[0].eur;
+                    v.usd = datoNuevo[0].usd;
+
+                    v.retencion_neg_cad = datoNuevo[0].retencion_neg_cad;
+                    v.retencion_neg_cup = datoNuevo[0].retencion_neg_cup;
+                    v.retencion_neg_eur = datoNuevo[0].retencion_neg_eur;
+                    v.retencion_neg_usd = datoNuevo[0].retencion_neg_usd;
+
+                    v.retencion_pos_cad = datoNuevo[0].retencion_pos_cad;
+                    v.retencion_pos_cup = datoNuevo[0].retencion_pos_cup;
+                    v.retencion_pos_eur = datoNuevo[0].retencion_pos_eur;
+                    v.retencion_pos_usd = datoNuevo[0].retencion_pos_usd;
+
+                }
+                
+
+            }
+
+        
+
+            console.log(this.datos);
+
+
+            if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }
+            
+
+                   /* this.datos.filter(unDatoEnLista => unDatoEnLista.id === datoNuevo.id)
+                        .forEach((unDatoEnLista2) => {
+                            
+                            
+                            
+                            unDatoEnLista2.cad = datoNuevo.cad;
+                            unDatoEnLista2.cup = datoNuevo.cup;
+                            unDatoEnLista2.eur = datoNuevo.eur;
+                            unDatoEnLista2.usd = datoNuevo.usd;
+
+                            unDatoEnLista2.retencion_neg_cad = datoNuevo.retencion_neg_cad;
+                            unDatoEnLista2.retencion_neg_cup = datoNuevo.retencion_neg_cup;
+                            unDatoEnLista2.retencion_neg_eur = datoNuevo.retencion_neg_eur;
+                            unDatoEnLista2.retencion_neg_usd = datoNuevo.retencion_neg_usd;
+
+                            unDatoEnLista2.retencion_pos_cad = datoNuevo.retencion_pos_cad;
+                            unDatoEnLista2.retencion_pos_cup = datoNuevo.retencion_pos_cup;
+                            unDatoEnLista2.retencion_pos_eur = datoNuevo.retencion_pos_eur;
+                            unDatoEnLista2.retencion_pos_usd = datoNuevo.retencion_pos_usd;
+
+
+                        })
+
+            
+
+            console.log(this.datos);
+
+
+            if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }*/
+
+
+        });
+
+
+        // ----- Si recibe mensaje del tipo  GIFT_CARD_CREATED --------------------------------------------------
+        this.socket.on('GIFT_CARD_CREATED', async (data) => {
+            console.log('Socket GIFT_CARD_CREATED Recibiendo datos ');
+
+
+            
+            const raw_datos = {
+                status: 200,
+                data: {
+                    data: new Array(data)
+                }
+            }
+
+            
+
+            const unDato = await this.transformarRawDatos(raw_datos);
+            console.log(unDato)
+            if (unDato && unDato.length > 0) {
+
+                unDato.forEach(element => {
+                    this.datos.push(element);
+                });
+
+
+            }
+
+            console.log(this.datos);
+
+
+            if (this.datos) {
+                this.actualizarDatos(this.datos);
+            }
+
+        });
+
+
+        // ----- Si recibe mensaje del tipo  GIFT_CARD_CREATED --------------------------------------------------
+        this.socket.on('GIFT_CARD_REMOVED', async (data) => {
+            console.log('Socket GIFT_CARD_REMOVED Recibiendo datos ');
+            console.log(data)
+
+        });
+
+
+    }
 
 
 
