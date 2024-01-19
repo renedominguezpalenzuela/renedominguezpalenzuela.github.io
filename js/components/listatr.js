@@ -307,6 +307,9 @@ export class ListaTR extends Component {
 
         const type = unDato.type;
 
+        console.log(type2)
+        console.log(unDato)
+
         let otrosDatos = {
             beneficiaryName: '-',
             beneficiaryPhone: '-',
@@ -349,6 +352,10 @@ export class ListaTR extends Component {
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION') {
             otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
             otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency : '-';
+        }else if (type === 'GIFT_CARD_SUB_TOKEN' || type === 'GIFT_CARD_ADD_TOKEN') {
+           // otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
+            otrosDatos.receivedCurrency = unDato.currency ? unDato.currency : '-';
+            otrosDatos.receivedAmount = unDato.transactionAmount ? unDato.transactionAmount : '-' ;
         }
 
         return otrosDatos;
