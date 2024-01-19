@@ -1120,7 +1120,7 @@ export class ListaGiftCards extends Component {
         
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">
-                        <span class="tw-label-text">Beneficiary name</span>
+                        <span class="tw-label-text">Card holder name</span>
                 </label>
                 
                 
