@@ -447,13 +447,8 @@ export class ListaGiftCards extends Component {
                     emptyTable: "No data",
                     infoEmpty: "No entries to show",
                     zeroRecords: "No data match the filter"
-                },
-                language: {
-                    emptyTable: "No data",
-                    infoEmpty: "No entries to show",
-                    zeroRecords: "No data match the filter"
-                },
-
+                }
+      
 
 
 
@@ -1107,15 +1102,17 @@ export class ListaGiftCards extends Component {
     onCreate = async () => {
 
 
-        let optionsBeneficiario = '';
+       /* let optionsBeneficiario = '';
 
         this.beneficiariosNames.map((el) => {
             optionsBeneficiario = optionsBeneficiario + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
 
-        })
+        })*/
 
 
-
+        /*<select id="beneficiary" class="tw-select tw-select-bordered tw-join-item"   > 
+        ${optionsBeneficiario}                                        
+     </select>     */
         const { value: beneficiario } = await Swal.fire({
             title: "Create Gift Card",
 
@@ -1123,12 +1120,11 @@ export class ListaGiftCards extends Component {
         
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">
-                        <span class="tw-label-text">Select Beneficiary</span>
+                        <span class="tw-label-text">Beneficiary name</span>
                 </label>
                 
-                <select id="beneficiary" class="tw-select tw-select-bordered tw-join-item"   > 
-                   ${optionsBeneficiario}                                        
-                </select>    
+                
+                <input id="beneficiary" type="text" class="tw-input tw-input-bordered tw-w-full tw-join-item" />   
 
             </div>
 
