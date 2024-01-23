@@ -165,10 +165,10 @@ export class ListaTR extends Component {
     <!-- </t>  -->
 
    
-
+   
 
     
-    <table  id="container-listtr" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
+    <table  id="container-listtr" class="display nowrap responsive " style="width:100%; visibility: hidden;" cellspacing="0"  >
 
         <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
 
@@ -243,11 +243,11 @@ export class ListaTR extends Component {
             this.showCol = await this.mostrarColumnas(this.props.tipoVista)
 
             this.walletAddress = window.sessionStorage.getItem('walletAddress');
-            this.userId = window.sessionStorage.getItem('userId'); 
+            this.userId = window.sessionStorage.getItem('userId');
         });
 
 
-        onMounted(async () => {              
+        onMounted(async () => {
 
             if ((this.props.tipooperacion) && (this.props.tipooperacion != 0)) {
                 this.tipos_operacion = tipos_operaciones.filter((una_operacion) => una_operacion.cod_tipo === this.props.tipooperacion)[0]
@@ -260,21 +260,21 @@ export class ListaTR extends Component {
                 format: 'YYYY-MM-DD',
             });
 
-              //Obteniendo datos por primera ves
-              this.getDatosdeTX().then((misDatos) => {           
+            //Obteniendo datos por primera ves
+            this.getDatosdeTX().then((misDatos) => {
                 this.crearTabla(misDatos)
                 this.misDatos = misDatos;
-               // this.actualizarDatos(misDatos)
+                // this.actualizarDatos(misDatos)
                 this.spinner.show = false;
             });
 
             this.crearSocket();
-   
+
         });
 
 
         onRendered(async () => {
-    
+
             const base_name_otra_table = "#container-listbeneficiary"
             //                             container-listbeneficiary_wrapper
             //                             container-listgift-cards_wrapper
@@ -296,7 +296,12 @@ export class ListaTR extends Component {
             }
 
 
-          
+            //style="visibility: hidden;"
+           // $("#container-listtr").css('visibility', 'visible');
+            //$("#container-listtr").css('visibility', 'hidden');
+
+
+
 
         });
 
@@ -352,10 +357,12 @@ export class ListaTR extends Component {
         } else if (type === 'CASH_OUT_TRANSACTION' && type2 === 'THUNES_TRANSACTION') {
             otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
             otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency : '-';
-        }else if (type === 'GIFT_CARD_SUB_TOKEN' || type === 'GIFT_CARD_ADD_TOKEN') {
-           // otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
+        } else if (type === 'GIFT_CARD_SUB_TOKEN' || type === 'GIFT_CARD_ADD_TOKEN') {
+            console.log("GIF CARD DATA")
+            console.log(unDato)
+            // otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
             otrosDatos.receivedCurrency = unDato.currency ? unDato.currency : '-';
-            otrosDatos.receivedAmount = unDato.transactionAmount ? unDato.transactionAmount : '-' ;
+            otrosDatos.receivedAmount = unDato.transactionAmount ? unDato.transactionAmount : '-';
         }
 
         return otrosDatos;
@@ -385,7 +392,7 @@ export class ListaTR extends Component {
     // true -- mostrar  | false -- no mostrar
     mostrarColumnas = async (tipoVista) => {
 
-   
+
 
         let showCol = {
             transactionID: true,
@@ -438,6 +445,16 @@ export class ListaTR extends Component {
                 showCol.beneficiaryCardNumber = false;
 
                 break;
+            case  'GIFT_CARDS':
+                showCol.userTextType = false;
+                showCol.type = false;
+                showCol.type2 = false;
+                showCol.senderName = false;
+                //showCol.beneficiaryCardNumber = false;
+                //showCol.beneficiaryName = false;
+                showCol. beneficiaryPhone= false;
+
+                break;
 
             default:
                 break;
@@ -458,13 +475,13 @@ export class ListaTR extends Component {
 
     onChangeType(value) {
 
-    
+
         this.state.tipoOperacionFiltro = value.target.value;
         this.tabla.draw();
     }
 
     onChangeSelectedBeneficiario(value) {
-       
+
         this.state.beneficiaryID = value.target.value;
 
         const beneficiario = this.beneficiarios.nameList.find(unBeneficiario => unBeneficiario.id == this.state.beneficiaryID);
@@ -551,13 +568,13 @@ export class ListaTR extends Component {
 
     crearTabla = (datos) => {
 
-       
-           
-      
+
+
+
 
         var tableId = "#container-listtr";
 
-       // $(tableId).DataTable().clear().destroy();
+        // $(tableId).DataTable().clear().destroy();
 
         //https://phppot.com/jquery/responsive-datatables-with-automatic-column-hiding
         this.tabla = $(tableId).DataTable({
@@ -645,6 +662,9 @@ export class ListaTR extends Component {
                 infoEmpty: "No entries to show",
                 zeroRecords: "No data match the filter"
             },
+            initComplete: function (settings, json) {
+                $("#container-listtr").css('visibility', 'visible');
+            }
 
 
 
@@ -661,7 +681,7 @@ export class ListaTR extends Component {
         // this.tabla.columns.adjust().draw();
 
 
-        
+
 
         if (this.tabla) {
             this.tabla.on('select', (e, dt, type, indexes) => {
@@ -673,7 +693,7 @@ export class ListaTR extends Component {
             });
         }
 
-        
+
         //Refilter the table
         document.querySelectorAll('#min, #max').forEach((el) => {
             el.addEventListener('change', () => this.tabla.draw());
@@ -799,7 +819,7 @@ export class ListaTR extends Component {
                     minute: '2-digit',
                 })
 
-                       
+
 
             let type2 = '-';
             if (unDato.metadata) {
@@ -852,7 +872,7 @@ export class ListaTR extends Component {
             } else {
 
                 userTypeObj = tipos_operaciones.filter((unTipo) => unTipo.type1.includes(unDato.type) && unTipo.type2.includes(type2))[0];
-                
+
 
             }
 
@@ -861,7 +881,7 @@ export class ListaTR extends Component {
 
 
             const beneficiaryData = this.getBeneficiaryData(type2, unDato);
-            
+
 
             return {
                 fecha_creada: fecha,
@@ -885,9 +905,9 @@ export class ListaTR extends Component {
         //this.props.tipooperacion --- arreglo de tipos_operacion
         //ejemplp [1,2]
 
-        
+
         if (this.props.tipooperacion && this.props.tipooperacion.length > 0) {
-        
+
             //Filtrar solo para un tipo de operacion
             //this.datos = raw_datos.filter((unaOperacion) => (unaOperacion.type == this.props.tipooperacion))
 
@@ -953,11 +973,11 @@ export class ListaTR extends Component {
 
 
 
-            if (!existe) {                
+            if (!existe) {
                 const nuevoObjeto = {
                     id: i,
                     beneficiaryFullName: unDato.beneficiaryName
-                }                
+                }
                 this.beneficiarios.nameList.push(
                     nuevoObjeto
                 )
@@ -969,7 +989,7 @@ export class ListaTR extends Component {
 
         return new Promise((resolve, reject) => {
 
-          
+
 
             resolve(datos);
 
@@ -1008,7 +1028,7 @@ export class ListaTR extends Component {
         const query = {
             token: this.accessToken
         }
-        
+
         // -----   Creando el socket  ------------------------------------------------
         this.socket = io(API.baseSocketURL, {
             path: this.subscriptionPath,

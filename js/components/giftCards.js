@@ -111,7 +111,7 @@ export class ListaGiftCards extends Component {
     <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2  sm:tw-col-span-2">
     <div class="tw-card-body tw-items-center  "> 
             
-    <table  id="container-listgift-cards" class="display nowrap responsive " style="width:100%" cellspacing="0"  >
+    <table  id="container-listgift-cards" class="display nowrap responsive " style="width:100%; visibility: hidden;" cellspacing="0"  >
     
         <thead class="tw-bg-[#0652ac] tw-text-[#FFFFFF] tw-text-[1.05rem] tw-mt-1">
 
@@ -160,14 +160,14 @@ export class ListaGiftCards extends Component {
 
 
     consultarSaldoTarjetas = async () => {
-        
-        
+
+
 
         this.spinner.showSecond = true;
-        
+
         //Actualizar table
         const raw_datos = await this.api.getGiftCardData();
-        
+
 
         this.datos = [];
         this.datos = await this.transformarRawDatos(raw_datos);
@@ -177,9 +177,9 @@ export class ListaGiftCards extends Component {
         }
         this.spinner.showSecond = false;
 
-        
 
-        
+
+
     }
 
     formatRetention = (label, dato) => {
@@ -200,7 +200,7 @@ export class ListaGiftCards extends Component {
         console.log("Tupla seleccionada")
         console.log(d)
 
-        
+
 
 
         const numero = d.number;
@@ -208,16 +208,16 @@ export class ListaGiftCards extends Component {
 
 
 
-        
+
         let cadenaBotonDEBIT = '';
         let cadenaBotonExpire = '';
 
         if (this.isMerchant == true) {
-        
+
             cadenaBotonDEBIT = `<button  class="tw-btn  tw-mr-3 debitfn btn-gift-cards" card-number="${numero}">Debit</button>`;
             cadenaBotonExpire = `<button  class="tw-btn  tw-mr-3 cancelfn btn-gift-cards" card-number="${numero}">Expire</button>`;
         } else {
-        
+
         }
 
 
@@ -225,7 +225,7 @@ export class ListaGiftCards extends Component {
 
 
 
-        
+
         return (
             '<dl>' +
             '<dt>Actions:</dt>' +
@@ -324,7 +324,7 @@ export class ListaGiftCards extends Component {
 
 
             const raw_datos = await this.api.getGiftCardData();
-            
+
 
 
             this.datos = [];
@@ -335,7 +335,7 @@ export class ListaGiftCards extends Component {
                 this.actualizarDatos(this.datos);
             }
 
-            
+
 
             //obteniendo todos los datos de los beneficiarios desde el API
             if (this.accessToken) {
@@ -447,8 +447,11 @@ export class ListaGiftCards extends Component {
                     emptyTable: "No data",
                     infoEmpty: "No entries to show",
                     zeroRecords: "No data match the filter"
+                },
+
+                initComplete: function (settings, json) {
+                    $("#container-listgift-cards").css('visibility', 'visible');
                 }
-      
 
 
 
@@ -486,8 +489,8 @@ export class ListaGiftCards extends Component {
 
                     let row = this.tabla.row(tr);
 
-                
-                   
+
+
 
 
                     if (row.child.isShown()) {
@@ -597,17 +600,17 @@ export class ListaGiftCards extends Component {
     }
 
     async transformarRawDatos(raw_datos) {
-        
+
 
 
         if (!raw_datos || !raw_datos.status) {
-            
+
             return [];
         } else if (!(raw_datos.status != 200 || raw_datos.status != 201)) {
-            
+
             return [];
         } else if (!raw_datos.data) {
-            
+
             return [];
 
         }
@@ -622,7 +625,7 @@ export class ListaGiftCards extends Component {
 
         //Extrayendo datos
         const datosOK = await raw_datos.data.data.map((unDato) => {
-            
+
             let balance_usd = null
             let balance_eur = null
             let balance_cad = null
@@ -655,7 +658,7 @@ export class ListaGiftCards extends Component {
 
             if (unDato.balance) {
 
-                
+
 
                 balance_usd_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'USD');
                 balance_eur_obj = unDato.balance.find(unSaldo => unSaldo.currency == 'EUR');
@@ -697,7 +700,7 @@ export class ListaGiftCards extends Component {
 
 
 
-                
+
 
             }
 
@@ -756,9 +759,9 @@ export class ListaGiftCards extends Component {
 
 
     debitCard = async (number) => {
-        
+
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
-        
+
 
 
         const { value: formValues } = await Swal.fire({
@@ -900,7 +903,7 @@ export class ListaGiftCards extends Component {
 
 
     creditCard = async (number) => {
-        
+
         const ownerObj = this.datos.find((unCard) => unCard.number === number);
 
 
@@ -1102,12 +1105,12 @@ export class ListaGiftCards extends Component {
     onCreate = async () => {
 
 
-       /* let optionsBeneficiario = '';
-
-        this.beneficiariosNames.map((el) => {
-            optionsBeneficiario = optionsBeneficiario + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
-
-        })*/
+        /* let optionsBeneficiario = '';
+ 
+         this.beneficiariosNames.map((el) => {
+             optionsBeneficiario = optionsBeneficiario + `<option value="${el.beneficiaryFullName}">${el.beneficiaryFullName}</option>`
+ 
+         })*/
 
 
         /*<select id="beneficiary" class="tw-select tw-select-bordered tw-join-item"   > 
@@ -1177,7 +1180,7 @@ export class ListaGiftCards extends Component {
 
     crearSocket = () => {
 
-        
+
 
 
         const query = {
@@ -1232,16 +1235,16 @@ export class ListaGiftCards extends Component {
                 }
             }
 
-            
+
 
             const datoNuevo = await this.transformarRawDatos(raw_datos);  //podria ser que llegue mas de un dato
             console.log("Dato nuevo recibido")
             console.log(datoNuevo[0])
 
-            
+
             for (let v of this.datos) {
-                if (v.number === datoNuevo[0].number)  {
-                  
+                if (v.number === datoNuevo[0].number) {
+
 
                     v.cad = datoNuevo[0].cad;
                     v.cup = datoNuevo[0].cup;
@@ -1259,11 +1262,11 @@ export class ListaGiftCards extends Component {
                     v.retencion_pos_usd = datoNuevo[0].retencion_pos_usd;
 
                 }
-                
+
 
             }
 
-        
+
 
             console.log(this.datos);
 
@@ -1271,39 +1274,39 @@ export class ListaGiftCards extends Component {
             if (this.datos) {
                 this.actualizarDatos(this.datos);
             }
-            
-
-                   /* this.datos.filter(unDatoEnLista => unDatoEnLista.id === datoNuevo.id)
-                        .forEach((unDatoEnLista2) => {
-                            
-                            
-                            
-                            unDatoEnLista2.cad = datoNuevo.cad;
-                            unDatoEnLista2.cup = datoNuevo.cup;
-                            unDatoEnLista2.eur = datoNuevo.eur;
-                            unDatoEnLista2.usd = datoNuevo.usd;
-
-                            unDatoEnLista2.retencion_neg_cad = datoNuevo.retencion_neg_cad;
-                            unDatoEnLista2.retencion_neg_cup = datoNuevo.retencion_neg_cup;
-                            unDatoEnLista2.retencion_neg_eur = datoNuevo.retencion_neg_eur;
-                            unDatoEnLista2.retencion_neg_usd = datoNuevo.retencion_neg_usd;
-
-                            unDatoEnLista2.retencion_pos_cad = datoNuevo.retencion_pos_cad;
-                            unDatoEnLista2.retencion_pos_cup = datoNuevo.retencion_pos_cup;
-                            unDatoEnLista2.retencion_pos_eur = datoNuevo.retencion_pos_eur;
-                            unDatoEnLista2.retencion_pos_usd = datoNuevo.retencion_pos_usd;
 
 
-                        })
+            /* this.datos.filter(unDatoEnLista => unDatoEnLista.id === datoNuevo.id)
+                 .forEach((unDatoEnLista2) => {
+                     
+                     
+                     
+                     unDatoEnLista2.cad = datoNuevo.cad;
+                     unDatoEnLista2.cup = datoNuevo.cup;
+                     unDatoEnLista2.eur = datoNuevo.eur;
+                     unDatoEnLista2.usd = datoNuevo.usd;
 
-            
+                     unDatoEnLista2.retencion_neg_cad = datoNuevo.retencion_neg_cad;
+                     unDatoEnLista2.retencion_neg_cup = datoNuevo.retencion_neg_cup;
+                     unDatoEnLista2.retencion_neg_eur = datoNuevo.retencion_neg_eur;
+                     unDatoEnLista2.retencion_neg_usd = datoNuevo.retencion_neg_usd;
 
-            console.log(this.datos);
+                     unDatoEnLista2.retencion_pos_cad = datoNuevo.retencion_pos_cad;
+                     unDatoEnLista2.retencion_pos_cup = datoNuevo.retencion_pos_cup;
+                     unDatoEnLista2.retencion_pos_eur = datoNuevo.retencion_pos_eur;
+                     unDatoEnLista2.retencion_pos_usd = datoNuevo.retencion_pos_usd;
 
 
-            if (this.datos) {
-                this.actualizarDatos(this.datos);
-            }*/
+                 })
+
+     
+
+     console.log(this.datos);
+
+
+     if (this.datos) {
+         this.actualizarDatos(this.datos);
+     }*/
 
 
         });
@@ -1314,7 +1317,7 @@ export class ListaGiftCards extends Component {
             console.log('Socket GIFT_CARD_CREATED Recibiendo datos ');
 
 
-            
+
             const raw_datos = {
                 status: 200,
                 data: {
@@ -1322,7 +1325,7 @@ export class ListaGiftCards extends Component {
                 }
             }
 
-            
+
 
             const unDato = await this.transformarRawDatos(raw_datos);
             console.log(unDato)
