@@ -297,7 +297,7 @@ export class ListaTR extends Component {
 
 
             //style="visibility: hidden;"
-           // $("#container-listtr").css('visibility', 'visible');
+            // $("#container-listtr").css('visibility', 'visible');
             //$("#container-listtr").css('visibility', 'hidden');
 
 
@@ -312,8 +312,7 @@ export class ListaTR extends Component {
 
         const type = unDato.type;
 
-        console.log(type2)
-        console.log(unDato)
+
 
         let otrosDatos = {
             beneficiaryName: '-',
@@ -358,8 +357,7 @@ export class ListaTR extends Component {
             otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
             otrosDatos.receivedCurrency = unDato.metadata.destinationCurrency ? unDato.metadata.destinationCurrency : '-';
         } else if (type === 'GIFT_CARD_SUB_TOKEN' || type === 'GIFT_CARD_ADD_TOKEN') {
-            console.log("GIF CARD DATA")
-            console.log(unDato)
+
             // otrosDatos.receivedAmount = unDato.metadata.destinationAmount ? unDato.metadata.destinationAmount : '-';
             otrosDatos.receivedCurrency = unDato.currency ? unDato.currency : '-';
             otrosDatos.receivedAmount = unDato.transactionAmount ? unDato.transactionAmount : '-';
@@ -445,14 +443,14 @@ export class ListaTR extends Component {
                 showCol.beneficiaryCardNumber = false;
 
                 break;
-            case  'GIFT_CARDS':
+            case 'GIFT_CARDS':
                 showCol.userTextType = false;
                 showCol.type = false;
                 showCol.type2 = false;
                 showCol.senderName = false;
                 //showCol.beneficiaryCardNumber = false;
                 //showCol.beneficiaryName = false;
-                showCol. beneficiaryPhone= false;
+                showCol.beneficiaryPhone = false;
 
                 break;
 
@@ -947,14 +945,14 @@ export class ListaTR extends Component {
 
 
         const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-        //console.log("lista de TX recibidas de Servidor")
-        //console.log(raw_datos)
+        console.log("lista de TX recibidas de Servidor")
+        console.log(raw_datos)
 
         let datos = [];
         datos = await this.transformarRawDatos(raw_datos);
 
-        //console.log("DATOS normalizados TR LIST")
-        //console.log(datos)
+        console.log("DATOS normalizados TR LIST")
+        console.log(datos)
 
 
 
@@ -1065,19 +1063,26 @@ export class ListaTR extends Component {
 
         // ----- Si recibe mensaje del tipo  TRANSACTION_UPDATE --------------------------------------------------
         this.socket.on('TRANSACTION_UPDATE', async (data) => {
-            console.log('TRANSACTION_UPDATE LIST TX recibiendo datos de servidor');
-            console.log('TR Status LIST TX ' + data.transactionStatus);
+            console.log('SOCKET: TRANSACTION_UPDATE LIST TX recibiendo datos de servidor');
+
             console.log(data)
 
-            //console.log("Solicitando lista de TX al servidor en SOCKET")
-            const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-            //console.log("lista de TX recibidas en SOCKET")
-            console.log(raw_datos)
-            this.datos = [];
-            this.datos = await this.transformarRawDatos(raw_datos);
-            if (this.datos) {
-                this.actualizarDatos(this.datos);
+            if (!data) {
+                console.log("Solicitando lista de TX al servidor en SOCKET")
+                const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+                console.log("lista de TX recibidas en SOCKET")
+                console.log(raw_datos)
+                this.datos = [];
+                this.datos = await this.transformarRawDatos(raw_datos);
+                if (this.datos) {
+                    this.actualizarDatos(this.datos);
+                }
+
+            } else {
+                console.log("Hay datos de websocket en lista de TX")
             }
+
+
         });
 
     }
