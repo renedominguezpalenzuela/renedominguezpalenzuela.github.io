@@ -15,7 +15,7 @@ export class ListaTR extends Component {
 
 
 
-    datos = null;
+    datos = [];
     //grid = null;
     tabla = null;
     api = null;
@@ -151,18 +151,7 @@ export class ListaTR extends Component {
 
     </t>
 
-    <!-- <t t-if="this.datos==null"> -->
-       
 
-        <t t-if="this.spinner.show==true">
-        <span  class="display nowrap responsive " style="width:100%"   >
-        Requesting data           
-        </span>
-        <span>
-          <img src="img/Spinner-1s-200px.png" width="35rem"/>
-        </span>
-        </t>
-    <!-- </t>  -->
 
    
    
@@ -261,14 +250,15 @@ export class ListaTR extends Component {
             });
 
             //Obteniendo datos por primera ves
-            this.getDatosdeTX().then((misDatos) => {
-                this.crearTabla(misDatos)
-                this.misDatos = misDatos;
+            this.getDatosdeTX().then(async (misDatos) => {
+                await this.crearTabla(misDatos)
+                this.datos = misDatos;
                 // this.actualizarDatos(misDatos)
                 this.spinner.show = false;
+                this.crearSocket();
             });
 
-            this.crearSocket();
+           
 
         });
 
@@ -564,7 +554,7 @@ export class ListaTR extends Component {
     }
 
 
-    crearTabla = (datos) => {
+    crearTabla = async (datos) => {
 
 
 
@@ -945,7 +935,7 @@ export class ListaTR extends Component {
 
 
         const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-        console.log("lista de TX recibidas de Servidor")
+        console.log("DATOS RAW TR LIST")
         console.log(raw_datos)
 
         let datos = [];
@@ -1023,6 +1013,8 @@ export class ListaTR extends Component {
 
     crearSocket = () => {
 
+   
+
         const query = {
             token: this.accessToken
         }
@@ -1066,20 +1058,97 @@ export class ListaTR extends Component {
             console.log('SOCKET: TRANSACTION_UPDATE LIST TX recibiendo datos de servidor');
 
             console.log(data)
+            console.log(data.transactionStatus)
+            console.log(data.transactionID)
+          
 
             if (!data) {
                 console.log("Solicitando lista de TX al servidor en SOCKET")
                 const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-                console.log("lista de TX recibidas en SOCKET")
+                console.log("TRANSACTION_UPDATE: lista de TX recibidas en SOCKET por getTrData")
                 console.log(raw_datos)
                 this.datos = [];
                 this.datos = await this.transformarRawDatos(raw_datos);
-                if (this.datos) {
-                    this.actualizarDatos(this.datos);
-                }
+               
 
             } else {
-                console.log("Hay datos de websocket en lista de TX")
+
+                console.log("Hay datos de websocket en lista de TX Update")
+                console.log(data)
+                console.log(data.transactionStatus)
+                console.log(data.transactionID)
+            
+               
+                for (let v of this.datos) {
+                    if (v.transactionID === data.transactionID) {
+                        v.transactionStatus = data.transactionStatus;                     
+                    }
+                }
+               
+            }
+
+            if (this.datos) {
+
+                console.log("DATOS ")
+                console.log(this.datos)
+                this.actualizarDatos(this.datos);
+            }
+
+
+        });
+
+        // ----- Si recibe mensaje del tipo  'TRANSACTION_CREATED' --------------------------------------------------
+        this.socket.on('TRANSACTION_CREATED', async (data) => {
+            console.log('SOCKET: TRANSACTION_CREATED LIST TX recibiendo datos de servidor');
+
+         
+          
+
+            if (!data) {
+                console.log("Solicitando lista de TX al servidor en SOCKET")
+                const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
+                console.log("TRANSACTION_CREATED: lista de TX recibidas en SOCKET por getTrData")
+                console.log(raw_datos)
+                this.datos = [];
+                this.datos = await this.transformarRawDatos(raw_datos);
+
+
+            } else {
+
+       
+               
+
+                
+                console.log("Hay datos de websocket en lista de TX Create")
+                console.log(data);
+
+                const raw_datos = {
+                    status: 200,
+                    data: {
+                        data: new Array(data)
+                    }
+                }
+
+                const unDato = await this.transformarRawDatos(raw_datos);
+          
+
+                console.log("Un Dato")
+                console.log(unDato)
+                if (unDato && unDato.length > 0) {                    
+                    unDato.forEach(element => {
+                        console.log(element);
+                        this.datos.push(element);
+                    });
+                }
+
+
+
+            }
+
+      
+            if (this.datos) {
+                
+               this.actualizarDatos(this.datos);
             }
 
 
