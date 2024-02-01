@@ -442,7 +442,16 @@ export class ListaTR extends Component {
                 //showCol.beneficiaryName = false;
                 showCol.beneficiaryPhone = false;
 
+
                 break;
+                case 'PAYMENT_LINK':
+                    showCol.userTextType = false;
+                    showCol.type = false;
+                    showCol.type2 = false;
+                    showCol.beneficiaryCardNumber = false;
+                    showCol.beneficiaryPhone = false;
+    
+                    break;    
 
             default:
                 break;
@@ -935,14 +944,14 @@ export class ListaTR extends Component {
 
 
         const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-        console.log("DATOS RAW TR LIST")
-        console.log(raw_datos)
+        //console.log("DATOS RAW TR LIST")
+        //console.log(raw_datos)
 
         let datos = [];
         datos = await this.transformarRawDatos(raw_datos);
 
-        console.log("DATOS normalizados TR LIST")
-        console.log(datos)
+        //console.log("DATOS normalizados TR LIST")
+        //console.log(datos)
 
 
 
@@ -1057,26 +1066,26 @@ export class ListaTR extends Component {
         this.socket.on('TRANSACTION_UPDATE', async (data) => {
             console.log('SOCKET: TRANSACTION_UPDATE LIST TX recibiendo datos de servidor');
 
-            console.log(data)
-            console.log(data.transactionStatus)
-            console.log(data.transactionID)
+            //console.log(data)
+            //console.log(data.transactionStatus)
+            //console.log(data.transactionID)
           
 
             if (!data) {
-                console.log("Solicitando lista de TX al servidor en SOCKET")
+                //console.log("Solicitando lista de TX al servidor en SOCKET")
                 const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-                console.log("TRANSACTION_UPDATE: lista de TX recibidas en SOCKET por getTrData")
-                console.log(raw_datos)
+                //console.log("TRANSACTION_UPDATE: lista de TX recibidas en SOCKET por getTrData")
+                //console.log(raw_datos)
                 this.datos = [];
                 this.datos = await this.transformarRawDatos(raw_datos);
                
 
             } else {
 
-                console.log("Hay datos de websocket en lista de TX Update")
-                console.log(data)
-                console.log(data.transactionStatus)
-                console.log(data.transactionID)
+                //console.log("Hay datos de websocket en lista de TX Update")
+                //console.log(data)
+                //console.log(data.transactionStatus)
+                //console.log(data.transactionID)
             
                
                 for (let v of this.datos) {
@@ -1089,8 +1098,8 @@ export class ListaTR extends Component {
 
             if (this.datos) {
 
-                console.log("DATOS ")
-                console.log(this.datos)
+              // console.log("DATOS ")
+              //  console.log(this.datos)
                 this.actualizarDatos(this.datos);
             }
 
@@ -1105,10 +1114,10 @@ export class ListaTR extends Component {
           
 
             if (!data) {
-                console.log("Solicitando lista de TX al servidor en SOCKET")
+                //console.log("Solicitando lista de TX al servidor en SOCKET")
                 const raw_datos = await this.api.getTrData(this.total_tx_a_solicitar);
-                console.log("TRANSACTION_CREATED: lista de TX recibidas en SOCKET por getTrData")
-                console.log(raw_datos)
+//                console.log("TRANSACTION_CREATED: lista de TX recibidas en SOCKET por getTrData")
+  //              console.log(raw_datos)
                 this.datos = [];
                 this.datos = await this.transformarRawDatos(raw_datos);
 
@@ -1119,8 +1128,8 @@ export class ListaTR extends Component {
                
 
                 
-                console.log("Hay datos de websocket en lista de TX Create")
-                console.log(data);
+                //console.log("Hay datos de websocket en lista de TX Create")
+                //console.log(data);
 
                 const raw_datos = {
                     status: 200,
@@ -1132,11 +1141,11 @@ export class ListaTR extends Component {
                 const unDato = await this.transformarRawDatos(raw_datos);
           
 
-                console.log("Un Dato")
-                console.log(unDato)
+                //console.log("Un Dato")
+                //console.log(unDato)
                 if (unDato && unDato.length > 0) {                    
                     unDato.forEach(element => {
-                        console.log(element);
+                        //console.log(element);
                         this.datos.push(element);
                     });
                 }

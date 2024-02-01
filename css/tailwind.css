@@ -2040,6 +2040,10 @@ details.tw-collapse summary::-webkit-details-marker {
   margin-left: 0.75rem;
 }
 
+.tw-ml-4 {
+  margin-left: 1rem;
+}
+
 .tw-ml-8 {
   margin-left: 2rem;
 }
@@ -2090,10 +2094,6 @@ details.tw-collapse summary::-webkit-details-marker {
 
 .tw-mt-\[0\.5rem\] {
   margin-top: 0.5rem;
-}
-
-.tw-ml-4 {
-  margin-left: 1rem;
 }
 
 .tw-flex {
@@ -2212,10 +2212,6 @@ details.tw-collapse summary::-webkit-details-marker {
   place-items: center;
 }
 
-.tw-content-center {
-  align-content: center;
-}
-
 .tw-items-end {
   align-items: flex-end;
 }
@@ -2313,12 +2309,12 @@ details.tw-collapse summary::-webkit-details-marker {
   padding: 0.75rem;
 }
 
-.tw-p-5 {
-  padding: 1.25rem;
-}
-
 .tw-p-4 {
   padding: 1rem;
+}
+
+.tw-p-5 {
+  padding: 1.25rem;
 }
 
 .tw-px-1 {
@@ -2547,6 +2543,10 @@ details.tw-collapse summary::-webkit-details-marker {
 
   .sm\:tw-grid-cols-\[34\%_64\%\] {
     grid-template-columns: 34% 64%;
+  }
+
+  .sm\:tw-grid-cols-\[45\%_45\%\] {
+    grid-template-columns: 45% 45%;
   }
 
   .sm\:tw-grid-cols-\[49\%_49\%\] {

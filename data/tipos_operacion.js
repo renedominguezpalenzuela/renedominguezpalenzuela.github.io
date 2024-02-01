@@ -40,7 +40,7 @@ export const tipos_operaciones = [
         cod_tipo: 7,
         type1: ["PAYMENT_REQUEST"],
         type2: ["DIRECT_TOPUP"],
-        usertext: "P. Rech. (P. gateway)"
+        usertext: "Payment Req."
     },
     {
         cod_tipo: 8,

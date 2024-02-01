@@ -1408,6 +1408,35 @@ export class API {
     return datos;
   }
 
+  
+  //-------------------------------------------------------------------------------
+  //  crearPAymentLink: envia recarga de telefono
+  //-------------------------------------------------------------------------------
+  async crearPAymentLink(datosTX) {
+
+
+    var body = JSON.stringify(datosTX);
+
+    var config = {
+      method: 'post',
+      url: `${base_url}/api/private/transactions/token/createPaymentLink`,
+      headers: this.headers,
+      data: body
+    }
+
+    let datos = null;
+    await axios(config).then(function (response) {
+      datos = response.data;
+      console.log(datos);
+    }).catch(function (error) {
+      console.log("ERRROR")
+      console.log(error);
+      datos = error;
+    });
+
+    return datos;
+  }
+
 
   //----------------------------------------------------------------------------------------------
   // Obtener lista de Transacciones
@@ -2534,6 +2563,54 @@ export class UImanager {
 
         console.log("Saldo insuficiente pago con stripe")
         console.log(urlHome)
+        //debugger
+
+        UImanager.dialogoStripe(paymentLink, menuController, urlHome)
+        return;
+      }
+
+
+
+
+    }
+
+    //Error pero aun responde el API
+    if (resultado.response) {
+      console.log(resultado)
+
+      Swal.fire(resultado.response.data.message);
+    }
+
+  }
+
+
+  
+  static async gestionResultadosPaymentLink(resultado, urlHome, menuController) {
+
+    console.log(resultado)
+
+    if (!resultado) {
+      console.log("Resultado null, sending money")
+
+      await Swal.fire('Null result');
+      return;
+
+    }
+
+    //TODO: refactorizar
+    if (resultado.data) {
+      //se proceso correctamente la operacion
+    /*  if (resultado.data.status === 200 && !resultado.data.paymentLink) {
+        console.log("Saldo suficiente")
+        Swal.fire(resultado.data.payload);
+        return;
+      }*/
+
+      //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
+      if (resultado.data.status === 200 && resultado.data.payload.link) {
+        //redireccionar a otra pagina 
+        const paymentLink = resultado.data.payload.link;
+
         //debugger
 
         UImanager.dialogoStripe(paymentLink, menuController, urlHome)
