@@ -1412,7 +1412,7 @@ export class API {
   //-------------------------------------------------------------------------------
   //  crearPAymentLink: envia recarga de telefono
   //-------------------------------------------------------------------------------
-  async crearPAymentLink(datosTX) {
+  async crearPaymentLink(datosTX) {
 
 
     var body = JSON.stringify(datosTX);
@@ -2609,12 +2609,13 @@ export class UImanager {
       //El saldo no es suficiente, la operacion esta en espera y se envia payment link para completar
       if (resultado.data.status === 200 && resultado.data.payload.link) {
         //redireccionar a otra pagina 
-        const paymentLink = resultado.data.payload.link;
+        //const paymentLink = resultado.data.payload.link;
 
         //debugger
+        return resultado.data;
 
-        UImanager.dialogoStripe(paymentLink, menuController, urlHome)
-        return;
+        //UImanager.dialogoStripe(paymentLink, menuController, urlHome)
+        //return;
       }
 
 

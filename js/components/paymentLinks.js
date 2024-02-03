@@ -12,7 +12,7 @@ export class PaymentLinks extends Component {
 
     //TODO: poner imagen de espera con una ventana
 
- 
+
 
     amount = useRef("amount");
     currency = useRef("currency");
@@ -202,7 +202,7 @@ export class PaymentLinks extends Component {
             const walletAddress = window.sessionStorage.getItem('walletAddress');
             const userId = window.sessionStorage.getItem('userId');
 
-          
+
 
 
 
@@ -215,12 +215,12 @@ export class PaymentLinks extends Component {
         });
 
         onMounted(() => {
-          
+
         })
 
     }
 
-  
+
 
 
 
@@ -232,7 +232,7 @@ export class PaymentLinks extends Component {
     async onChangeCurrencySend(event) {
 
         const moneda = event.target.value
-       
+
 
     }
 
@@ -241,7 +241,7 @@ export class PaymentLinks extends Component {
 
     async crearPaymentLink() {
         console.log("Creando Payment Link")
- 
+
 
 
         //TODO: Validaciones
@@ -255,7 +255,7 @@ export class PaymentLinks extends Component {
             amount: this.amount.el.value,
             currency: this.currency.el.value.toUpperCase(),
 
-                      
+
             paymentLink: true,
             merchant_external_id: API.generateRandomID(),
             //redirectUrl: 'https://ducapp.net'
@@ -263,7 +263,7 @@ export class PaymentLinks extends Component {
         }
 
         console.log(datosTX);
-       
+
 
         // if (!this.validarDatos(datosTX)) {
         //     console.log("Validation Errors");
@@ -278,28 +278,90 @@ export class PaymentLinks extends Component {
 
             let resultado = null;
 
+          
+
             Swal.fire({
                 title: 'Please Wait..!',
-                text: 'Creating Payment Link operation...',
+                html: 'Creating Payment Link operation...',
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 allowEnterKey: false,
                 //showCancelButton: true,
                 showCloseButton: true,
                 didOpen: async () => {
+
+                    function onCopyLink  ()  {
+                        console.log('COPY')
+                        navigator.clipboard.writeText($('#paymentLink').text());
+                        $("#urlcopied").show();
+                        console.log("DDD");
+        
+                        
+                    }
+
+
+                  
+
                     swal.showLoading()
-                   resultado = await api.crearPAymentLink(datosTX);
-                   console.log("Payment link results")
-                   console.log(resultado);
-
-                    
-
+                    resultado = await api.crearPaymentLink(datosTX);
+                    console.log("Payment link results")
+                    console.log(resultado);
+                    Swal.hideLoading();
 
 
-                    const urlHome = this.props.urlHome ? this.props.urlHome : null;
 
-                    UImanager.gestionResultadosPaymentLink(resultado, urlHome, this.props.menuController);
-                    
+                    if (resultado.data.status == 200) {
+                        const id = resultado.data.payload.id;
+                        const link = resultado.data.payload.link;
+                        const qrCode = resultado.data.payload.qrCode;
+
+                        $("#swal2-title").text('Payment Link, created.');
+                        $("#swal2-html-container").html(`
+                        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-16">
+                            <div>
+                                <span> ID: </span> <span> ${id} </span>
+                            </div>
+
+                            <span style="margin-top: 1rem;"> Payment link url: </span>
+                            <div class="tw-flex tw-items-center  ">
+
+                                <span id="paymentLink"> ${link} </span>
+                               
+                                <span class="tw-ml-4"> 
+                                    <img src="img/copy_icon.png" style="width: 2rem;" onclick="$('#urlcopied').show(); navigator.clipboard.writeText($('#paymentLink').text()); console.log('ddd');"/>
+                                </span>
+
+                               
+
+
+                               
+                            
+
+                            </div>
+                            <div id="urlcopied" style="font-size: 0.9rem; display: none;">
+                            Payment link copied to clipboard 
+
+                         </div>
+                            <div>
+
+                                 <img src="${qrCode}" style="width: 20rem;"/>
+                            </div>
+                        </div>
+                      
+                   `);
+
+                    }
+
+
+
+
+
+
+
+                    // const urlHome = this.props.urlHome ? this.props.urlHome : null;
+
+                    // UImanager.gestionResultadosPaymentLink(resultado, urlHome, this.props.menuController);
+
                 }
             })
 
@@ -312,12 +374,14 @@ export class PaymentLinks extends Component {
     }
 
     onChangeAmount() {
-        
+
     }
 
     onProductName() {
 
     }
+
+
 
 
     // async onCreateButton() {
@@ -330,7 +394,7 @@ export class PaymentLinks extends Component {
     //         <div>
 
 
-            
+
     //                             Operator: ${this.state.operator}
     //                         </div>
     //                         <div class="tw-ml-3">
@@ -346,10 +410,10 @@ export class PaymentLinks extends Component {
     //                             ${this.state.label}
     //                             </div>
     //                         </div>
-              
-            
-            
-            
+
+
+
+
     //         `,
     //         showCloseButton: true,
     //         showCancelButton: true,
@@ -370,8 +434,7 @@ export class PaymentLinks extends Component {
 
 
 
-   // }
-
+    // }
 
 
 
