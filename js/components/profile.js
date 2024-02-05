@@ -563,6 +563,9 @@ export class Profile extends Component {
       } else {
         window.sessionStorage.clear();
       }
+
+
+
     });
 
     onMounted(() => {
@@ -585,6 +588,7 @@ export class Profile extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
+     
 
 
       this.country = $("#country").countrySelect({
@@ -613,6 +617,39 @@ export class Profile extends Component {
 
 
     })
+
+
+    onRendered(async () => {
+
+      const base_name_otra_table = "#container-listbeneficiary"
+      //                             container-listbeneficiary_wrapper
+      //                             container-listgift-cards_wrapper
+
+      const otra_table = $(`${base_name_otra_table}_wrapper`)
+
+      $(`${base_name_otra_table}_wrapper`).remove();
+
+      $('#container-listbeneficiary_wrapper').remove();
+
+  
+          $('#container-listgift-cards_wrapper').remove();
+     
+      $('#container-listbeneficiary').DataTable().clear().destroy();
+
+      if (this.props.tipoVista != 'GIFT_CARDS') {
+          $('#container-listgift-cards').DataTable().clear().destroy();
+      }
+
+
+      //style="visibility: hidden;"
+      // $("#container-listtr").css('visibility', 'visible');
+      //$("#container-listtr").css('visibility', 'hidden');
+
+
+
+
+  });
+
   }
 
 

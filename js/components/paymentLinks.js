@@ -497,9 +497,17 @@ export class PaymentLinks extends Component {
     }
 
     onChangeSelectedTX = async (datos) => {
-        this.datosSelectedTX.txID = datos._id;
-        this.datosSelectedTX.allData = { ...datos }
+        //this.datosSelectedTX.txID = datos._id;
+        //this.datosSelectedTX.allData = { ...datos }
         console.log(datos)
+
+        
+        this.productName.el.value = datos.metadata.requestParams.product.name;
+        this.description.el.value = datos.metadata.requestParams.product.description; 
+        this.amount.el.value = UImanager.roundDec(datos.metadata.requestParams.price.amount);
+        this.currency.el.value= datos.metadata.requestParams.price.currency.toLowerCase();
+
+
         /*this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
         this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
         this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
