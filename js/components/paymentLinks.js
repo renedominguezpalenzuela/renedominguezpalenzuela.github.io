@@ -265,10 +265,10 @@ export class PaymentLinks extends Component {
         console.log(datosTX);
 
 
-        // if (!this.validarDatos(datosTX)) {
-        //     console.log("Validation Errors");
-        //     return;
-        // }
+        if (!this.validarDatos(datosTX)) {
+            console.log("Validation Errors");
+            return;
+        }
 
 
         try {
@@ -462,51 +462,33 @@ export class PaymentLinks extends Component {
 
 
     validarDatos(datos) {
-        console.log(datos)
-        //--------------------- Product ID --------------------------------------------
-        if (!datos.productId || datos.productId == -1) {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please select the product'
-            })
-            return false;
-        }
+        
+       console.log(datos)
 
-        //--------------------- Phone number --------------------------------------------
-        //TODO: Validar que sea un numero correcto
-        if (datos.destinations.length <= 0) {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please enter the phone number to recharge'
-            })
-            return false;
-        }
-
-        if (!datos.destinations[0] || datos.destinations[0] === '') {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please enter the phone number to recharge'
-            })
-            return false;
-        }
-
-        //--------------------- Receiver Name --------------------------------------------
-        if (!datos.receiverName || datos.receiverName === '') {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: "Please enter receiver's name"
-            })
+        //--------------------- Amount --------------------------------------------
+        if ( UImanager.validarSiMenorQueCero(datos.amount)) {
+            this.errores.amount = true;
             return false;
         }
 
         //--------------------- Currency --------------------------------------------
-        if (!datos.currency || datos.currency === '') {
-            Swal.fire({
-                icon: 'error', title: 'Error',
-                text: 'Please select currency'
-            })
+        if ( UImanager.validarSiVacio(datos.currency)) {
+            this.errores.currency = true;
             return false;
         }
+
+         //--------------------- Product Name --------------------------------------------
+         if ( UImanager.validarSiVacio(datos.product.name)) {
+            this.errores.productName = true;
+            return false;
+        }
+
+          //--------------------- Product Name --------------------------------------------
+          if ( UImanager.validarSiVacio(datos.product.description)) {
+            this.errores.description = true;
+            return false;
+        }
+
 
 
 
