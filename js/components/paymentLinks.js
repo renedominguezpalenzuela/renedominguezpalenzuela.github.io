@@ -82,7 +82,7 @@ export class PaymentLinks extends Component {
                     
                       
 
-                      <input type="text" t-ref="amount" t-on-blur="onChangeAmount" t-on-input="onChangeAmount" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
+                      <input type="text" t-ref="amount" t-on-blur="onBlurChangeAmount" t-on-input="onChangeAmount" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"   class="tw-input tw-w-full tw-input-bordered tw-join-item tw-text-right" placeholder="0.00"/>
 
 
                       
@@ -123,7 +123,7 @@ export class PaymentLinks extends Component {
             <label class="tw-label">
                 <span class="tw-label-text">Product Name</span>
             </label>
-            <input type="text"  t-ref="productName" t-on-input="onProductName" t-on-blur="onProductName"   maxlength="300"  class="tw-input tw-input-bordered tw-w-full " />   
+            <input type="text"  t-ref="productName" t-on-input="onProductName" t-on-blur="onBlurProductName"   maxlength="300"  class="tw-input tw-input-bordered tw-w-full " />   
             <span t-if="this.errores.productName==true" class="error">
                 Required field!!!
             </span>
@@ -134,7 +134,7 @@ export class PaymentLinks extends Component {
                     <span class="tw-label-text">Description</span>
                 </label>
                 
-                <textarea t-ref="description" class="tw-textarea tw-textarea-bordered" placeholder=""  ></textarea>
+                <textarea t-ref="description" class="tw-textarea tw-textarea-bordered" placeholder="" t-on-input="onProductDesc" t-on-blur="onBlurProductDesc"  ></textarea>
                 <span t-if="this.errores.description==true" class="error">
                     Required field!!!
                 </span> 
@@ -278,7 +278,7 @@ export class PaymentLinks extends Component {
 
             let resultado = null;
 
-          
+
 
             Swal.fire({
                 title: 'Please Wait..!',
@@ -290,17 +290,17 @@ export class PaymentLinks extends Component {
                 showCloseButton: true,
                 didOpen: async () => {
 
-                    function onCopyLink  ()  {
+                    function onCopyLink() {
                         console.log('COPY')
                         navigator.clipboard.writeText($('#paymentLink').text());
                         $("#urlcopied").show();
                         console.log("DDD");
-        
-                        
+
+
                     }
 
 
-                  
+
 
                     swal.showLoading()
                     resultado = await api.crearPaymentLink(datosTX);
@@ -373,13 +373,32 @@ export class PaymentLinks extends Component {
         }
     }
 
-    onChangeAmount() {
+    onChangeAmount = API.debounce(async (event) => {
+        this.errores.amount = UImanager.validarSiMenorQueCero(event.target.value);
+    }, 700);
 
+    onBlurChangeAmount = (event) => {
+        this.errores.amount = UImanager.validarSiMenorQueCero(event.target.value);
     }
 
-    onProductName() {
 
+    onBlurProductName = (event) => {
+        this.errores.productName = UImanager.validarSiVacio(event.target.value);
     }
+
+    onProductName = API.debounce(async (event) => {
+        this.errores.productName = UImanager.validarSiVacio(event.target.value);
+    }, 700);
+
+
+    onBlurProductDesc = (event) => {
+        this.errores.description = UImanager.validarSiVacio(event.target.value);
+    }
+
+    onProductDesc = API.debounce(async (event) => {
+        this.errores.description = UImanager.validarSiVacio(event.target.value);
+    }, 700);
+
 
 
 
@@ -497,39 +516,17 @@ export class PaymentLinks extends Component {
     }
 
     onChangeSelectedTX = async (datos) => {
-        //this.datosSelectedTX.txID = datos._id;
-        //this.datosSelectedTX.allData = { ...datos }
-        console.log(datos)
 
-        
         this.productName.el.value = datos.metadata.requestParams.product.name;
-        this.description.el.value = datos.metadata.requestParams.product.description; 
+        this.description.el.value = datos.metadata.requestParams.product.description;
         this.amount.el.value = UImanager.roundDec(datos.metadata.requestParams.price.amount);
-        this.currency.el.value= datos.metadata.requestParams.price.currency.toLowerCase();
+        this.currency.el.value = datos.metadata.requestParams.price.currency.toLowerCase();
 
-
-        /*this.inputSendRef.el.value = datos.transactionAmount.toFixed(2);
-        this.inputReceiveCurrencyRef.el.value = datos.metadata.deliveryCurrency.toLowerCase();
-        this.inputSendCurrencyRef.el.value = datos.currency.toLowerCase();
-        this.concept.el.value = datos.concept;
-    
-        const CIBeneficiariodeTX = this.datosSelectedTX.allData.metadata.deliveryCI;
-    
-        this.setearBeneficiario(CIBeneficiariodeTX)
-    
-        await this.onChangeSendInput()*/
 
     }
 
 
-    /*
-        onPhoneKeyPress = (event)=> {
-            console.log(event.charCode)
-            if(event.charCode >= 48 && event.charCode <= 57){
-                return true;
-               }
-               return false;
-        }*/
+
 
 
 }
