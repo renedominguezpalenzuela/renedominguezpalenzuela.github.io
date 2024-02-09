@@ -488,6 +488,8 @@ export class ListaGiftCards extends Component {
                     let tr = e.target.closest('tr');
 
                     let row = this.tabla.row(tr);
+                    console.log("clic")
+                    console.log(row)
 
 
 
@@ -781,17 +783,23 @@ export class ListaGiftCards extends Component {
                 </div>
             </div>
 
-            <div class="tw-w-full tw-p-2">
-               <div class="tw-flex tw-flex-row tw-w-full tw-items-center tw-mb-4">
-                        <span class="tw-label-text tw-mr-4">CVV2</span>
-                        <input type="text" id="cvv2"  class="tw-input tw-input-bordered tw-w-[20%]  "  />
-                        <span class="tw-label-text tw-mr-4 tw-ml-8">Exp Date</span>
-                      
-                        <input type="text" id="year"  class="tw-input tw-input-bordered  tw-w-[15%] tw-ml-2"  placeholder='YY' />
-                        <span class="tw-ml-1 tw-mr-1">/</span>                          
-                        <input type="text" id="month"  class="tw-input tw-input-bordered tw-w-[15%] tw-mr-2  " placeholder='MM'  />
+           
+               <div class="tw-form-control tw-w-full tw-p-2">
+                    <div class="sm:tw-grid sm:tw-grid-cols-[19%_70%] tw-w-full tw-items-center tw-justify-items-start tw-pb-2 !tw-text-left">
+                        <div class="tw-label-text ">CVV2</div>
+                        <input type="text" id="cvv2"  class="tw-input tw-input-bordered sm:tw-w-[30%] tw-w-[20%] "  />
+                    </div>    
+
+                    <div class="sm:tw-grid sm:tw-grid-cols-[19%_70%] tw-w-full tw-items-center tw-justify-items-start !tw-text-left">
+                        <div class="tw-label-text  ">Exp Date</div>
+                        <div class="tw-flex tw-flex-row  tw-w-full tw-items-center">
+                          <input type="text" id="year"  class="tw-input tw-input-bordered sm:tw-w-[30%] tw-w-[20%] "  placeholder='YY' />
+                          <span class="tw-ml-1 tw-mr-1">/</span>                          
+                          <input type="text" id="month"  class="tw-input tw-input-bordered sm:tw-w-[30%] tw-w-[20%] tw-mr-2  " placeholder='MM'  />
+                        </div>  
+                    </div>    
                 </div>
-            </div>
+           
 
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">
