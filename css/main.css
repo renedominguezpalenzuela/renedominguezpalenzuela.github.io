@@ -365,3 +365,8 @@ table.dataTable>tbody>tr.child ul.dtr-details {
   display: block;
 }
 
+
+table.dataTable>tbody>tr.child span.dtr-title {
+  display: none;
+  
+} 

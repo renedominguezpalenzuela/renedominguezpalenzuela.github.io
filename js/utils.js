@@ -2041,6 +2041,22 @@ export class UImanager {
 
   }
 
+   //function to write actual data of a table row
+   static rowDataGet(dato) {
+    console.log("SSS")
+    console.log(dato);
+
+    //for row data
+
+    // $(`${this.tableId} tbody`).on('click', 'tr', function () {
+    //     temp = $('#searchTable').DataTable().row(this).data();
+    //     console.log(temp);
+
+
+    // });
+
+}
+
 
 
   //DEvuelve true si hay error en la longitud del ci

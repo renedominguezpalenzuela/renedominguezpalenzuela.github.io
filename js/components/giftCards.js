@@ -269,6 +269,14 @@ export class ListaGiftCards extends Component {
     }
 
 
+    rowDataGet = (e) => {
+        console.log("DDDD")
+        console.log(e)
+
+
+
+
+    }
 
 
     setup() {
@@ -284,6 +292,9 @@ export class ListaGiftCards extends Component {
         if (window.sessionStorage.getItem('isMerchant')) {
             this.isMerchant = JSON.parse(window.sessionStorage.getItem('isMerchant'));
         }
+
+        
+       
 
 
 
@@ -367,6 +378,8 @@ export class ListaGiftCards extends Component {
 
             this.tableId = '#container-listgift-cards';
 
+
+
             this.tabla = $(this.tableId).DataTable({
                 data: this.datos,
 
@@ -415,6 +428,68 @@ export class ListaGiftCards extends Component {
                         },
                         className: "amount-value"
                     },
+                    // {
+                    //     data: null,
+                    //     render: (data, type, row) => {
+                          
+                    //         let numero_tarjeta = data.number;
+
+                    //         return `<div class="btn-group sm:tw-hidden">
+                                     
+                    //                 <button type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" >
+                    //                   Credit
+                    //                 </button>
+                    //             </div>` },
+                    //     visible: true
+                    // },
+
+                    {
+                        data: null,
+                        render: (data, type, row) => {
+                          
+                            let numero_tarjeta = data.number;
+                            let display =  this.isMerchant ? 'block' : 'none';
+                          
+                            
+                            return `<div class="btn-group sm:tw-hidden tw-flex tw-flex-row tw-justify-center">
+
+                                    <button type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" >
+                                       Credit
+                                    </button>
+                                     
+                                    <button    style="display:${display};"  type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 debitfn btn-gift-cards" >
+                                      Debit
+                                    </button>
+
+                                    <button style="display:${display};" type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 cancelfn btn-gift-cards" >
+                                      Expire
+                                    </button>
+
+                                </div>` },
+                        
+                    },
+
+                    // {
+                    //     data: null,
+                    //     render: (data, type, row) => {
+                          
+                    //         let numero_tarjeta = data.number;
+                    //         let display =  this.isMerchant ? 'block' : 'none';
+
+                    //         return `<div class="btn-group sm:tw-hidden">
+                                     
+                    //                 <button style="display:${display};" type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 cancelfn btn-gift-cards" >
+                    //                   Expire
+                    //                 </button>
+                    //             </div>` },
+                    //     //visible: this.isMerchant
+                    // },
+
+                    // {
+                    //     data: null,
+                    //     defaultContent: '<button>Click!</button>',
+                    //     targets: -1
+                    // }
 
                 ],
 
@@ -468,7 +543,6 @@ export class ListaGiftCards extends Component {
 
 
 
-
             this.tabla.columns.adjust().draw();
 
 
@@ -488,8 +562,7 @@ export class ListaGiftCards extends Component {
                     let tr = e.target.closest('tr');
 
                     let row = this.tabla.row(tr);
-                    console.log("clic")
-                    console.log(row)
+                    console.log("td.dt-control")
 
 
 
@@ -504,6 +577,19 @@ export class ListaGiftCards extends Component {
                         row.child(this.formatTuplaOculta(row.data())).show();
                     }
                 });
+
+
+
+
+
+                // this.tabla.on('click', 'button', function (e) {
+                //     let data =  this.tabla.row(e.target.closest('tr')).data();
+
+                //     alert(data[0] + "'s salary is: " + data[5]);
+                // });
+
+
+
 
 
                 this.tabla.on('click', '.creditfn', (e) => {
