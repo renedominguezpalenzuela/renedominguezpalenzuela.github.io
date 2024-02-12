@@ -325,7 +325,7 @@ export class SendMoneyCuba extends Component {
                 </label>
                 <input t-ref="inputContactPhone" t-att-value="this.beneficiarioData.contactPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhoneInput" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"/>
                 <span t-if="this.errores.phoneField==true" class="error">
-                  Invalid phone number!!!
+                  Invalid number!!!
                 </span>
 
                 

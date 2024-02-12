@@ -113,7 +113,7 @@ export class Beneficiarios extends Component {
                   </label>
                   <input t-att-value="this.state.deliveryPhone"  id="phone" name="phone" type="tel" class="selectphone tw-input tw-input-bordered tw-w-full" t-on-input="onChangePhone" t-on-blur="onBlurPhone" onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')" />
                    <span t-if="this.props.errores.deliveryPhone==true" class="error">
-                          Required field!!!
+                          Invalid number!!!
                        </span> 
                 </div>
                   
