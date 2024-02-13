@@ -317,7 +317,7 @@ export class PaymentLinks extends Component {
 
                         $("#swal2-title").text('Payment Link, created.');
                         $("#swal2-html-container").html(`
-                        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-16">
+                        <div class="tw-flex tw-flex-col tw-items-center tw-justify-center ">
                             <div>
                                 <span> ID: </span> <span> ${id} </span>
                             </div>
