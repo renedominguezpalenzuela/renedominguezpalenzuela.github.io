@@ -143,15 +143,27 @@ export class ForgotPassChange extends Component {
 
 
     onWillStart(async () => {
+      this.state.otpCode ='qq';
+     // this.state.password ='aa';
 
 
 
     });
 
     onMounted(() => {
+  
 
 
     });
+
+    onRendered(() => {
+      this.state.otpCode ='000000';
+      this.state.password ='';
+
+  
+     
+    });
+
 
 
 

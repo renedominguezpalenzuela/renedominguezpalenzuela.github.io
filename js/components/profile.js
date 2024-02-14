@@ -40,6 +40,7 @@ export class Profile extends Component {
     //province: false,
     zipcode: false,
     password: false,
+    passwordmatch: false,
     image: false,
     source1: false,
     source2: false,
@@ -146,28 +147,36 @@ export class Profile extends Component {
                 <span class="tw-label-text">Password</span>
               </label>
                 <div class="tw-join ">
-                      <input  type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%] " placeholder="Password" t-ref="inputPass1"  t-model="this.state.password"/>
+                      <input  type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%] " placeholder="Password" t-ref="inputPass1"  t-model="this.state.password"
+                      t-on-input="onChangePassword" t-on-blur="onBlurPassword"
+                      />
                       <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility">
                         <i id="toggler1" class="far  fa-eye " t-ref="iconPassVisibility1"></i>
-                      </button>
-                        
-                  
+                      </button>                                         
                 </div>
+
+                <span t-if="this.errores.passwordmatch==true" class="error">
+                   Passwords don't match!!!
+                </span>
             </div>
 
-            <div class="tw-form-control tw-w-full  tw-pl-1">
+            <div class="tw-form-control tw-w-full  sm:tw-pl-1">
               <label class="tw-label">
               <span class="tw-label-text">Confirm Password</span>
               </label>
               <div class="tw-join  ">
 
-              <input type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" placeholder="Confirm Password" t-ref="inputPass2"/>
+              <input type="password"  class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" placeholder="Confirm Password" t-ref="inputPass2"
+              t-on-input="onChangePassword" t-on-blur="onBlurPassword"/>
               <button class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
               <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
               </button>
 
 
               </div>
+              <span t-if="this.errores.passwordmatch==true" class="error">
+                Passwords don't match!!!
+              </span>
             </div>
         </div>       
 
@@ -197,7 +206,7 @@ export class Profile extends Component {
                     </span>
                 </div>
 
-                <div class="tw-form-control tw-w-full  tw-pl-1">
+                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
                     <label class="tw-label">
                        <span class="tw-label-text">Last Name</span>
                     </label>
@@ -212,7 +221,7 @@ export class Profile extends Component {
             <!--               Telefono e Email                                            -->
             <!-- ************************************************************************* -->
            
-            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+            <div class="sm:tw-flex sm:tw-flex-row  sm:tw-w-full">
                 <div class="tw-form-control tw-w-full  ">
                     <label class="tw-label">
                       <span class="tw-label-text">Phone</span>
@@ -223,7 +232,7 @@ export class Profile extends Component {
                     </span>
                 </div>
 
-                <div class="tw-form-control tw-w-full  tw-pl-1">
+                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">Email</span>
                     </label>
@@ -250,7 +259,7 @@ export class Profile extends Component {
                     </span>
                 </div>
 
-                <div class="tw-form-control tw-w-full  tw-pl-1">
+                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">Birth Date</span>
                     </label>
@@ -291,7 +300,7 @@ export class Profile extends Component {
                     </span>
                 </div>
 
-                <div class="tw-form-control tw-w-auto  tw-pl-1">
+                <div class="tw-form-control tw-w-auto  sm:tw-pl-1">
                     <label class="tw-label">
                       <span class="tw-label-text">House Number</span>
                     </label>
@@ -307,15 +316,7 @@ export class Profile extends Component {
             <!-- ************************************************************************* -->
      
             <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
-                <!-- <div class="tw-form-control tw-w-full  ">
-                    <label class="tw-label">
-                      <span class="tw-label-text">Province</span>
-                    </label>                    
-                    <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeprovince" t-on-blur="onBlurprovince"  />                       
-                    <span t-if="this.errores.province==true" class="error">
-                       Required field!!!
-                    </span>
-                </div> -->
+            
 
                 <div class="tw-form-control tw-w-full  ">
                 <label class="tw-label">
@@ -328,7 +329,7 @@ export class Profile extends Component {
             </div>
         
 
-                <div class="tw-form-control tw-w-full  tw-pl-1">
+                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
                   <label class="tw-label">
                     <span class="tw-label-text">Country</span>
                   </label>  
@@ -340,6 +341,17 @@ export class Profile extends Component {
               
                 
                 </div>
+
+                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
+                <label class="tw-label">
+                  <span class="tw-label-text">Province</span>
+                </label>                    
+                <input type="text" t-model="this.state.province" placeholder="Province" class="tw-input tw-input-bordered tw-w-full "  t-on-input="onChangeprovince" t-on-blur="onBlurprovince"  />                       
+                <span t-if="this.errores.province==true" class="error">
+                   Required field!!!
+                </span>
+            </div> 
+
             </div>  
 
             <!-- ************************************************************************* -->
@@ -514,14 +526,14 @@ export class Profile extends Component {
         const accessToken = API.getTokenFromsessionStorage();
         const api = new API(accessToken);
         const userData = await api.getUserProfile();
-      
 
-       const fecha = UImanager.timeZoneTransformer(userData.birthDate).fromUtc;
 
-    
-       
+        const fecha = UImanager.timeZoneTransformer(userData.birthDate).fromUtc;
+
+
+
         this.state.birthDate = UImanager.formatDateForInputs(fecha);
-      
+
 
         /*if (userData.kyc) {
           const kyc = JSON.parse(userData.kyc.gatheredInfo);
@@ -588,7 +600,7 @@ export class Profile extends Component {
         utilsScript: "js/libs/intlTelIutils.js"
       });
 
-     
+
 
 
       this.country = $("#country").countrySelect({
@@ -631,13 +643,13 @@ export class Profile extends Component {
 
       $('#container-listbeneficiary_wrapper').remove();
 
-  
-          $('#container-listgift-cards_wrapper').remove();
-     
+
+      $('#container-listgift-cards_wrapper').remove();
+
       $('#container-listbeneficiary').DataTable().clear().destroy();
 
       if (this.props.tipoVista != 'GIFT_CARDS') {
-          $('#container-listgift-cards').DataTable().clear().destroy();
+        $('#container-listgift-cards').DataTable().clear().destroy();
       }
 
 
@@ -648,7 +660,7 @@ export class Profile extends Component {
 
 
 
-  });
+    });
 
   }
 
@@ -778,25 +790,24 @@ export class Profile extends Component {
 
 
     //Validaciones si es update
-    /* if (!this.props.newUser) {
- 
+    if (this.props.newUser) {
+
+      const pass1 = this.inputPass1.el.value;
+      const pass2 = this.inputPass2.el.value;
+
+      if ((pass1 || pass2) && (pass2 === pass1)) {
+        this.errores.passwordmatch = false;
       
- 
-       if ((this.inputPass1.el.value || this.inputPass2.el.value) && (this.inputPass1.el.value != this.inputPass2.el.value)) {
- 
-         console.log("ERROR EN PASS")
-         Swal.fire({
-           icon: 'error', title: 'Error',
-           text: 'Passwords are not the same or are empty, please check'
-         })
-         return false;
-       }
- 
- 
- 
-       return true; //si es un update, no valida que existan campos vacios
- 
-     }*/
+
+      } else {
+        this.errores.passwordmatch = true;
+      
+       
+
+      }
+
+    }
+
 
 
 
@@ -812,11 +823,12 @@ export class Profile extends Component {
     this.errores.street = this.validarSiVacio(datos.street)
 
     this.errores.houseNumber = this.validarSiVacio(datos.houseNumber)
-    this.errores.city = this.validarSiVacio(datos.city)
+    //this.errores.city = this.validarSiVacio(datos.city)
+    this.errores.province = this.validarSiVacio(datos.city)
     this.errores.country = this.validarSiVacio(datos.country)
 
     this.errores.country_iso_code = this.validarSiVacio(datos.country_iso_code)
-    //this.errores.province = this.validarSiVacio(datos.province)
+    
     this.errores.zipcode = this.validarSiVacio(datos.zipcode)
     this.errores.birthDate = this.validarSiVacio(datos.birthDate)
 
@@ -915,6 +927,44 @@ export class Profile extends Component {
   }, 400);
 
 
+  onChangePassword = API.debounce(async (event) => {
+    //  if (!this.props.newUser) {
+
+    const pass1 = this.inputPass1.el.value;
+    const pass2 = this.inputPass2.el.value;
+
+    if (pass2 === pass1) {
+      this.errores.passwordmatch = false;
+      console.log("NO ERROR")
+
+    } else {
+      this.errores.passwordmatch = true;
+      console.log("ERROR")
+
+    }
+
+
+
+  }, 400);
+
+  onBlurPassword = (event) => {
+
+    const pass1 = this.inputPass1.el.value;
+    const pass2 = this.inputPass2.el.value;
+
+    if (pass2 === pass1) {
+      this.errores.passwordmatch = false;
+      console.log("NO ERROR")
+
+    } else {
+      this.errores.passwordmatch = true;
+      console.log("ERROR")
+
+    }
+
+  }
+
+
 
 
 
@@ -939,7 +989,7 @@ export class Profile extends Component {
     this.state.phone = this.phonInputSelect.getNumber();
 
 
-    //this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
+    this.state.city = this.state.province ? this.state.province.substring(0, 2) : "";
 
     const datosAEnviar = this.prepararDatosaEnviar(this.state);
     console.log("Datos a enviar REGISTRO")
