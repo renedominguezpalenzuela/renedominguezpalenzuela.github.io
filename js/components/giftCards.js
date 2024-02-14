@@ -97,7 +97,8 @@ export class ListaGiftCards extends Component {
    
 
     <t t-if="this.datos==null">
-        <span  class="display nowrap responsive " style="width:100%"   >
+    <div class="tw-items-center"> 
+        <span  class="display nowrap responsive "    >
         Requesting data
         </span>
 
@@ -106,6 +107,7 @@ export class ListaGiftCards extends Component {
           <img src="img/Spinner-1s-200px.png" width="35rem"/>
         </span>
         </t>
+     </div>   
     </t> 
 
    

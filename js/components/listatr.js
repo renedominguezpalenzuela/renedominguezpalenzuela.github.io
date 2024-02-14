@@ -151,9 +151,19 @@ export class ListaTR extends Component {
 
     </t>
 
-
-
+ 
+    <t t-else="">
    
+        <span  class="display nowrap responsive "    >
+            Requesting data
+        </span>
+
+        <t t-if="this.spinner.show==true">
+            <span>
+                 <img src="img/Spinner-1s-200px.png" width="35rem"/>
+            </span>
+        </t>
+    </t>  
    
 
     
