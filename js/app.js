@@ -34,10 +34,10 @@ class Root extends Component {
                <a class="tw-ml-1" href="/forgotpass.html">Forgot password?</a>
             </div>
 
-            // <div class="tw-flex tw-pt-2">                 
-            //   <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           
-            //   <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
-            // </div>
+            <!-- <div class="tw-flex tw-pt-2">                 
+               <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           
+               <button id="test-api-btn"  t-on-click="getApi_Status">Test API</button>
+             </div> -->
             <div class="tw-mt-6 tw-flex tw-justify-center ">
             <button id="login-btn" class="submit-btn" t-on-click="login_btn">LET'S GO</button>
             </div>
