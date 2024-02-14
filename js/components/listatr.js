@@ -71,7 +71,7 @@ export class ListaTR extends Component {
     <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 ">
     <div class="tw-card-body tw-items-center  "> 
 
-    <t t-if="this.datos and this.datos.length>0">
+   <!-- <t t-if="this.datos and this.datos.length>0"> -->
 
 
                 
@@ -149,21 +149,22 @@ export class ListaTR extends Component {
         </div>
 
 
-    </t>
+    <!-- </t> -->
 
  
-    <t t-else="">
+ 
    
-        <span  class="display nowrap responsive "    >
-            Requesting data
-        </span>
+       
 
         <t t-if="this.spinner.show==true">
+            <span  class="display nowrap responsive "    >
+                Requesting data
+            </span>
             <span>
                  <img src="img/Spinner-1s-200px.png" width="35rem"/>
             </span>
         </t>
-    </t>  
+    
    
 
     
