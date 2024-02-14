@@ -556,6 +556,7 @@ export class Profile extends Component {
         this.state.street = userData.street;
         this.state.houseNumber = userData.houseNumber;
         this.state.city = userData.city;
+        this.state.province = userData.city;
         this.state.country = userData.country;
         this.state.country_iso_code = userData.country_iso_code;
 
