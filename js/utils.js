@@ -1514,12 +1514,14 @@ export class API {
   //------------------------------------------------------------------------------------------------
   // Crear giftCard
   //------------------------------------------------------------------------------------------------
-   async createGiftCard(holderName) {
-    var body = JSON.stringify({
-      holderName: holderName,
-    })
+   async createGiftCard(datosCardOwner) {
 
-   
+    var body = JSON.stringify({
+      holderName: datosCardOwner.selectedBeneficiary,
+      email: datosCardOwner.email,
+      phone: datosCardOwner.phone,
+      idNumber: datosCardOwner.id
+    }) 
 
     var config = {
       method: 'post',
@@ -1530,7 +1532,13 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
+      if (response.data) {
+        datos = response.data;
+      } else {
+        console.log("Error createGiftCard")
+        console.log(response)
+      }
+      
      // console.log(datos);
     }).catch(function (error) {
       console.log("ERRROR")
@@ -1656,6 +1664,8 @@ export class API {
   
    async giftCardCredit(creditData) {
 
+    console.log(creditData)
+
     var body = JSON.stringify(creditData)
 
     var config = {
@@ -1667,8 +1677,11 @@ export class API {
 
     let datos = null;
     await axios(config).then(function (response) {
-      datos = response.data;
-      console.log(datos);
+      if (response.data) {
+        datos = response.data;
+        console.log(datos);
+      }
+      
     }).catch(function (error) {
       console.log("ERRROR")
       console.log(error);

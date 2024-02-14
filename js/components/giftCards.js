@@ -3,6 +3,7 @@ const { Component, mount, xml, useState, useRef, onMounted, onRendered, onWillSt
 
 import { API, UImanager } from "../utils.js";
 import { ListaTR } from "./listatr.js";
+import { Paises } from "../../data/paises.js";
 
 //TODO: Cada X segundo pedir el balance
 //TODO-DONE: validar parametro del usuario  el nuevo campo es isMerchant y el valor va a ser true or false
@@ -293,8 +294,8 @@ export class ListaGiftCards extends Component {
             this.isMerchant = JSON.parse(window.sessionStorage.getItem('isMerchant'));
         }
 
-        
-       
+
+
 
 
 
@@ -320,6 +321,22 @@ export class ListaGiftCards extends Component {
 
             this.api = new API(this.accessToken);
             this.inicioContadorTiempo = Date.now();
+
+            this.seleccionCodigosPaises = [];
+            this.paises = Paises.filter(unPais => unPais.show).map((unPais, i) => {
+
+                this.seleccionCodigosPaises.push(unPais.isoAlpha2)
+                return {
+                    id: unPais.id,
+                    name: unPais.name,
+                    // flag: "background-image: url('data:image/png;base64," + unPais.flag + "');",
+                    currency: unPais.currency.code,
+                    number: unPais.number,
+                    show: unPais.show,
+                    iso2: unPais.isoAlpha2,
+                    prefijo: unPais.prefijo
+                }
+            });
 
 
 
@@ -431,11 +448,11 @@ export class ListaGiftCards extends Component {
                     // {
                     //     data: null,
                     //     render: (data, type, row) => {
-                          
+
                     //         let numero_tarjeta = data.number;
 
                     //         return `<div class="btn-group sm:tw-hidden">
-                                     
+
                     //                 <button type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" >
                     //                   Credit
                     //                 </button>
@@ -446,11 +463,11 @@ export class ListaGiftCards extends Component {
                     {
                         data: null,
                         render: (data, type, row) => {
-                          
+
                             let numero_tarjeta = data.number;
-                            let display =  this.isMerchant ? 'block' : 'none';
-                          
-                            
+                            let display = this.isMerchant ? 'block' : 'none';
+
+
                             return `<div class="btn-group sm:tw-hidden tw-flex tw-flex-row tw-justify-center">
 
                                     <button type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 creditfn btn-gift-cards" >
@@ -466,18 +483,18 @@ export class ListaGiftCards extends Component {
                                     </button>
 
                                 </div>` },
-                        
+
                     },
 
                     // {
                     //     data: null,
                     //     render: (data, type, row) => {
-                          
+
                     //         let numero_tarjeta = data.number;
                     //         let display =  this.isMerchant ? 'block' : 'none';
 
                     //         return `<div class="btn-group sm:tw-hidden">
-                                     
+
                     //                 <button style="display:${display};" type="button" card-number="${numero_tarjeta}"  class="tw-btn   tw-mr-3 cancelfn btn-gift-cards" >
                     //                   Expire
                     //                 </button>
@@ -1210,7 +1227,21 @@ export class ListaGiftCards extends Component {
         /*<select id="beneficiary" class="tw-select tw-select-bordered tw-join-item"   > 
         ${optionsBeneficiario}                                        
      </select>     */
-        const { value: beneficiario } = await Swal.fire({
+
+
+        //    TODO:
+        //  POST /api/private/cards/create
+        // {
+        //   "holderName": "Pepito Perez",
+        //   "email": "pepito.perez@email.com",
+        //   "phone": "+5355555555",
+        //   "idNumber": "92051540268"
+        // }
+
+        var TelefonoValido = false;
+        var telefono = null;
+        
+        const { value: datosCardOwner } = await Swal.fire({
             title: "Create Gift Card",
 
             html: `
@@ -1218,11 +1249,44 @@ export class ListaGiftCards extends Component {
             <div class="tw-form-control tw-w-full tw-p-2">
                 <label class="tw-label">
                         <span class="tw-label-text">Card holder name</span>
-                </label>
+                </label>                
+                <input id="beneficiary" type="text" class="tw-input tw-input-bordered tw-w-full tw-join-item" />  
                 
                 
-                <input id="beneficiary" type="text" class="tw-input tw-input-bordered tw-w-full tw-join-item" />   
 
+                <span id="beneficiarioerror" class="error" style="display:none;">
+                  Card holder name can't be empty!!!
+                </span>
+
+
+                <label class="tw-label">
+                    <span class="tw-label-text">Phone </span>
+                </label>
+                <input   id="phone" name="phone" type="phone" class="selectphone tw-input tw-input-bordered tw-w-full"
+                         onkeyup="this.value=this.value.replace(/[^0-9.]/g,'')"/>   
+                <span id="phoneerror" class="error" style="display:none;">
+                    Invalid phone number!!!
+                </span>
+
+                <label class="tw-label">
+                        <span class="tw-label-text">Email address</span>
+                </label>                                
+                <input id="email" type="text" class="tw-input tw-input-bordered tw-w-full tw-join-item" /> 
+                <span id="emailerror" class="error" style="display:none;">
+                  Invalid email address!!!
+                </span>
+
+                
+
+                <label class="tw-label">
+                    <span class="tw-label-text">ID number</span>
+                </label>                
+                <input id="id" type="text" class="tw-input tw-input-bordered tw-w-full tw-join-item" /> 
+                <span id="iderror" class="error" style="display:none;">
+                ID number can't be empty!!!
+              </span>
+
+                
             </div>
 
 
@@ -1230,22 +1294,134 @@ export class ListaGiftCards extends Component {
             focusConfirm: false,
             showCancelButton: true,
             preConfirm: () => {
-                const resultado = {
-                    selectedBeneficiary: document.getElementById("beneficiary").value,
+
+                const beneficiario =  document.getElementById("beneficiary").value;
+
+                if (UImanager.validarSiVacio(beneficiario)) {
+                    $('#beneficiarioerror').show();
+                    return false;                    
                 }
+
+
+                if (!TelefonoValido) {
+                    $('#phoneerror').show();
+                    return false;
+                }
+
+                const correoElectronico =  document.getElementById("email").value;
+
+                if (!UImanager.validMail(correoElectronico)) {
+                    $('#emailerror').show();
+                    return false;                    
+                }
+
+                const id =  document.getElementById("id").value;
+
+                if (UImanager.validarSiVacio(id)) {
+                    $('#iderror').show();  
+                    return false;
+                }    
+                
+
+                const resultado = {
+                    selectedBeneficiary: beneficiario,
+                    email: correoElectronico,
+                    phone: telefono,
+                    id: document.getElementById("id").value
+                }
+
                 return resultado;
+            },
+            didOpen: () => {
+
+                console.log("Opening");
+                const phoneInput = document.querySelector("#phone");
+                const phonInputSelect = window.intlTelInput(phoneInput, {
+                    separateDialCode: true,   //el codigo del pais solo esta en el select de las banderas
+                    autoInsertDialCode: true, //coloca el codigo del pais en el input
+                    formatOnDisplay: false,  //si se teclea el codigo del pais, se selecciona la bandera ej 53 -- cuba
+                    // autoPlaceholder: "polite",
+                    // don't insert international dial codes
+                    nationalMode: false, //permite poner 5465731 en ves de +53 54657331
+                    initialCountry: "cu",
+                    //excludeCountries: ["in", "il"],
+                    preferredCountries: ["cu"],
+                    // display only these countries
+                    onlyCountries: this.seleccionCodigosPaises,
+                    utilsScript: "js/libs/intlTelIutils.js"
+                });
+                // this.phoneInput.addEventListener('countrychange', this.handleCountryChange);
+
+
+
+                $('#phone').on('input', (e) => {
+                    const phoneNumber = e.target.value;
+
+
+                    const cod_pais = '+' + phonInputSelect.getSelectedCountryData().dialCode;
+
+                    telefono = cod_pais + phoneNumber;
+
+                    TelefonoValido = libphonenumber.isValidNumber(telefono);
+
+                    console.log(telefono)
+                    console.log(TelefonoValido);
+                    if (TelefonoValido) {
+                        $('#phoneerror').hide();
+                    } else {
+                        $('#phoneerror').show();
+                    }
+
+                });
+
+                $('#email').on('input', (e) => {
+
+                    if (UImanager.validMail(e.target.value)) {
+                        $('#emailerror').hide();                                                           
+                    } else {                        
+                        $('#emailerror').show();   
+                    }
+
+                 });
+
+
+                 $('#beneficiary').on('input', (e) => {
+
+                    if (UImanager.validarSiVacio(e.target.value)) {
+                        $('#beneficiarioerror').show();                                         
+                    } else {
+                        $('#beneficiarioerror').hide();
+                    }
+
+                   
+
+                 });
+
+                 $('#id').on('input', (e) => {
+
+                    if (UImanager.validarSiVacio(e.target.value)) {
+                        $('#iderror').show();                                         
+                    } else {
+                        $('#iderror').hide();
+                    }
+
+                   
+
+                 });
+
+
             }
         });
 
 
 
 
-        if (!beneficiario) {
+        if (!datosCardOwner) {
             return;
         }
         this.spinner.show = true;
 
-        const creandoGiftCardRespuesta = await this.api.createGiftCard(beneficiario.selectedBeneficiary);
+        const creandoGiftCardRespuesta = await this.api.createGiftCard(datosCardOwner);
 
 
 
