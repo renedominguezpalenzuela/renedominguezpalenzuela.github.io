@@ -652,11 +652,11 @@ export class ListaTR extends Component {
                     extend: 'excelHtml5',
                     text: 'Save EXCEL'
                 },
-                {
+               /* {
                     extend: 'pdf',
                     messageTop: 'TX List'
                 },
-                'print'
+                'print'*/
             ],
 
             autoWidth: false,

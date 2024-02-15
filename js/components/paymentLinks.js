@@ -19,6 +19,10 @@ export class PaymentLinks extends Component {
     productName = useRef("productName");
     description = useRef("description");
 
+    mostrar = useState({
+        showPaymentLinkData: false
+    })
+
     // state = useState({
     //     pais: 53,                   //codigo telefonico del pais
     //     currency: "USD",
@@ -41,6 +45,14 @@ export class PaymentLinks extends Component {
         amount: false,
         productName: false,
         description: false
+    })
+
+    datosQR = useState({
+        id: '',
+        link: '',
+        qrCode: ''
+
+
     })
 
 
@@ -105,8 +117,38 @@ export class PaymentLinks extends Component {
            
              
               </div>
-              <div class="tw-card-actions">
+              <div class="tw-card-actions tw-flex tw-flex-col tw-items-center tw-justify-center">
+              <t t-if="this.mostrar.showPaymentLinkData==true">
+     
              
+                            <label class="tw-label">
+                                <span class="tw-label-text">Selected Payment link data</span>
+                            </label>
+                    
+            
+                            <div>
+                                    <span> ID: </span> <span> <t t-esc="this.datosQR.id"/> </span>
+                            </div>
+            
+                            <span style="margin-top: 1rem;"> Payment link url: </span>
+                            <div class="tw-flex tw-items-center  ">
+                                <a t-att-href="this.datosQR.link">
+                                    <span id="paymentLink"> <t t-esc="this.datosQR.link"/> </span>
+                                </a>            
+                                <span class="tw-ml-4"> 
+                                    <img src="img/copy_icon.png" style="width: 2rem;" onclick="$('#urlcopied').show(); navigator.clipboard.writeText($('#paymentLink').text()); console.log('ddd');"/>
+                                </span>            
+                            </div>
+                            <div id="urlcopied" style="font-size: 0.9rem; display: none;">
+                                Payment link copied to clipboard 
+                            </div>
+                            <div>
+                                <img t-att-src="this.datosQR.qrCode" style="width: 10rem;"/>
+                            </div>
+                        
+                     
+           
+             </t>
                     
               </div>
              
@@ -140,9 +182,16 @@ export class PaymentLinks extends Component {
                 </span> 
             </div>
         </div>
+
+        
       </div>
 
-      <button class=" btn-primary tw-mt-2  tw-w-[30%] " t-on-click="crearPaymentLink">Create </button>  
+      
+      <button class=" btn-primary tw-mt-2  tw-w-[30%] " t-on-click="crearPaymentLink">Create </button> 
+      
+
+
+
 
     
 
@@ -157,7 +206,7 @@ export class PaymentLinks extends Component {
     
       <div class="  tw-w-full tw-col-span-2">
            <ListaTR class="tw-w-full" tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" /> 
-    </div>
+      </div>
 
   </div>
       
@@ -324,7 +373,7 @@ export class PaymentLinks extends Component {
 
                             <span style="margin-top: 1rem;"> Payment link url: </span>
                             <div class="tw-flex tw-items-center  ">
-
+                                 
                                 <span id="paymentLink"> ${link} </span>
                                
                                 <span class="tw-ml-4"> 
@@ -375,6 +424,8 @@ export class PaymentLinks extends Component {
 
     onChangeAmount = API.debounce(async (event) => {
         this.errores.amount = UImanager.validarSiMenorQueCero(event.target.value);
+        this.mostrar.showPaymentLinkData = false;
+        this.datosQR.qrCode = '';
     }, 700);
 
     onBlurChangeAmount = (event) => {
@@ -388,6 +439,8 @@ export class PaymentLinks extends Component {
 
     onProductName = API.debounce(async (event) => {
         this.errores.productName = UImanager.validarSiVacio(event.target.value);
+        this.mostrar.showPaymentLinkData = false;
+        this.datosQR.qrCode = '';
     }, 700);
 
 
@@ -397,6 +450,8 @@ export class PaymentLinks extends Component {
 
     onProductDesc = API.debounce(async (event) => {
         this.errores.description = UImanager.validarSiVacio(event.target.value);
+        this.mostrar.showPaymentLinkData = false;
+        this.datosQR.qrCode = '';
     }, 700);
 
 
@@ -462,29 +517,29 @@ export class PaymentLinks extends Component {
 
 
     validarDatos(datos) {
-        
-       console.log(datos)
+
+        console.log(datos)
 
         //--------------------- Amount --------------------------------------------
-        if ( UImanager.validarSiMenorQueCero(datos.amount)) {
+        if (UImanager.validarSiMenorQueCero(datos.amount)) {
             this.errores.amount = true;
             return false;
         }
 
         //--------------------- Currency --------------------------------------------
-        if ( UImanager.validarSiVacio(datos.currency)) {
+        if (UImanager.validarSiVacio(datos.currency)) {
             this.errores.currency = true;
             return false;
         }
 
-         //--------------------- Product Name --------------------------------------------
-         if ( UImanager.validarSiVacio(datos.product.name)) {
+        //--------------------- Product Name --------------------------------------------
+        if (UImanager.validarSiVacio(datos.product.name)) {
             this.errores.productName = true;
             return false;
         }
 
-          //--------------------- Product Name --------------------------------------------
-          if ( UImanager.validarSiVacio(datos.product.description)) {
+        //--------------------- Product Name --------------------------------------------
+        if (UImanager.validarSiVacio(datos.product.description)) {
             this.errores.description = true;
             return false;
         }
@@ -498,11 +553,21 @@ export class PaymentLinks extends Component {
     }
 
     onChangeSelectedTX = async (datos) => {
+        console.log(datos)
+
+        this.mostrar.showPaymentLinkData = true;
 
         this.productName.el.value = datos.metadata.requestParams.product.name;
         this.description.el.value = datos.metadata.requestParams.product.description;
         this.amount.el.value = UImanager.roundDec(datos.metadata.requestParams.price.amount);
         this.currency.el.value = datos.metadata.requestParams.price.currency.toLowerCase();
+
+        //datos del QR
+
+        this.datosQR.id = datos.transactionID;
+        this.datosQR.link = datos.metadata.paymentLinkUrl;
+
+        this.datosQR.qrCode = datos.metadata.paymentLinkQRCode;
 
 
     }
