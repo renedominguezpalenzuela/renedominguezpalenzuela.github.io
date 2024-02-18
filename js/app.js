@@ -14,6 +14,10 @@ class Root extends Component {
   inputUsr = useRef("input_user");
   inputPass = useRef("input_pass");
 
+  
+  iconPassVisibility1 = useRef("iconPassVisibility1");
+  
+
 
 
 
@@ -33,7 +37,7 @@ class Root extends Component {
             <div class="tw-join tw-mt-2 tw-w-full ">
               <input class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" type="password" placeholder="Password" id="pass" t-ref="input_pass"/> 
               <button id="buttontoggler2" class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
-                <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
+                <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility1"></i>
               </button>
             </div>
 
@@ -97,6 +101,21 @@ class Root extends Component {
     });
 
 
+
+
+  }
+
+  toggler_visibility() {
+
+    
+
+    if (this.inputPass.el.type == 'password') {
+      this.inputPass.el.setAttribute('type', 'text');   
+      this.iconPassVisibility1.el.classList.add('fa-eye-slash');     
+    } else {
+      this.inputPass.el.setAttribute('type', 'password');     
+      this.iconPassVisibility1.el.classList.remove('fa-eye-slash');    
+    }
 
 
   }
