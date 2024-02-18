@@ -26,13 +26,21 @@ class Root extends Component {
         </div>
 
         <div class=" tw-h-[34rem] tw-w-[80vw] sm:tw-w-[62vw] tw-bg-white tw-shadow-lg tw-flex border-rounded ">
-          <div class="tw-h-full  sm:tw-w-[45vw] left tw-p-5 border-rounded-2 ">             
+          <div class="tw-h-full  sm:tw-w-[45vw] left tw-p-5  ">             
             <h3>SIGN IN</h3>
-            <input type="text" placeholder="USERNAME" id="usr" t-ref="input_user"/>
-            <input type="password" placeholder="PASSWORD" id="pass" t-ref="input_pass"/> 
+            <input  class="tw-input tw-input-bordered " type="text" placeholder="Phone or Email" id="usr" t-ref="input_user"/>
+
+            <div class="tw-join tw-mt-2 tw-w-full ">
+              <input class="tw-input tw-input-bordered tw-join-item tw-w-[85%]" type="password" placeholder="Password" id="pass" t-ref="input_pass"/> 
+              <button id="buttontoggler2" class="tw-btn tw-join-item tw-w-[15%]" t-on-click="toggler_visibility" >
+                <i id="toggler2" class="far fa-eye " t-ref="iconPassVisibility2"></i>
+              </button>
+            </div>
+
             <div class="tw-flex gray-text-color">                 
                <a class="tw-ml-1" href="/forgotpass.html">Forgot password?</a>
             </div>
+
 
             <!-- <div class="tw-flex tw-pt-2">                 
                <button id="test-data-btn"  t-on-click="setTest_data">Set Test Data</button>           

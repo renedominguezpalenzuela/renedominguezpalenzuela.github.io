@@ -69,11 +69,42 @@
   transition: 0.5s;
   outline: none;*/
 
-  border: none;
+  /* border: none;
   width: 80%;
   margin: 15px 0px;
   border-bottom: 1px solid #4f30677d;
   padding: 7px 9px;
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+  font-weight: 600;
+  font-size: 14px;
+  outline: none; */
+}
+ 
+#buttontoggler2 {
+  
+
+  /* border-bottom: 1px solid #4f30677d;
+  border-top: unset;
+  border-left: unset;
+  border-right: unset;
+  background-color: #00000000;
+  border-radius: 0px;
+  left: 10px; */
+
+  
+
+} 
+
+.left input  {
+
+
+
+  /* border-bottom: 1px solid #4f30677d;
+  border-radius: 0px;
+   */
+
   width: 100%;
   overflow: hidden;
   background: transparent;

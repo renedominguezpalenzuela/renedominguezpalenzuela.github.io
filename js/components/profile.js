@@ -124,16 +124,43 @@ export class Profile extends Component {
 
             <div class="tw-form-control  tw-max-w-xs  ">
                 <label class="tw-label">
-                  <span class="tw-label-text">Pick a file</span>  
+                  <span class="tw-label-text">Profile picture. Pick a file</span>  
                 </label>       
                 <input class="tw-file-input tw-file-input-sm tw-file-input-bordered tw-w-full tw-max-w-xs" t-on-input="onChangeAvatarInput" t-ref="inputAvatar"  type="file"   accept="image/jpeg, image/png, image/jpg"/>            
             </div>
         </div>
 
+       
+
       
 
 
         <div class="tw-card-body tw-items-center ">
+
+        <!-- ************************************************************************* -->
+        <!--               Nombre y primer apellido                                    -->
+        <!-- ************************************************************************* -->
+        <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
+            <div class="tw-form-control tw-w-full  ">
+                <label class="tw-label">
+                   <span class="tw-label-text">First Name</span>
+                </label>
+                <input class="tw-input tw-input-bordered tw-w-full " type="text" t-model="this.state.firstName" placeholder="First Name"   t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName" /> 
+                <span t-if="this.errores.firstName==true" class="error">
+                  Required field!!!
+                </span>
+            </div>
+
+            <div class="tw-form-control tw-w-full  sm:tw-pl-1">
+                <label class="tw-label">
+                   <span class="tw-label-text">Last Name</span>
+                </label>
+                <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeLastName" t-on-blur="onBlurLastName"  />   
+                <span t-if="this.errores.lastName==true" class="error">
+                   Required field!!!
+                </span>
+            </div>
+        </div>  
 
         <!-- ************************************************************************* -->
         <!--               Password                                                    -->
@@ -192,30 +219,7 @@ export class Profile extends Component {
 
 
 
-            <!-- ************************************************************************* -->
-            <!--               Nombre y primer apellido                                    -->
-            <!-- ************************************************************************* -->
-            <div class="sm:tw-flex sm:tw-flex-row  tw-w-full">
-                <div class="tw-form-control tw-w-full  ">
-                    <label class="tw-label">
-                       <span class="tw-label-text">First Name</span>
-                    </label>
-                    <input class="tw-input tw-input-bordered tw-w-full " type="text" t-model="this.state.firstName" placeholder="First Name"   t-on-input="onChangeFirstName" t-on-blur="onBlurFirstName" /> 
-                    <span t-if="this.errores.firstName==true" class="error">
-                      Required field!!!
-                    </span>
-                </div>
-
-                <div class="tw-form-control tw-w-full  sm:tw-pl-1">
-                    <label class="tw-label">
-                       <span class="tw-label-text">Last Name</span>
-                    </label>
-                    <input type="text" t-model="this.state.lastName" placeholder="Last Name" class="tw-input tw-input-bordered tw-w-full"  t-on-input="onChangeLastName" t-on-blur="onBlurLastName"  />   
-                    <span t-if="this.errores.lastName==true" class="error">
-                       Required field!!!
-                    </span>
-                </div>
-            </div>  
+           
 
             <!-- ************************************************************************* -->
             <!--               Telefono e Email                                            -->
@@ -591,9 +595,9 @@ export class Profile extends Component {
         // autoPlaceholder: "polite",
         // don't insert international dial codes
         nationalMode: false, //permite poner 5465731 en ves de +53 54657331
-        initialCountry: "cu",
+        initialCountry: "ca",
         //excludeCountries: ["in", "il"],
-        preferredCountries: ["cu"],
+        preferredCountries: ["ca", "cu"],
         // display only these countries
 
         onlyCountries: this.seleccionCodigosPaises,
@@ -610,7 +614,7 @@ export class Profile extends Component {
                 preferredCountries: ["cu"],
                 onlyCountries: this.seleccionCodigosPaises,
                 preferredCountries: ['ca', 'gb', 'us']*/
-        defaultCountry: "cu",
+        defaultCountry: "ca",
         onlyCountries: this.seleccionCodigosPaises,
         preferredCountries: ['ca', 'cu'],
         responsiveDropdown: true
