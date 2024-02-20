@@ -469,7 +469,7 @@ export class SendAll extends Component {
             </div>
         </div>  -->
 
-        <div class="  tw-w-full ">    
+        <div class="  tw-w-full sm:tw-col-span-2 ">    
            <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" />
         </div>
          

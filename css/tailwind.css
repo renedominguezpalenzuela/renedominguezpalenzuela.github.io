@@ -2589,6 +2589,10 @@ details.tw-collapse summary::-webkit-details-marker {
     grid-template-columns: 54% 44%;
   }
 
+  .sm\:tw-grid-cols-\[19\%_82\%\] {
+    grid-template-columns: 19% 82%;
+  }
+
   .sm\:tw-flex-row {
     flex-direction: row;
   }

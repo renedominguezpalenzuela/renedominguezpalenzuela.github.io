@@ -48,11 +48,11 @@ class Root extends Component {
   static template = xml` 
   
   <div class="sm:tw-grid  sm:tw-grid-cols-[19%_80%]   tw-w-full tw-bg-[#F1F2F7]   ">
-     <div class="tw-p-2 sm:tw-h-full  sm:tw-col-start-1"> 
+     <div class="tw-p-2 sm:tw-h-full "> 
         <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
      </div> 
 
-    <div class="tw-p-2 sm:tw-col-start-2">
+    <div class="tw-p-2 ">
       <div class="sm:tw-h-[4rem]">
          <Menu title="state.title"/>
       </div>
