@@ -2176,6 +2176,10 @@ details.tw-collapse summary::-webkit-details-marker {
   width: 85%;
 }
 
+.tw-w-\[90\%\] {
+  width: 90%;
+}
+
 .tw-w-auto {
   width: auto;
 }
@@ -2517,6 +2521,10 @@ details.tw-collapse summary::-webkit-details-marker {
     height: 100%;
   }
 
+  .sm\:tw-w-\[100\%\] {
+    width: 100%;
+  }
+
   .sm\:tw-w-\[10vw\] {
     width: 10vw;
   }
@@ -2541,6 +2549,10 @@ details.tw-collapse summary::-webkit-details-marker {
     width: 100%;
   }
 
+  .sm\:tw-w-\[90\%\] {
+    width: 90%;
+  }
+
   .sm\:tw-grid-cols-1 {
     grid-template-columns: repeat(1, minmax(0, 1fr));
   }
@@ -2557,20 +2569,20 @@ details.tw-collapse summary::-webkit-details-marker {
     grid-template-columns: 19% 70%;
   }
 
-  .sm\:tw-grid-cols-\[19\%_82\%\] {
-    grid-template-columns: 19% 82%;
+  .sm\:tw-grid-cols-\[19\%_80\%\] {
+    grid-template-columns: 19% 80%;
   }
 
-  .sm\:tw-grid-cols-\[34\%_64\%\] {
-    grid-template-columns: 34% 64%;
-  }
-
-  .sm\:tw-grid-cols-\[45\%_45\%\] {
-    grid-template-columns: 45% 45%;
+  .sm\:tw-grid-cols-\[34\%_66\%\] {
+    grid-template-columns: 34% 66%;
   }
 
   .sm\:tw-grid-cols-\[49\%_49\%\] {
     grid-template-columns: 49% 49%;
+  }
+
+  .sm\:tw-grid-cols-\[50\%_50\%\] {
+    grid-template-columns: 50% 50%;
   }
 
   .sm\:tw-grid-cols-\[54\%_44\%\] {
@@ -2595,12 +2607,6 @@ details.tw-collapse summary::-webkit-details-marker {
   }
 
   .sm\:tw-pl-1 {
-    padding-left: 0.25rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .md\:tw-pl-1 {
     padding-left: 0.25rem;
   }
 }

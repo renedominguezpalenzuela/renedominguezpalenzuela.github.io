@@ -65,18 +65,19 @@ export class ListaTR extends Component {
 
 
 
-
+    // tw-shadow-xl tw-rounded-lg 
     static template = xml`  
 
-    <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg tw-mt-2 ">
+    <div class="tw-card  tw-w-full tw-bg-base-100 tw-mt-2 ">
     <div class="tw-card-body tw-items-center  "> 
 
    <!-- <t t-if="this.datos and this.datos.length>0"> -->
 
 
+
                 
 
-        <div class="sm:tw-grid sm:tw-grid-cols-3 tw-gap-2 tw-mb-4">
+        <div class="sm:tw-grid sm:tw-grid-cols-3 tw-gap-2 tw-mb-4 tw-w-full tw-grid">
            
         
             <div class="tw-w-[22rem] sm:tw-row-start-1 sm:tw-col-start-1">
@@ -129,8 +130,8 @@ export class ListaTR extends Component {
 
             <!-- Seleccionar beneficiario -->
             
-            <div class="tw-w-[22rem] sm:tw-row-start-2 sm:tw-col-start-3" t-if="this.props.tipoVista=='' || this.props.tipoVista==null">
-                <select  id="listaBeneficiarios" t-att-value="this.state.beneficiaryID" class="tw-select tw-select-bordered tw-w-full" t-on-input="onChangeSelectedBeneficiario">
+            <div class="tw-w-[22rem] sm:tw-row-start-2 sm:tw-col-start-3 " t-if="this.props.tipoVista=='' || this.props.tipoVista==null">
+                <select  id="listaBeneficiarios" t-att-value="this.state.beneficiaryID" class="tw-select tw-select-bordered sm:tw-w-[90%] tw-w-[80%]" t-on-input="onChangeSelectedBeneficiario">
                     <option  t-att-value="-1" >All beneficiaries</option>
                     <t  t-if="this.beneficiarios and  this.beneficiarios.nameList.length > 0">
                         <t t-foreach="this.beneficiarios.nameList" t-as="unBeneficiario" t-key="unBeneficiario.id">
@@ -147,6 +148,8 @@ export class ListaTR extends Component {
             
 
         </div>
+
+   
 
 
     <!-- </t> -->

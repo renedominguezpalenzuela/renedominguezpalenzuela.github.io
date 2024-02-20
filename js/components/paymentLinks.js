@@ -81,7 +81,7 @@ export class PaymentLinks extends Component {
 
 
     static template = xml`    
-    <div class="sm:tw-grid sm:tw-grid-cols-[45%_45%] tw-gap-y-0 tw-gap-x-2">
+    <div class="sm:tw-grid sm:tw-grid-cols-[50%_50%] tw-gap-y-0 tw-gap-x-2">
       <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
           
           <div class="tw-card-body tw-items-center  ">

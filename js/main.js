@@ -47,12 +47,12 @@ class Root extends Component {
 
   static template = xml` 
   
-  <div class="sm:tw-grid  sm:tw-grid-cols-[19%_82%]   tw-w-full tw-bg-[#F1F2F7]   ">
-     <div class="tw-p-2 sm:tw-h-full "> 
+  <div class="sm:tw-grid  sm:tw-grid-cols-[19%_80%]   tw-w-full tw-bg-[#F1F2F7]   ">
+     <div class="tw-p-2 sm:tw-h-full  sm:tw-col-start-1"> 
         <LeftMenu  items="leftmenuItems" leftMenuController.bind="leftMenuController"/>
      </div> 
 
-    <div class="tw-p-2">
+    <div class="tw-p-2 sm:tw-col-start-2">
       <div class="sm:tw-h-[4rem]">
          <Menu title="state.title"/>
       </div>
@@ -102,7 +102,7 @@ class Root extends Component {
           
 
           <t t-else="">           
-            <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-2 tw-h-[100vh]">
+            <div class="sm:tw-grid sm:tw-grid-cols-[34%_66%] tw-gap-2 tw-h-[100vh]">
             <div class="tw-h-[100vh]">No component defined for this menu option yet</div>              
             </div>                
           </t>

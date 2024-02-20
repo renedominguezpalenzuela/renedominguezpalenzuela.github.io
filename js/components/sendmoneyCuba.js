@@ -128,7 +128,7 @@ export class SendMoneyCuba extends Component {
 
 
   static template = xml`    
-    <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-y-0 tw-gap-x-2">   
+    <div class="sm:tw-grid sm:tw-grid-cols-[34%_66%] tw-gap-y-0 tw-gap-x-2">   
       <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
         <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
           <div>Amount to Send</div>         

@@ -72,7 +72,7 @@ export class RecargasTelefono extends Component {
 
 
     static template = xml`    
-    <div class="sm:tw-grid sm:tw-grid-cols-[34%_64%] tw-gap-2 ">
+    <div class="sm:tw-grid sm:tw-grid-cols-[34%_66%] tw-gap-2 ">
         <div class="tw-card  tw-w-full tw-bg-base-100 tw-shadow-xl tw-rounded-lg">
             <div class="tw-card-title tw-flex tw-flex-col tw-rounded-lg">
             
