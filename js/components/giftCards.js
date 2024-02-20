@@ -137,11 +137,17 @@ export class ListaGiftCards extends Component {
    
     </table>
     </div>
+
+    <div class="  tw-w-full ">    
+        <ListaTR class="tw-w-full" tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion"  />
     </div>
 
 
+    </div>
+
+
+   
         
-        <ListaTR tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion"  />
    
 
 

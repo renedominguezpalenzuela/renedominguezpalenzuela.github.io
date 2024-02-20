@@ -31,13 +31,13 @@ class Root extends Component {
   leftmenuItems = [
     { id: 1, name: "Profile", type: 2 },
     { id: 2, name: "Beneficiaries", type: 2 },
-    { id: 3, name: "Send Money Old", type: 2 },
+   /* { id: 3, name: "Send Money Old", type: 2 },
     {
       id: 4, name: "Send Money To Cuba", type: 1, subitems: [
         { id: 5, name: "To Credit Card" },
         { id: 6, name: "Home Delivery" },
       ]
-    },
+    },*/
     { id: 7, name: "Phone Recharge", type: 2 },
     { id: 9, name: "Send Money", type: 2 },
     { id: 8, name: "Transactions List", type: 2 },

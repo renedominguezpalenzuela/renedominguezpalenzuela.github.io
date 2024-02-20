@@ -69,7 +69,7 @@ export class ListaTR extends Component {
     static template = xml`  
 
     <div class="tw-card  tw-w-full tw-bg-base-100 tw-mt-2 ">
-    <div class="tw-card-body tw-items-center  "> 
+    <div class="tw-card-body tw-items-center   tw-p-3"> 
 
    <!-- <t t-if="this.datos and this.datos.length>0"> -->
 
