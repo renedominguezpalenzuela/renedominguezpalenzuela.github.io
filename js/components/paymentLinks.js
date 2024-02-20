@@ -204,7 +204,7 @@ export class PaymentLinks extends Component {
   
         
     
-      <div class="  tw-w-full ">
+      <div class="  tw-w-full tw-col-span-2 ">
            <ListaTR class="tw-w-full" tipoVista="this.tipoVista" tipooperacion="this.tipo_operacion" onChangeSelectedTX.bind="this.onChangeSelectedTX" /> 
       </div>
 
